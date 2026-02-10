@@ -11,13 +11,17 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
+import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UsersIndexRouteImport } from './routes/users/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UsersIdRouteImport } from './routes/users/$id'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
+import { Route as DashboardPengaduanLayananPublikRouteImport } from './routes/dashboard/pengaduan-layanan-publik'
+import { Route as DashboardKinerjaDivisiRouteImport } from './routes/dashboard/kinerja-divisi'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
@@ -30,6 +34,11 @@ const SignupRoute = SignupRouteImport.update({
 const SigninRoute = SigninRouteImport.update({
   id: '/signin',
   path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRouteRoute = DashboardRouteRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -52,6 +61,11 @@ const ProfileIndexRoute = ProfileIndexRouteImport.update({
   path: '/profile/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -66,6 +80,17 @@ const ProfileEditRoute = ProfileEditRouteImport.update({
   id: '/profile/edit',
   path: '/profile/edit',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardPengaduanLayananPublikRoute =
+  DashboardPengaduanLayananPublikRouteImport.update({
+    id: '/pengaduan-layanan-publik',
+    path: '/pengaduan-layanan-publik',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardKinerjaDivisiRoute = DashboardKinerjaDivisiRouteImport.update({
+  id: '/kinerja-divisi',
+  path: '/kinerja-divisi',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
@@ -86,14 +111,18 @@ const AdminApikeyRoute = AdminApikeyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
+  '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/users/': typeof UsersIndexRoute
 }
@@ -104,9 +133,12 @@ export interface FileRoutesByTo {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
+  '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin': typeof AdminIndexRoute
+  '/dashboard': typeof DashboardIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/users': typeof UsersIndexRoute
 }
@@ -114,14 +146,18 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
+  '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/users/': typeof UsersIndexRoute
 }
@@ -130,14 +166,18 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/dashboard'
     | '/signin'
     | '/signup'
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/kinerja-divisi'
+    | '/dashboard/pengaduan-layanan-publik'
     | '/profile/edit'
     | '/users/$id'
     | '/admin/'
+    | '/dashboard/'
     | '/profile/'
     | '/users/'
   fileRoutesByTo: FileRoutesByTo
@@ -148,23 +188,30 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/kinerja-divisi'
+    | '/dashboard/pengaduan-layanan-publik'
     | '/profile/edit'
     | '/users/$id'
     | '/admin'
+    | '/dashboard'
     | '/profile'
     | '/users'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/dashboard'
     | '/signin'
     | '/signup'
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/kinerja-divisi'
+    | '/dashboard/pengaduan-layanan-publik'
     | '/profile/edit'
     | '/users/$id'
     | '/admin/'
+    | '/dashboard/'
     | '/profile/'
     | '/users/'
   fileRoutesById: FileRoutesById
@@ -172,6 +219,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
   ProfileEditRoute: typeof ProfileEditRoute
@@ -194,6 +242,13 @@ declare module '@tanstack/react-router' {
       path: '/signin'
       fullPath: '/signin'
       preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -224,6 +279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -244,6 +306,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/profile/edit'
       preLoaderRoute: typeof ProfileEditRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/pengaduan-layanan-publik': {
+      id: '/dashboard/pengaduan-layanan-publik'
+      path: '/pengaduan-layanan-publik'
+      fullPath: '/dashboard/pengaduan-layanan-publik'
+      preLoaderRoute: typeof DashboardPengaduanLayananPublikRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/kinerja-divisi': {
+      id: '/dashboard/kinerja-divisi'
+      path: '/kinerja-divisi'
+      fullPath: '/dashboard/kinerja-divisi'
+      preLoaderRoute: typeof DashboardKinerjaDivisiRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/admin/users': {
       id: '/admin/users'
@@ -287,9 +363,26 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
   AdminRouteRouteChildren,
 )
 
+interface DashboardRouteRouteChildren {
+  DashboardKinerjaDivisiRoute: typeof DashboardKinerjaDivisiRoute
+  DashboardPengaduanLayananPublikRoute: typeof DashboardPengaduanLayananPublikRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardKinerjaDivisiRoute: DashboardKinerjaDivisiRoute,
+  DashboardPengaduanLayananPublikRoute: DashboardPengaduanLayananPublikRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
+  DashboardRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
+  DashboardRouteRoute: DashboardRouteRouteWithChildren,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
   ProfileEditRoute: ProfileEditRoute,

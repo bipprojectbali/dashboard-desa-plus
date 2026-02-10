@@ -16,8 +16,7 @@ if (!isProduction) {
 	const vite = await createVite();
 
 	// Serve PWA/TWA assets in dev (root and nested path support)
-	const servePwaAsset = (srcPath: string) => () => Bun.file(srcPath);
-	
+	const _servePwaAsset = (srcPath: string) => () => Bun.file(srcPath);
 
 	app.post("/__open-in-editor", ({ body }) => {
 		const { relativePath, lineNumber, columnNumber } = body as {
@@ -47,7 +46,8 @@ if (!isProduction) {
 				!pathname.startsWith("/@") &&
 				!pathname.startsWith("/inspector") &&
 				!pathname.startsWith("/__open-stack-frame-in-editor") &&
-						) {
+				!pathname.startsWith("/api"))
+		) {
 			try {
 				const htmlPath = path.resolve("src/index.html");
 				let html = fs.readFileSync(htmlPath, "utf-8");
@@ -139,8 +139,7 @@ if (!isProduction) {
 		);
 
 		// 1.1 Special handling for PWA/TWA assets that might not be in dist (since we use custom bun build)
-		if (
-					) {
+		if (isProduction) {
 			const srcPath = path.join("src", pathname);
 			if (fs.existsSync(srcPath)) {
 				filePath = srcPath;
@@ -161,11 +160,9 @@ if (!isProduction) {
 					filePath = fallbackDistPath;
 				}
 				// Special handling for PWA files in src
-				else if (
-										pathname.includes("assetlinks.json")
-				) {
+				else if (pathname.includes("assetlinks.json")) {
 					const srcFilename = pathname.includes("assetlinks.json")
-						
+						? ".well-known/assetlinks.json"
 						: filename;
 					const fallbackSrcPath = path.join("src", srcFilename);
 					if (

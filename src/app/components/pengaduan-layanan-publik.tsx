@@ -1,10 +1,15 @@
 import type React from "react";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { Badge } from "@/app/components/ui/badge";
+import { Button } from "@/app/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/app/components/ui/card";
+import { Input } from "@/app/components/ui/input";
+import { Select } from "@/app/components/ui/select";
 import {
 	Table,
 	TableBody,
@@ -12,8 +17,8 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/app/components/ui/table";
+import { Textarea } from "@/app/components/ui/textarea";
 
 const PengaduanLayananPublik = () => {
 	const [activeTab, setActiveTab] = useState<"complaints" | "services">(
@@ -116,7 +121,7 @@ const PengaduanLayananPublik = () => {
 	const handleSelectChange = (value: string | null) => {
 		setNewComplaint((prev) => ({
 			...prev,
-			category: value ?? "", // Handle null case, assign empty string if null
+			category: value || "", // Ensure category is always a string
 		}));
 	};
 

@@ -1,7 +1,13 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button"; // Correct import for Button
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+
+import { Badge } from "@/app/components/ui/badge";
+import { Button } from "@/app/components/ui/button"; // Correct import for Button
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/app/components/ui/card";
+import { Progress } from "@/app/components/ui/progress";
 import {
 	Table,
 	TableBody,
@@ -9,7 +15,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/components/ui/table";
+} from "@/app/components/ui/table";
 
 const KinerjaDivisi = () => {
 	// Sample data for division performance
@@ -89,10 +95,7 @@ const KinerjaDivisi = () => {
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 								className="h-6 w-6"
-								role="img"
-								aria-labelledby="totalDivisiTitle"
 							>
-								<title id="totalDivisiTitle">Total Divisi Icon</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -120,12 +123,7 @@ const KinerjaDivisi = () => {
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 								className="h-6 w-6"
-								role="img"
-								aria-labelledby="rataRataPencapaianTitle"
 							>
-								<title id="rataRataPencapaianTitle">
-									Rata-rata Pencapaian Icon
-								</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -153,12 +151,7 @@ const KinerjaDivisi = () => {
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 								className="h-6 w-6"
-								role="img"
-								aria-labelledby="divisiMelebihiTargetTitle"
 							>
-								<title id="divisiMelebihiTargetTitle">
-									Divisi Melebihi Target Icon
-								</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"

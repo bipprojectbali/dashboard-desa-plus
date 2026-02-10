@@ -98,8 +98,7 @@ function DashboardLayout() {
 
 	const isActive = (path: string) => {
 		const current = location.pathname;
-		if (path === "/admin")
-			return current === "/admin" || current === "/admin/";
+		if (path === "/admin") return current === "/admin" || current === "/admin/";
 		return current.startsWith(path);
 	};
 

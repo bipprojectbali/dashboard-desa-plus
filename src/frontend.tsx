@@ -15,6 +15,7 @@ import { createRoot } from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";
 import { IS_DEV, VITE_PUBLIC_URL } from "./utils/env";
+import { ThemeProvider } from "next-themes";
 
 // Create a new router instance
 export const router = createRouter({
@@ -123,11 +124,13 @@ const app = (
 			});
 		}}
 	>
-		<MantineProvider theme={theme} defaultColorScheme="auto">
-			<ModalsProvider>
-				<RouterProvider router={router} />
-			</ModalsProvider>
-		</MantineProvider>
+		<ThemeProvider attribute="class" defaultTheme="system">
+			<MantineProvider theme={theme} defaultColorScheme="auto">
+				<ModalsProvider>
+					<RouterProvider router={router} />
+				</ModalsProvider>
+			</MantineProvider>
+		</ThemeProvider>
 	</InspectorWrapper>
 );
 

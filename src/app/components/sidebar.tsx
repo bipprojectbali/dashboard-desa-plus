@@ -4,30 +4,24 @@ import { cn } from "./ui/utils";
 
 interface SidebarProps {
 	className?: string;
-	sidebarOpened: boolean;
-	closeSidebar: () => void;
 }
 
-export function DashboardSidebar({
-	className,
-	sidebarOpened,
-	closeSidebar,
-}: SidebarProps) {
+export function Sidebar({ className }: SidebarProps) {
 	const location = useLocation();
 
 	// Define menu items with their paths
 	const menuItems = [
-		{ name: "Beranda", path: "/" },
-		{ name: "Kinerja Divisi", path: "/kinerja-divisi" },
-		{ name: "Pengaduan & Layanan Publik", path: "/pengaduan" },
-		{ name: "Jenna Analytic", path: "/analytic" },
-		{ name: "Demografi & Kependudukan", path: "/demografi" },
-		{ name: "Keuangan & Anggaran", path: "/keuangan" },
-		{ name: "Bumdes & UMKM Desa", path: "/bumdes" },
-		{ name: "Sosial", path: "/sosial" },
-		{ name: "Keamanan", path: "/keamanan" },
-		{ name: "Bantuan", path: "/bantuan" },
-		{ name: "Pengaturan", path: "/pengaturan" },
+		{ name: "Beranda", path: "/dashboard" },
+		{ name: "Kinerja Divisi", path: "/dashboard/kinerja-divisi" },
+		{ name: "Pengaduan & Layanan Publik", path: "/dashboard/pengaduan" },
+		{ name: "Jenna Analytic", path: "/dashboard/analytic" },
+		{ name: "Demografi & Kependudukan", path: "/dashboard/demografi" },
+		{ name: "Keuangan & Anggaran", path: "/dashboard/keuangan" },
+		{ name: "Bumdes & UMKM Desa", path: "/dashboard/bumdes" },
+		{ name: "Sosial", path: "/dashboard/sosial" },
+		{ name: "Keamanan", path: "/dashboard/keamanan" },
+		{ name: "Bantuan", path: "/dashboard/bantuan" },
+		{ name: "Pengaturan", path: "/dashboard/pengaturan" },
 	];
 
 	return (
@@ -67,9 +61,9 @@ export function DashboardSidebar({
 			{/* Menu Items */}
 			<nav className="flex-1 px-4 overflow-y-auto">
 				<div className="space-y-1">
-					{menuItems.map((item, _index) => (
+					{menuItems.map((item, index) => (
 						<Link
-							key={item.name}
+							key={index}
 							to={item.path}
 							className={cn(
 								"w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors block",

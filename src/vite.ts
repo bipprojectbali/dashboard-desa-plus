@@ -36,13 +36,7 @@ export async function createVite() {
 		},
 		appType: "custom",
 		optimizeDeps: {
-			include: [
-				"react",
-				"react-dom",
-				"@mantine/core",
-
-
-			],
+			include: ["react", "react-dom", "@mantine/core"],
 		},
 	});
 }
