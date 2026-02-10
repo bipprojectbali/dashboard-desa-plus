@@ -6,21 +6,13 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="./logo.svg" />
-    <link rel="manifest" href="./manifest.json" />
+
     <meta name="theme-color" content="#f3d5a3" />
     <title>Bun + React</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/frontend.tsx"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(err => {
-            console.log('ServiceWorker registration failed: ', err);
-          });
-        });
-      }
-    </script>
+
   </body>
 </html>

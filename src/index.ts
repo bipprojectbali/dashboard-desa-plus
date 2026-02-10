@@ -17,14 +17,7 @@ if (!isProduction) {
 
 	// Serve PWA/TWA assets in dev (root and nested path support)
 	const servePwaAsset = (srcPath: string) => () => Bun.file(srcPath);
-	app.get("/manifest.json", servePwaAsset("src/manifest.json"));
-	app.get("**/manifest.json", servePwaAsset("src/manifest.json"));
-	app.get("/sw.js", servePwaAsset("src/sw.js"));
-	app.get("**/sw.js", servePwaAsset("src/sw.js"));
-	app.get(
-		"/.well-known/assetlinks.json",
-		servePwaAsset("src/.well-known/assetlinks.json"),
-	);
+	
 
 	app.post("/__open-in-editor", ({ body }) => {
 		const { relativePath, lineNumber, columnNumber } = body as {
@@ -54,10 +47,7 @@ if (!isProduction) {
 				!pathname.startsWith("/@") &&
 				!pathname.startsWith("/inspector") &&
 				!pathname.startsWith("/__open-stack-frame-in-editor") &&
-				!pathname.startsWith("/manifest.json") &&
-				!pathname.startsWith("/sw.js") &&
-				!pathname.startsWith("/.well-known/"))
-		) {
+						) {
 			try {
 				const htmlPath = path.resolve("src/index.html");
 				let html = fs.readFileSync(htmlPath, "utf-8");
@@ -150,10 +140,7 @@ if (!isProduction) {
 
 		// 1.1 Special handling for PWA/TWA assets that might not be in dist (since we use custom bun build)
 		if (
-			pathname === "/manifest.json" ||
-			pathname === "/sw.js" ||
-			pathname === "/.well-known/assetlinks.json"
-		) {
+					) {
 			const srcPath = path.join("src", pathname);
 			if (fs.existsSync(srcPath)) {
 				filePath = srcPath;
@@ -175,12 +162,10 @@ if (!isProduction) {
 				}
 				// Special handling for PWA files in src
 				else if (
-					filename === "manifest.json" ||
-					filename === "sw.js" ||
-					pathname.includes("assetlinks.json")
+										pathname.includes("assetlinks.json")
 				) {
 					const srcFilename = pathname.includes("assetlinks.json")
-						? ".well-known/assetlinks.json"
+						
 						: filename;
 					const fallbackSrcPath = path.join("src", srcFilename);
 					if (
