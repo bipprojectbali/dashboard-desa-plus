@@ -35,7 +35,7 @@ import { protectedRouteMiddleware } from "@/middleware/authMiddleware";
 import { authClient } from "@/utils/auth-client";
 import { authStore } from "../../store/auth";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/admin")({
 	component: DashboardLayout,
 	beforeLoad: protectedRouteMiddleware,
 	onEnter({ context }) {
@@ -55,25 +55,25 @@ function DashboardLayout() {
 		{
 			icon: IconHome,
 			label: "Beranda",
-			to: "/dashboard",
+			to: "/admin",
 			description: "Ringkasan sistem & statistik",
 		},
 		{
 			icon: IconUsers,
 			label: "Pengguna",
-			to: "/dashboard/users",
+			to: "/admin/users",
 			description: "Kelola akun & hak akses",
 		},
 		{
 			icon: IconKey,
 			label: "API Key",
-			to: "/dashboard/apikey",
+			to: "/admin/apikey",
 			description: "Manajemen kunci akses API",
 		},
 		{
 			icon: IconSettings,
 			label: "Pengaturan",
-			to: "/dashboard/settings",
+			to: "/admin/settings",
 			description: "Konfigurasi sistem",
 		},
 	];
@@ -98,8 +98,8 @@ function DashboardLayout() {
 
 	const isActive = (path: string) => {
 		const current = location.pathname;
-		if (path === "/dashboard")
-			return current === "/dashboard" || current === "/dashboard/";
+		if (path === "/admin")
+			return current === "/admin" || current === "/admin/";
 		return current.startsWith(path);
 	};
 
@@ -213,7 +213,7 @@ function DashboardLayout() {
 									leftSection={
 										<IconSettings style={{ width: rem(14), height: rem(14) }} />
 									}
-									onClick={() => navigate({ to: "/dashboard/settings" })}
+									onClick={() => navigate({ to: "/admin/settings" })}
 								>
 									Pengaturan
 								</Menu.Item>

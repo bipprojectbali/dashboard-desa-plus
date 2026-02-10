@@ -1,6 +1,6 @@
 {
-	"name": "Makuro Base Template",
-	"short_name": "Makuro",
+	"name": "Darmasaba Dashboard Noc",
+	"short_name": "Darmasaba",
 	"description": "A high-performance full-stack React template",
 	"start_url": "/",
 	"display": "standalone",

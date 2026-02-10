@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { prisma } from "@/utils/db";
 
 async function seedAdminUser() {

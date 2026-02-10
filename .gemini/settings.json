@@ -1,17 +1,17 @@
 {
-  "hooks": {
-    "AfterAgent": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "name": "telegram-notify",
-            "type": "command",
-            "command": "bun $GEMINI_PROJECT_DIR/.gemini/hooks/telegram-notify.ts",
-            "timeout": 10000
-          }
-        ]
-      }
-    ]
-  }
+	"hooks": {
+		"AfterAgent": [
+			{
+				"matcher": "*",
+				"hooks": [
+					{
+						"name": "telegram-notify",
+						"type": "command",
+						"command": "bun $GEMINI_PROJECT_DIR/.gemini/hooks/telegram-notify.ts",
+						"timeout": 10000
+					}
+				]
+			}
+		]
+	}
 }

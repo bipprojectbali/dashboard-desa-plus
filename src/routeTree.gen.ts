@@ -11,16 +11,16 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
-import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UsersIndexRouteImport } from './routes/users/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UsersIdRouteImport } from './routes/users/$id'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
-import { Route as DashboardUsersRouteImport } from './routes/dashboard/users'
-import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
-import { Route as DashboardApikeyRouteImport } from './routes/dashboard/apikey'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -32,9 +32,9 @@ const SigninRoute = SigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRouteRoute = DashboardRouteRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -52,10 +52,10 @@ const ProfileIndexRoute = ProfileIndexRouteImport.update({
   path: '/profile/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
+const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => DashboardRouteRoute,
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const UsersIdRoute = UsersIdRouteImport.update({
   id: '/users/$id',
@@ -67,33 +67,33 @@ const ProfileEditRoute = ProfileEditRouteImport.update({
   path: '/profile/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardUsersRoute = DashboardUsersRouteImport.update({
+const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
-  getParentRoute: () => DashboardRouteRoute,
+  getParentRoute: () => AdminRouteRoute,
 } as any)
-const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => DashboardRouteRoute,
+  getParentRoute: () => AdminRouteRoute,
 } as any)
-const DashboardApikeyRoute = DashboardApikeyRouteImport.update({
+const AdminApikeyRoute = AdminApikeyRouteImport.update({
   id: '/apikey',
   path: '/apikey',
-  getParentRoute: () => DashboardRouteRoute,
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
-  '/dashboard/apikey': typeof DashboardApikeyRoute
-  '/dashboard/settings': typeof DashboardSettingsRoute
-  '/dashboard/users': typeof DashboardUsersRoute
+  '/admin/apikey': typeof AdminApikeyRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/users/': typeof UsersIndexRoute
 }
@@ -101,27 +101,27 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
-  '/dashboard/apikey': typeof DashboardApikeyRoute
-  '/dashboard/settings': typeof DashboardSettingsRoute
-  '/dashboard/users': typeof DashboardUsersRoute
+  '/admin/apikey': typeof AdminApikeyRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/admin': typeof AdminIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/users': typeof UsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
-  '/dashboard/apikey': typeof DashboardApikeyRoute
-  '/dashboard/settings': typeof DashboardSettingsRoute
-  '/dashboard/users': typeof DashboardUsersRoute
+  '/admin/apikey': typeof AdminApikeyRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/users/': typeof UsersIndexRoute
 }
@@ -129,15 +129,15 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard'
+    | '/admin'
     | '/signin'
     | '/signup'
-    | '/dashboard/apikey'
-    | '/dashboard/settings'
-    | '/dashboard/users'
+    | '/admin/apikey'
+    | '/admin/settings'
+    | '/admin/users'
     | '/profile/edit'
     | '/users/$id'
-    | '/dashboard/'
+    | '/admin/'
     | '/profile/'
     | '/users/'
   fileRoutesByTo: FileRoutesByTo
@@ -145,33 +145,33 @@ export interface FileRouteTypes {
     | '/'
     | '/signin'
     | '/signup'
-    | '/dashboard/apikey'
-    | '/dashboard/settings'
-    | '/dashboard/users'
+    | '/admin/apikey'
+    | '/admin/settings'
+    | '/admin/users'
     | '/profile/edit'
     | '/users/$id'
-    | '/dashboard'
+    | '/admin'
     | '/profile'
     | '/users'
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
+    | '/admin'
     | '/signin'
     | '/signup'
-    | '/dashboard/apikey'
-    | '/dashboard/settings'
-    | '/dashboard/users'
+    | '/admin/apikey'
+    | '/admin/settings'
+    | '/admin/users'
     | '/profile/edit'
     | '/users/$id'
-    | '/dashboard/'
+    | '/admin/'
     | '/profile/'
     | '/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
   ProfileEditRoute: typeof ProfileEditRoute
@@ -196,11 +196,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -224,12 +224,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/': {
-      id: '/dashboard/'
+    '/admin/': {
+      id: '/admin/'
       path: '/'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/users/$id': {
       id: '/users/$id'
@@ -245,51 +245,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileEditRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/users': {
-      id: '/dashboard/users'
+    '/admin/users': {
+      id: '/admin/users'
       path: '/users'
-      fullPath: '/dashboard/users'
-      preLoaderRoute: typeof DashboardUsersRouteImport
-      parentRoute: typeof DashboardRouteRoute
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
-    '/dashboard/settings': {
-      id: '/dashboard/settings'
+    '/admin/settings': {
+      id: '/admin/settings'
       path: '/settings'
-      fullPath: '/dashboard/settings'
-      preLoaderRoute: typeof DashboardSettingsRouteImport
-      parentRoute: typeof DashboardRouteRoute
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
-    '/dashboard/apikey': {
-      id: '/dashboard/apikey'
+    '/admin/apikey': {
+      id: '/admin/apikey'
       path: '/apikey'
-      fullPath: '/dashboard/apikey'
-      preLoaderRoute: typeof DashboardApikeyRouteImport
-      parentRoute: typeof DashboardRouteRoute
+      fullPath: '/admin/apikey'
+      preLoaderRoute: typeof AdminApikeyRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
   }
 }
 
-interface DashboardRouteRouteChildren {
-  DashboardApikeyRoute: typeof DashboardApikeyRoute
-  DashboardSettingsRoute: typeof DashboardSettingsRoute
-  DashboardUsersRoute: typeof DashboardUsersRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
+interface AdminRouteRouteChildren {
+  AdminApikeyRoute: typeof AdminApikeyRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
-const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
-  DashboardApikeyRoute: DashboardApikeyRoute,
-  DashboardSettingsRoute: DashboardSettingsRoute,
-  DashboardUsersRoute: DashboardUsersRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminApikeyRoute: AdminApikeyRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 
-const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
-  DashboardRouteRouteChildren,
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
   ProfileEditRoute: ProfileEditRoute,

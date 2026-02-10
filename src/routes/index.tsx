@@ -255,7 +255,7 @@ function HeroSection() {
 									<Group gap="md">
 										<Button
 											component={Link}
-											to="/dashboard"
+											to="/admin"
 											size="lg"
 											variant="filled"
 											rightSection={<IconRocket size="1.25rem" />}

@@ -1,11 +1,11 @@
 # GEMINI.md
 
-This project is **makuro-base-template**, a high-performance, full-stack React development template leveraging the Bun runtime. It is designed for a seamless developer experience with a unified "single-port" architecture and a Contract-First API design.
+This project is **darmasaba-dashboard-noc**, a high-performance, full-stack React development template leveraging the Bun runtime. It is designed for a seamless developer experience with a unified "single-port" architecture and a Contract-First API design.
 
 ## Project Overview
 
 *   **Runtime**: [Bun](https://bun.sh/)
-*   **Architecture**: "Single Port" (default: 3000). [ElysiaJS](https://elysiajs.com/) serves as the main HTTP server, integrating [Vite](https://vitejs.dev/) in **middleware mode** during development to provide HMR and React Dev Inspector support.
+*   **Architecture**: "Single Port" (default: 3000). [ElysiaJS](https://elysiajs.com/) serves as the main HTTP server. During development, it integrates [Vite](https://vitejs.dev/) in **middleware mode** for HMR and React Dev Inspector support. In production, `@elysiajs/static` is used to efficiently serve pre-built frontend assets.
 *   **API Design**: **Contract-First (OpenAPI)**. The frontend uses `openapi-fetch` with types generated from the backend's OpenAPI schema, ensuring a decoupled but type-safe connection.
 *   **Mobile Readiness**: **PWA (Progressive Web App)** & **TWA (Trusted Web Activity)**. Built-in support for offline caching and Android app packaging.
 *   **Frontend**: React 19 with [TanStack React Router](https://tanstack.com/router/latest) for type-safe, file-based routing.
@@ -60,7 +60,7 @@ The project uses two main categories for testing, consolidated in the `__tests__
 *   **Manifest**: Metadata is located in `src/manifest.json`.
 *   **Service Worker**: Offline logic is in `src/sw.js`. It uses a "Cache First" strategy.
 *   **TWA Verification**: The Android ownership file is at `src/.well-known/assetlinks.json`.
-*   **Server Logic**: Elysia is configured to remove `Vary: *` headers for these static assets to ensure Cache Storage API compatibility.
+*   **Server Logic**: In production, `@elysiajs/static` handles serving static assets, including PWA/TWA files, ensuring proper caching headers.
 
 ### Backend/API
 *   **Prefix**: All backend API routes are prefixed with `/api`.

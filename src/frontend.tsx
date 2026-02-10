@@ -30,7 +30,74 @@ declare module "@tanstack/react-router" {
 }
 
 const theme = createTheme({
-	/** Theme customization here */
+	fontFamily: "Inter, Poppins, system-ui, sans-serif",
+	headings: {
+		fontFamily: "Inter, Poppins, system-ui, sans-serif",
+	},
+	colors: {
+		// Defined shades from 0-9 (lightest to darkest)
+		"darmasaba-navy": [
+			"#E1E4F2",
+			"#B9C2DD",
+			"#91A0C9",
+			"#697EBA",
+			"#4C6CAE",
+			"#3B5B97",
+			"#2C497F",
+			"#1E3766",
+			"#12264D",
+			"#071833",
+		],
+		"darmasaba-blue": [
+			"#E3F0FF",
+			"#B6D9FF",
+			"#89C2FF",
+			"#5CA9FF",
+			"#3B8FFF",
+			"#237AE0",
+			"#1C6BBF",
+			"#155BA0",
+			"#0E4980",
+			"#073260",
+		],
+		"darmasaba-success": [
+			"#E3F9E7",
+			"#BFEEC7",
+			"#9BD8A7",
+			"#77C387",
+			"#5DB572",
+			"#499A5D",
+			"#3C7F4A",
+			"#2F6438",
+			"#234926",
+			"#17301B",
+		],
+		"darmasaba-warning": [
+			"#FFF8E1",
+			"#FEE7B3",
+			"#FDD785",
+			"#FDC757",
+			"#FBBF3B",
+			"#E1AC23",
+			"#C2981D",
+			"#A38418",
+			"#856F12",
+			"#675A0D",
+		],
+		"darmasaba-danger": [
+			"#FFE3E3",
+			"#FFBABA",
+			"#FF9191",
+			"#FF6868",
+			"#FA4B4B",
+			"#E03333",
+			"#C22A2A",
+			"#A32020",
+			"#851616",
+			"#670C0C",
+		],
+	},
+	primaryColor: "darmasaba-blue",
 });
 
 const InspectorWrapper = IS_DEV
@@ -56,7 +123,7 @@ const app = (
 			});
 		}}
 	>
-		<MantineProvider theme={theme} defaultColorScheme="dark">
+		<MantineProvider theme={theme} defaultColorScheme="auto">
 			<ModalsProvider>
 				<RouterProvider router={router} />
 			</ModalsProvider>

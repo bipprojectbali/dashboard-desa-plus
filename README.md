@@ -1,11 +1,11 @@
-# Makuro Base Template 🚀
+# Darmasaba Dashboard Noc 🚀
 
 [![Bun](https://img.shields.io/badge/Bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)](https://bun.sh/)
 [![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://react.dev/)
 [![Mantine](https://img.shields.io/badge/Mantine-blue?style=for-the-badge&logo=mantine&logoColor=white)](https://mantine.dev/)
 [![Biome](https://img.shields.io/badge/Biome-60a5fa?style=for-the-badge&logo=biome&logoColor=white)](https://biomejs.dev/)
 
-**Makuro Base Template** is a high-performance, full-stack React development template leveraging the **Bun** runtime. It offers a unique "Single Port" architecture, combining a Bun/Elysia backend with a React frontend for an incredibly smooth developer experience.
+**Darmasaba Dashboard Noc** is a high-performance, full-stack React development template leveraging the **Bun** runtime. It offers a unique "Single Port" architecture, combining a Bun/Elysia backend with a React frontend for an incredibly smooth developer experience.
 
 ## ✨ Key Features
 

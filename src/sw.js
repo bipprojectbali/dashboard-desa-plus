@@ -1,4 +1,4 @@
-const CACHE_NAME = "makuro-v1";
+const CACHE_NAME = "darmasaba-v1";
 const ASSETS = ["/", "/index.html", "/logo.svg"];
 
 self.addEventListener("install", (event) => {

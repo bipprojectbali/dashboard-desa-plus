@@ -1,4 +1,3 @@
-import { authClient } from "@/utils/auth-client";
 import {
 	Avatar,
 	Badge,
@@ -23,9 +22,10 @@ import {
 } from "@tabler/icons-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useSnapshot } from "valtio";
+import { authClient } from "@/utils/auth-client";
 import { authStore } from "../../store/auth";
 
-export const Route = createFileRoute("/dashboard/")({
+export const Route = createFileRoute("/admin/")({
 	component: DashboardComponent,
 });
 

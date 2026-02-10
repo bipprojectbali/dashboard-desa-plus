@@ -39,7 +39,7 @@ function SignupComponent() {
 			if (error) {
 				setError(error.message || "Failed to sign up");
 			} else {
-				navigate({ to: "/dashboard" });
+				navigate({ to: "/admin" });
 			}
 		} catch {
 			setError("An unexpected error occurred");

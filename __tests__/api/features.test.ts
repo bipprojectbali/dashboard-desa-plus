@@ -10,7 +10,7 @@ describe("Feature Utilities", () => {
 
 		it("should return value from process.env if available", () => {
 			// Mock process.env
-			const originalEnv = { ...process.env };
+			const _originalEnv = { ...process.env };
 			process.env.TEST_ENV_KEY = "test-value";
 
 			const val = getEnv("TEST_ENV_KEY");
