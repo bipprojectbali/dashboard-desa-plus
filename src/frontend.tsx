@@ -14,6 +14,7 @@ import { Inspector } from "react-dev-inspector";
 import { createRoot } from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";
+import '@mantine/charts/styles.css';
 import { IS_DEV, VITE_PUBLIC_URL } from "./utils/env";
 
 

@@ -9,9 +9,9 @@ import {
 	Group,
 	Stack,
 	Grid,
-	Table,
 	Box,
 } from "@mantine/core";
+import { BarChart } from "@mantine/charts";
 
 // Sample Data
 const kpiData = [
@@ -134,7 +134,7 @@ const busyHours = [
 
 const JennaAnalytic = () => {
 	return (
-		<Box p="md">
+		<Box className="space-y-6">
 			<Stack gap="xl">
 				<Group justify="space-between" align="center">
 					<Title order={1} fw={700}>
@@ -187,28 +187,19 @@ const JennaAnalytic = () => {
 
 				{/* Charts and Lists Section */}
 				<Grid gutter="lg">
-					{/* Grafik Interaksi Chatbot (now Table) */}
+					{/* Grafik Interaksi Chatbot (now Bar Chart) */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
 						<Card shadow="sm" padding="lg" radius="md" withBorder>
 							<Title order={3} fw={500} mb="md">
 								Interaksi Chatbot
 							</Title>
-							<Table striped highlightOnHover>
-								<Table.Thead>
-									<Table.Tr>
-										<Table.Th>Day</Table.Th>
-										<Table.Th>Total Interactions</Table.Th>
-									</Table.Tr>
-								</Table.Thead>
-								<Table.Tbody>
-									{chartData.map((item, index) => (
-										<Table.Tr key={index}>
-											<Table.Td>{item.day}</Table.Td>
-											<Table.Td>{item.total}</Table.Td>
-										</Table.Tr>
-									))}
-								</Table.Tbody>
-							</Table>
+							<BarChart
+								h={300}
+								data={chartData}
+								dataKey="day"
+								series={[{ name: 'total', color: 'blue' }]}
+								withLegend
+							/>
 						</Card>
 					</Grid.Col>
 
@@ -227,7 +218,6 @@ const JennaAnalytic = () => {
 											justify="space-between"
 											align="center"
 											p="xs"
-											style={{ backgroundColor: 'var(--mantine-color-gray-0)', borderRadius: 'var(--mantine-radius-sm)' }}
 										>
 											<Text size="sm" fw={500}>
 												{item.topic}

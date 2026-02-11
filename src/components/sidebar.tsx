@@ -24,7 +24,7 @@ export function Sidebar({ className }: SidebarProps) {
 		{ name: "Kinerja Divisi", path: "/dashboard/kinerja-divisi" },
 		{ name: "Pengaduan & Layanan Publik", path: "/dashboard/pengaduan-layanan-publik" },
 		{ name: "Jenna Analytic", path: "/dashboard/jenna-analytic" },
-		{ name: "Demografi & Kependudukan", path: "/dashboard/demografi" },
+		{ name: "Demografi & Kependudukan", path: "/dashboard/demografi-pekerjaan" },
 		{ name: "Keuangan & Anggaran", path: "/dashboard/keuangan" },
 		{ name: "Bumdes & UMKM Desa", path: "/dashboard/bumdes" },
 		{ name: "Sosial", path: "/dashboard/sosial" },
