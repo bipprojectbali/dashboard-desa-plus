@@ -1,13 +1,13 @@
 
-import { Badge } from "@/app/components/ui/badge";
-import { Button } from "@/app/components/ui/button"; // Correct import for Button
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button"; // Correct import for Button
 import {
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from "@/app/components/ui/card";
-import { Progress } from "@/app/components/ui/progress";
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import {
 	Table,
 	TableBody,
@@ -15,7 +15,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/app/components/ui/table";
+} from "@/components/ui/table";
 
 const KinerjaDivisi = () => {
 	// Sample data for division performance
@@ -87,7 +87,7 @@ const KinerjaDivisi = () => {
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Total Divisi</CardTitle>
+						<CardTitle className="text-sm font-medium dark:text-gray-100">Total Divisi</CardTitle>
 						<div className="h-6 w-6 text-muted-foreground">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +113,7 @@ const KinerjaDivisi = () => {
 
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">
+						<CardTitle className="text-sm font-medium dark:text-gray-100">
 							Rata-rata Pencapaian
 						</CardTitle>
 						<div className="h-6 w-6 text-muted-foreground">
@@ -141,7 +141,7 @@ const KinerjaDivisi = () => {
 
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">
+						<CardTitle className="text-sm font-medium dark:text-gray-100">
 							Divisi Melebihi Target
 						</CardTitle>
 						<div className="h-6 w-6 text-muted-foreground">
@@ -170,19 +170,19 @@ const KinerjaDivisi = () => {
 
 			<Card>
 				<CardHeader>
-					<CardTitle>Detail Kinerja Divisi</CardTitle>
+					<CardTitle className="dark:text-gray-100">Detail Kinerja Divisi</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<Table>
 						<TableHeader>
 							<TableRow>
-								<TableHead>Nama Divisi</TableHead>
-								<TableHead>Target (%)</TableHead>
-								<TableHead>Pencapaian (%)</TableHead>
-								<TableHead>Status</TableHead>
-								<TableHead>Proyek Aktif</TableHead>
-								<TableHead>Anggaran</TableHead>
-								<TableHead>Terakhir Diperbarui</TableHead>
+								<TableHead className="dark:text-white">Nama Divisi</TableHead>
+								<TableHead className="dark:text-white">Target (%)</TableHead>
+								<TableHead className="dark:text-white">Pencapaian (%)</TableHead>
+								<TableHead className="dark:text-white">Status</TableHead>
+								<TableHead className="dark:text-white">Proyek Aktif</TableHead>
+								<TableHead className="dark:text-white">Anggaran</TableHead>
+								<TableHead className="dark:text-white">Terakhir Diperbarui</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
@@ -236,9 +236,8 @@ const KinerjaDivisi = () => {
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				<Card>
 					<CardHeader>
-						<CardTitle>Grafik Pencapaian Divisi</CardTitle>
-					</CardHeader>
-					<CardContent>
+						<CardTitle className="dark:text-gray-100">Grafik Pencapaian Divisi</CardTitle>
+					</CardHeader>					<CardContent>
 						<div className="h-80 flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded-lg">
 							<p className="text-gray-500 dark:text-gray-300">
 								Grafik pencapaian akan ditampilkan di sini
@@ -249,9 +248,8 @@ const KinerjaDivisi = () => {
 
 				<Card>
 					<CardHeader>
-						<CardTitle>Distribusi Anggaran Divisi</CardTitle>
-					</CardHeader>
-					<CardContent>
+						<CardTitle className="dark:text-gray-100">Distribusi Anggaran Divisi</CardTitle>
+					</CardHeader>					<CardContent>
 						<div className="h-80 flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded-lg">
 							<p className="text-gray-500 dark:text-gray-300">
 								Diagram distribusi anggaran akan ditampilkan di sini

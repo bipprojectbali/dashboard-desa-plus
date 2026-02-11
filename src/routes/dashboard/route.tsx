@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Header } from "@/app/components/header";
-import { Sidebar } from "@/app/components/sidebar";
+import { Header } from "@/components/header";
+import { Sidebar } from "@/components/sidebar";
 import { AppShell, Burger, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 

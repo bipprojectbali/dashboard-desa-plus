@@ -1,15 +1,15 @@
 import type React from "react";
 import { useState } from "react";
-import { Badge } from "@/app/components/ui/badge";
-import { Button } from "@/app/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from "@/app/components/ui/card";
-import { Input } from "@/app/components/ui/input";
-import { Select } from "@/app/components/ui/select";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import {
 	Table,
 	TableBody,
@@ -17,8 +17,8 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/app/components/ui/table";
-import { Textarea } from "@/app/components/ui/textarea";
+} from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 
 const PengaduanLayananPublik = () => {
 	const [activeTab, setActiveTab] = useState<"complaints" | "services">(

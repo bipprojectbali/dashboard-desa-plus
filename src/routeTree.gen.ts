@@ -22,6 +22,7 @@ import { Route as UsersIdRouteImport } from './routes/users/$id'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
 import { Route as DashboardPengaduanLayananPublikRouteImport } from './routes/dashboard/pengaduan-layanan-publik'
 import { Route as DashboardKinerjaDivisiRouteImport } from './routes/dashboard/kinerja-divisi'
+import { Route as DashboardJennaAnalyticRouteImport } from './routes/dashboard/jenna-analytic'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
@@ -92,6 +93,11 @@ const DashboardKinerjaDivisiRoute = DashboardKinerjaDivisiRouteImport.update({
   path: '/kinerja-divisi',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardJennaAnalyticRoute = DashboardJennaAnalyticRouteImport.update({
+  id: '/jenna-analytic',
+  path: '/jenna-analytic',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
   '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
   '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
   '/profile/edit': typeof ProfileEditRoute
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
   '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
   '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
   '/profile/edit': typeof ProfileEditRoute
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
   '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
   '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
   '/profile/edit': typeof ProfileEditRoute
@@ -172,6 +181,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/jenna-analytic'
     | '/dashboard/kinerja-divisi'
     | '/dashboard/pengaduan-layanan-publik'
     | '/profile/edit'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/jenna-analytic'
     | '/dashboard/kinerja-divisi'
     | '/dashboard/pengaduan-layanan-publik'
     | '/profile/edit'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/jenna-analytic'
     | '/dashboard/kinerja-divisi'
     | '/dashboard/pengaduan-layanan-publik'
     | '/profile/edit'
@@ -321,6 +333,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardKinerjaDivisiRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/jenna-analytic': {
+      id: '/dashboard/jenna-analytic'
+      path: '/jenna-analytic'
+      fullPath: '/dashboard/jenna-analytic'
+      preLoaderRoute: typeof DashboardJennaAnalyticRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/users'
@@ -364,12 +383,14 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 )
 
 interface DashboardRouteRouteChildren {
+  DashboardJennaAnalyticRoute: typeof DashboardJennaAnalyticRoute
   DashboardKinerjaDivisiRoute: typeof DashboardKinerjaDivisiRoute
   DashboardPengaduanLayananPublikRoute: typeof DashboardPengaduanLayananPublikRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardJennaAnalyticRoute: DashboardJennaAnalyticRoute,
   DashboardKinerjaDivisiRoute: DashboardKinerjaDivisiRoute,
   DashboardPengaduanLayananPublikRoute: DashboardPengaduanLayananPublikRoute,
   DashboardIndexRoute: DashboardIndexRoute,

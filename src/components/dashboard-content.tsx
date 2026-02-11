@@ -164,9 +164,6 @@ export function DashboardContent() {
 							<ThemeIcon variant="filled" size="xl" radius="xl" color={dark ? 'gray' : 'darmasaba-blue'}>
 								<Users style={{ width: "70%", height: "70%" }} />
 							</ThemeIcon>
-							<Badge variant="light" radius="xl" size="lg" color="gray" style={{ position: 'absolute', top: 10, right: 10 }}>
-								87%
-							</Badge>
 						</Group>
 					</Card>
 				</Grid.Col>
