@@ -25,7 +25,7 @@ export function Sidebar({ className }: SidebarProps) {
 		{ name: "Pengaduan & Layanan Publik", path: "/dashboard/pengaduan-layanan-publik" },
 		{ name: "Jenna Analytic", path: "/dashboard/jenna-analytic" },
 		{ name: "Demografi & Kependudukan", path: "/dashboard/demografi-pekerjaan" },
-		{ name: "Keuangan & Anggaran", path: "/dashboard/keuangan" },
+		{ name: "Keuangan & Anggaran", path: "/dashboard/keuangan-anggaran" },
 		{ name: "Bumdes & UMKM Desa", path: "/dashboard/bumdes" },
 		{ name: "Sosial", path: "/dashboard/sosial" },
 		{ name: "Keamanan", path: "/dashboard/keamanan" },
