@@ -15,7 +15,7 @@ import { createRoot } from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";
 import { IS_DEV, VITE_PUBLIC_URL } from "./utils/env";
-import { ThemeProvider } from "next-themes";
+
 
 // Create a new router instance
 export const router = createRouter({
@@ -81,7 +81,7 @@ const theme = createTheme({
 			"#FBBF3B",
 			"#E1AC23",
 			"#C2981D",
-			"#A38418",
+			"#A32020",
 			"#856F12",
 			"#675A0D",
 		],
@@ -100,6 +100,8 @@ const theme = createTheme({
 	},
 	primaryColor: "darmasaba-blue",
 });
+
+
 
 const InspectorWrapper = IS_DEV
 	? Inspector
@@ -124,13 +126,11 @@ const app = (
 			});
 		}}
 	>
-		<ThemeProvider attribute="class" defaultTheme="system">
-			<MantineProvider theme={theme} defaultColorScheme="auto">
-				<ModalsProvider>
-					<RouterProvider router={router} />
-				</ModalsProvider>
-			</MantineProvider>
-		</ThemeProvider>
+		<MantineProvider theme={theme} defaultColorScheme="auto">
+			<ModalsProvider>
+				<RouterProvider router={router} />
+			</ModalsProvider>
+		</MantineProvider>
 	</InspectorWrapper>
 );
 

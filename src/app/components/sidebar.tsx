@@ -1,6 +1,14 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import { useNavigate, useLocation } from "@tanstack/react-router";
 import { Search } from "lucide-react";
-import { cn } from "./ui/utils";
+import {
+	Stack,
+	Group,
+	Text,
+	Badge,
+	Input,
+	NavLink as MantineNavLink,
+	Box,
+} from "@mantine/core";
 
 interface SidebarProps {
 	className?: string;
@@ -8,12 +16,13 @@ interface SidebarProps {
 
 export function Sidebar({ className }: SidebarProps) {
 	const location = useLocation();
+	const navigate = useNavigate();
 
 	// Define menu items with their paths
 	const menuItems = [
 		{ name: "Beranda", path: "/dashboard" },
 		{ name: "Kinerja Divisi", path: "/dashboard/kinerja-divisi" },
-		{ name: "Pengaduan & Layanan Publik", path: "/dashboard/pengaduan" },
+		{ name: "Pengaduan & Layanan Publik", path: "/dashboard/pengaduan-layanan-publik" },
 		{ name: "Jenna Analytic", path: "/dashboard/analytic" },
 		{ name: "Demografi & Kependudukan", path: "/dashboard/demografi" },
 		{ name: "Keuangan & Anggaran", path: "/dashboard/keuangan" },
@@ -25,58 +34,58 @@ export function Sidebar({ className }: SidebarProps) {
 	];
 
 	return (
-		<div
-			className={cn(
-				"w-[300px] bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col",
-				className,
-			)}
-		>
+		<Box className={className}>
 			{/* Logo */}
-			<div className="p-6 border-b border-gray-200 dark:border-gray-700">
-				<div className="flex items-center gap-2">
-					<div className="bg-slate-800 dark:bg-slate-900 text-white px-3 py-2 rounded font-bold text-2xl">
+			<Box p="md" style={{ borderBottom: "1px solid var(--mantine-color-gray-3)" }}>
+				<Group gap="xs">
+					<Badge
+						color="dark"
+						variant="filled"
+						size="xl"
+						radius="md"
+						py="xs"
+						px="md"
+						style={{ fontSize: "1.5rem", fontWeight: "bold" }}
+					>
 						DESA
-					</div>
-					<div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center text-white text-xs font-bold">
+					</Badge>
+					<Badge color="green" variant="filled" size="md" radius="md">
 						+
-					</div>
-				</div>
-				<p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+					</Badge>
+				</Group>
+				<Text size="xs" c="dimmed" mt="xs">
 					Digitalisasi Desa Transparansi Kerja
-				</p>
-			</div>
+				</Text>
+			</Box>
 
 			{/* Search */}
-			<div className="px-6 py-4">
-				<div className="relative">
-					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
-					<input
-						type="text"
-						placeholder="cari apa saja"
-						className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-700 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-800 dark:focus:ring-slate-200"
-					/>
-				</div>
-			</div>
+			<Box p="md">
+				<Input
+					placeholder="cari apa saja"
+					leftSection={<Search size={16} />}
+					styles={{
+						input: {
+							"&::placeholder": {
+								color: "var(--mantine-color-gray-5)",
+							},
+						},
+					}}
+				/>
+			</Box>
 
 			{/* Menu Items */}
-			<nav className="flex-1 px-4 overflow-y-auto">
-				<div className="space-y-1">
-					{menuItems.map((item, index) => (
-						<Link
-							key={index}
-							to={item.path}
-							className={cn(
-								"w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors block",
-								location.pathname === item.path
-									? "bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white"
-									: "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700",
-							)}
-						>
-							{item.name}
-						</Link>
-					))}
-				</div>
-			</nav>
-		</div>
+			<Stack gap={0} px="xs" flex={1} style={{ overflowY: "auto" }}>
+				{menuItems.map((item, index) => (
+					<MantineNavLink
+						key={index}
+						onClick={() => navigate({ to: item.path })}
+						label={item.name}
+						active={location.pathname === item.path}
+						variant="subtle"
+						color="blue"
+					/>
+				))}
+			</Stack>
+		</Box>
 	);
 }

@@ -15,9 +15,25 @@ import {
 	ResponsiveContainer,
 	XAxis,
 	YAxis,
+	Tooltip, // Added Tooltip import
 } from "recharts";
-import { DashboardCard } from "./dashboard-card";
-import { Card } from "./ui/card";
+
+// Import Mantine components
+
+import {
+	Grid,
+	Stack,
+	Group,
+	Text,
+	Title,
+	ActionIcon,
+	Progress,
+	Box,
+	Badge,
+	ThemeIcon,
+	Card, // Added for icon containers
+	useMantineColorScheme, // Add this import
+} from "@mantine/core";
 
 const barChartData = [
 	{ month: "Jan", value: 145 },
@@ -51,229 +67,345 @@ const eventData = [
 ];
 
 export function DashboardContent() {
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === 'dark';
 	return (
-		<div className="space-y-6">
+		<Stack gap="lg">
 			{/* Stats Cards */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-				<DashboardCard
-					title="Surat Minggu Ini"
-					value="99"
-					subtitle="14 baru, 14 diproses"
-					change="12% dari minggu lalu ↗ +12%"
-					icon={<FileText className="w-6 h-6" />}
-				/>
-				<DashboardCard
-					title="Pengaduan Aktif"
-					value="28"
-					subtitle="14 baru, 14 diproses"
-					icon={<MessageCircle className="w-6 h-6" />}
-				/>
-				<DashboardCard
-					title="Layanan Selesai"
-					value="156"
-					subtitle="bulan ini"
-					change="+8%"
-					icon={<CheckCircle className="w-6 h-6" />}
-				/>
-				<DashboardCard
-					title="Kepuasan Warga"
-					value="87.2%"
-					subtitle="dari 482 responden"
-					icon={<Users className="w-6 h-6" />}
-					badge="87%"
-				/>
-			</div>
-
-			{/* Charts Section */}
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+			<Grid gutter="md">
+				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+					<Card p="md" radius="md" h="100%" withBorder>
+						<Group justify="space-between" align="flex-start" w="100%">
+							<Box style={{ flex: 1 }}>
+								<Text size="sm" c="dimmed" mb="xs">
+									Surat Minggu Ini
+								</Text>
+								<Group align="baseline" gap="xs">
+									<Text size="xl" fw={700}>
+										99
+									</Text>
+								</Group>
+								<Text size="sm" c="dimmed" mt="xs">
+									14 baru, 14 diproses
+								</Text>
+								<Text size="sm" c="red" mt="xs">
+									12% dari minggu lalu ↗ +12%
+								</Text>
+							</Box>
+							<ThemeIcon variant="filled" size="xl" radius="xl" color={dark ? 'gray' : 'darmasaba-blue'}>
+								<FileText style={{ width: "70%", height: "70%" }} />
+							</ThemeIcon>
+						</Group>
+					</Card>
+				</Grid.Col>
+				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+					<Card p="md" radius="md" h="100%" withBorder>
+						<Group justify="space-between" align="flex-start" w="100%">
+							<Box style={{ flex: 1 }}>
+								<Text size="sm" c="dimmed" mb="xs">
+									Pengaduan Aktif
+								</Text>
+								<Group align="baseline" gap="xs">
+									<Text size="xl" fw={700}>
+										28
+									</Text>
+								</Group>
+								<Text size="sm" c="dimmed" mt="xs">
+									14 baru, 14 diproses
+								</Text>
+							</Box>
+							<ThemeIcon variant="filled" size="xl" radius="xl" color={dark ? 'gray' : 'darmasaba-blue'}>
+								<MessageCircle style={{ width: "70%", height: "70%" }} />
+							</ThemeIcon>
+						</Group>
+					</Card>
+				</Grid.Col>
+				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+					<Card p="md" radius="md" h="100%" withBorder>
+						<Group justify="space-between" align="flex-start" w="100%">
+							<Box style={{ flex: 1 }}>
+								<Text size="sm" c="dimmed" mb="xs">
+									Layanan Selesai
+								</Text>
+								<Group align="baseline" gap="xs">
+									<Text size="xl" fw={700}>
+										156
+									</Text>
+								</Group>
+								<Text size="sm" c="dimmed" mt="xs">
+									bulan ini
+								</Text>
+								<Text size="sm" c="red" mt="xs">
+									+8%
+								</Text>
+							</Box>
+							<ThemeIcon variant="filled" size="xl" radius="xl" color={dark ? 'gray' : 'darmasaba-blue'}>
+								<CheckCircle style={{ width: "70%", height: "70%" }} />
+							</ThemeIcon>
+						</Group>
+					</Card>
+				</Grid.Col>
+				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+					<Card p="md" radius="md" h="100%" withBorder>
+						<Group justify="space-between" align="flex-start" w="100%">
+							<Box style={{ flex: 1 }}>
+								<Text size="sm" c="dimmed" mb="xs">
+									Kepuasan Warga
+								</Text>
+								<Group align="baseline" gap="xs">
+									<Text size="xl" fw={700}>
+										87.2%
+									</Text>
+								</Group>
+								<Text size="sm" c="dimmed" mt="xs">
+									dari 482 responden
+								</Text>
+							</Box>
+							<ThemeIcon variant="filled" size="xl" radius="xl" color={dark ? 'gray' : 'darmasaba-blue'}>
+								<Users style={{ width: "70%", height: "70%" }} />
+							</ThemeIcon>
+							<Badge variant="light" radius="xl" size="lg" color="gray" style={{ position: 'absolute', top: 10, right: 10 }}>
+								87%
+							</Badge>
+						</Group>
+					</Card>
+				</Grid.Col>
+			</Grid>
+			<Grid gutter="lg">
 				{/* Bar Chart */}
-				<Card className="p-6 border-none bg-gray-50">
-					<div className="flex items-center justify-between mb-4">
-						<div>
-							<h3 className="text-lg font-semibold mb-1">
-								Statistik Pengajuan Surat
-							</h3>
-							<p className="text-sm text-gray-600">
-								Trend pengajuan surat 6 bulan terakhir
-							</p>
-						</div>
-						<button className="p-2 hover:bg-gray-200 rounded-lg">
-							<svg
-								width="20"
-								height="20"
-								viewBox="0 0 20 20"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									d="M8 5L13 10L8 15"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
+				<Grid.Col span={{ base: 12, lg: 6 }}>
+					<Card p="md" radius="md" withBorder>
+						<Group justify="space-between" mb="md">
+							<Box>
+								<Title order={4} mb={5}>
+									Statistik Pengajuan Surat
+								</Title>
+								<Text size="sm" c="dimmed">
+									Trend pengajuan surat 6 bulan terakhir
+								</Text>
+							</Box>
+							<ActionIcon variant="subtle" size="lg" radius="md">
+								{/* Original SVG converted to a generic Icon placeholder */}
+								<svg
+									width="20"
+									height="20"
+									viewBox="0 0 20 20"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										d="M8 5L13 10L8 15"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									/>
+								</svg>
+							</ActionIcon>
+						</Group>
+						<ResponsiveContainer width="100%" height={300}>
+							<BarChart data={barChartData}>
+								<CartesianGrid
+									strokeDasharray="3 3"
+									vertical={false}
+									stroke="var(--mantine-color-gray-3)"
 								/>
-							</svg>
-						</button>
-					</div>
-					<ResponsiveContainer width="100%" height={300}>
-						<BarChart data={barChartData}>
-							<CartesianGrid
-								strokeDasharray="3 3"
-								vertical={false}
-								stroke="#E5E7EB"
-							/>
-							<XAxis dataKey="month" axisLine={false} tickLine={false} />
-							<YAxis
-								axisLine={false}
-								tickLine={false}
-								ticks={[0, 55, 110, 165, 220]}
-							/>
-							<Bar dataKey="value" fill="#334155" radius={[4, 4, 0, 0]} />
-						</BarChart>
-					</ResponsiveContainer>
-				</Card>
+								<XAxis
+									dataKey="month"
+									axisLine={false}
+									tickLine={false}
+									tick={{ fill: "var(--mantine-color-text)" }}
+								/>
+								<YAxis
+									axisLine={false}
+									tickLine={false}
+									ticks={[0, 55, 110, 165, 220]}
+									tick={{ fill: "var(--mantine-color-text)" }}
+								/>
+								<Tooltip />
+								<Bar
+									dataKey="value"
+									fill="var(--mantine-color-blue-filled)"
+									radius={[4, 4, 0, 0]}
+								/>
+							</BarChart>
+						</ResponsiveContainer>
+					</Card>
+				</Grid.Col>
 
 				{/* Pie Chart */}
-				<Card className="p-6 border-none bg-gray-50">
-					<h3 className="text-lg font-semibold mb-1">Tingkat Kepuasan</h3>
-					<p className="text-sm text-gray-600 mb-4">Tingkat kepuasan layanan</p>
-					<ResponsiveContainer width="100%" height={300}>
-						<PieChart>
-							<Pie
-								data={pieChartData}
-								cx="50%"
-								cy="50%"
-								innerRadius={80}
-								outerRadius={120}
-								paddingAngle={2}
-								dataKey="value"
-							>
-								{pieChartData.map((_entry, index) => (
-									<Cell key={`cell-${index}`} fill={COLORS[index]} />
-								))}
-							</Pie>
-						</PieChart>
-					</ResponsiveContainer>
-					<div className="flex flex-wrap justify-center gap-4 mt-4">
-						<div className="flex items-center gap-2">
-							<div className="w-3 h-3 rounded-full bg-[#8CC63F]"></div>
-							<span className="text-sm">Sangat puas (0%)</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<div className="w-3 h-3 rounded-full bg-[#4E5BA6]"></div>
-							<span className="text-sm">Puas (0%)</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<div className="w-3 h-3 rounded-full bg-[#F4C542]"></div>
-							<span className="text-sm">Cukup (0%)</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<div className="w-3 h-3 rounded-full bg-[#E57373]"></div>
-							<span className="text-sm">Kurang (0%)</span>
-						</div>
-					</div>
-				</Card>
-			</div>
+				<Grid.Col span={{ base: 12, lg: 6 }}>
+					<Card p="md" radius="md" withBorder>
+						<Title order={4} mb={5}>
+							Tingkat Kepuasan
+						</Title>
+						<Text size="sm" c="dimmed" mb="md">
+							Tingkat kepuasan layanan
+						</Text>
+						<ResponsiveContainer width="100%" height={300}>
+							<PieChart>
+								<Pie
+									data={pieChartData}
+									cx="50%"
+									cy="50%"
+									innerRadius={80}
+									outerRadius={120}
+									paddingAngle={2}
+									dataKey="value"
+								>
+									{pieChartData.map((_entry, index) => (
+										<Cell key={`cell-${index}`} fill={COLORS[index]} />
+									))}
+								</Pie>
+								<Tooltip />
+							</PieChart>
+						</ResponsiveContainer>
+						<Group justify="center" gap="md" mt="md">
+							<Group gap="xs">
+								<Box w={12} h={12} style={{ backgroundColor: COLORS[0], borderRadius: "50%" }} />
+								<Text size="sm">Sangat puas (0%)</Text>
+							</Group>
+							<Group gap="xs">
+								<Box w={12} h={12} style={{ backgroundColor: COLORS[1], borderRadius: "50%" }} />
+								<Text size="sm">Puas (0%)</Text>
+							</Group>
+							<Group gap="xs">
+								<Box w={12} h={12} style={{ backgroundColor: COLORS[2], borderRadius: "50%" }} />
+								<Text size="sm">Cukup (0%)</Text>
+							</Group>
+							<Group gap="xs">
+								<Box w={12} h={12} style={{ backgroundColor: COLORS[3], borderRadius: "50%" }} />
+								<Text size="sm">Kurang (0%)</Text>
+							</Group>
+						</Group>
+					</Card>
+				</Grid.Col>
+			</Grid>
 
 			{/* Bottom Section */}
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+			<Grid gutter="lg">
 				{/* Divisi Teraktif */}
-				<Card className="p-6 border-none bg-gray-50">
-					<div className="flex items-center gap-2 mb-6">
-						<svg
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<rect
-								x="3"
-								y="3"
-								width="7"
-								height="7"
-								rx="1"
-								fill="currentColor"
-							/>
-							<rect
-								x="3"
-								y="14"
-								width="7"
-								height="7"
-								rx="1"
-								fill="currentColor"
-							/>
-							<rect
-								x="14"
-								y="3"
-								width="7"
-								height="7"
-								rx="1"
-								fill="currentColor"
-							/>
-							<rect
-								x="14"
-								y="14"
-								width="7"
-								height="7"
-								rx="1"
-								fill="currentColor"
-							/>
-						</svg>
-						<h3 className="text-lg font-semibold">Divisi Teraktif</h3>
-					</div>
-					<div className="space-y-4">
-						{divisiData.map((divisi, index) => (
-							<div key={index}>
-								<div className="flex justify-between mb-2">
-									<span className="text-sm font-medium">{divisi.name}</span>
-									<span className="text-sm font-semibold">
-										{divisi.value} Kegiatan
-									</span>
-								</div>
-								<div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-									<div
-										className="bg-slate-800 h-full rounded-full transition-all"
-										style={{ width: `${(divisi.value / 37) * 100}%` }}
+				<Grid.Col span={{ base: 12, lg: 6 }}>
+					<Card p="md" radius="md" withBorder>
+						<Group gap="xs" mb="lg">
+							<Box>
+								{/* Original SVG icon */}
+								<svg
+									width="24"
+									height="24"
+									viewBox="0 0 24 24"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<rect
+										x="3"
+										y="3"
+										width="7"
+										height="7"
+										rx="1"
+										fill="currentColor"
 									/>
-								</div>
-							</div>
-						))}
-					</div>
-				</Card>
+									<rect
+										x="3"
+										y="14"
+										width="7"
+										height="7"
+										rx="1"
+										fill="currentColor"
+									/>
+									<rect
+										x="14"
+										y="3"
+										width="7"
+										height="7"
+										rx="1"
+										fill="currentColor"
+									/>
+									<rect
+										x="14"
+										y="14"
+										width="7"
+										height="7"
+										rx="1"
+										fill="currentColor"
+									/>
+								</svg>
+							</Box>
+							<Title order={4}>Divisi Teraktif</Title>
+						</Group>
+						<Stack gap="sm">
+							{divisiData.map((divisi, index) => (
+								<Box key={index}>
+									<Group justify="space-between" mb={5}>
+										<Text size="sm" fw={500}>
+											{divisi.name}
+										</Text>
+										<Text size="sm" fw={600}>
+											{divisi.value} Kegiatan
+										</Text>
+									</Group>
+									<Progress
+										value={(divisi.value / 37) * 100}
+										size="sm"
+										radius="xl"
+										color="blue"
+									/>
+								</Box>
+							))}
+						</Stack>
+					</Card>
+				</Grid.Col>
 
 				{/* Kalender */}
-				<Card className="p-6 border-none bg-gray-50">
-					<div className="flex items-center gap-2 mb-6">
-						<Calendar className="w-5 h-5" />
-						<h3 className="text-lg font-semibold">
-							Kalender & Kegiatan Mendatang
-						</h3>
-					</div>
-					<div className="space-y-4">
-						{eventData.map((event, index) => (
-							<div
-								key={index}
-								className="border-l-4 border-slate-800 pl-4 py-2"
-							>
-								<p className="text-sm text-gray-600">{event.date}</p>
-								<p className="font-medium">{event.title}</p>
-							</div>
-						))}
-					</div>
-				</Card>
-			</div>
+				<Grid.Col span={{ base: 12, lg: 6 }}>
+					<Card p="md" radius="md" withBorder>
+						<Group gap="xs" mb="lg">
+							<Calendar style={{ width: 20, height: 20 }} />
+							<Title order={4}>Kalender & Kegiatan Mendatang</Title>
+						</Group>
+						<Stack gap="md">
+							{eventData.map((event, index) => (
+								<Box
+									key={index}
+									style={{ borderLeft: "4px solid var(--mantine-color-blue-filled)", paddingLeft: 12 }}
+								>
+									<Text size="sm" c="dimmed">
+										{event.date}
+									</Text>
+									<Text fw={500}>{event.title}</Text>
+								</Box>
+							))}
+						</Stack>
+					</Card>
+				</Grid.Col>
+			</Grid>
 
 			{/* APBDes Chart */}
-			<Card className="p-6 border-none bg-gray-50">
-				<h3 className="text-lg font-semibold mb-6">Grafik APBDes</h3>
-				<div className="space-y-2">
-					<div className="flex items-center gap-4">
-						<span className="text-sm font-medium w-20">Belanja</span>
-						<div className="flex-1 bg-slate-800 h-8 rounded-full"></div>
-					</div>
-				</div>
+			<Card p="md" radius="md" withBorder>
+				<Title order={4} mb="lg">
+					Grafik APBDes
+				</Title>
+				<Stack gap="xs">
+					<Group align="center" gap="md">
+						<Text size="sm" fw={500} w={60}>
+							Belanja
+						</Text>
+						<Progress value={70} size="lg" radius="xl" color="blue" style={{ flex: 1 }} />
+					</Group>
+					<Group align="center" gap="md">
+						<Text size="sm" fw={500} w={60}>
+							Pendapatan
+						</Text>
+						<Progress value={90} size="lg" radius="xl" color="green" style={{ flex: 1 }} />
+					</Group>
+					<Group align="center" gap="md">
+						<Text size="sm" fw={500} w={60}>
+							Pembangunan
+						</Text>
+						<Progress value={50} size="lg" radius="xl" color="orange" style={{ flex: 1 }} />
+					</Group>
+				</Stack>
 			</Card>
-		</div>
+		</Stack>
 	);
 }

@@ -34,7 +34,6 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useSnapshot } from "valtio";
-import { ColorSchemeToggle } from "@/components/ColorSchemeToggle";
 import { protectedRouteMiddleware } from "@/middleware/authMiddleware";
 import { authClient } from "@/utils/auth-client";
 import { authStore } from "../../store/auth";
@@ -151,7 +150,6 @@ function Profile() {
 						</Text>
 					</Box>
 					<Group>
-						<ColorSchemeToggle />
 						{snap.user?.role === "admin" && (
 							<Button
 								variant="light"

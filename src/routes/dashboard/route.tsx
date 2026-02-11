@@ -1,27 +1,40 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Header } from "@/app/components/header";
 import { Sidebar } from "@/app/components/sidebar";
+import { AppShell, Burger, Group } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 
 export const Route = createFileRoute("/dashboard")({
 	component: RouteComponent,
 });
 
 function RouteComponent() {
+	const [opened, { toggle }] = useDisclosure();
+
 	return (
-		<div className="h-screen flex overflow-hidden bg-gray-100 dark:bg-gray-900">
-			{/* Sidebar */}
-			<Sidebar />
+		<AppShell
+			header={{ height: 60 }}
+			navbar={{
+				width: 250,
+				breakpoint: "sm",
+				collapsed: { mobile: !opened },
+			}}
+			padding="md"
+		>
+			<AppShell.Header>
+				<Group h="100%" px="md">
+					<Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+					<Header />
+				</Group>
+			</AppShell.Header>
 
-			{/* Main Content */}
-			<div className="flex-1 flex flex-col overflow-hidden">
-				{/* Header */}
-				<Header />
+			<AppShell.Navbar p="md">
+				<Sidebar />
+			</AppShell.Navbar>
 
-				{/* Dashboard Content */}
-				<main className="flex-1 overflow-y-auto p-8">
-					<Outlet />
-				</main>
-			</div>
-		</div>
+			<AppShell.Main>
+				<Outlet />
+			</AppShell.Main>
+		</AppShell>
 	);
 }

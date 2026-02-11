@@ -30,7 +30,6 @@ import {
 	useNavigate,
 } from "@tanstack/react-router";
 import { useSnapshot } from "valtio";
-import { ColorSchemeToggle } from "@/components/ColorSchemeToggle";
 import { protectedRouteMiddleware } from "@/middleware/authMiddleware";
 import { authClient } from "@/utils/auth-client";
 import { authStore } from "../../store/auth";
@@ -155,7 +154,6 @@ function DashboardLayout() {
 					</Group>
 
 					<Group gap="md">
-						<ColorSchemeToggle />
 
 						<Menu
 							shadow="md"
