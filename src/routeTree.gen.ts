@@ -20,11 +20,14 @@ import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UsersIdRouteImport } from './routes/users/$id'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
+import { Route as DashboardSosialRouteImport } from './routes/dashboard/sosial'
 import { Route as DashboardPengaduanLayananPublikRouteImport } from './routes/dashboard/pengaduan-layanan-publik'
 import { Route as DashboardKinerjaDivisiRouteImport } from './routes/dashboard/kinerja-divisi'
 import { Route as DashboardKeuanganAnggaranRouteImport } from './routes/dashboard/keuangan-anggaran'
+import { Route as DashboardKeamananRouteImport } from './routes/dashboard/keamanan'
 import { Route as DashboardJennaAnalyticRouteImport } from './routes/dashboard/jenna-analytic'
 import { Route as DashboardDemografiPekerjaanRouteImport } from './routes/dashboard/demografi-pekerjaan'
+import { Route as DashboardBumdesRouteImport } from './routes/dashboard/bumdes'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
@@ -84,6 +87,11 @@ const ProfileEditRoute = ProfileEditRouteImport.update({
   path: '/profile/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardSosialRoute = DashboardSosialRouteImport.update({
+  id: '/sosial',
+  path: '/sosial',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardPengaduanLayananPublikRoute =
   DashboardPengaduanLayananPublikRouteImport.update({
     id: '/pengaduan-layanan-publik',
@@ -101,6 +109,11 @@ const DashboardKeuanganAnggaranRoute =
     path: '/keuangan-anggaran',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
+const DashboardKeamananRoute = DashboardKeamananRouteImport.update({
+  id: '/keamanan',
+  path: '/keamanan',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardJennaAnalyticRoute = DashboardJennaAnalyticRouteImport.update({
   id: '/jenna-analytic',
   path: '/jenna-analytic',
@@ -112,6 +125,11 @@ const DashboardDemografiPekerjaanRoute =
     path: '/demografi-pekerjaan',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
+const DashboardBumdesRoute = DashboardBumdesRouteImport.update({
+  id: '/bumdes',
+  path: '/bumdes',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -137,11 +155,14 @@ export interface FileRoutesByFullPath {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/bumdes': typeof DashboardBumdesRoute
   '/dashboard/demografi-pekerjaan': typeof DashboardDemografiPekerjaanRoute
   '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
+  '/dashboard/keamanan': typeof DashboardKeamananRoute
   '/dashboard/keuangan-anggaran': typeof DashboardKeuanganAnggaranRoute
   '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
   '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
+  '/dashboard/sosial': typeof DashboardSosialRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -156,11 +177,14 @@ export interface FileRoutesByTo {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/bumdes': typeof DashboardBumdesRoute
   '/dashboard/demografi-pekerjaan': typeof DashboardDemografiPekerjaanRoute
   '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
+  '/dashboard/keamanan': typeof DashboardKeamananRoute
   '/dashboard/keuangan-anggaran': typeof DashboardKeuanganAnggaranRoute
   '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
   '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
+  '/dashboard/sosial': typeof DashboardSosialRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin': typeof AdminIndexRoute
@@ -178,11 +202,14 @@ export interface FileRoutesById {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/bumdes': typeof DashboardBumdesRoute
   '/dashboard/demografi-pekerjaan': typeof DashboardDemografiPekerjaanRoute
   '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
+  '/dashboard/keamanan': typeof DashboardKeamananRoute
   '/dashboard/keuangan-anggaran': typeof DashboardKeuanganAnggaranRoute
   '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
   '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
+  '/dashboard/sosial': typeof DashboardSosialRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -201,11 +228,14 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/bumdes'
     | '/dashboard/demografi-pekerjaan'
     | '/dashboard/jenna-analytic'
+    | '/dashboard/keamanan'
     | '/dashboard/keuangan-anggaran'
     | '/dashboard/kinerja-divisi'
     | '/dashboard/pengaduan-layanan-publik'
+    | '/dashboard/sosial'
     | '/profile/edit'
     | '/users/$id'
     | '/admin/'
@@ -220,11 +250,14 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/bumdes'
     | '/dashboard/demografi-pekerjaan'
     | '/dashboard/jenna-analytic'
+    | '/dashboard/keamanan'
     | '/dashboard/keuangan-anggaran'
     | '/dashboard/kinerja-divisi'
     | '/dashboard/pengaduan-layanan-publik'
+    | '/dashboard/sosial'
     | '/profile/edit'
     | '/users/$id'
     | '/admin'
@@ -241,11 +274,14 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/bumdes'
     | '/dashboard/demografi-pekerjaan'
     | '/dashboard/jenna-analytic'
+    | '/dashboard/keamanan'
     | '/dashboard/keuangan-anggaran'
     | '/dashboard/kinerja-divisi'
     | '/dashboard/pengaduan-layanan-publik'
+    | '/dashboard/sosial'
     | '/profile/edit'
     | '/users/$id'
     | '/admin/'
@@ -345,6 +381,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileEditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/sosial': {
+      id: '/dashboard/sosial'
+      path: '/sosial'
+      fullPath: '/dashboard/sosial'
+      preLoaderRoute: typeof DashboardSosialRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/pengaduan-layanan-publik': {
       id: '/dashboard/pengaduan-layanan-publik'
       path: '/pengaduan-layanan-publik'
@@ -366,6 +409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardKeuanganAnggaranRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/keamanan': {
+      id: '/dashboard/keamanan'
+      path: '/keamanan'
+      fullPath: '/dashboard/keamanan'
+      preLoaderRoute: typeof DashboardKeamananRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/jenna-analytic': {
       id: '/dashboard/jenna-analytic'
       path: '/jenna-analytic'
@@ -378,6 +428,13 @@ declare module '@tanstack/react-router' {
       path: '/demografi-pekerjaan'
       fullPath: '/dashboard/demografi-pekerjaan'
       preLoaderRoute: typeof DashboardDemografiPekerjaanRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/bumdes': {
+      id: '/dashboard/bumdes'
+      path: '/bumdes'
+      fullPath: '/dashboard/bumdes'
+      preLoaderRoute: typeof DashboardBumdesRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/admin/users': {
@@ -423,20 +480,26 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 )
 
 interface DashboardRouteRouteChildren {
+  DashboardBumdesRoute: typeof DashboardBumdesRoute
   DashboardDemografiPekerjaanRoute: typeof DashboardDemografiPekerjaanRoute
   DashboardJennaAnalyticRoute: typeof DashboardJennaAnalyticRoute
+  DashboardKeamananRoute: typeof DashboardKeamananRoute
   DashboardKeuanganAnggaranRoute: typeof DashboardKeuanganAnggaranRoute
   DashboardKinerjaDivisiRoute: typeof DashboardKinerjaDivisiRoute
   DashboardPengaduanLayananPublikRoute: typeof DashboardPengaduanLayananPublikRoute
+  DashboardSosialRoute: typeof DashboardSosialRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardBumdesRoute: DashboardBumdesRoute,
   DashboardDemografiPekerjaanRoute: DashboardDemografiPekerjaanRoute,
   DashboardJennaAnalyticRoute: DashboardJennaAnalyticRoute,
+  DashboardKeamananRoute: DashboardKeamananRoute,
   DashboardKeuanganAnggaranRoute: DashboardKeuanganAnggaranRoute,
   DashboardKinerjaDivisiRoute: DashboardKinerjaDivisiRoute,
   DashboardPengaduanLayananPublikRoute: DashboardPengaduanLayananPublikRoute,
+  DashboardSosialRoute: DashboardSosialRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 

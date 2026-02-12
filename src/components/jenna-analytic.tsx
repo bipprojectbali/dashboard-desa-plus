@@ -10,6 +10,7 @@ import {
 	Stack,
 	Grid,
 	Box,
+	useMantineColorScheme,
 } from "@mantine/core";
 import { BarChart } from "@mantine/charts";
 
@@ -133,21 +134,17 @@ const busyHours = [
 ];
 
 const JennaAnalytic = () => {
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
+
 	return (
 		<Box className="space-y-6">
 			<Stack gap="xl">
-				<Group justify="space-between" align="center">
-					<Title order={1} fw={700}>
-						Jenna Analytic
-					</Title>
-					<Button variant="filled">Export Data</Button>
-				</Group>
-
 				{/* KPI Cards */}
 				<Grid gutter="lg">
 					{kpiData.map((kpi) => (
 						<Grid.Col key={kpi.id} span={{ base: 12, md: 6, lg: 3 }}>
-							<Card shadow="sm" padding="lg" radius="md" withBorder>
+							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
 								<Group justify="space-between" align="flex-start" mb="xs">
 									<Text size="sm" fw={500} c="dimmed">
 										{kpi.title}
@@ -185,21 +182,42 @@ const JennaAnalytic = () => {
 					))}
 				</Grid>
 
+				<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+					<Title order={3} fw={500} mb="md">
+						Interaksi Chatbot
+					</Title>
+					<BarChart
+						h={300}
+						data={chartData}
+						dataKey="day"
+						series={[{ name: 'total', color: 'blue' }]}
+						withLegend
+					/>
+				</Card>
+
 				{/* Charts and Lists Section */}
 				<Grid gutter="lg">
 					{/* Grafik Interaksi Chatbot (now Bar Chart) */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card shadow="sm" padding="lg" radius="md" withBorder>
+						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }} h="100%">
 							<Title order={3} fw={500} mb="md">
-								Interaksi Chatbot
+								Jam Tersibuk
 							</Title>
-							<BarChart
-								h={300}
-								data={chartData}
-								dataKey="day"
-								series={[{ name: 'total', color: 'blue' }]}
-								withLegend
-							/>
+							<Stack gap="sm">
+								{busyHours.map((item, index) => (
+									<Box key={index}>
+										<Text size="sm">
+											{item.period}
+										</Text>
+										<Group align="center">
+											<Progress value={item.percentage} flex={1} />
+											<Text size="sm" fw={500}>
+												{item.percentage}%
+											</Text>
+										</Group>
+									</Box>
+								))}
+							</Stack>
 						</Card>
 					</Grid.Col>
 
@@ -207,7 +225,7 @@ const JennaAnalytic = () => {
 					<Grid.Col span={{ base: 12, lg: 6 }}>
 						<Stack gap="lg">
 							{/* Topik Pertanyaan Terbanyak */}
-							<Card shadow="sm" padding="lg" radius="md" withBorder>
+							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }} h="100%">
 								<Title order={3} fw={500} mb="md">
 									Topik Pertanyaan Terbanyak
 								</Title>
@@ -231,29 +249,12 @@ const JennaAnalytic = () => {
 							</Card>
 
 							{/* Jam Tersibuk */}
-							<Card shadow="sm" padding="lg" radius="md" withBorder>
-								<Title order={3} fw={500} mb="md">
-									Jam Tersibuk
-								</Title>
-								<Stack gap="sm">
-									{busyHours.map((item, index) => (
-										<Group key={index} align="center">
-											<Text w={80} size="sm">
-												{item.period}
-											</Text>
-											<Progress value={item.percentage} flex={1} />
-											<Text size="sm" fw={500}>
-												{item.percentage}%
-											</Text>
-										</Group>
-									))}
-								</Stack>
-							</Card>
 						</Stack>
 					</Grid.Col>
-				</Grid>
-			</Stack>
-		</Box>
+				</Grid >
+
+			</Stack >
+		</Box >
 	);
 
 }

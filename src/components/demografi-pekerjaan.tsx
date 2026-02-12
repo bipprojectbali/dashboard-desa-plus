@@ -140,7 +140,7 @@ const DemografiPekerjaan = () => {
 		<Box className="space-y-6">
 			<Stack gap="xl">
 				<Group justify="space-between" align="center">
-					<Title order={1} fw={700}>
+					<Title order={2} fw={700}>
 						Demografi & Kependudukan
 					</Title>
 					<Button variant="filled">Export Data</Button>

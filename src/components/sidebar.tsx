@@ -8,6 +8,7 @@ import {
 	Input,
 	NavLink as MantineNavLink,
 	Box,
+	useMantineColorScheme,
 } from "@mantine/core";
 
 interface SidebarProps {
@@ -17,6 +18,9 @@ interface SidebarProps {
 export function Sidebar({ className }: SidebarProps) {
 	const location = useLocation();
 	const navigate = useNavigate();
+	const { colorScheme } = useMantineColorScheme();
+	const isActiveBg = colorScheme === 'dark' ? "#182949" : "#E6F0FF";
+	const isActiveBorder = colorScheme === 'dark' ? "#00398D" : "#1F41AE";
 
 	// Define menu items with their paths
 	const menuItems = [
@@ -75,16 +79,34 @@ export function Sidebar({ className }: SidebarProps) {
 
 			{/* Menu Items */}
 			<Stack gap={0} px="xs" flex={1} style={{ overflowY: "auto" }}>
-				{menuItems.map((item, index) => (
-					<MantineNavLink
-						key={index}
-						onClick={() => navigate({ to: item.path })}
-						label={item.name}
-						active={location.pathname === item.path}
-						variant="subtle"
-						color="blue"
-					/>
-				))}
+				{menuItems.map((item, index) => {
+					const isActive = location.pathname === item.path;
+					return (
+						<MantineNavLink
+							key={index}
+							onClick={() => navigate({ to: item.path })}
+							label={item.name}
+							active={isActive}
+							variant="subtle"
+							color="blue"
+							style={{
+								background: isActive ? isActiveBg : "transparent",
+								fontWeight: isActive ? "bold" : "normal",
+								borderLeft: isActive ? `4px solid ${isActiveBorder}` : "4px solid transparent",
+								borderRadius: "8px",
+								transition: "all 200ms ease",
+								margin: "2px 0",
+							}}
+							styles={{
+								body: {
+									"&:hover": {
+										background: "#F1F5F9",
+									}
+								}
+							}}
+						/>
+					);
+				})}
 			</Stack>
 		</Box>
 	);

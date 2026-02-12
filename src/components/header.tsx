@@ -22,7 +22,7 @@ export function Header() {
 	const getPageTitle = () => {
 		switch (location.pathname) {
 			case "/":
-				return "Dashboard";
+				return "Desa Darmasaba";
 			case "/kinerja-divisi":
 				return "Kinerja Divisi";
 			case "/pengaduan":
@@ -43,14 +43,14 @@ export function Header() {
 			case "/pengaturan":
 				return "Pengaturan";
 			default:
-				return "Dashboard";
+				return "Desa Darmasaba";
 		}
 	};
 
 	return (
 		<Group justify="space-between" w="100%">
 			{/* Title */}
-			<Title order={2}>{getPageTitle()}</Title>
+			<Title order={3} c={"white"}>{getPageTitle()}</Title>
 
 			{/* Right Section */}
 			<Group gap="md">
@@ -59,15 +59,15 @@ export function Header() {
 				{/* User Info */}
 				<Group gap="sm">
 					<Box ta="right">
-						<Text size="sm" fw={500}>
+						<Text c={"white"} size="sm" fw={500}>
 							I. B. Surya Prabhawa M...
 						</Text>
-						<Text size="xs" c="dimmed">
+						<Text c={"white"} size="xs">
 							Kepala Desa
 						</Text>
 					</Box>
 					<Avatar color="blue" radius="xl">
-						<UserIcon style={{ width: "70%", height: "70%" }} />
+						<UserIcon color="white" style={{ width: "70%", height: "70%" }} />
 					</Avatar>
 				</Group>
 
@@ -84,13 +84,13 @@ export function Header() {
 						aria-label="Toggle color scheme"
 					>
 						{dark ? (
-							<Sun style={{ width: "70%", height: "70%" }} />
+							<Sun color="white" style={{ width: "70%", height: "70%" }} />
 						) : (
-							<Moon style={{ width: "70%", height: "70%" }} />
+							<Moon color="white" style={{ width: "70%", height: "70%" }} />
 						)}
 					</ActionIcon>
 					<ActionIcon variant="subtle" size="lg" radius="xl" pos="relative">
-						<Bell style={{ width: "70%", height: "70%" }} />
+						<Bell color="white" style={{ width: "70%", height: "70%" }} />
 						<Badge
 							size="xs"
 							color="red"

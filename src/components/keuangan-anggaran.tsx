@@ -116,10 +116,10 @@ const apbdReport = {
 
 const KeuanganAnggaran = () => {
 	return (
-		<Box p="md">
+		<Box>
 			<Stack gap="xl">
 				<Group justify="space-between" align="center">
-					<Title order={1} fw={700}>
+					<Title order={2} fw={700}>
 						Keuangan & Anggaran
 					</Title>
 					<Button variant="filled">Export Laporan</Button>
