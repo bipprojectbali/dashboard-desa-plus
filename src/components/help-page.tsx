@@ -1,9 +1,11 @@
-import { Container, Grid, Title, Text, SimpleGrid, Box, Accordion, Stack } from '@mantine/core';
+import { Container, Grid, Title, Text, SimpleGrid, Box, Accordion, Stack, useMantineColorScheme } from '@mantine/core';
 import { HelpCard } from '@/components/ui/help-card';
 import { IconBook, IconVideo, IconHelpCircle, IconMessage, IconFileText, IconHeadphones } from '@tabler/icons-react';
 import { useState } from 'react';
 
 const HelpPage = () => {
+  const { colorScheme } = useMantineColorScheme();
+  const dark = colorScheme === "dark";
   // Sample data for sections
   const guideItems = [
     { title: 'Cara Login', description: 'Langkah-langkah untuk login ke dashboard' },
@@ -89,7 +91,7 @@ const HelpPage = () => {
       {/* Statistics Section */}
       <SimpleGrid cols={3} spacing="lg" mb="xl">
         {stats.map((stat, index) => (
-          <HelpCard key={index} p="lg" style={{ textAlign: 'center' }} h="100%">
+          <HelpCard key={index} bg={dark ? "#141D34" : "white"} p="lg" style={{ textAlign: 'center', borderColor: dark ? "#141D34" : "white" }} h="100%" >
             <Text size="xl" fw={700} style={{ fontSize: '32px' }}>{stat.value}</Text>
             <Text size="sm" color="dimmed">{stat.label}</Text>
           </HelpCard>
@@ -101,7 +103,7 @@ const HelpPage = () => {
           <Grid gutter="lg" justify="center">
             {/* Panduan Memulai */}
             <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
-              <HelpCard icon={<IconBook size={24} />} title="Panduan Memulai" h="100%">
+              <HelpCard style={{ borderColor: dark ? "#141D34" : "white" }} bg={dark ? "#141D34" : "white"} icon={<IconBook size={24} />} title="Panduan Memulai" h="100%">
                 <Box>
                   {guideItems.map((item, index) => (
                     <Box key={index} py="sm" style={{ borderBottom: '1px solid #eee', cursor: 'pointer' }} onClick={() => alert(`Navigasi ke ${item.title}`)}>
@@ -115,7 +117,7 @@ const HelpPage = () => {
 
             {/* Video Tutorial */}
             <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
-              <HelpCard icon={<IconVideo size={24} />} title="Video Tutorial" h="100%">
+              <HelpCard style={{ borderColor: dark ? "#141D34" : "white" }} bg={dark ? "#141D34" : "white"} icon={<IconVideo size={24} />} title="Video Tutorial" h="100%">
                 <Box>
                   {videoItems.map((item, index) => (
                     <Box key={index} py="sm" style={{ borderBottom: '1px solid #eee', cursor: 'pointer' }} onClick={() => alert(`Buka video: ${item.title}`)}>
@@ -129,10 +131,10 @@ const HelpPage = () => {
 
             {/* FAQ */}
             <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
-              <HelpCard icon={<IconHelpCircle size={24} />} title="FAQ" h="100%">
-                <Accordion variant="separated">
+              <HelpCard style={{ borderColor: dark ? "#141D34" : "white" }} bg={dark ? "#141D34" : "white"} icon={<IconHelpCircle size={24} />} title="FAQ" h="100%">
+                <Accordion variant="separated" >
                   {faqItems.map((item, index) => (
-                    <Accordion.Item key={index} value={`faq-${index}`}>
+                    <Accordion.Item style={{ backgroundColor: dark ? "#263852ff" : "#F1F5F9" }} key={index} value={`faq-${index}`}>
                       <Accordion.Control>{item.question}</Accordion.Control>
                       <Accordion.Panel>
                         <Text size="sm">{item.answer}</Text>
@@ -149,7 +151,7 @@ const HelpPage = () => {
           <Grid>
             {/* Hubungi Support */}
             <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
-              <HelpCard icon={<IconHeadphones size={24} />} title="Hubungi Support" h="100%">
+              <HelpCard style={{ borderColor: dark ? "#141D34" : "white" }} bg={dark ? "#141D34" : "white"} icon={<IconHeadphones size={24} />} title="Hubungi Support" h="100%">
                 <Box>
                   <Text fw={500}>Email</Text>
                   <Text size="sm" color="dimmed" mb="md"><a href="mailto:support@example.com">support@example.com</a></Text>
@@ -168,7 +170,7 @@ const HelpPage = () => {
 
             {/* Dokumentasi */}
             <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
-              <HelpCard icon={<IconFileText size={24} />} title="Dokumentasi" h="100%">
+              <HelpCard style={{ borderColor: dark ? "#141D34" : "white" }} bg={dark ? "#141D34" : "white"} icon={<IconFileText size={24} />} title="Dokumentasi" h="100%">
                 <Box>
                   {documentationItems.map((item, index) => (
                     <Box key={index} py="sm" style={{ borderBottom: '1px solid #eee', cursor: 'pointer' }} onClick={() => alert(`Navigasi ke dokumentasi: ${item.title}`)}>
@@ -182,7 +184,7 @@ const HelpPage = () => {
 
             {/* Jenna - Virtual Assistant */}
             <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
-              <HelpCard icon={<IconMessage size={24} />} title="Jenna - Virtual Assistant" h="100%">
+              <HelpCard style={{ borderColor: dark ? "#141D34" : "white" }} bg={dark ? "#141D34" : "white"} icon={<IconMessage size={24} />} title="Jenna - Virtual Assistant" h="100%">
                 <Box style={{ height: '300px', display: 'flex', flexDirection: 'column' }}>
                   <Box style={{ flex: 1, overflowY: 'auto', marginBottom: '12px', maxHeight: '200px' }}>
                     {messages.map((msg) => (
@@ -190,8 +192,8 @@ const HelpPage = () => {
                         key={msg.id}
                         style={{
                           alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                          backgroundColor: msg.sender === 'user' ? '#3B82F6' : '#F3F4F6',
-                          color: msg.sender === 'user' ? 'white' : 'black',
+                          backgroundColor: msg.sender === 'user' ? dark ? "#263852ff" : "#F1F5F9" : dark ? "#263852ff" : "#F1F5F9",
+                          color: msg.sender === 'user' ? dark ? "#F1F5F9" : "#263852ff" : dark ? "#F1F5F9" : "#263852ff",
                           padding: '8px 12px',
                           borderRadius: '8px',
                           marginBottom: '8px',

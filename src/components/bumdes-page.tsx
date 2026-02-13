@@ -109,18 +109,11 @@ const BumdesPage = () => {
 
   return (
     <Stack gap="lg">
-      {/* Page Header */}
-      <Group justify="space-between" align="center">
-        <Title order={2} c={dark ? "dark.0" : "black"}>
-          BUMDes & UMKM Desa
-        </Title>
-      </Group>
-
       {/* KPI Cards */}
       <Grid gutter="md">
         {kpiData.map((kpi, index) => (
           <GridCol key={index} span={{ base: 12, sm: 6, md: 3 }}>
-            <Card withBorder radius="md" padding="lg">
+            <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
               <Group justify="space-between" align="center">
                 <Stack gap={0}>
                   <Text size="sm" c={dark ? "dark.3" : "dimmed"}>
@@ -145,7 +138,7 @@ const BumdesPage = () => {
       </Grid>
 
       {/* Update Penjualan Produk Header */}
-      <Card withBorder radius="md" bg={dark ? "dark.8" : "darmasaba-blue.0"}>
+      <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
         <Group justify="space-between" align="center" px="md" py="xs">
           <Title order={3} c={dark ? "dark.0" : "black"}>
             Update Penjualan Produk
@@ -174,7 +167,7 @@ const BumdesPage = () => {
         <GridCol span={{ base: 12, lg: 4 }}>
           <Stack gap="md">
             {/* Total Penjualan, Produk Aktif, Total Transaksi */}
-            <Card withBorder radius="md" p="lg">
+            <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
               <Stack gap="md">
                 <Group justify="space-between">
                   <Text size="sm" c={dark ? "dark.3" : "dimmed"}>Total Penjualan</Text>
@@ -192,7 +185,7 @@ const BumdesPage = () => {
             </Card>
 
             {/* Top 3 Produk Terlaris */}
-            <Card withBorder radius="md" p="lg">
+            <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
               <Title order={4} mb="md" c={dark ? "dark.0" : "black"}>Top 3 Produk Terlaris</Title>
               <Stack gap="sm">
                 {topProducts.map((product) => (
@@ -226,7 +219,7 @@ const BumdesPage = () => {
 
         {/* Detail Penjualan Produk (Right Column) */}
         <GridCol span={{ base: 12, lg: 8 }}>
-          <Card withBorder radius="md" p="lg">
+          <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
             <Group justify="space-between" mb="md">
               <Title order={4} c={dark ? "dark.0" : "black"}>Detail Penjualan Produk</Title>
               <Select
@@ -245,13 +238,13 @@ const BumdesPage = () => {
             <Table striped highlightOnHover withColumnBorders>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th><Text c={dark ? "dark.3" : "dimmed"}>Produk</Text></Table.Th>
-                  <Table.Th><Text c={dark ? "dark.3" : "dimmed"}>Penjualan Bulan Ini</Text></Table.Th>
-                  <Table.Th><Text c={dark ? "dark.3" : "dimmed"}>Bulan Lalu</Text></Table.Th>
-                  <Table.Th><Text c={dark ? "dark.3" : "dimmed"}>Trend</Text></Table.Th>
-                  <Table.Th><Text c={dark ? "dark.3" : "dimmed"}>Volume</Text></Table.Th>
-                  <Table.Th><Text c={dark ? "dark.3" : "dimmed"}>Stok</Text></Table.Th>
-                  <Table.Th><Text c={dark ? "dark.3" : "dimmed"}>Aksi</Text></Table.Th>
+                  <Table.Th><Text c={dark ? "white" : "dimmed"}>Produk</Text></Table.Th>
+                  <Table.Th><Text c={dark ? "white" : "dimmed"}>Penjualan Bulan Ini</Text></Table.Th>
+                  <Table.Th><Text c={dark ? "white" : "dimmed"}>Bulan Lalu</Text></Table.Th>
+                  <Table.Th><Text c={dark ? "white" : "dimmed"}>Trend</Text></Table.Th>
+                  <Table.Th><Text c={dark ? "white" : "dimmed"}>Volume</Text></Table.Th>
+                  <Table.Th><Text c={dark ? "white" : "dimmed"}>Stok</Text></Table.Th>
+                  <Table.Th><Text c={dark ? "white" : "dimmed"}>Aksi</Text></Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -264,7 +257,7 @@ const BumdesPage = () => {
                       <Text fz={"sm"} c={dark ? "dark.0" : "black"}>{product.penjualanBulanIni}</Text>
                     </Table.Td>
                     <Table.Td>
-                      <Text fz={"sm"} c={dark ? "dark.3" : "dimmed"}>{product.bulanLalu}</Text>
+                      <Text fz={"sm"} c={dark ? "white" : "dimmed"}>{product.bulanLalu}</Text>
                     </Table.Td>
                     <Table.Td>
                       <Group gap="xs">

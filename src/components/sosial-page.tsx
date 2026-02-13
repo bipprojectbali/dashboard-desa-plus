@@ -82,17 +82,10 @@ const SosialPage = () => {
 
   return (
     <Stack gap="lg">
-      {/* Page Header */}
-      <Group justify="space-between" align="center">
-        <Title order={2} c={dark ? "dark.0" : "black"}>
-          Sosial Desa
-        </Title>
-      </Group>
-
       {/* Health Statistics Cards */}
       <Grid gutter="md">
         <GridCol span={{ base: 12, sm: 6, md: 3 }}>
-          <Card withBorder radius="md" padding="lg">
+          <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
             <Group justify="space-between" align="center">
               <Stack gap={0}>
                 <Text size="sm" c={dark ? "dark.3" : "dimmed"}>
@@ -110,7 +103,7 @@ const SosialPage = () => {
         </GridCol>
 
         <GridCol span={{ base: 12, sm: 6, md: 3 }}>
-          <Card withBorder radius="md" padding="lg">
+          <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
             <Group justify="space-between" align="center">
               <Stack gap={0}>
                 <Text size="sm" c={dark ? "dark.3" : "dimmed"}>
@@ -128,7 +121,7 @@ const SosialPage = () => {
         </GridCol>
 
         <GridCol span={{ base: 12, sm: 6, md: 3 }}>
-          <Card withBorder radius="md" padding="lg">
+          <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
             <Group justify="space-between" align="center">
               <Stack gap={0}>
                 <Text size="sm" c={dark ? "dark.3" : "dimmed"}>
@@ -146,7 +139,7 @@ const SosialPage = () => {
         </GridCol>
 
         <GridCol span={{ base: 12, sm: 6, md: 3 }}>
-          <Card withBorder radius="md" padding="lg">
+          <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
             <Group justify="space-between" align="center">
               <Stack gap={0}>
                 <Text size="sm" c={dark ? "dark.3" : "dimmed"}>
@@ -165,7 +158,7 @@ const SosialPage = () => {
       </Grid>
 
       {/* Health Progress Bars */}
-      <Card withBorder radius="md" p="lg">
+      <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
         <Title order={3} mb="md" c={dark ? "dark.0" : "black"}>Statistik Kesehatan</Title>
         <Stack gap="md">
           {healthProgress.map((item, index) => (
@@ -192,15 +185,15 @@ const SosialPage = () => {
       <Grid gutter="md">
         {/* Jadwal Posyandu */}
         <GridCol span={{ base: 12, lg: 6 }}>
-          <Card withBorder radius="md" p="lg">
+          <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
             <Title order={3} mb="md" c={dark ? "dark.0" : "black"}>Jadwal Posyandu</Title>
             <Stack gap="sm">
               {posyanduSchedule.map((item, index) => (
-                <Card key={index} withBorder radius="md" p="md">
+                <Card key={index} p="md" radius="md" withBorder bg={dark ? "#263852ff" : "#F1F5F9"} style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }} h="100%">
                   <Group justify="space-between">
                     <Stack gap={0}>
                       <Text fw={500} c={dark ? "dark.0" : "black"}>{item.nama}</Text>
-                      <Text size="sm" c={dark ? "dark.3" : "dimmed"}>{item.tanggal}</Text>
+                      <Text size="sm" c={dark ? "dark.0" : "black"}>{item.tanggal}</Text>
                     </Stack>
                     <Badge variant="light" color="darmasaba-blue">
                       {item.jam}
@@ -214,7 +207,7 @@ const SosialPage = () => {
 
         {/* Pendidikan */}
         <GridCol span={{ base: 12, lg: 6 }}>
-          <Card withBorder radius="md" p="lg">
+          <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }} h="100%"> 
             <Title order={3} mb="md" c={dark ? "dark.0" : "black"}>Pendidikan</Title>
             <Stack gap="md">
               <Group justify="space-between">
@@ -234,7 +227,7 @@ const SosialPage = () => {
                 <Text fw={700} c={dark ? "dark.0" : "black"}>{educationStats.siswa.sma}</Text>
               </Group>
               
-              <Card withBorder radius="md" p="md" mt="md">
+              <Card withBorder radius="md" p="md" mt="md" bg={dark ? "#263852ff" : "#F1F5F9"} style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}>
                 <Group justify="space-between">
                   <Text fw={500} c={dark ? "dark.0" : "black"}>Jumlah Lembaga Pendidikan</Text>
                   <Text fw={700} c={dark ? "dark.0" : "black"}>{educationStats.sekolah.jumlah}</Text>
@@ -252,7 +245,7 @@ const SosialPage = () => {
       <Grid gutter="md">
         {/* Beasiswa Desa */}
         <GridCol span={{ base: 12, lg: 6 }}>
-          <Card withBorder radius="md" p="lg" bg={dark ? "dark.8" : "darmasaba-blue.0"}>
+          <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }} h="100%">
             <Group justify="space-between" align="center">
               <Stack gap={0}>
                 <Text size="sm" c={dark ? "dark.3" : "dimmed"}>Beasiswa Desa</Text>
@@ -269,7 +262,7 @@ const SosialPage = () => {
 
         {/* Kalender Event Budaya */}
         <GridCol span={{ base: 12, lg: 6 }}>
-          <Card withBorder radius="md" p="lg">
+          <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }} h="100%">
             <Title order={3} mb="md" c={dark ? "dark.0" : "black"}>Kalender Event Budaya</Title>
             <List spacing="sm">
               {culturalEvents.map((event, index) => (

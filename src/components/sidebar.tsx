@@ -21,6 +21,7 @@ export function Sidebar({ className }: SidebarProps) {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === 'dark';
 	const isActiveBg = colorScheme === 'dark' ? "#182949" : "#E6F0FF";
 	const isActiveBorder = colorScheme === 'dark' ? "#00398D" : "#1F41AE";
 	
@@ -89,7 +90,7 @@ export function Sidebar({ className }: SidebarProps) {
 					styles={{
 						input: {
 							"&::placeholder": {
-								color: "var(--mantine-color-gray-5)",
+								color: dark ? "#F1F5F9" : "#263852ff",
 							},
 						},
 					}}

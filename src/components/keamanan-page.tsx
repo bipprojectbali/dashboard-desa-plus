@@ -101,7 +101,7 @@ const KeamananPage = () => {
       <Grid gutter="md">
         {kpiData.map((kpi, index) => (
           <GridCol key={index} span={{ base: 12, sm: 6, md: 6 }}>
-            <Card withBorder radius="md" padding="lg">
+            <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }} h="100%">
               <Group justify="space-between" align="center">
                 <Stack gap={0}>
                   <Text size="sm" c={dark ? "dark.3" : "dimmed"}>
@@ -128,7 +128,7 @@ const KeamananPage = () => {
       <Grid gutter="md">
         {/* Peta Keamanan CCTV */}
         <GridCol span={{ base: 12, lg: 6 }}>
-          <Card withBorder radius="md" p="lg">
+          <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }} h="100%">
             <Title order={3} mb="md" c={dark ? "dark.0" : "black"}>Peta Keamanan CCTV</Title>
             <Text size="sm" c={dark ? "dark.3" : "dimmed"} mb="md">Titik Lokasi CCTV</Text>
             
@@ -154,7 +154,7 @@ const KeamananPage = () => {
             <Stack mt="md" gap="sm">
               <Title order={4} c={dark ? "dark.0" : "black"}>Daftar CCTV</Title>
               {cctvLocations.map((cctv, index) => (
-                <Card key={index} withBorder radius="md" p="md">
+                <Card key={index} p="md" radius="md" withBorder bg={dark ? "#263852ff" : "#F1F5F9"} style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}>
                   <Group justify="space-between">
                     <Stack gap={0}>
                       <Group gap="xs">
@@ -181,12 +181,12 @@ const KeamananPage = () => {
 
         {/* Daftar Laporan Keamanan */}
         <GridCol span={{ base: 12, lg: 6 }}>
-          <Card withBorder radius="md" p="lg">
+          <Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }} h="100%">
             <Title order={3} mb="md" c={dark ? "dark.0" : "black"}>Laporan Keamanan Lingkungan</Title>
             
             <Stack gap="sm">
               {securityReports.map((report, index) => (
-                <Card key={index} withBorder radius="md" p="md">
+                <Card key={index} p="md" radius="md" withBorder bg={dark ? "#263852ff" : "#F1F5F9"} style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}>
                   <Group justify="space-between" mb="sm">
                     <Text fw={500} c={dark ? "dark.0" : "black"}>{report.title}</Text>
                     <Badge 

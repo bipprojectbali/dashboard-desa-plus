@@ -10,6 +10,7 @@ import {
 	Grid,
 	Box,
 	Progress,
+	useMantineColorScheme,
 } from "@mantine/core";
 import { IconTrendingUp, IconTrendingDown, IconCurrency } from "@tabler/icons-react";
 import { BarChart } from "@mantine/charts";
@@ -115,31 +116,16 @@ const apbdReport = {
 };
 
 const KeuanganAnggaran = () => {
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
 	return (
 		<Box>
 			<Stack gap="xl">
-				<Group justify="space-between" align="center">
-					<Title order={2} fw={700}>
-						Keuangan & Anggaran
-					</Title>
-					<Button variant="filled">Export Laporan</Button>
-				</Group>
-
 				{/* KPI Cards */}
 				<Grid gutter="lg">
 					{kpiData.map((kpi) => (
 						<Grid.Col key={kpi.id} span={{ base: 12, md: 6, lg: 3 }}>
-							<Card 
-								shadow="sm" 
-								padding="lg" 
-								radius="md" 
-								withBorder
-								style={{ 
-									display: 'flex',
-									flexDirection: 'column',
-									height: '100%'
-								}}
-							>
+							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }} h="100%">
 								<Group justify="space-between" align="flex-start" mb="xs">
 									<Text size="sm" fw={500} c="dimmed">
 										{kpi.title}
@@ -181,7 +167,7 @@ const KeuanganAnggaran = () => {
 				<Grid gutter="lg">
 					{/* Grafik Pemasukan vs Pengeluaran */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card shadow="sm" padding="lg" radius="md" withBorder>
+						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
 							<Title order={3} fw={500} mb="md">
 								Pemasukan vs Pengeluaran
 							</Title>
@@ -200,7 +186,7 @@ const KeuanganAnggaran = () => {
 
 					{/* Alokasi Anggaran Per Sektor */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card shadow="sm" padding="lg" radius="md" withBorder>
+						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
 							<Title order={3} fw={500} mb="md">
 								Alokasi Anggaran Per Sektor
 							</Title>
@@ -219,7 +205,7 @@ const KeuanganAnggaran = () => {
 				<Grid gutter="lg">
 					{/* Dana Bantuan & Hibah */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card shadow="sm" padding="lg" radius="md" withBorder>
+						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
 							<Title order={3} fw={500} mb="md">
 								Dana Bantuan & Hibah
 							</Title>
@@ -243,8 +229,8 @@ const KeuanganAnggaran = () => {
 												Rp {fund.amount.toLocaleString()}jt
 											</Text>
 										</Box>
-										<Badge 
-											variant="light" 
+										<Badge
+											variant="light"
 											color={fund.status === "cair" ? "green" : "yellow"}
 										>
 											{fund.status}
@@ -257,11 +243,11 @@ const KeuanganAnggaran = () => {
 
 					{/* Laporan APBDes */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card shadow="sm" padding="lg" radius="md" withBorder>
+						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
 							<Title order={3} fw={500} mb="md">
 								Laporan APBDes
 							</Title>
-							
+
 							<Box mb="md">
 								<Title order={4} mb="sm">Pendapatan</Title>
 								<Stack gap="xs">
@@ -281,7 +267,7 @@ const KeuanganAnggaran = () => {
 									</Group>
 								</Stack>
 							</Box>
-							
+
 							<Box>
 								<Title order={4} mb="sm">Belanja</Title>
 								<Stack gap="xs">
@@ -301,7 +287,7 @@ const KeuanganAnggaran = () => {
 									</Group>
 								</Stack>
 							</Box>
-							
+
 							<Box mt="md" pt="md" style={{ borderTop: '1px solid var(--mantine-color-gray-3)' }}>
 								<Group justify="space-between">
 									<Text fw={700}>Saldo:</Text>

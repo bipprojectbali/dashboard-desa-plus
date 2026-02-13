@@ -1,9 +1,11 @@
-import { Card, Title, Text, Space, TextInput, Select, Button, Group, Switch, Alert } from '@mantine/core';
+import { Card, Title, Text, Space, TextInput, Select, Button, Group, Switch, Alert, useMantineColorScheme } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 
 const UmumSettings = () => {
+  const { colorScheme } = useMantineColorScheme();
+  const dark = colorScheme === 'dark';
   return (
-    <Card withBorder radius="md" p="xl">
+    <Card withBorder radius="md" p="xl" bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
       <Title order={2} mb="lg">Pengaturan Umum</Title>
       <Text color="dimmed" mb="xl">Kelola pengaturan umum aplikasi Anda</Text>
 
