@@ -28,6 +28,7 @@ import { Route as DashboardKeamananRouteImport } from './routes/dashboard/keaman
 import { Route as DashboardJennaAnalyticRouteImport } from './routes/dashboard/jenna-analytic'
 import { Route as DashboardDemografiPekerjaanRouteImport } from './routes/dashboard/demografi-pekerjaan'
 import { Route as DashboardBumdesRouteImport } from './routes/dashboard/bumdes'
+import { Route as DashboardBantuanRouteImport } from './routes/dashboard/bantuan'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
@@ -130,6 +131,11 @@ const DashboardBumdesRoute = DashboardBumdesRouteImport.update({
   path: '/bumdes',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardBantuanRoute = DashboardBantuanRouteImport.update({
+  id: '/bantuan',
+  path: '/bantuan',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -155,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/bantuan': typeof DashboardBantuanRoute
   '/dashboard/bumdes': typeof DashboardBumdesRoute
   '/dashboard/demografi-pekerjaan': typeof DashboardDemografiPekerjaanRoute
   '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/bantuan': typeof DashboardBantuanRoute
   '/dashboard/bumdes': typeof DashboardBumdesRoute
   '/dashboard/demografi-pekerjaan': typeof DashboardDemografiPekerjaanRoute
   '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
@@ -202,6 +210,7 @@ export interface FileRoutesById {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/dashboard/bantuan': typeof DashboardBantuanRoute
   '/dashboard/bumdes': typeof DashboardBumdesRoute
   '/dashboard/demografi-pekerjaan': typeof DashboardDemografiPekerjaanRoute
   '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
@@ -228,6 +237,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/bantuan'
     | '/dashboard/bumdes'
     | '/dashboard/demografi-pekerjaan'
     | '/dashboard/jenna-analytic'
@@ -250,6 +260,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/bantuan'
     | '/dashboard/bumdes'
     | '/dashboard/demografi-pekerjaan'
     | '/dashboard/jenna-analytic'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
+    | '/dashboard/bantuan'
     | '/dashboard/bumdes'
     | '/dashboard/demografi-pekerjaan'
     | '/dashboard/jenna-analytic'
@@ -437,6 +449,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBumdesRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/bantuan': {
+      id: '/dashboard/bantuan'
+      path: '/bantuan'
+      fullPath: '/dashboard/bantuan'
+      preLoaderRoute: typeof DashboardBantuanRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/users'
@@ -480,6 +499,7 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 )
 
 interface DashboardRouteRouteChildren {
+  DashboardBantuanRoute: typeof DashboardBantuanRoute
   DashboardBumdesRoute: typeof DashboardBumdesRoute
   DashboardDemografiPekerjaanRoute: typeof DashboardDemografiPekerjaanRoute
   DashboardJennaAnalyticRoute: typeof DashboardJennaAnalyticRoute
@@ -492,6 +512,7 @@ interface DashboardRouteRouteChildren {
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardBantuanRoute: DashboardBantuanRoute,
   DashboardBumdesRoute: DashboardBumdesRoute,
   DashboardDemografiPekerjaanRoute: DashboardDemografiPekerjaanRoute,
   DashboardJennaAnalyticRoute: DashboardJennaAnalyticRoute,
