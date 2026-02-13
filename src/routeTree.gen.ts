@@ -21,7 +21,6 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UsersIdRouteImport } from './routes/users/$id'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
 import { Route as DashboardSosialRouteImport } from './routes/dashboard/sosial'
-import { Route as DashboardPengaturanRouteImport } from './routes/dashboard/pengaturan'
 import { Route as DashboardPengaduanLayananPublikRouteImport } from './routes/dashboard/pengaduan-layanan-publik'
 import { Route as DashboardKinerjaDivisiRouteImport } from './routes/dashboard/kinerja-divisi'
 import { Route as DashboardKeuanganAnggaranRouteImport } from './routes/dashboard/keuangan-anggaran'
@@ -33,10 +32,11 @@ import { Route as DashboardBantuanRouteImport } from './routes/dashboard/bantuan
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
-import { Route as DashboardPengaturanUmumRouteRouteImport } from './routes/dashboard/pengaturan/umum.route'
-import { Route as DashboardPengaturanNotifikasiRouteRouteImport } from './routes/dashboard/pengaturan/notifikasi.route'
-import { Route as DashboardPengaturanKeamananRouteRouteImport } from './routes/dashboard/pengaturan/keamanan.route'
-import { Route as DashboardPengaturanAksesDanTimRouteRouteImport } from './routes/dashboard/pengaturan/akses-dan-tim.route'
+import { Route as DashboardPengaturanRouteRouteImport } from './routes/dashboard/pengaturan/route'
+import { Route as DashboardPengaturanUmumRouteImport } from './routes/dashboard/pengaturan/umum'
+import { Route as DashboardPengaturanNotifikasiRouteImport } from './routes/dashboard/pengaturan/notifikasi'
+import { Route as DashboardPengaturanKeamananRouteImport } from './routes/dashboard/pengaturan/keamanan'
+import { Route as DashboardPengaturanAksesDanTimRouteImport } from './routes/dashboard/pengaturan/akses-dan-tim'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -98,11 +98,6 @@ const DashboardSosialRoute = DashboardSosialRouteImport.update({
   path: '/sosial',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
-const DashboardPengaturanRoute = DashboardPengaturanRouteImport.update({
-  id: '/pengaturan',
-  path: '/pengaturan',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
 const DashboardPengaduanLayananPublikRoute =
   DashboardPengaduanLayananPublikRouteImport.update({
     id: '/pengaduan-layanan-publik',
@@ -161,29 +156,34 @@ const AdminApikeyRoute = AdminApikeyRouteImport.update({
   path: '/apikey',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const DashboardPengaturanUmumRouteRoute =
-  DashboardPengaturanUmumRouteRouteImport.update({
-    id: '/umum',
-    path: '/umum',
-    getParentRoute: () => DashboardPengaturanRoute,
+const DashboardPengaturanRouteRoute =
+  DashboardPengaturanRouteRouteImport.update({
+    id: '/pengaturan',
+    path: '/pengaturan',
+    getParentRoute: () => DashboardRouteRoute,
   } as any)
-const DashboardPengaturanNotifikasiRouteRoute =
-  DashboardPengaturanNotifikasiRouteRouteImport.update({
+const DashboardPengaturanUmumRoute = DashboardPengaturanUmumRouteImport.update({
+  id: '/umum',
+  path: '/umum',
+  getParentRoute: () => DashboardPengaturanRouteRoute,
+} as any)
+const DashboardPengaturanNotifikasiRoute =
+  DashboardPengaturanNotifikasiRouteImport.update({
     id: '/notifikasi',
     path: '/notifikasi',
-    getParentRoute: () => DashboardPengaturanRoute,
+    getParentRoute: () => DashboardPengaturanRouteRoute,
   } as any)
-const DashboardPengaturanKeamananRouteRoute =
-  DashboardPengaturanKeamananRouteRouteImport.update({
+const DashboardPengaturanKeamananRoute =
+  DashboardPengaturanKeamananRouteImport.update({
     id: '/keamanan',
     path: '/keamanan',
-    getParentRoute: () => DashboardPengaturanRoute,
+    getParentRoute: () => DashboardPengaturanRouteRoute,
   } as any)
-const DashboardPengaturanAksesDanTimRouteRoute =
-  DashboardPengaturanAksesDanTimRouteRouteImport.update({
+const DashboardPengaturanAksesDanTimRoute =
+  DashboardPengaturanAksesDanTimRouteImport.update({
     id: '/akses-dan-tim',
     path: '/akses-dan-tim',
-    getParentRoute: () => DashboardPengaturanRoute,
+    getParentRoute: () => DashboardPengaturanRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -192,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/dashboard/pengaturan': typeof DashboardPengaturanRouteRouteWithChildren
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -203,7 +204,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/keuangan-anggaran': typeof DashboardKeuanganAnggaranRoute
   '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
   '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
-  '/dashboard/pengaturan': typeof DashboardPengaturanRouteWithChildren
   '/dashboard/sosial': typeof DashboardSosialRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
@@ -211,15 +211,16 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/users/': typeof UsersIndexRoute
-  '/dashboard/pengaturan/akses-dan-tim': typeof DashboardPengaturanAksesDanTimRouteRoute
-  '/dashboard/pengaturan/keamanan': typeof DashboardPengaturanKeamananRouteRoute
-  '/dashboard/pengaturan/notifikasi': typeof DashboardPengaturanNotifikasiRouteRoute
-  '/dashboard/pengaturan/umum': typeof DashboardPengaturanUmumRouteRoute
+  '/dashboard/pengaturan/akses-dan-tim': typeof DashboardPengaturanAksesDanTimRoute
+  '/dashboard/pengaturan/keamanan': typeof DashboardPengaturanKeamananRoute
+  '/dashboard/pengaturan/notifikasi': typeof DashboardPengaturanNotifikasiRoute
+  '/dashboard/pengaturan/umum': typeof DashboardPengaturanUmumRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/dashboard/pengaturan': typeof DashboardPengaturanRouteRouteWithChildren
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -231,7 +232,6 @@ export interface FileRoutesByTo {
   '/dashboard/keuangan-anggaran': typeof DashboardKeuanganAnggaranRoute
   '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
   '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
-  '/dashboard/pengaturan': typeof DashboardPengaturanRouteWithChildren
   '/dashboard/sosial': typeof DashboardSosialRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
@@ -239,10 +239,10 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/users': typeof UsersIndexRoute
-  '/dashboard/pengaturan/akses-dan-tim': typeof DashboardPengaturanAksesDanTimRouteRoute
-  '/dashboard/pengaturan/keamanan': typeof DashboardPengaturanKeamananRouteRoute
-  '/dashboard/pengaturan/notifikasi': typeof DashboardPengaturanNotifikasiRouteRoute
-  '/dashboard/pengaturan/umum': typeof DashboardPengaturanUmumRouteRoute
+  '/dashboard/pengaturan/akses-dan-tim': typeof DashboardPengaturanAksesDanTimRoute
+  '/dashboard/pengaturan/keamanan': typeof DashboardPengaturanKeamananRoute
+  '/dashboard/pengaturan/notifikasi': typeof DashboardPengaturanNotifikasiRoute
+  '/dashboard/pengaturan/umum': typeof DashboardPengaturanUmumRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -251,6 +251,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/dashboard/pengaturan': typeof DashboardPengaturanRouteRouteWithChildren
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -262,7 +263,6 @@ export interface FileRoutesById {
   '/dashboard/keuangan-anggaran': typeof DashboardKeuanganAnggaranRoute
   '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
   '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
-  '/dashboard/pengaturan': typeof DashboardPengaturanRouteWithChildren
   '/dashboard/sosial': typeof DashboardSosialRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
@@ -270,10 +270,10 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/users/': typeof UsersIndexRoute
-  '/dashboard/pengaturan/akses-dan-tim': typeof DashboardPengaturanAksesDanTimRouteRoute
-  '/dashboard/pengaturan/keamanan': typeof DashboardPengaturanKeamananRouteRoute
-  '/dashboard/pengaturan/notifikasi': typeof DashboardPengaturanNotifikasiRouteRoute
-  '/dashboard/pengaturan/umum': typeof DashboardPengaturanUmumRouteRoute
+  '/dashboard/pengaturan/akses-dan-tim': typeof DashboardPengaturanAksesDanTimRoute
+  '/dashboard/pengaturan/keamanan': typeof DashboardPengaturanKeamananRoute
+  '/dashboard/pengaturan/notifikasi': typeof DashboardPengaturanNotifikasiRoute
+  '/dashboard/pengaturan/umum': typeof DashboardPengaturanUmumRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -283,6 +283,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/signin'
     | '/signup'
+    | '/dashboard/pengaturan'
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
@@ -294,7 +295,6 @@ export interface FileRouteTypes {
     | '/dashboard/keuangan-anggaran'
     | '/dashboard/kinerja-divisi'
     | '/dashboard/pengaduan-layanan-publik'
-    | '/dashboard/pengaturan'
     | '/dashboard/sosial'
     | '/profile/edit'
     | '/users/$id'
@@ -311,6 +311,7 @@ export interface FileRouteTypes {
     | '/'
     | '/signin'
     | '/signup'
+    | '/dashboard/pengaturan'
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
@@ -322,7 +323,6 @@ export interface FileRouteTypes {
     | '/dashboard/keuangan-anggaran'
     | '/dashboard/kinerja-divisi'
     | '/dashboard/pengaduan-layanan-publik'
-    | '/dashboard/pengaturan'
     | '/dashboard/sosial'
     | '/profile/edit'
     | '/users/$id'
@@ -341,6 +341,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/signin'
     | '/signup'
+    | '/dashboard/pengaturan'
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
@@ -352,7 +353,6 @@ export interface FileRouteTypes {
     | '/dashboard/keuangan-anggaran'
     | '/dashboard/kinerja-divisi'
     | '/dashboard/pengaduan-layanan-publik'
-    | '/dashboard/pengaturan'
     | '/dashboard/sosial'
     | '/profile/edit'
     | '/users/$id'
@@ -464,13 +464,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSosialRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
-    '/dashboard/pengaturan': {
-      id: '/dashboard/pengaturan'
-      path: '/pengaturan'
-      fullPath: '/dashboard/pengaturan'
-      preLoaderRoute: typeof DashboardPengaturanRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
     '/dashboard/pengaduan-layanan-publik': {
       id: '/dashboard/pengaduan-layanan-publik'
       path: '/pengaduan-layanan-publik'
@@ -548,33 +541,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminApikeyRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/dashboard/pengaturan': {
+      id: '/dashboard/pengaturan'
+      path: '/pengaturan'
+      fullPath: '/dashboard/pengaturan'
+      preLoaderRoute: typeof DashboardPengaturanRouteRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/pengaturan/umum': {
       id: '/dashboard/pengaturan/umum'
       path: '/umum'
       fullPath: '/dashboard/pengaturan/umum'
-      preLoaderRoute: typeof DashboardPengaturanUmumRouteRouteImport
-      parentRoute: typeof DashboardPengaturanRoute
+      preLoaderRoute: typeof DashboardPengaturanUmumRouteImport
+      parentRoute: typeof DashboardPengaturanRouteRoute
     }
     '/dashboard/pengaturan/notifikasi': {
       id: '/dashboard/pengaturan/notifikasi'
       path: '/notifikasi'
       fullPath: '/dashboard/pengaturan/notifikasi'
-      preLoaderRoute: typeof DashboardPengaturanNotifikasiRouteRouteImport
-      parentRoute: typeof DashboardPengaturanRoute
+      preLoaderRoute: typeof DashboardPengaturanNotifikasiRouteImport
+      parentRoute: typeof DashboardPengaturanRouteRoute
     }
     '/dashboard/pengaturan/keamanan': {
       id: '/dashboard/pengaturan/keamanan'
       path: '/keamanan'
       fullPath: '/dashboard/pengaturan/keamanan'
-      preLoaderRoute: typeof DashboardPengaturanKeamananRouteRouteImport
-      parentRoute: typeof DashboardPengaturanRoute
+      preLoaderRoute: typeof DashboardPengaturanKeamananRouteImport
+      parentRoute: typeof DashboardPengaturanRouteRoute
     }
     '/dashboard/pengaturan/akses-dan-tim': {
       id: '/dashboard/pengaturan/akses-dan-tim'
       path: '/akses-dan-tim'
       fullPath: '/dashboard/pengaturan/akses-dan-tim'
-      preLoaderRoute: typeof DashboardPengaturanAksesDanTimRouteRouteImport
-      parentRoute: typeof DashboardPengaturanRoute
+      preLoaderRoute: typeof DashboardPengaturanAksesDanTimRouteImport
+      parentRoute: typeof DashboardPengaturanRouteRoute
     }
   }
 }
@@ -597,26 +597,28 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
   AdminRouteRouteChildren,
 )
 
-interface DashboardPengaturanRouteChildren {
-  DashboardPengaturanAksesDanTimRouteRoute: typeof DashboardPengaturanAksesDanTimRouteRoute
-  DashboardPengaturanKeamananRouteRoute: typeof DashboardPengaturanKeamananRouteRoute
-  DashboardPengaturanNotifikasiRouteRoute: typeof DashboardPengaturanNotifikasiRouteRoute
-  DashboardPengaturanUmumRouteRoute: typeof DashboardPengaturanUmumRouteRoute
+interface DashboardPengaturanRouteRouteChildren {
+  DashboardPengaturanAksesDanTimRoute: typeof DashboardPengaturanAksesDanTimRoute
+  DashboardPengaturanKeamananRoute: typeof DashboardPengaturanKeamananRoute
+  DashboardPengaturanNotifikasiRoute: typeof DashboardPengaturanNotifikasiRoute
+  DashboardPengaturanUmumRoute: typeof DashboardPengaturanUmumRoute
 }
 
-const DashboardPengaturanRouteChildren: DashboardPengaturanRouteChildren = {
-  DashboardPengaturanAksesDanTimRouteRoute:
-    DashboardPengaturanAksesDanTimRouteRoute,
-  DashboardPengaturanKeamananRouteRoute: DashboardPengaturanKeamananRouteRoute,
-  DashboardPengaturanNotifikasiRouteRoute:
-    DashboardPengaturanNotifikasiRouteRoute,
-  DashboardPengaturanUmumRouteRoute: DashboardPengaturanUmumRouteRoute,
-}
+const DashboardPengaturanRouteRouteChildren: DashboardPengaturanRouteRouteChildren =
+  {
+    DashboardPengaturanAksesDanTimRoute: DashboardPengaturanAksesDanTimRoute,
+    DashboardPengaturanKeamananRoute: DashboardPengaturanKeamananRoute,
+    DashboardPengaturanNotifikasiRoute: DashboardPengaturanNotifikasiRoute,
+    DashboardPengaturanUmumRoute: DashboardPengaturanUmumRoute,
+  }
 
-const DashboardPengaturanRouteWithChildren =
-  DashboardPengaturanRoute._addFileChildren(DashboardPengaturanRouteChildren)
+const DashboardPengaturanRouteRouteWithChildren =
+  DashboardPengaturanRouteRoute._addFileChildren(
+    DashboardPengaturanRouteRouteChildren,
+  )
 
 interface DashboardRouteRouteChildren {
+  DashboardPengaturanRouteRoute: typeof DashboardPengaturanRouteRouteWithChildren
   DashboardBantuanRoute: typeof DashboardBantuanRoute
   DashboardBumdesRoute: typeof DashboardBumdesRoute
   DashboardDemografiPekerjaanRoute: typeof DashboardDemografiPekerjaanRoute
@@ -625,12 +627,12 @@ interface DashboardRouteRouteChildren {
   DashboardKeuanganAnggaranRoute: typeof DashboardKeuanganAnggaranRoute
   DashboardKinerjaDivisiRoute: typeof DashboardKinerjaDivisiRoute
   DashboardPengaduanLayananPublikRoute: typeof DashboardPengaduanLayananPublikRoute
-  DashboardPengaturanRoute: typeof DashboardPengaturanRouteWithChildren
   DashboardSosialRoute: typeof DashboardSosialRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardPengaturanRouteRoute: DashboardPengaturanRouteRouteWithChildren,
   DashboardBantuanRoute: DashboardBantuanRoute,
   DashboardBumdesRoute: DashboardBumdesRoute,
   DashboardDemografiPekerjaanRoute: DashboardDemografiPekerjaanRoute,
@@ -639,7 +641,6 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardKeuanganAnggaranRoute: DashboardKeuanganAnggaranRoute,
   DashboardKinerjaDivisiRoute: DashboardKinerjaDivisiRoute,
   DashboardPengaduanLayananPublikRoute: DashboardPengaduanLayananPublikRoute,
-  DashboardPengaturanRoute: DashboardPengaturanRouteWithChildren,
   DashboardSosialRoute: DashboardSosialRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }

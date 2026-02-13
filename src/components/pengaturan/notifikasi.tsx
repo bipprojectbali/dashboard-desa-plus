@@ -1,9 +1,11 @@
-import { Card, Title, Text, Space, Switch, Group, Alert, Checkbox, Button } from '@mantine/core';
+import { Card, Title, Text, Space, Switch, Group, Alert, Checkbox, Button, useMantineColorScheme } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 
 const NotifikasiSettings = () => {
+  const { colorScheme } = useMantineColorScheme();
+  const dark = colorScheme === 'dark';
   return (
-    <Card withBorder radius="md" p="xl">
+    <Card withBorder radius="md" p="xl" bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
       <Title order={2} mb="lg">Pengaturan Notifikasi</Title>
       <Text color="dimmed" mb="xl">Kelola preferensi notifikasi Anda</Text>
 
@@ -28,7 +30,7 @@ const NotifikasiSettings = () => {
       <Space h="md" />
 
       <Title order={4} mb="sm">Jenis Notifikasi</Title>
-      <Group direction="column" align="start">
+      <Group align="start">
         <Switch label="Pengaduan Baru" defaultChecked />
         <Switch label="Update Status Pengaduan" defaultChecked />
         <Switch label="Laporan Mingguan" />

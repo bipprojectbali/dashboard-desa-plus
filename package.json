@@ -90,6 +90,7 @@
 		"@react-dev-inspector/vite-plugin": "^2.0.1",
 		"@tailwindcss/postcss": "^4.1.18",
 		"@tanstack/react-router-devtools": "^1.158.1",
+		"@tanstack/router-cli": "1.158.1",
 		"@tanstack/router-vite-plugin": "^1.158.1",
 		"@types/bun": "latest",
 		"@types/react": "^19",

@@ -1,10 +1,12 @@
-import { Card, Title, Text, Space, Button, Group, Alert, Table, ActionIcon, Modal, TextInput, Select } from '@mantine/core';
+import { Card, Title, Text, Space, Button, Group, Alert, Table, ActionIcon, Modal, TextInput, Select, useMantineColorScheme } from '@mantine/core';
 import { IconInfoCircle, IconUserPlus, IconTrash, IconEdit, IconUser } from '@tabler/icons-react';
 import { useState } from 'react';
 
 const AksesDanTimSettings = () => {
   const [opened, setOpened] = useState(false);
-  
+  const { colorScheme } = useMantineColorScheme();
+  const dark = colorScheme === 'dark';
+
   // Sample team members data
   const teamMembers = [
     { id: 1, name: 'Admin Utama', email: 'admin@desa.go.id', role: 'Administrator', status: 'Aktif' },
@@ -22,7 +24,7 @@ const AksesDanTimSettings = () => {
   ];
 
   return (
-    <Card withBorder radius="md" p="xl">
+    <Card withBorder radius="md" p="xl" bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}

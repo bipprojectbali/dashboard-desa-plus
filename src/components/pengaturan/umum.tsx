@@ -40,7 +40,6 @@ const UmumSettings = () => {
       />
 
       <Group mb="md">
-        <Switch label="Mode Gelap" defaultChecked />
         <Switch label="Notifikasi Email" defaultChecked />
       </Group>
 

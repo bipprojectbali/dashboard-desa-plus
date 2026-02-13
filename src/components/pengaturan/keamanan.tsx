@@ -1,9 +1,11 @@
-import { Card, Title, Text, Space, Button, Group, Alert, PasswordInput, Switch } from '@mantine/core';
+import { Card, Title, Text, Space, Button, Group, Alert, PasswordInput, Switch, useMantineColorScheme } from '@mantine/core';
 import { IconInfoCircle, IconLock } from '@tabler/icons-react';
 
 const KeamananSettings = () => {
+  const { colorScheme } = useMantineColorScheme();
+  const dark = colorScheme === 'dark';
   return (
-    <Card withBorder radius="md" p="xl">
+    <Card withBorder radius="md" p="xl" bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
       <Title order={2} mb="lg">Pengaturan Keamanan</Title>
       <Text color="dimmed" mb="xl">Kelola keamanan akun Anda</Text>
 
