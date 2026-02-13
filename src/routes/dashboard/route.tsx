@@ -18,7 +18,7 @@ function RouteComponent() {
 		<AppShell
 			header={{ height: 60 }}
 			navbar={{
-				width: 250,
+				width: 300,
 				breakpoint: "sm",
 				collapsed: { mobile: !opened },
 			}}
@@ -31,8 +31,10 @@ function RouteComponent() {
 				</Group>
 			</AppShell.Header>
 
-			<AppShell.Navbar p="md" bg={navbarBgColor}>
-				<Sidebar />
+			<AppShell.Navbar p="md" bg={navbarBgColor} style={{ display: 'flex', flexDirection: 'column' }}>
+				<div style={{ flex: 1, overflowY: 'auto' }}>
+					<Sidebar />
+				</div>
 			</AppShell.Navbar>
 
 			<AppShell.Main bg={mainBgColor}>
