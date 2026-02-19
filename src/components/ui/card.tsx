@@ -2,7 +2,6 @@ import {
 	Box,
 	Card as MantineCard,
 	type CardProps as MantineCardProps,
-
 	Title,
 } from "@mantine/core";
 import type React from "react";

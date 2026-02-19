@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
 // Import Mantine components directly
-import { Group, Text, ThemeIcon, Badge } from "@mantine/core";
+import { Badge, Group, Text, ThemeIcon } from "@mantine/core";
+import type { ReactNode } from "react";
 // Import custom Card and its sub-components
 import { Card } from "./ui/card";
 

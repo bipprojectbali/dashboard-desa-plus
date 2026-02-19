@@ -1,7 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
-import DemografiPekerjaan from '../../components/demografi-pekerjaan'
+import { createFileRoute } from "@tanstack/react-router";
+import DemografiPekerjaan from "../../components/demografi-pekerjaan";
 
-export const Route = createFileRoute('/dashboard/demografi-pekerjaan')({
-  component: DemografiPekerjaan,
-})
-
+export const Route = createFileRoute("/dashboard/demografi-pekerjaan")({
+	component: DemografiPekerjaan,
+});

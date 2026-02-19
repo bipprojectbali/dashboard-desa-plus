@@ -1,6 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
-import AksesDanTimSettings from '@/components/pengaturan/akses-dan-tim'
+import { createFileRoute } from "@tanstack/react-router";
+import AksesDanTimSettings from "@/components/pengaturan/akses-dan-tim";
 
-export const Route = createFileRoute('/dashboard/pengaturan/akses-dan-tim')({
-  component: AksesDanTimSettings,
-})
+export const Route = createFileRoute("/dashboard/pengaturan/akses-dan-tim")({
+	component: AksesDanTimSettings,
+});

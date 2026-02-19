@@ -13,25 +13,25 @@ import {
 	Pie,
 	PieChart,
 	ResponsiveContainer,
+	Tooltip, // Added Tooltip import
 	XAxis,
 	YAxis,
-	Tooltip, // Added Tooltip import
 } from "recharts";
 
 // Import Mantine components
 
 import {
-	Grid,
-	Stack,
-	Group,
-	Text,
-	Title,
 	ActionIcon,
-	Progress,
-	Box,
 	Badge,
-	ThemeIcon,
+	Box,
 	Card, // Added for icon containers
+	Grid,
+	Group,
+	Progress,
+	Stack,
+	Text,
+	ThemeIcon,
+	Title,
 	useMantineColorScheme, // Add this import
 } from "@mantine/core";
 
@@ -68,13 +68,20 @@ const eventData = [
 
 export function DashboardContent() {
 	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === 'dark';
+	const dark = colorScheme === "dark";
 	return (
 		<Stack gap="lg">
 			{/* Stats Cards */}
 			<Grid gutter="md">
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-					<Card p="md" style={{borderColor: dark ? "#141D34" : "white"}} radius="md" h="100%" withBorder bg={dark ? "#141D34" : "white"}>
+					<Card
+						p="md"
+						style={{ borderColor: dark ? "#141D34" : "white" }}
+						radius="md"
+						h="100%"
+						withBorder
+						bg={dark ? "#141D34" : "white"}
+					>
 						<Group justify="space-between" align="flex-start" w="100%">
 							<Box style={{ flex: 1 }}>
 								<Text size="sm" c="dimmed" mb="xs">
@@ -92,14 +99,26 @@ export function DashboardContent() {
 									12% dari minggu lalu ↗ +12%
 								</Text>
 							</Box>
-							<ThemeIcon variant="filled" size="xl" radius="xl" color={dark ? 'gray' : 'darmasaba-blue'}>
+							<ThemeIcon
+								variant="filled"
+								size="xl"
+								radius="xl"
+								color={dark ? "gray" : "darmasaba-blue"}
+							>
 								<FileText style={{ width: "70%", height: "70%" }} />
 							</ThemeIcon>
 						</Group>
 					</Card>
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-					<Card p="md" style={{borderColor: dark ? "#141D34" : "white"}} radius="md" h="100%" withBorder bg={dark ? "#141D34" : "white"}>
+					<Card
+						p="md"
+						style={{ borderColor: dark ? "#141D34" : "white" }}
+						radius="md"
+						h="100%"
+						withBorder
+						bg={dark ? "#141D34" : "white"}
+					>
 						<Group justify="space-between" align="flex-start" w="100%">
 							<Box style={{ flex: 1 }}>
 								<Text size="sm" c="dimmed" mb="xs">
@@ -114,14 +133,26 @@ export function DashboardContent() {
 									14 baru, 14 diproses
 								</Text>
 							</Box>
-							<ThemeIcon variant="filled" size="xl" radius="xl" color={dark ? 'gray' : 'darmasaba-blue'}>
+							<ThemeIcon
+								variant="filled"
+								size="xl"
+								radius="xl"
+								color={dark ? "gray" : "darmasaba-blue"}
+							>
 								<MessageCircle style={{ width: "70%", height: "70%" }} />
 							</ThemeIcon>
 						</Group>
 					</Card>
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-					<Card p="md" style={{borderColor: dark ? "#141D34" : "white"}} radius="md" h="100%" withBorder bg={dark ? "#141D34" : "white"}>
+					<Card
+						p="md"
+						style={{ borderColor: dark ? "#141D34" : "white" }}
+						radius="md"
+						h="100%"
+						withBorder
+						bg={dark ? "#141D34" : "white"}
+					>
 						<Group justify="space-between" align="flex-start" w="100%">
 							<Box style={{ flex: 1 }}>
 								<Text size="sm" c="dimmed" mb="xs">
@@ -139,14 +170,26 @@ export function DashboardContent() {
 									+8%
 								</Text>
 							</Box>
-							<ThemeIcon variant="filled" size="xl" radius="xl" color={dark ? 'gray' : 'darmasaba-blue'}>
+							<ThemeIcon
+								variant="filled"
+								size="xl"
+								radius="xl"
+								color={dark ? "gray" : "darmasaba-blue"}
+							>
 								<CheckCircle style={{ width: "70%", height: "70%" }} />
 							</ThemeIcon>
 						</Group>
 					</Card>
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-					<Card p="md" style={{borderColor: dark ? "#141D34" : "white"}} radius="md" h="100%" withBorder bg={dark ? "#141D34" : "white"}>
+					<Card
+						p="md"
+						style={{ borderColor: dark ? "#141D34" : "white" }}
+						radius="md"
+						h="100%"
+						withBorder
+						bg={dark ? "#141D34" : "white"}
+					>
 						<Group justify="space-between" align="flex-start" w="100%">
 							<Box style={{ flex: 1 }}>
 								<Text size="sm" c="dimmed" mb="xs">
@@ -161,7 +204,12 @@ export function DashboardContent() {
 									dari 482 responden
 								</Text>
 							</Box>
-							<ThemeIcon variant="filled" size="xl" radius="xl" color={dark ? 'gray' : 'darmasaba-blue'}>
+							<ThemeIcon
+								variant="filled"
+								size="xl"
+								radius="xl"
+								color={dark ? "gray" : "darmasaba-blue"}
+							>
 								<Users style={{ width: "70%", height: "70%" }} />
 							</ThemeIcon>
 						</Group>
@@ -171,7 +219,13 @@ export function DashboardContent() {
 			<Grid gutter="lg">
 				{/* Bar Chart */}
 				<Grid.Col span={{ base: 12, lg: 6 }}>
-					<Card p="md" style={{borderColor: dark ? "#141D34" : "white"}} radius="md" withBorder bg={dark ? "#141D34" : "white"}>
+					<Card
+						p="md"
+						style={{ borderColor: dark ? "#141D34" : "white" }}
+						radius="md"
+						withBorder
+						bg={dark ? "#141D34" : "white"}
+					>
 						<Group justify="space-between" mb="md">
 							<Box>
 								<Title order={4} mb={5}>
@@ -232,7 +286,13 @@ export function DashboardContent() {
 
 				{/* Pie Chart */}
 				<Grid.Col span={{ base: 12, lg: 6 }}>
-					<Card p="md" style={{borderColor: dark ? "#141D34" : "white"}} radius="md" withBorder bg={dark ? "#141D34" : "white"}>
+					<Card
+						p="md"
+						style={{ borderColor: dark ? "#141D34" : "white" }}
+						radius="md"
+						withBorder
+						bg={dark ? "#141D34" : "white"}
+					>
 						<Title order={4} mb={5}>
 							Tingkat Kepuasan
 						</Title>
@@ -259,19 +319,35 @@ export function DashboardContent() {
 						</ResponsiveContainer>
 						<Group justify="center" gap="md" mt="md">
 							<Group gap="xs">
-								<Box w={12} h={12} style={{ backgroundColor: COLORS[0], borderRadius: "50%" }} />
+								<Box
+									w={12}
+									h={12}
+									style={{ backgroundColor: COLORS[0], borderRadius: "50%" }}
+								/>
 								<Text size="sm">Sangat puas (0%)</Text>
 							</Group>
 							<Group gap="xs">
-								<Box w={12} h={12} style={{ backgroundColor: COLORS[1], borderRadius: "50%" }} />
+								<Box
+									w={12}
+									h={12}
+									style={{ backgroundColor: COLORS[1], borderRadius: "50%" }}
+								/>
 								<Text size="sm">Puas (0%)</Text>
 							</Group>
 							<Group gap="xs">
-								<Box w={12} h={12} style={{ backgroundColor: COLORS[2], borderRadius: "50%" }} />
+								<Box
+									w={12}
+									h={12}
+									style={{ backgroundColor: COLORS[2], borderRadius: "50%" }}
+								/>
 								<Text size="sm">Cukup (0%)</Text>
 							</Group>
 							<Group gap="xs">
-								<Box w={12} h={12} style={{ backgroundColor: COLORS[3], borderRadius: "50%" }} />
+								<Box
+									w={12}
+									h={12}
+									style={{ backgroundColor: COLORS[3], borderRadius: "50%" }}
+								/>
 								<Text size="sm">Kurang (0%)</Text>
 							</Group>
 						</Group>
@@ -283,7 +359,13 @@ export function DashboardContent() {
 			<Grid gutter="lg">
 				{/* Divisi Teraktif */}
 				<Grid.Col span={{ base: 12, lg: 6 }}>
-					<Card p="md" style={{borderColor: dark ? "#141D34" : "white"}} radius="md" withBorder bg={dark ? "#141D34" : "white"}>
+					<Card
+						p="md"
+						style={{ borderColor: dark ? "#141D34" : "white" }}
+						radius="md"
+						withBorder
+						bg={dark ? "#141D34" : "white"}
+					>
 						<Group gap="xs" mb="lg">
 							<Box>
 								{/* Original SVG icon */}
@@ -355,7 +437,13 @@ export function DashboardContent() {
 
 				{/* Kalender */}
 				<Grid.Col span={{ base: 12, lg: 6 }}>
-					<Card p="md" style={{borderColor: dark ? "#141D34" : "white"}} radius="md" withBorder bg={dark ? "#141D34" : "white"}>
+					<Card
+						p="md"
+						style={{ borderColor: dark ? "#141D34" : "white" }}
+						radius="md"
+						withBorder
+						bg={dark ? "#141D34" : "white"}
+					>
 						<Group gap="xs" mb="lg">
 							<Calendar style={{ width: 20, height: 20 }} />
 							<Title order={4}>Kalender & Kegiatan Mendatang</Title>
@@ -364,7 +452,10 @@ export function DashboardContent() {
 							{eventData.map((event, index) => (
 								<Box
 									key={index}
-									style={{ borderLeft: "4px solid var(--mantine-color-blue-filled)", paddingLeft: 12 }}
+									style={{
+										borderLeft: "4px solid var(--mantine-color-blue-filled)",
+										paddingLeft: 12,
+									}}
 								>
 									<Text size="sm" c="dimmed">
 										{event.date}
@@ -378,7 +469,13 @@ export function DashboardContent() {
 			</Grid>
 
 			{/* APBDes Chart */}
-			<Card p="md" style={{borderColor: dark ? "#141D34" : "white"}} radius="md" withBorder bg={dark ? "#141D34" : "white"}>
+			<Card
+				p="md"
+				style={{ borderColor: dark ? "#141D34" : "white" }}
+				radius="md"
+				withBorder
+				bg={dark ? "#141D34" : "white"}
+			>
 				<Title order={4} mb="lg">
 					Grafik APBDes
 				</Title>
@@ -387,19 +484,37 @@ export function DashboardContent() {
 						<Text size="sm" fw={500} w={60}>
 							Belanja
 						</Text>
-						<Progress value={70} size="lg" radius="xl" color="blue" style={{ flex: 1 }} />
+						<Progress
+							value={70}
+							size="lg"
+							radius="xl"
+							color="blue"
+							style={{ flex: 1 }}
+						/>
 					</Group>
 					<Group align="center" gap="md">
 						<Text size="sm" fw={500} w={60}>
 							Pendapatan
 						</Text>
-						<Progress value={90} size="lg" radius="xl" color="green" style={{ flex: 1 }} />
+						<Progress
+							value={90}
+							size="lg"
+							radius="xl"
+							color="green"
+							style={{ flex: 1 }}
+						/>
 					</Group>
 					<Group align="center" gap="md">
 						<Text size="sm" fw={500} w={60}>
 							Pembangunan
 						</Text>
-						<Progress value={50} size="lg" radius="xl" color="orange" style={{ flex: 1 }} />
+						<Progress
+							value={50}
+							size="lg"
+							radius="xl"
+							color="orange"
+							style={{ flex: 1 }}
+						/>
 					</Group>
 				</Stack>
 			</Card>

@@ -1,16 +1,16 @@
-import { useNavigate, useLocation } from "@tanstack/react-router";
-import { Search, ChevronDown, ChevronUp } from "lucide-react";
 import {
-	Stack,
-	Group,
-	Text,
 	Badge,
+	Box,
+	Collapse,
+	Group,
 	Input,
 	NavLink as MantineNavLink,
-	Box,
+	Stack,
+	Text,
 	useMantineColorScheme,
-	Collapse,
 } from "@mantine/core";
+import { useLocation, useNavigate } from "@tanstack/react-router";
+import { ChevronDown, ChevronUp, Search } from "lucide-react";
 import { useState } from "react";
 
 interface SidebarProps {
@@ -21,22 +21,28 @@ export function Sidebar({ className }: SidebarProps) {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === 'dark';
-	const isActiveBg = colorScheme === 'dark' ? "#182949" : "#E6F0FF";
-	const isActiveBorder = colorScheme === 'dark' ? "#00398D" : "#1F41AE";
-	
+	const dark = colorScheme === "dark";
+	const isActiveBg = colorScheme === "dark" ? "#182949" : "#E6F0FF";
+	const isActiveBorder = colorScheme === "dark" ? "#00398D" : "#1F41AE";
+
 	// State for settings submenu collapse
 	const [settingsOpen, setSettingsOpen] = useState(
-		location.pathname.startsWith('/dashboard/pengaturan')
+		location.pathname.startsWith("/dashboard/pengaturan"),
 	);
 
 	// Define menu items with their paths
 	const menuItems = [
 		{ name: "Beranda", path: "/dashboard" },
 		{ name: "Kinerja Divisi", path: "/dashboard/kinerja-divisi" },
-		{ name: "Pengaduan & Layanan Publik", path: "/dashboard/pengaduan-layanan-publik" },
+		{
+			name: "Pengaduan & Layanan Publik",
+			path: "/dashboard/pengaduan-layanan-publik",
+		},
 		{ name: "Jenna Analytic", path: "/dashboard/jenna-analytic" },
-		{ name: "Demografi & Kependudukan", path: "/dashboard/demografi-pekerjaan" },
+		{
+			name: "Demografi & Kependudukan",
+			path: "/dashboard/demografi-pekerjaan",
+		},
 		{ name: "Keuangan & Anggaran", path: "/dashboard/keuangan-anggaran" },
 		{ name: "Bumdes & UMKM Desa", path: "/dashboard/bumdes" },
 		{ name: "Sosial", path: "/dashboard/sosial" },
@@ -53,14 +59,17 @@ export function Sidebar({ className }: SidebarProps) {
 	];
 
 	// Check if any settings submenu is active
-	const isSettingsActive = settingsItems.some(item => 
-		location.pathname === item.path
+	const isSettingsActive = settingsItems.some(
+		(item) => location.pathname === item.path,
 	);
 
 	return (
 		<Box className={className}>
 			{/* Logo */}
-			<Box p="md" style={{ borderBottom: "1px solid var(--mantine-color-gray-3)" }}>
+			<Box
+				p="md"
+				style={{ borderBottom: "1px solid var(--mantine-color-gray-3)" }}
+			>
 				<Group gap="xs">
 					<Badge
 						color="dark"
@@ -112,7 +121,9 @@ export function Sidebar({ className }: SidebarProps) {
 							style={{
 								background: isActive ? isActiveBg : "transparent",
 								fontWeight: isActive ? "bold" : "normal",
-								borderLeft: isActive ? `4px solid ${isActiveBorder}` : "4px solid transparent",
+								borderLeft: isActive
+									? `4px solid ${isActiveBorder}`
+									: "4px solid transparent",
 								borderRadius: "8px",
 								transition: "all 200ms ease",
 								margin: "2px 0",
@@ -121,8 +132,8 @@ export function Sidebar({ className }: SidebarProps) {
 								body: {
 									"&:hover": {
 										background: "#F1F5F9",
-									}
-								}
+									},
+								},
 							}}
 						/>
 					);
@@ -132,7 +143,9 @@ export function Sidebar({ className }: SidebarProps) {
 				<Box>
 					<MantineNavLink
 						onClick={() => setSettingsOpen(!settingsOpen)}
-						rightSection={settingsOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+						rightSection={
+							settingsOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+						}
 						label="Pengaturan"
 						active={isSettingsActive}
 						variant="subtle"
@@ -140,7 +153,9 @@ export function Sidebar({ className }: SidebarProps) {
 						style={{
 							background: isSettingsActive ? isActiveBg : "transparent",
 							fontWeight: isSettingsActive ? "bold" : "normal",
-							borderLeft: isSettingsActive ? `4px solid ${isActiveBorder}` : "4px solid transparent",
+							borderLeft: isSettingsActive
+								? `4px solid ${isActiveBorder}`
+								: "4px solid transparent",
 							borderRadius: "8px",
 							transition: "all 200ms ease",
 							margin: "2px 0",
@@ -149,12 +164,16 @@ export function Sidebar({ className }: SidebarProps) {
 							body: {
 								"&:hover": {
 									background: "#F1F5F9",
-								}
-							}
+								},
+							},
 						}}
 					/>
 					<Collapse in={settingsOpen}>
-						<Stack gap={0} ml="lg" style={{ overflowY: 'auto', maxHeight: '200px' }}>
+						<Stack
+							gap={0}
+							ml="lg"
+							style={{ overflowY: "auto", maxHeight: "200px" }}
+						>
 							{settingsItems.map((item, index) => {
 								const isActive = location.pathname === item.path;
 								return (
@@ -168,7 +187,9 @@ export function Sidebar({ className }: SidebarProps) {
 										style={{
 											background: isActive ? isActiveBg : "transparent",
 											fontWeight: isActive ? "bold" : "normal",
-											borderLeft: isActive ? `4px solid ${isActiveBorder}` : "4px solid transparent",
+											borderLeft: isActive
+												? `4px solid ${isActiveBorder}`
+												: "4px solid transparent",
 											borderRadius: "8px",
 											transition: "all 200ms ease",
 											margin: "2px 0",
@@ -177,8 +198,8 @@ export function Sidebar({ className }: SidebarProps) {
 											body: {
 												"&:hover": {
 													background: "#F1F5F9",
-												}
-											}
+												},
+											},
 										}}
 									/>
 								);

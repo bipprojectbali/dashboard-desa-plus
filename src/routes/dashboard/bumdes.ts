@@ -1,7 +1,6 @@
-import BumdesPage from '@/components/bumdes-page'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
+import BumdesPage from "@/components/bumdes-page";
 
-export const Route = createFileRoute('/dashboard/bumdes')({
-  component: BumdesPage,
-})
-
+export const Route = createFileRoute("/dashboard/bumdes")({
+	component: BumdesPage,
+});

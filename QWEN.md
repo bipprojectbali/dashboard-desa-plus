@@ -51,11 +51,13 @@ bun install
 ```bash
 cp .env.example .env
 # Fill in your DATABASE_URL and BETTER_AUTH_SECRET
+# Optional: Set ADMIN_EMAIL and ADMIN_PASSWORD for admin user
 ```
 
 ### Database Initialization
 ```bash
 bun x prisma migrate dev
+bun run seed
 ```
 
 ### Start Development
@@ -109,4 +111,12 @@ bun run dev
 - `test:e2e`: Runs end-to-end tests
 - `build`: Builds the application for production
 - `start`: Starts the production server
-- `seed`: Seeds the database with initial data
+- `seed`: Seeds the database with admin and demo users
+
+## Default Users (after running `bun run seed`)
+
+- **Admin**: `ADMIN_EMAIL` (from env) / `ADMIN_PASSWORD` (default: `admin123`)
+- **Demo Users**: 
+  - `demo1@example.com` / `demo123` (role: user)
+  - `demo2@example.com` / `demo123` (role: user)
+  - `moderator@example.com` / `demo123` (role: moderator)

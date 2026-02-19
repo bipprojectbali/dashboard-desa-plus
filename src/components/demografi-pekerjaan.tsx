@@ -1,17 +1,22 @@
-import React from "react";
+import { BarChart, PieChart } from "@mantine/charts";
 import {
+	Box,
 	Card,
-	Title,
-	Text,
+	Grid,
 	Group,
 	Stack,
-	Grid,
-	Box,
 	Table,
+	Text,
+	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { IconBabyCarriage, IconSkull, IconArrowUp, IconArrowDown } from "@tabler/icons-react";
-import { BarChart, PieChart } from "@mantine/charts";
+import {
+	IconArrowDown,
+	IconArrowUp,
+	IconBabyCarriage,
+	IconSkull,
+} from "@tabler/icons-react";
+import React from "react";
 
 // Sample Data
 const kpiData = [
@@ -71,7 +76,11 @@ const kpiData = [
 		value: "23",
 		sub: "Tahun ini",
 		icon: (
-			<IconBabyCarriage className="h-6 w-6 text-muted-foreground" role="img" aria-label="Icon kelahiran" />
+			<IconBabyCarriage
+				className="h-6 w-6 text-muted-foreground"
+				role="img"
+				aria-label="Icon kelahiran"
+			/>
 		),
 	},
 	{
@@ -136,10 +145,30 @@ const banjarData = [
 ];
 
 const dynamicStats = [
-	{ title: "Kelahiran", value: "23", icon: <IconBabyCarriage size={16} />, color: "green" },
-	{ title: "Kematian", value: "12", icon: <IconSkull size={16} />, color: "red" },
-	{ title: "Pindah Masuk", value: "45", icon: <IconArrowDown size={16} />, color: "blue" },
-	{ title: "Pindah Keluar", value: "32", icon: <IconArrowUp size={16} />, color: "orange" },
+	{
+		title: "Kelahiran",
+		value: "23",
+		icon: <IconBabyCarriage size={16} />,
+		color: "green",
+	},
+	{
+		title: "Kematian",
+		value: "12",
+		icon: <IconSkull size={16} />,
+		color: "red",
+	},
+	{
+		title: "Pindah Masuk",
+		value: "45",
+		icon: <IconArrowDown size={16} />,
+		color: "blue",
+	},
+	{
+		title: "Pindah Keluar",
+		value: "32",
+		icon: <IconArrowUp size={16} />,
+		color: "orange",
+	},
 ];
 
 const DemografiPekerjaan = () => {
@@ -152,14 +181,22 @@ const DemografiPekerjaan = () => {
 				<Grid gutter="lg">
 					{kpiData.map((kpi) => (
 						<Grid.Col key={kpi.id} span={{ base: 12, md: 6, lg: 3 }}>
-							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+							>
 								<Group justify="space-between" align="flex-start" mb="xs">
 									<Text size="sm" fw={500} c={dark ? "dark.3" : "dimmed"}>
 										{kpi.title}
 									</Text>
 									{React.cloneElement(kpi.icon, {
 										className: "h-6 w-6",
-										color: dark ? "var(--mantine-color-dark-3)" : "var(--mantine-color-dimmed)",
+										color: dark
+											? "var(--mantine-color-dark-3)"
+											: "var(--mantine-color-dimmed)",
 									})}
 								</Group>
 								<Title order={3} fw={700} c={dark ? "dark.0" : "black"} mt="xs">
@@ -173,7 +210,9 @@ const DemografiPekerjaan = () => {
 												? "green"
 												: kpi.deltaType === "negative"
 													? "red"
-													: dark ? "dark.3" : "dimmed"
+													: dark
+														? "dark.3"
+														: "dimmed"
 										}
 										mt={4}
 									>
@@ -194,7 +233,13 @@ const DemografiPekerjaan = () => {
 				<Grid gutter="lg">
 					{/* Grafik Pengelompokan Umur */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+						<Card
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#141D34" : "white"}
+							style={{ borderColor: dark ? "#141D34" : "white" }}
+						>
 							<Title order={3} fw={500} mb="md">
 								Grafik Pengelompokan Umur
 							</Title>
@@ -202,7 +247,7 @@ const DemografiPekerjaan = () => {
 								h={300}
 								data={ageDistributionData}
 								dataKey="ageRange"
-								series={[{ name: 'total', color: 'darmasaba-navy' }]}
+								series={[{ name: "total", color: "darmasaba-navy" }]}
 								withLegend
 							/>
 						</Card>
@@ -210,7 +255,13 @@ const DemografiPekerjaan = () => {
 
 					{/* Demografi Pekerjaan */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+						<Card
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#141D34" : "white"}
+							style={{ borderColor: dark ? "#141D34" : "white" }}
+						>
 							<Title order={3} fw={500} mb="md">
 								Demografi Pekerjaan
 							</Title>
@@ -218,7 +269,7 @@ const DemografiPekerjaan = () => {
 								h={300}
 								data={jobDistributionData}
 								dataKey="job"
-								series={[{ name: 'total', color: 'darmasaba-navy' }]}
+								series={[{ name: "total", color: "darmasaba-navy" }]}
 								withLegend
 							/>
 						</Card>
@@ -229,16 +280,22 @@ const DemografiPekerjaan = () => {
 				<Grid gutter="lg">
 					{/* Distribusi Agama */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+						<Card
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#141D34" : "white"}
+							style={{ borderColor: dark ? "#141D34" : "white" }}
+						>
 							<Title order={3} fw={500} mb="md">
 								Distribusi Agama
 							</Title>
 							<PieChart
 								h={300}
-								data={religionData.map(item => ({
+								data={religionData.map((item) => ({
 									name: item.religion,
 									value: item.total,
-									color: item.color
+									color: item.color,
 								}))}
 								withLabels
 								withLabelsLine
@@ -250,27 +307,53 @@ const DemografiPekerjaan = () => {
 
 					{/* Data per Banjar */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+						<Card
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#141D34" : "white"}
+							style={{ borderColor: dark ? "#141D34" : "white" }}
+						>
 							<Title order={3} fw={500} c={dark ? "dark.0" : "black"} mb="md">
 								Data per Banjar
 							</Title>
 							<Table striped highlightOnHover>
 								<Table.Thead>
 									<Table.Tr>
-										<Table.Th><Text c={dark ? "dark.0" : "black"}>Banjar</Text></Table.Th>
-										<Table.Th><Text c={dark ? "dark.0" : "black"}>Penduduk</Text></Table.Th>
-										<Table.Th><Text c={dark ? "dark.0" : "black"}>KK</Text></Table.Th>
-										<Table.Th><Text c={dark ? "dark.0" : "black"}>Miskin</Text></Table.Th>
+										<Table.Th>
+											<Text c={dark ? "dark.0" : "black"}>Banjar</Text>
+										</Table.Th>
+										<Table.Th>
+											<Text c={dark ? "dark.0" : "black"}>Penduduk</Text>
+										</Table.Th>
+										<Table.Th>
+											<Text c={dark ? "dark.0" : "black"}>KK</Text>
+										</Table.Th>
+										<Table.Th>
+											<Text c={dark ? "dark.0" : "black"}>Miskin</Text>
+										</Table.Th>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
 									{banjarData.map((item, index) => (
 										<Table.Tr key={`${item.banjar}-${index}`}>
-											<Table.Td><Text c={dark ? "dark.0" : "black"}>{item.banjar}</Text></Table.Td>
-											<Table.Td><Text c={dark ? "dark.0" : "black"}>{item.population.toLocaleString()}</Text></Table.Td>
-											<Table.Td><Text c={dark ? "dark.0" : "black"}>{item.kk.toLocaleString()}</Text></Table.Td>
 											<Table.Td>
-												<Text c={dark ? "red.4" : "red"}>{item.poor.toLocaleString()}</Text>
+												<Text c={dark ? "dark.0" : "black"}>{item.banjar}</Text>
+											</Table.Td>
+											<Table.Td>
+												<Text c={dark ? "dark.0" : "black"}>
+													{item.population.toLocaleString()}
+												</Text>
+											</Table.Td>
+											<Table.Td>
+												<Text c={dark ? "dark.0" : "black"}>
+													{item.kk.toLocaleString()}
+												</Text>
+											</Table.Td>
+											<Table.Td>
+												<Text c={dark ? "red.4" : "red"}>
+													{item.poor.toLocaleString()}
+												</Text>
 											</Table.Td>
 										</Table.Tr>
 									))}
@@ -281,14 +364,29 @@ const DemografiPekerjaan = () => {
 				</Grid>
 
 				{/* Statistik Dinamika Penduduk */}
-				<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+				<Card
+					p="md"
+					radius="md"
+					withBorder
+					bg={dark ? "#141D34" : "white"}
+					style={{ borderColor: dark ? "#141D34" : "white" }}
+				>
 					<Title order={3} fw={500} c={dark ? "dark.0" : "black"} mb="md">
 						Statistik Dinamika Penduduk
 					</Title>
 					<Grid gutter="md">
 						{dynamicStats.map((stat, index) => (
-							<Grid.Col key={`${stat.title}-${index}`} span={{ base: 12, md: 3 }}>
-								<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+							<Grid.Col
+								key={`${stat.title}-${index}`}
+								span={{ base: 12, md: 3 }}
+							>
+								<Card
+									p="md"
+									radius="md"
+									withBorder
+									bg={dark ? "#141D34" : "white"}
+									style={{ borderColor: dark ? "#141D34" : "white" }}
+								>
 									<Group justify="space-between" align="center">
 										<Box>
 											<Text size="sm" fw={500} c={dark ? "dark.3" : "dimmed"}>
@@ -298,9 +396,7 @@ const DemografiPekerjaan = () => {
 												{stat.value}
 											</Title>
 										</Box>
-										<Box c={stat.color}>
-											{stat.icon}
-										</Box>
+										<Box c={stat.color}>{stat.icon}</Box>
 									</Group>
 								</Card>
 							</Grid.Col>

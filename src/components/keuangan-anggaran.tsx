@@ -1,19 +1,23 @@
-import React from "react";
+import { BarChart } from "@mantine/charts";
 import {
+	Badge,
+	Box,
 	Button,
 	Card,
-	Badge,
-	Title,
-	Text,
-	Group,
-	Stack,
 	Grid,
-	Box,
+	Group,
 	Progress,
+	Stack,
+	Text,
+	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { IconTrendingUp, IconTrendingDown, IconCurrency } from "@tabler/icons-react";
-import { BarChart } from "@mantine/charts";
+import {
+	IconCurrency,
+	IconTrendingDown,
+	IconTrendingUp,
+} from "@tabler/icons-react";
+import React from "react";
 
 // Sample Data
 const kpiData = [
@@ -22,9 +26,7 @@ const kpiData = [
 		title: "Total APBDes",
 		value: "Rp 5.2M",
 		sub: "Tahun 2025",
-		icon: (
-			<IconCurrency className="h-6 w-6 text-muted-foreground" />
-		),
+		icon: <IconCurrency className="h-6 w-6 text-muted-foreground" />,
 	},
 	{
 		id: 2,
@@ -55,18 +57,14 @@ const kpiData = [
 		sub: "Bulan ini",
 		delta: "+8%",
 		deltaType: "positive",
-		icon: (
-			<IconTrendingUp className="h-6 w-6 text-muted-foreground" />
-		),
+		icon: <IconTrendingUp className="h-6 w-6 text-muted-foreground" />,
 	},
 	{
 		id: 4,
 		title: "Pengeluaran",
 		value: "Rp 520jt",
 		sub: "Bulan ini",
-		icon: (
-			<IconTrendingDown className="h-6 w-6 text-muted-foreground" />
-		),
+		icon: <IconTrendingDown className="h-6 w-6 text-muted-foreground" />,
 	},
 ];
 
@@ -125,7 +123,14 @@ const KeuanganAnggaran = () => {
 				<Grid gutter="lg">
 					{kpiData.map((kpi) => (
 						<Grid.Col key={kpi.id} span={{ base: 12, md: 6, lg: 3 }}>
-							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }} h="100%">
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
 								<Group justify="space-between" align="flex-start" mb="xs">
 									<Text size="sm" fw={500} c="dimmed">
 										{kpi.title}
@@ -167,7 +172,13 @@ const KeuanganAnggaran = () => {
 				<Grid gutter="lg">
 					{/* Grafik Pemasukan vs Pengeluaran */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+						<Card
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#141D34" : "white"}
+							style={{ borderColor: dark ? "#141D34" : "white" }}
+						>
 							<Title order={3} fw={500} mb="md">
 								Pemasukan vs Pengeluaran
 							</Title>
@@ -176,8 +187,8 @@ const KeuanganAnggaran = () => {
 								data={incomeExpenseData}
 								dataKey="month"
 								series={[
-									{ name: 'income', color: 'green', label: 'Pemasukan' },
-									{ name: 'expense', color: 'red', label: 'Pengeluaran' },
+									{ name: "income", color: "green", label: "Pemasukan" },
+									{ name: "expense", color: "red", label: "Pengeluaran" },
 								]}
 								withLegend
 							/>
@@ -186,7 +197,13 @@ const KeuanganAnggaran = () => {
 
 					{/* Alokasi Anggaran Per Sektor */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+						<Card
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#141D34" : "white"}
+							style={{ borderColor: dark ? "#141D34" : "white" }}
+						>
 							<Title order={3} fw={500} mb="md">
 								Alokasi Anggaran Per Sektor
 							</Title>
@@ -194,7 +211,9 @@ const KeuanganAnggaran = () => {
 								h={300}
 								data={allocationData}
 								dataKey="sector"
-								series={[{ name: 'amount', color: 'darmasaba-navy', label: 'Jumlah' }]}
+								series={[
+									{ name: "amount", color: "darmasaba-navy", label: "Jumlah" },
+								]}
 								withLegend
 								orientation="horizontal"
 							/>
@@ -205,7 +224,13 @@ const KeuanganAnggaran = () => {
 				<Grid gutter="lg">
 					{/* Dana Bantuan & Hibah */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+						<Card
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#141D34" : "white"}
+							style={{ borderColor: dark ? "#141D34" : "white" }}
+						>
 							<Title order={3} fw={500} mb="md">
 								Dana Bantuan & Hibah
 							</Title>
@@ -243,13 +268,21 @@ const KeuanganAnggaran = () => {
 
 					{/* Laporan APBDes */}
 					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+						<Card
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#141D34" : "white"}
+							style={{ borderColor: dark ? "#141D34" : "white" }}
+						>
 							<Title order={3} fw={500} mb="md">
 								Laporan APBDes
 							</Title>
 
 							<Box mb="md">
-								<Title order={4} mb="sm">Pendapatan</Title>
+								<Title order={4} mb="sm">
+									Pendapatan
+								</Title>
 								<Stack gap="xs">
 									{apbdReport.income.map((item, index) => (
 										<Group key={index} justify="space-between">
@@ -269,7 +302,9 @@ const KeuanganAnggaran = () => {
 							</Box>
 
 							<Box>
-								<Title order={4} mb="sm">Belanja</Title>
+								<Title order={4} mb="sm">
+									Belanja
+								</Title>
 								<Stack gap="xs">
 									{apbdReport.expenses.map((item, index) => (
 										<Group key={index} justify="space-between">
@@ -288,11 +323,26 @@ const KeuanganAnggaran = () => {
 								</Stack>
 							</Box>
 
-							<Box mt="md" pt="md" style={{ borderTop: '1px solid var(--mantine-color-gray-3)' }}>
+							<Box
+								mt="md"
+								pt="md"
+								style={{ borderTop: "1px solid var(--mantine-color-gray-3)" }}
+							>
 								<Group justify="space-between">
 									<Text fw={700}>Saldo:</Text>
-									<Text fw={700} c={apbdReport.totalIncome > apbdReport.totalExpenses ? "green" : "red"}>
-										Rp {(apbdReport.totalIncome - apbdReport.totalExpenses).toLocaleString()}jt
+									<Text
+										fw={700}
+										c={
+											apbdReport.totalIncome > apbdReport.totalExpenses
+												? "green"
+												: "red"
+										}
+									>
+										Rp{" "}
+										{(
+											apbdReport.totalIncome - apbdReport.totalExpenses
+										).toLocaleString()}
+										jt
 									</Text>
 								</Group>
 							</Box>

@@ -1,7 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
-import KeamananSettings from '@/components/pengaturan/keamanan'
+import { createFileRoute } from "@tanstack/react-router";
+import KeamananSettings from "@/components/pengaturan/keamanan";
 
-export const Route = createFileRoute('/dashboard/pengaturan/keamanan')({
-  component: KeamananSettings,
-})
-
+export const Route = createFileRoute("/dashboard/pengaturan/keamanan")({
+	component: KeamananSettings,
+});
