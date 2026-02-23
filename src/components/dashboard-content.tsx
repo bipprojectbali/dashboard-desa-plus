@@ -66,6 +66,12 @@ const eventData = [
 	{ date: "19 Oktober 2025", title: "Rapat Koordinasi" },
 ];
 
+const apbdesData = [
+	{ name: "Belanja", value: 70, color: "blue" },
+	{ name: "Pendapatan", value: 90, color: "green" },
+	{ name: "Pembangunan", value: 50, color: "orange" },
+];
+
 export function DashboardContent() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
@@ -480,42 +486,23 @@ export function DashboardContent() {
 					Grafik APBDes
 				</Title>
 				<Stack gap="xs">
-					<Group align="center" gap="md">
-						<Text size="sm" fw={500} w={60}>
-							Belanja
-						</Text>
-						<Progress
-							value={70}
-							size="lg"
-							radius="xl"
-							color="blue"
-							style={{ flex: 1 }}
-						/>
-					</Group>
-					<Group align="center" gap="md">
-						<Text size="sm" fw={500} w={60}>
-							Pendapatan
-						</Text>
-						<Progress
-							value={90}
-							size="lg"
-							radius="xl"
-							color="green"
-							style={{ flex: 1 }}
-						/>
-					</Group>
-					<Group align="center" gap="md">
-						<Text size="sm" fw={500} w={60}>
-							Pembangunan
-						</Text>
-						<Progress
-							value={50}
-							size="lg"
-							radius="xl"
-							color="orange"
-							style={{ flex: 1 }}
-						/>
-					</Group>
+					{apbdesData.map((data, index) => (
+						<Grid key={index} align="center">
+							<Grid.Col span={3}>
+								<Text size="sm" fw={500}>
+									{data.name}
+								</Text>
+							</Grid.Col>
+							<Grid.Col span={9}>
+								<Progress
+									value={data.value}
+									size="lg"
+									radius="xl"
+									color={data.color}
+								/>
+							</Grid.Col>
+						</Grid>
+					))}
 				</Stack>
 			</Card>
 		</Stack>
