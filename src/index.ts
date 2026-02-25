@@ -6,6 +6,8 @@ import { Elysia } from "elysia";
 import api from "./api";
 import { openInEditor } from "./utils/open-in-editor";
 
+const PORT = process.env.PORT || 3000;
+
 const isProduction = process.env.NODE_ENV === "production";
 
 const app = new Elysia().use(api);
@@ -198,10 +200,10 @@ if (!isProduction) {
 	});
 }
 
-app.listen(3000);
+app.listen(PORT);
 
 console.log(
-	`🚀 Server running at http://localhost:3000 in ${isProduction ? "production" : "development"} mode`,
+	`🚀 Server running at http://localhost:${PORT} in ${isProduction ? "production" : "development"} mode`,
 );
 
 export type ApiApp = typeof app;
