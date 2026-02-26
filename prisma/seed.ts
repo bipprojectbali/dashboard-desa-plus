@@ -133,7 +133,18 @@ async function main() {
 	console.log("Database seeding completed.");
 }
 
-main().catch((error) => {
-	console.error("Error during seeding:", error);
-	process.exit(1);
-});
+// Only auto-execute when run directly (not when imported)
+const isMainModule =
+	typeof require !== "undefined"
+		? require.main === module
+		: import.meta.path.endsWith("seed.ts");
+
+if (isMainModule) {
+	main().catch((error) => {
+		console.error("Error during seeding:", error);
+		process.exit(1);
+	});
+}
+
+// Export for programmatic use
+export { seedAdminUser, seedDemoUsers, main as runSeed };

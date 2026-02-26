@@ -10,6 +10,18 @@ const PORT = process.env.PORT || 3000;
 
 const isProduction = process.env.NODE_ENV === "production";
 
+// Auto-seed database in production (ensure admin user exists)
+if (isProduction && process.env.ADMIN_EMAIL) {
+	try {
+		console.log("🌱 Running database seed in production...");
+		const { runSeed } = await import("../prisma/seed.ts");
+		await runSeed();
+	} catch (error) {
+		console.error("⚠️ Production seed failed:", error);
+		// Don't crash the server if seed fails
+	}
+}
+
 const app = new Elysia().use(api);
 
 if (!isProduction) {
