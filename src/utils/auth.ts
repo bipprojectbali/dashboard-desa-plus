@@ -32,6 +32,23 @@ export const auth = betterAuth({
 			},
 		},
 	},
+	databaseHooks: {
+		user: {
+			create: {
+				before: async (user) => {
+					if (user.email === process.env.ADMIN_EMAIL) {
+						return {
+							data: {
+								...user,
+								role: "admin",
+							},
+						};
+					}
+					return { data: user };
+				},
+			},
+		},
+	},
 	secret: process.env.BETTER_AUTH_SECRET,
 	session: {
 		cookieCache: {
@@ -42,5 +59,6 @@ export const auth = betterAuth({
 	},
 	advanced: {
 		cookiePrefix: "bun-react",
+		trustProxy: true,
 	},
 });
