@@ -20,10 +20,17 @@ export const getEnv = (key: string, defaultValue = ""): string => {
 	return defaultValue;
 };
 
-export const VITE_PUBLIC_URL = getEnv(
-	"VITE_PUBLIC_URL",
-	"http://localhost:3000",
-);
+export const VITE_PUBLIC_URL = (() => {
+	const envUrl = getEnv("VITE_PUBLIC_URL");
+	if (envUrl) return envUrl;
+
+	// Fallback for browser
+	if (typeof window !== "undefined") {
+		return window.location.origin;
+	}
+
+	return "http://localhost:3000";
+})();
 
 export const IS_DEV = (() => {
 	try {

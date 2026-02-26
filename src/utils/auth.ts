@@ -1,15 +1,10 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "../../generated/prisma";
-import logger from "./logger";
+import { VITE_PUBLIC_URL } from "./env";
 
-const baseUrl = process.env.VITE_PUBLIC_URL;
+const baseUrl = VITE_PUBLIC_URL;
 const prisma = new PrismaClient();
-
-if (!baseUrl) {
-	logger.error("VITE_PUBLIC_URL is not defined");
-	throw new Error("VITE_PUBLIC_URL is not defined");
-}
 
 // logger.info('Initializing Better Auth with Prisma adapter');
 export const auth = betterAuth({
