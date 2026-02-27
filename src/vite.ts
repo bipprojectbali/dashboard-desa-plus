@@ -8,6 +8,7 @@ import { createServer as createViteServer } from "vite";
 export async function createVite() {
 	return createViteServer({
 		root: process.cwd(),
+		publicDir: "public",
 		resolve: {
 			alias: {
 				"@": path.resolve(process.cwd(), "./src"),
