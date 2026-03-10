@@ -16,6 +16,7 @@ _.log
 report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # dotenv environment variable files
+# Only .env.example is allowed to be committed
 .env
 .env.development.local
 .env.test.local
