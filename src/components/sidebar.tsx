@@ -184,5 +184,6 @@ export function Sidebar({ className }: SidebarProps) {
 				</Box>
 			</Stack>
 		</Box>
+		
 	);
 }
