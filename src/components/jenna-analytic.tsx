@@ -1,283 +1,281 @@
-import { BarChart } from "@mantine/charts";
 import {
-	Badge,
-	Box,
-	Button,
-	Card,
-	Grid,
-	Group,
-	Progress,
-	Stack,
-	Text,
-	Title,
-	useMantineColorScheme,
-} from "@mantine/core";
-import React from "react";
-
-// Sample Data
-const kpiData = [
-	{
-		id: 1,
-		title: "Interaksi Hari Ini",
-		value: "61",
-		delta: "+15% dari kemarin",
-		deltaType: "positive",
-		icon: (
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				strokeWidth={1.5}
-				stroke="currentColor"
-				className="h-6 w-6 text-muted-foreground"
-			>
-				<path
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H16.5m-13.5 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"
-				/>
-			</svg>
-		),
-	},
-	{
-		id: 2,
-		title: "Jawaban Otomatis",
-		value: "87%",
-		sub: "53 dari 61 interaksi",
-		icon: (
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				strokeWidth={1.5}
-				stroke="currentColor"
-				className="h-6 w-6 text-muted-foreground"
-			>
-				<path
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.473-1.688 3.342-.48.485-.926.97-1.378 1.44c-1.472 1.58-2.306 2.787-2.91 3.514-.15.18-.207.33-.207.33A.75.75 0 0 1 15 21h-3c-1.104 0-2.08-.542-2.657-1.455-.139-.201-.264-.406-.38-.614l-.014-.025C8.85 18.067 8.156 17.2 7.5 16.325.728 12.56.728 7.44 7.5 3.675c3.04-.482 5.584.47 7.042 1.956.674.672 1.228 1.462 1.696 2.307.426.786.793 1.582 1.113 2.392h.001Z"
-				/>
-			</svg>
-		),
-	},
-	{
-		id: 3,
-		title: "Belum Ditindak",
-		value: "8",
-		sub: "Perlu respon manual",
-		deltaType: "negative",
-		icon: (
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				strokeWidth={1.5}
-				stroke="currentColor"
-				className="h-6 w-6 text-muted-foreground"
-			>
-				<path
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-				/>
-			</svg>
-		),
-	},
-	{
-		id: 4,
-		title: "Waktu Respon",
-		value: "2.3 sec",
-		sub: "Rata-rata",
-		icon: (
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				strokeWidth={1.5}
-				stroke="currentColor"
-				className="h-6 w-6 text-muted-foreground"
-			>
-				<path
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-				/>
-			</svg>
-		),
-	},
-];
-
-const chartData = [
-	{ day: "Sen", total: 100 },
-	{ day: "Sel", total: 120 },
-	{ day: "Rab", total: 90 },
-	{ day: "Kam", total: 150 },
-	{ day: "Jum", total: 110 },
-	{ day: "Sab", total: 80 },
-	{ day: "Min", total: 130 },
-];
-
-const topTopics = [
-	{ topic: "Cara mengurus KTP", count: 89 },
-	{ topic: "Syarat Kartu Keluarga", count: 76 },
-	{ topic: "Jadwal Posyandu", count: 64 },
-	{ topic: "Pengaduan jalan rusak", count: 52 },
-	{ topic: "Info program bansos", count: 48 },
-];
-
-const busyHours = [
-	{ period: "Pagi (08–12)", percentage: 30 },
-	{ period: "Siang (12–16)", percentage: 40 },
-	{ period: "Sore (16–20)", percentage: 20 },
-	{ period: "Malam (20–08)", percentage: 10 },
-];
+	IconAlertTriangle,
+	IconClock,
+	IconMessageChatbot,
+	IconSparkles,
+} from "@tabler/icons-react";
+import { useMantineColorScheme } from "@mantine/core";
+import {
+	Bar,
+	BarChart,
+	CartesianGrid,
+	Cell,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
 
 const JennaAnalytic = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
+	// KPI Data
+	const kpiData = [
+		{
+			id: 1,
+			title: "Interaksi Hari Ini",
+			value: "61",
+			subtitle: "+15% dari kemarin",
+			icon: IconMessageChatbot,
+		},
+		{
+			id: 2,
+			title: "Jawaban Otomatis",
+			value: "87%",
+			subtitle: "53 dari 61 interaksi",
+			icon: IconSparkles,
+		},
+		{
+			id: 3,
+			title: "Belum Ditindak",
+			value: "8",
+			subtitle: "Perlu respon manual",
+			icon: IconAlertTriangle,
+		},
+		{
+			id: 4,
+			title: "Waktu Respon",
+			value: "2.3s",
+			subtitle: "Rata-rata",
+			icon: IconClock,
+		},
+	];
+
+	// Weekly chatbot interaction data
+	const weeklyData = [
+		{ day: "Sen", interactions: 100 },
+		{ day: "Sel", interactions: 120 },
+		{ day: "Rab", interactions: 90 },
+		{ day: "Kam", interactions: 150 },
+		{ day: "Jum", interactions: 110 },
+		{ day: "Sab", interactions: 80 },
+		{ day: "Min", interactions: 130 },
+	];
+
+	// Top topics data
+	const topTopics = [
+		{ topic: "Cara mengurus KTP", count: 89 },
+		{ topic: "Syarat Kartu Keluarga", count: 76 },
+		{ topic: "Jadwal Posyandu", count: 64 },
+		{ topic: "Pengaduan jalan rusak", count: 52 },
+		{ topic: "Info program bansos", count: 48 },
+	];
+
+	// Busy hour distribution
+	const busyHours = [
+		{ period: "Pagi (08–12)", percentage: 30 },
+		{ period: "Siang (12–16)", percentage: 40 },
+		{ period: "Sore (16–20)", percentage: 20 },
+		{ period: "Malam (20–08)", percentage: 10 },
+	];
+
+	const COLORS = ["#1E3A5F", "#3B82F6", "#60A5FA", "#93C5FD"];
+
+	const cardStyle = {
+		backgroundColor: dark ? "#141D34" : "white",
+		border: `1px solid ${dark ? "#141D34" : "white"}`,
+	};
+
+	const textStyle = {
+		color: dark ? "white" : "#1F2937",
+	};
+
+	const subtitleStyle = {
+		color: dark ? "#9CA3AF" : "#6B7280",
+	};
+
 	return (
-		<Box className="space-y-6">
-			<Stack gap="xl">
-				{/* KPI Cards */}
-				<Grid gutter="lg">
+		<div
+			className="min-h-screen"
+			style={{ backgroundColor: dark ? "#10192D" : "#F3F4F6" }}
+		>
+			<div className="max-w-7xl mx-auto">
+				{/* Row 1: 4 Statistic Cards */}
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
 					{kpiData.map((kpi) => (
-						<Grid.Col key={kpi.id} span={{ base: 12, md: 6, lg: 3 }}>
-							<Card
-								p="md"
-								radius="md"
-								withBorder
-								bg={dark ? "#141D34" : "white"}
-								style={{ borderColor: dark ? "#141D34" : "white" }}
-							>
-								<Group justify="space-between" align="flex-start" mb="xs">
-									<Text size="sm" fw={500} c="dimmed">
-										{kpi.title}
-									</Text>
-									{React.cloneElement(kpi.icon, {
-										className: "h-6 w-6", // Keeping classes for now, can be replaced by Mantine Icon component if available or styled with sx prop
-										color: "var(--mantine-color-dimmed)", // Set color via prop
-									})}
-								</Group>
-								<Title order={3} fw={700} mt="xs">
-									{kpi.value}
-								</Title>
-								{kpi.delta && (
-									<Text
-										size="xs"
-										c={
-											kpi.deltaType === "positive"
-												? "green"
-												: kpi.deltaType === "negative"
-													? "red"
-													: "dimmed"
-										}
-										mt={4}
-									>
-										{kpi.delta}
-									</Text>
-								)}
-								{kpi.sub && (
-									<Text size="xs" c="dimmed" mt={2}>
-										{kpi.sub}
-									</Text>
-								)}
-							</Card>
-						</Grid.Col>
-					))}
-				</Grid>
-
-				<Card
-					p="md"
-					radius="md"
-					withBorder
-					bg={dark ? "#141D34" : "white"}
-					style={{ borderColor: dark ? "#141D34" : "white" }}
-				>
-					<Title order={3} fw={500} mb="md">
-						Interaksi Chatbot
-					</Title>
-					<BarChart
-						h={300}
-						data={chartData}
-						dataKey="day"
-						series={[{ name: "total", color: "blue" }]}
-						withLegend
-					/>
-				</Card>
-
-				{/* Charts and Lists Section */}
-				<Grid gutter="lg">
-					{/* Grafik Interaksi Chatbot (now Bar Chart) */}
-					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card
-							p="md"
-							radius="md"
-							withBorder
-							bg={dark ? "#141D34" : "white"}
-							style={{ borderColor: dark ? "#141D34" : "white" }}
-							h="100%"
+						<div
+							key={kpi.id}
+							className="rounded-xl shadow-sm p-6"
+							style={cardStyle}
 						>
-							<Title order={3} fw={500} mb="md">
-								Jam Tersibuk
-							</Title>
-							<Stack gap="sm">
-								{busyHours.map((item, index) => (
-									<Box key={index}>
-										<Text size="sm">{item.period}</Text>
-										<Group align="center">
-											<Progress value={item.percentage} flex={1} />
-											<Text size="sm" fw={500}>
-												{item.percentage}%
-											</Text>
-										</Group>
-									</Box>
+							<div className="flex items-center justify-between">
+								<div className="flex-1">
+									<h3
+										className="text-sm font-medium mb-1"
+										style={subtitleStyle}
+									>
+										{kpi.title}
+									</h3>
+									<p
+										className="text-3xl font-bold mb-1"
+										style={textStyle}
+									>
+										{kpi.value}
+									</p>
+									<p
+										className="text-xs"
+										style={subtitleStyle}
+									>
+										{kpi.subtitle}
+									</p>
+								</div>
+								<div className="flex-shrink-0 ml-4">
+									<div
+										className="w-12 h-12 rounded-full flex items-center justify-center text-white"
+										style={{ backgroundColor: "#1E3A5F" }}
+									>
+										<kpi.icon size={24} />
+									</div>
+								</div>
+							</div>
+						</div>
+					))}
+				</div>
+
+				{/* Row 2: Full Width Weekly Bar Chart */}
+				<div
+					className="rounded-xl shadow-sm p-6 mb-6"
+					style={cardStyle}
+				>
+					<h3
+						className="text-lg font-semibold mb-4"
+						style={textStyle}
+					>
+						Interaksi Chatbot Mingguan
+					</h3>
+					<ResponsiveContainer width="100%" height={300}>
+						<BarChart data={weeklyData}>
+							<CartesianGrid
+								strokeDasharray="3 3"
+								vertical={false}
+								stroke={dark ? "#2d3748" : "#E5E7EB"}
+							/>
+							<XAxis
+								dataKey="day"
+								axisLine={false}
+								tickLine={false}
+								tick={{ fill: dark ? "#9CA3AF" : "#6B7280" }}
+							/>
+							<YAxis
+								axisLine={false}
+								tickLine={false}
+								tick={{ fill: dark ? "#9CA3AF" : "#6B7280" }}
+							/>
+							<Tooltip
+								contentStyle={{
+									backgroundColor: dark ? "#1F2937" : "white",
+									border: `1px solid ${dark ? "#374151" : "#E5E7EB"}`,
+									borderRadius: "8px",
+									color: dark ? "white" : "#1F2937",
+								}}
+							/>
+							<Bar dataKey="interactions" radius={[4, 4, 0, 0]}>
+								{weeklyData.map((entry, index) => (
+									<Cell
+										key={`cell-${index}`}
+										fill={COLORS[index % COLORS.length]}
+									/>
 								))}
-							</Stack>
-						</Card>
-					</Grid.Col>
+							</Bar>
+						</BarChart>
+					</ResponsiveContainer>
+				</div>
 
-					{/* Topik Pertanyaan Terbanyak & Jam Tersibuk */}
-					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Stack gap="lg">
-							{/* Topik Pertanyaan Terbanyak */}
-							<Card
-								p="md"
-								radius="md"
-								withBorder
-								bg={dark ? "#141D34" : "white"}
-								style={{ borderColor: dark ? "#141D34" : "white" }}
-								h="100%"
-							>
-								<Title order={3} fw={500} mb="md">
-									Topik Pertanyaan Terbanyak
-								</Title>
-								<Stack gap="xs">
-									{topTopics.map((item, index) => (
-										<Group
-											key={index}
-											justify="space-between"
-											align="center"
-											p="xs"
+				{/* Row 3: Two Insight Cards */}
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+					{/* Left: Frequently Asked Topics */}
+					<div
+						className="rounded-xl shadow-sm p-6"
+						style={cardStyle}
+					>
+						<h3
+							className="text-lg font-semibold mb-4"
+							style={textStyle}
+						>
+							Topik Pertanyaan Terbanyak
+						</h3>
+						<div className="space-y-3">
+							{topTopics.map((item, index) => (
+								<div
+									key={index}
+									className="flex items-center justify-between py-3"
+									style={{
+										borderBottom: `1px solid ${dark ? "#2d3748" : "#E5E7EB"}`,
+									}}
+								>
+									<span
+										className="text-sm font-medium"
+										style={textStyle}
+									>
+										{item.topic}
+									</span>
+									<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+										{item.count}x
+									</span>
+								</div>
+							))}
+						</div>
+					</div>
+
+					{/* Right: Busy Hour Distribution */}
+					<div
+						className="rounded-xl shadow-sm p-6"
+						style={cardStyle}
+					>
+						<h3
+							className="text-lg font-semibold mb-4"
+							style={textStyle}
+						>
+							Distribusi Jam Tersibuk
+						</h3>
+						<div className="space-y-4">
+							{busyHours.map((item, index) => (
+								<div key={index}>
+									<div className="flex items-center justify-between mb-1">
+										<span
+											className="text-sm font-medium"
+											style={textStyle}
 										>
-											<Text size="sm" fw={500}>
-												{item.topic}
-											</Text>
-											<Badge variant="light" color="gray">
-												{item.count}x
-											</Badge>
-										</Group>
-									))}
-								</Stack>
-							</Card>
-
-							{/* Jam Tersibuk */}
-						</Stack>
-					</Grid.Col>
-				</Grid>
-			</Stack>
-		</Box>
+											{item.period}
+										</span>
+										<span
+											className="text-sm font-semibold"
+											style={textStyle}
+										>
+											{item.percentage}%
+										</span>
+									</div>
+									<div
+										className="w-full rounded-full h-2"
+										style={{ backgroundColor: dark ? "#2d3748" : "#E5E7EB" }}
+									>
+										<div
+											className="h-2 rounded-full transition-all"
+											style={{
+												width: `${item.percentage}%`,
+												backgroundColor: COLORS[index % COLORS.length],
+											}}
+										/>
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	);
 };
+
 export default JennaAnalytic;

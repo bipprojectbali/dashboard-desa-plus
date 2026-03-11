@@ -66,10 +66,10 @@ const routeRules: RouteRule[] = [
 		redirectTo: "/signin",
 	},
 	{
-		match: (p) => p === "/dashboard" || p.startsWith("/dashboard/"),
+		match: (p) => p === "/admin" || p.startsWith("/admin/"),
 		requireAuth: true,
 		requiredRole: "admin",
-		redirectTo: "/profile",
+		redirectTo: "/signin",
 	},
 ];
 
