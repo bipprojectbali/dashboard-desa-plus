@@ -8,7 +8,7 @@ import {
 	IconStethoscope,
 	IconUsers,
 } from "@tabler/icons-react";
-import { useMantineColorScheme } from "@mantine/core";
+import { useMantineColorScheme, Title } from "@mantine/core";
 
 const SosialPage = () => {
 	const { colorScheme } = useMantineColorScheme();
@@ -419,21 +419,18 @@ const SosialPage = () => {
 						</p>
 					</div>
 
-					{/* Kalender Event Budaya */}
-					<div
-						className={`rounded-xl shadow-sm p-6 ${
-							dark ? "bg-slate-800 border border-slate-800" : "bg-white border border-white"
-						}`}
-					>
-						<h3
-							className={`text-lg font-semibold mb-4 ${
-								dark ? "text-white" : "text-gray-800"
-							}`}
-						>
-							Kalender Event Budaya
-						</h3>
-						<div className="space-y-4">
-							{culturalEvents.map((event, index) => (
+		{/* Kalender Event Budaya */}
+<div
+	className={`rounded-xl shadow-sm p-6 ${
+		dark ? "bg-slate-800 border border-slate-800" : "bg-white border border-white"
+	}`}
+>
+	<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
+		Kalender Event Budaya
+	</Title>
+
+	<div className="space-y-4">
+		{culturalEvents.map((event, index) => (
 								<div
 									key={index}
 									className={`flex items-start gap-3 p-4 rounded-lg ${
