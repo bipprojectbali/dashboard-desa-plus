@@ -1,356 +1,567 @@
-import { BarChart } from "@mantine/charts";
-import {
-	Badge,
-	Box,
-	Button,
-	Card,
-	Grid,
-	Group,
-	Progress,
-	Stack,
-	Text,
-	Title,
-	useMantineColorScheme,
-} from "@mantine/core";
 import {
 	IconCurrency,
 	IconTrendingDown,
 	IconTrendingUp,
+	IconCheck,
+	IconClock,
 } from "@tabler/icons-react";
-import React from "react";
-
-// Sample Data
-const kpiData = [
-	{
-		id: 1,
-		title: "Total APBDes",
-		value: "Rp 5.2M",
-		sub: "Tahun 2025",
-		icon: <IconCurrency className="h-6 w-6 text-muted-foreground" />,
-	},
-	{
-		id: 2,
-		title: "Realisasi",
-		value: "68%",
-		sub: "Rp 3.5M dari 5.2M",
-		icon: (
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				strokeWidth={1.5}
-				stroke="currentColor"
-				className="h-6 w-6 text-muted-foreground"
-			>
-				<path
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.473-1.688 3.342-.48.485-.926.97-1.378 1.44c-1.472 1.58-2.306 2.787-2.91 3.514-.15.18-.207.33-.207.33A.75.75 0 0 1 15 21h-3c-1.104 0-2.08-.542-2.657-1.455-.139-.201-.264-.406-.38-.614l-.014-.025C8.85 18.067 8.156 17.2 7.5 16.325.728 12.56.728 7.44 7.5 3.675c3.04-.482 5.584.47 7.042 1.956.674.672 1.228 1.462 1.696 2.307.426.786.793 1.582 1.113 2.392h.001Z"
-				/>
-			</svg>
-		),
-	},
-	{
-		id: 3,
-		title: "Pemasukan",
-		value: "Rp 580jt",
-		sub: "Bulan ini",
-		delta: "+8%",
-		deltaType: "positive",
-		icon: <IconTrendingUp className="h-6 w-6 text-muted-foreground" />,
-	},
-	{
-		id: 4,
-		title: "Pengeluaran",
-		value: "Rp 520jt",
-		sub: "Bulan ini",
-		icon: <IconTrendingDown className="h-6 w-6 text-muted-foreground" />,
-	},
-];
-
-const incomeExpenseData = [
-	{ month: "Apr", income: 450, expense: 380 },
-	{ month: "Mei", income: 520, expense: 420 },
-	{ month: "Jun", income: 480, expense: 500 },
-	{ month: "Jul", income: 580, expense: 450 },
-	{ month: "Agu", income: 550, expense: 520 },
-	{ month: "Sep", income: 600, expense: 480 },
-	{ month: "Okt", income: 580, expense: 520 },
-];
-
-const allocationData = [
-	{ sector: "Pembangunan", amount: 1200 },
-	{ sector: "Kesehatan", amount: 800 },
-	{ sector: "Pendidikan", amount: 650 },
-	{ sector: "Sosial", amount: 550 },
-	{ sector: "Kebudayaan", amount: 400 },
-	{ sector: "Teknologi", amount: 300 },
-];
-
-const assistanceFundData = [
-	{ source: "Dana Desa (DD)", amount: 1800, status: "cair" },
-	{ source: "Alokasi Dana Desa (ADD)", amount: 950, status: "cair" },
-	{ source: "Bagi Hasil Pajak", amount: 450, status: "cair" },
-	{ source: "Hibah Provinsi", amount: 300, status: "proses" },
-];
-
-const apbdReport = {
-	income: [
-		{ category: "Dana Desa", amount: 1800 },
-		{ category: "Alokasi Dana Desa", amount: 480 },
-		{ category: "Bagi Hasil Pajak & Retribusi", amount: 300 },
-		{ category: "Pendapatan Asli Desa", amount: 200 },
-		{ category: "Hibah Bantuan", amount: 300 },
-	],
-	expenses: [
-		{ category: "Penyelenggaraan Pemerintah", amount: 425 },
-		{ category: "Pembangunan Desa", amount: 850 },
-		{ category: "Pembinaan Kemasyarakatan", amount: 320 },
-		{ category: "Pemberdayaan Masyarakat", amount: 380 },
-		{ category: "Penanggulangan Bencana", amount: 180 },
-	],
-	totalIncome: 3080,
-	totalExpenses: 2155,
-};
+import { useMantineColorScheme } from "@mantine/core";
+import {
+	Bar,
+	BarChart,
+	CartesianGrid,
+	Cell,
+	Line,
+	LineChart,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
 
 const KeuanganAnggaran = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+
+	// KPI Data
+	const kpiData = [
+		{
+			id: 1,
+			title: "Total APBDes",
+			value: "Rp 5.2M",
+			subtitle: "Tahun 2025",
+			icon: IconCurrency,
+		},
+		{
+			id: 2,
+			title: "Realisasi",
+			value: "68%",
+			subtitle: "Rp 3.5M dari 5.2M",
+			icon: IconCheck,
+		},
+		{
+			id: 3,
+			title: "Pemasukan",
+			value: "Rp 580jt",
+			subtitle: "Bulan ini",
+			delta: "+8%",
+			icon: IconTrendingUp,
+		},
+		{
+			id: 4,
+			title: "Pengeluaran",
+			value: "Rp 520jt",
+			subtitle: "Bulan ini",
+			icon: IconTrendingDown,
+		},
+	];
+
+	// Income vs Expense data
+	const incomeExpenseData = [
+		{ month: "Apr", income: 450, expense: 380 },
+		{ month: "Mei", income: 520, expense: 420 },
+		{ month: "Jun", income: 480, expense: 500 },
+		{ month: "Jul", income: 580, expense: 450 },
+		{ month: "Agu", income: 550, expense: 520 },
+		{ month: "Sep", income: 600, expense: 480 },
+		{ month: "Okt", income: 580, expense: 520 },
+	];
+
+	// Allocation data
+	const allocationData = [
+		{ sector: "Pembangunan", amount: 1200 },
+		{ sector: "Kesehatan", amount: 800 },
+		{ sector: "Pendidikan", amount: 650 },
+		{ sector: "Sosial", amount: 550 },
+		{ sector: "Kebudayaan", amount: 400 },
+		{ sector: "Teknologi", amount: 300 },
+	];
+
+	// Assistance fund data
+	const assistanceFundData = [
+		{ source: "Dana Desa (DD)", amount: 1800, status: "cair" },
+		{ source: "Alokasi Dana Desa (ADD)", amount: 950, status: "cair" },
+		{ source: "Bagi Hasil Pajak", amount: 450, status: "cair" },
+		{ source: "Hibah Provinsi", amount: 300, status: "proses" },
+	];
+
+	// APBDes Report data
+	const apbdReport = {
+		income: [
+			{ category: "Dana Desa", amount: 1800 },
+			{ category: "Alokasi Dana Desa", amount: 480 },
+			{ category: "Bagi Hasil Pajak & Retribusi", amount: 300 },
+			{ category: "Pendapatan Asli Desa", amount: 200 },
+			{ category: "Hibah Bantuan", amount: 300 },
+		],
+		expenses: [
+			{ category: "Penyelenggaraan Pemerintah", amount: 425 },
+			{ category: "Pembangunan Desa", amount: 850 },
+			{ category: "Pembinaan Kemasyarakatan", amount: 320 },
+			{ category: "Pemberdayaan Masyarakat", amount: 380 },
+			{ category: "Penanggulangan Bencana", amount: 180 },
+		],
+		totalIncome: 3080,
+		totalExpenses: 2155,
+	};
+
+	const COLORS = ["#1E3A5F", "#3B82F6", "#60A5FA", "#93C5FD", "#DBEAFE"];
+
+	const cardStyle = {
+		backgroundColor: dark ? "#1E293B" : "white",
+		border: `1px solid ${dark ? "#1E293B" : "white"}`,
+	};
+
+	const textStyle = {
+		color: dark ? "white" : "#1F2937",
+	};
+
+	const subtitleStyle = {
+		color: dark ? "#9CA3AF" : "#6B7280",
+	};
+
 	return (
-		<Box>
-			<Stack gap="xl">
-				{/* KPI Cards */}
-				<Grid gutter="lg">
+		<div
+			className="min-h-screen"
+			style={{
+				backgroundColor: dark ? "#0F172A" : "#F3F4F6",
+				minHeight: "100vh",
+				padding: "1.5rem",
+			}}
+		>
+			<div
+				className="max-w-7xl mx-auto"
+				style={{
+					maxWidth: "80rem",
+					marginLeft: "auto",
+					marginRight: "auto",
+				}}
+			>
+				{/* Row 1: 4 Summary Metrics Cards */}
+				<div
+					className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(4, 1fr)",
+						gap: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
+				>
 					{kpiData.map((kpi) => (
-						<Grid.Col key={kpi.id} span={{ base: 12, md: 6, lg: 3 }}>
-							<Card
-								p="md"
-								radius="md"
-								withBorder
-								bg={dark ? "#141D34" : "white"}
-								style={{ borderColor: dark ? "#141D34" : "white" }}
-								h="100%"
-							>
-								<Group justify="space-between" align="flex-start" mb="xs">
-									<Text size="sm" fw={500} c="dimmed">
-										{kpi.title}
-									</Text>
-									{React.cloneElement(kpi.icon, {
-										className: "h-6 w-6",
-										color: "var(--mantine-color-dimmed)",
-									})}
-								</Group>
-								<Title order={3} fw={700} mt="xs">
-									{kpi.value}
-								</Title>
-								{kpi.delta && (
-									<Text
-										size="xs"
-										c={
-											kpi.deltaType === "positive"
-												? "green"
-												: kpi.deltaType === "negative"
-													? "red"
-													: "dimmed"
-										}
-										mt={4}
+						<div
+							key={kpi.id}
+							className="rounded-xl shadow-sm p-6"
+							style={{
+								...cardStyle,
+								borderRadius: "12px",
+								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+								padding: "1.5rem",
+							}}
+						>
+							<div className="flex items-center justify-between">
+								<div className="flex-1">
+									<h3
+										className="text-sm font-medium mb-1"
+										style={subtitleStyle}
 									>
-										{kpi.delta}
-									</Text>
-								)}
-								{kpi.sub && (
-									<Text size="xs" c="dimmed" mt="auto">
-										{kpi.sub}
-									</Text>
-								)}
-							</Card>
-						</Grid.Col>
+										{kpi.title}
+									</h3>
+									<p
+										className="text-3xl font-bold mb-1"
+										style={textStyle}
+									>
+										{kpi.value}
+									</p>
+									<p
+										className="text-xs"
+										style={subtitleStyle}
+									>
+										{kpi.subtitle}
+									</p>
+									{kpi.delta && (
+										<p className="text-xs mt-1" style={{ color: "#22C55E" }}>
+											{kpi.delta}
+										</p>
+									)}
+								</div>
+								<div className="flex-shrink-0 ml-4">
+									<div
+										className="w-12 h-12 rounded-full flex items-center justify-center text-white"
+										style={{ backgroundColor: "#1F3A5F" }}
+									>
+										<kpi.icon size={24} />
+									</div>
+								</div>
+							</div>
+						</div>
 					))}
-				</Grid>
+				</div>
 
-				{/* Charts Section */}
-				<Grid gutter="lg">
-					{/* Grafik Pemasukan vs Pengeluaran */}
-					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card
-							p="md"
-							radius="md"
-							withBorder
-							bg={dark ? "#141D34" : "white"}
-							style={{ borderColor: dark ? "#141D34" : "white" }}
-						>
-							<Title order={3} fw={500} mb="md">
-								Pemasukan vs Pengeluaran
-							</Title>
-							<BarChart
-								h={300}
-								data={incomeExpenseData}
+				{/* Row 2: Line Chart Section */}
+				<div
+					className="rounded-xl shadow-sm p-6 mb-6"
+					style={{
+						...cardStyle,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
+				>
+					<h3
+						className="text-lg font-semibold mb-4"
+						style={textStyle}
+					>
+						Pemasukan vs Pengeluaran
+					</h3>
+					<ResponsiveContainer width="100%" height={300}>
+						<LineChart data={incomeExpenseData}>
+							<CartesianGrid
+								strokeDasharray="3 3"
+								vertical={false}
+								stroke={dark ? "#334155" : "#E5E7EB"}
+							/>
+							<XAxis
 								dataKey="month"
-								series={[
-									{ name: "income", color: "green", label: "Pemasukan" },
-									{ name: "expense", color: "red", label: "Pengeluaran" },
-								]}
-								withLegend
+								axisLine={false}
+								tickLine={false}
+								tick={{ fill: dark ? "#9CA3AF" : "#6B7280" }}
 							/>
-						</Card>
-					</Grid.Col>
-
-					{/* Alokasi Anggaran Per Sektor */}
-					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card
-							p="md"
-							radius="md"
-							withBorder
-							bg={dark ? "#141D34" : "white"}
-							style={{ borderColor: dark ? "#141D34" : "white" }}
-						>
-							<Title order={3} fw={500} mb="md">
-								Alokasi Anggaran Per Sektor
-							</Title>
-							<BarChart
-								h={300}
-								data={allocationData}
-								dataKey="sector"
-								series={[
-									{ name: "amount", color: "darmasaba-navy", label: "Jumlah" },
-								]}
-								withLegend
-								orientation="horizontal"
+							<YAxis
+								axisLine={false}
+								tickLine={false}
+								tick={{ fill: dark ? "#9CA3AF" : "#6B7280" }}
+								tickFormatter={(value) => `${value}jt`}
 							/>
-						</Card>
-					</Grid.Col>
-				</Grid>
+							<Tooltip
+								contentStyle={{
+									backgroundColor: dark ? "#1F2937" : "white",
+									border: `1px solid ${dark ? "#374151" : "#E5E7EB"}`,
+									borderRadius: "8px",
+									color: dark ? "white" : "#1F2937",
+								}}
+							/>
+							<Line
+								type="monotone"
+								dataKey="income"
+								stroke="#22C55E"
+								strokeWidth={3}
+								dot={{ fill: "#22C55E", strokeWidth: 2, r: 5 }}
+								activeDot={{ r: 7 }}
+								name="Pemasukan"
+							/>
+							<Line
+								type="monotone"
+								dataKey="expense"
+								stroke="#EF4444"
+								strokeWidth={3}
+								dot={{ fill: "#EF4444", strokeWidth: 2, r: 5 }}
+								activeDot={{ r: 7 }}
+								name="Pengeluaran"
+							/>
+						</LineChart>
+					</ResponsiveContainer>
 
-				<Grid gutter="lg">
-					{/* Dana Bantuan & Hibah */}
-					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card
-							p="md"
-							radius="md"
-							withBorder
-							bg={dark ? "#141D34" : "white"}
-							style={{ borderColor: dark ? "#141D34" : "white" }}
+					{/* Legend */}
+					<div className="flex items-center gap-6 mt-4">
+						<div className="flex items-center gap-2">
+							<div
+								className="w-3 h-3 rounded-full"
+								style={{ backgroundColor: "#22C55E" }}
+							/>
+							<span className="text-sm" style={subtitleStyle}>
+								Pemasukan
+							</span>
+						</div>
+						<div className="flex items-center gap-2">
+							<div
+								className="w-3 h-3 rounded-full"
+								style={{ backgroundColor: "#EF4444" }}
+							/>
+							<span className="text-sm" style={subtitleStyle}>
+								Pengeluaran
+							</span>
+						</div>
+					</div>
+				</div>
+
+				{/* Row 3: Analytics Section */}
+
+
+				<div
+					className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(2, 1fr)",
+						gap: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
+				>
+					{/* Left: Horizontal Bar Chart */}
+					<div
+						className="rounded-xl shadow-sm p-6"
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
+					>
+						<h3
+							className="text-lg font-semibold mb-4"
+							style={textStyle}
 						>
-							<Title order={3} fw={500} mb="md">
-								Dana Bantuan & Hibah
-							</Title>
-							<Stack gap="sm">
-								{assistanceFundData.map((fund, index) => (
-									<Group
-										key={index}
-										justify="space-between"
-										align="center"
-										p="sm"
+							Alokasi Anggaran Per Sektor
+						</h3>
+						<ResponsiveContainer width="100%" height={300}>
+							<BarChart data={allocationData} layout="vertical">
+								<CartesianGrid
+									strokeDasharray="3 3"
+									horizontal={false}
+									stroke={dark ? "#334155" : "#E5E7EB"}
+								/>
+								<XAxis
+									type="number"
+									axisLine={false}
+									tickLine={false}
+									tick={{ fill: dark ? "#9CA3AF" : "#6B7280" }}
+									tickFormatter={(value) => `${value}jt`}
+								/>
+								<YAxis
+									dataKey="sector"
+									type="category"
+									axisLine={false}
+									tickLine={false}
+									tick={{ fill: dark ? "#9CA3AF" : "#374151" }}
+									width={120}
+								/>
+								<Tooltip
+									contentStyle={{
+										backgroundColor: dark ? "#1F2937" : "white",
+										border: `1px solid ${dark ? "#374151" : "#E5E7EB"}`,
+										borderRadius: "8px",
+										color: dark ? "white" : "#1F2937",
+									}}
+								/>
+								<Bar dataKey="amount" radius={[0, 4, 4, 0]}>
+									{allocationData.map((entry, index) => (
+										<Cell
+											key={`cell-${index}`}
+											fill={COLORS[index % COLORS.length]}
+										/>
+									))}
+								</Bar>
+							</BarChart>
+						</ResponsiveContainer>
+					</div>
+					{/* Right: Assistance Funds List */}
+					<div
+						className="rounded-xl shadow-sm p-6"
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
+					>
+						<h3
+							className="text-lg font-semibold mb-4"
+							style={textStyle}
+						>
+							Dana Bantuan dan Hibah
+						</h3>
+						<div className="space-y-3">
+							{assistanceFundData.map((fund, index) => (
+								<div
+									key={index}
+									className="flex items-center justify-between p-4 rounded-lg"
+									style={{
+										backgroundColor: dark ? "#334155" : "#F9FAFB",
+									}}
+								>
+									<div>
+										<p
+											className="text-sm font-medium"
+											style={textStyle}
+										>
+											{fund.source}
+										</p>
+										<p
+											className="text-xs mt-1"
+											style={subtitleStyle}
+										>
+											Rp {fund.amount.toLocaleString()}jt
+										</p>
+									</div>
+									<span
+										className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
 										style={{
-											border: "1px solid var(--mantine-color-gray-3)",
-											borderRadius: "var(--mantine-radius-sm)",
+											backgroundColor: fund.status === "cair" ? "#DCFCE7" : "#FEF3C7",
+											color: fund.status === "cair" ? "#166534" : "#92400E",
 										}}
 									>
-										<Box>
-											<Text size="sm" fw={500}>
-												{fund.source}
-											</Text>
-											<Text size="sm" c="dimmed">
-												Rp {fund.amount.toLocaleString()}jt
-											</Text>
-										</Box>
-										<Badge
-											variant="light"
-											color={fund.status === "cair" ? "green" : "yellow"}
-										>
-											{fund.status}
-										</Badge>
-									</Group>
-								))}
-							</Stack>
-						</Card>
-					</Grid.Col>
+										{fund.status === "cair" ? (
+											<IconCheck size={14} className="mr-1" />
+										) : (
+											<IconClock size={14} className="mr-1" />
+										)}
+										{fund.status}
+									</span>
+								</div>
+							))}
+						</div>
+					</div>
 
-					{/* Laporan APBDes */}
-					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Card
-							p="md"
-							radius="md"
-							withBorder
-							bg={dark ? "#141D34" : "white"}
-							style={{ borderColor: dark ? "#141D34" : "white" }}
-						>
-							<Title order={3} fw={500} mb="md">
-								Laporan APBDes
-							</Title>
-
-							<Box mb="md">
-								<Title order={4} mb="sm">
-									Pendapatan
-								</Title>
-								<Stack gap="xs">
-									{apbdReport.income.map((item, index) => (
-										<Group key={index} justify="space-between">
-											<Text size="sm">{item.category}</Text>
-											<Text size="sm" c="green">
-												Rp {item.amount.toLocaleString()}jt
-											</Text>
-										</Group>
-									))}
-									<Group justify="space-between" mt="sm">
-										<Text fw={700}>Total Pendapatan:</Text>
-										<Text fw={700} c="green">
-											Rp {apbdReport.totalIncome.toLocaleString()}jt
-										</Text>
-									</Group>
-								</Stack>
-							</Box>
-
-							<Box>
-								<Title order={4} mb="sm">
-									Belanja
-								</Title>
-								<Stack gap="xs">
-									{apbdReport.expenses.map((item, index) => (
-										<Group key={index} justify="space-between">
-											<Text size="sm">{item.category}</Text>
-											<Text size="sm" c="red">
-												Rp {item.amount.toLocaleString()}jt
-											</Text>
-										</Group>
-									))}
-									<Group justify="space-between" mt="sm">
-										<Text fw={700}>Total Belanja:</Text>
-										<Text fw={700} c="red">
-											Rp {apbdReport.totalExpenses.toLocaleString()}jt
-										</Text>
-									</Group>
-								</Stack>
-							</Box>
-
-							<Box
-								mt="md"
-								pt="md"
-								style={{ borderTop: "1px solid var(--mantine-color-gray-3)" }}
+				</div>
+				{/* Row 4: Report Section */}
+				<div
+					className="rounded-xl shadow-sm p-6"
+					style={{
+						...cardStyle,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.5rem",
+					}}
+				>
+					<h3
+						className="text-lg font-semibold mb-6"
+						style={textStyle}
+					>
+						Laporan APBDes
+					</h3>
+					<div
+						className="grid grid-cols-1 md:grid-cols-2 gap-8"
+						style={{
+							display: "grid",
+							gridTemplateColumns: "repeat(2, 1fr)",
+							gap: "2rem",
+						}}
+					>
+						{/* Left: Pendapatan */}
+						<div>
+							<h4
+								className="text-base font-semibold mb-4"
+								style={textStyle}
 							>
-								<Group justify="space-between">
-									<Text fw={700}>Saldo:</Text>
-									<Text
-										fw={700}
-										c={
-											apbdReport.totalIncome > apbdReport.totalExpenses
-												? "green"
-												: "red"
-										}
+								Pendapatan
+							</h4>
+							<div className="space-y-3">
+								{apbdReport.income.map((item, index) => (
+									<div
+										key={index}
+										className="flex items-center justify-between py-2"
+										style={{
+											borderBottom: `1px solid ${dark ? "#334155" : "#F3F4F6"}`,
+										}}
 									>
-										Rp{" "}
-										{(
-											apbdReport.totalIncome - apbdReport.totalExpenses
-										).toLocaleString()}
-										jt
-									</Text>
-								</Group>
-							</Box>
-						</Card>
-					</Grid.Col>
-				</Grid>
-			</Stack>
-		</Box>
+										<span className="text-sm" style={subtitleStyle}>
+											{item.category}
+										</span>
+										<span
+											className="text-sm font-medium"
+											style={{ color: "#22C55E" }}
+										>
+											Rp {item.amount.toLocaleString()}jt
+										</span>
+									</div>
+								))}
+								<div
+									className="flex items-center justify-between py-3 mt-4 pt-4"
+									style={{
+										borderTop: `2px solid ${dark ? "#334155" : "#E5E7EB"}`,
+									}}
+								>
+									<span className="text-base font-bold" style={textStyle}>
+										Total Pendapatan
+									</span>
+									<span
+										className="text-base font-bold"
+										style={{ color: "#22C55E" }}
+									>
+										Rp {apbdReport.totalIncome.toLocaleString()}jt
+									</span>
+								</div>
+							</div>
+						</div>
+
+						{/* Right: Belanja */}
+						<div>
+							<h4
+								className="text-base font-semibold mb-4"
+								style={textStyle}
+							>
+								Belanja
+							</h4>
+							<div className="space-y-3">
+								{apbdReport.expenses.map((item, index) => (
+									<div
+										key={index}
+										className="flex items-center justify-between py-2"
+										style={{
+											borderBottom: `1px solid ${dark ? "#334155" : "#F3F4F6"}`,
+										}}
+									>
+										<span className="text-sm" style={subtitleStyle}>
+											{item.category}
+										</span>
+										<span
+											className="text-sm font-medium"
+											style={{ color: "#EF4444" }}
+										>
+											Rp {item.amount.toLocaleString()}jt
+										</span>
+									</div>
+								))}
+								<div
+									className="flex items-center justify-between py-3 mt-4 pt-4"
+									style={{
+										borderTop: `2px solid ${dark ? "#334155" : "#E5E7EB"}`,
+									}}
+								>
+									<span className="text-base font-bold" style={textStyle}>
+										Total Belanja
+									</span>
+									<span
+										className="text-base font-bold"
+										style={{ color: "#EF4444" }}
+									>
+										Rp {apbdReport.totalExpenses.toLocaleString()}jt
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{/* Footer: Balance */}
+					<div
+						className="flex items-center justify-between py-4 mt-6 pt-6"
+						style={{
+							borderTop: `2px solid ${dark ? "#334155" : "#E5E7EB"}`,
+						}}
+					>
+						<span className="text-lg font-bold" style={textStyle}>
+							Saldo
+						</span>
+						<span
+							className="text-lg font-bold"
+							style={{
+								color:
+									apbdReport.totalIncome > apbdReport.totalExpenses
+										? "#22C55E"
+										: "#EF4444",
+							}}
+						>
+							Rp{" "}
+							{(
+								apbdReport.totalIncome - apbdReport.totalExpenses
+							).toLocaleString()}
+							jt
+						</span>
+					</div>
+				</div>
+
+			</div>
+		</div>
 	);
 };
 

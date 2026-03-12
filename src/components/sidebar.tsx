@@ -61,6 +61,8 @@ export function Sidebar({ className }: SidebarProps) {
 		(item) => location.pathname === item.path,
 	);
 
+	const headerBgColor = colorScheme === "dark" ? "#ebedf0ff" : "#19355E";
+
 	return (
 		<Box className={className}>
 			{/* Logo */}
@@ -92,7 +94,7 @@ export function Sidebar({ className }: SidebarProps) {
 							label={item.name}
 							active={isActive}
 							variant="subtle"
-							color="blue"
+							color={headerBgColor}
 							style={{
 								background: isActive ? isActiveBg : "transparent",
 								fontWeight: isActive ? "bold" : "normal",
@@ -184,5 +186,6 @@ export function Sidebar({ className }: SidebarProps) {
 				</Box>
 			</Stack>
 		</Box>
+		
 	);
 }
