@@ -1,13 +1,11 @@
 import {
-	Badge,
 	Box,
 	Collapse,
-	Group,
+	Image,
 	Input,
 	NavLink as MantineNavLink,
 	Stack,
-	Text,
-	useMantineColorScheme,
+	useMantineColorScheme
 } from "@mantine/core";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { ChevronDown, ChevronUp, Search } from "lucide-react";
@@ -66,30 +64,7 @@ export function Sidebar({ className }: SidebarProps) {
 	return (
 		<Box className={className}>
 			{/* Logo */}
-			<Box
-				p="md"
-				style={{ borderBottom: "1px solid var(--mantine-color-gray-3)" }}
-			>
-				<Group gap="xs">
-					<Badge
-						color="dark"
-						variant="filled"
-						size="xl"
-						radius="md"
-						py="xs"
-						px="md"
-						style={{ fontSize: "1.5rem", fontWeight: "bold" }}
-					>
-						DESA
-					</Badge>
-					<Badge color="green" variant="filled" size="md" radius="md">
-						+
-					</Badge>
-				</Group>
-				<Text size="xs" c="dimmed" mt="xs">
-					Digitalisasi Desa Transparansi Kerja
-				</Text>
-			</Box>
+			<Image src={"/logo-desa-plus.png"} width={201} height={84} />
 
 			{/* Search */}
 			<Box p="md">
