@@ -98,16 +98,40 @@ const JennaAnalytic = () => {
 	return (
 		<div
 			className="min-h-screen"
-			style={{ backgroundColor: dark ? "#10192D" : "#F3F4F6" }}
+			style={{
+				backgroundColor: dark ? "#10192D" : "#F3F4F6",
+				minHeight: "100vh",
+				padding: "1.5rem",
+			}}
 		>
-			<div className="max-w-7xl mx-auto">
+			<div
+				className="max-w-7xl mx-auto"
+				style={{
+					maxWidth: "80rem",
+					marginLeft: "auto",
+					marginRight: "auto",
+				}}
+			>
 				{/* Row 1: 4 Statistic Cards */}
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+				<div
+					className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(4, 1fr)",
+						gap: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
+				>
 					{kpiData.map((kpi) => (
 						<div
 							key={kpi.id}
 							className="rounded-xl shadow-sm p-6"
-							style={cardStyle}
+							style={{
+								...cardStyle,
+								borderRadius: "12px",
+								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+								padding: "1.5rem",
+							}}
 						>
 							<div className="flex items-center justify-between">
 								<div className="flex-1">
@@ -146,7 +170,13 @@ const JennaAnalytic = () => {
 				{/* Row 2: Full Width Weekly Bar Chart */}
 				<div
 					className="rounded-xl shadow-sm p-6 mb-6"
-					style={cardStyle}
+					style={{
+						...cardStyle,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
 				>
 					<h3
 						className="text-lg font-semibold mb-4"
@@ -193,11 +223,23 @@ const JennaAnalytic = () => {
 				</div>
 
 				{/* Row 3: Two Insight Cards */}
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+				<div
+					className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+						gap: "1.5rem",
+					}}
+				>
 					{/* Left: Frequently Asked Topics */}
 					<div
 						className="rounded-xl shadow-sm p-6"
-						style={cardStyle}
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
 					>
 						<h3
 							className="text-lg font-semibold mb-4"
@@ -220,7 +262,7 @@ const JennaAnalytic = () => {
 									>
 										{item.topic}
 									</span>
-									<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+									<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-darmasaba-blue-100 text-darmasaba-blue-800">
 										{item.count}x
 									</span>
 								</div>
@@ -231,7 +273,12 @@ const JennaAnalytic = () => {
 					{/* Right: Busy Hour Distribution */}
 					<div
 						className="rounded-xl shadow-sm p-6"
-						style={cardStyle}
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
 					>
 						<h3
 							className="text-lg font-semibold mb-4"

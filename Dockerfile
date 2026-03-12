@@ -29,7 +29,7 @@ RUN bun x prisma generate
 # Generate API types
 RUN bun run gen:api
 
-# Build the application frontend
+# Build the application frontend using our custom build script
 RUN bun run build
 
 # Stage 2: Runtime
