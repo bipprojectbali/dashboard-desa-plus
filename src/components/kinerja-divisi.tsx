@@ -1,22 +1,4 @@
 import {
-	ActionIcon,
-	Box,
-	Card,
-	Divider,
-	Grid,
-	GridCol,
-	Group,
-	List,
-	Badge as MantineBadge,
-	Progress as MantineProgress,
-	Skeleton,
-	Stack,
-	Text,
-	ThemeIcon,
-	Title,
-	useMantineColorScheme,
-} from "@mantine/core";
-import {
 	Bar,
 	BarChart,
 	CartesianGrid,
@@ -28,511 +10,380 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { Button } from "@/components/ui/button";
+import { useMantineColorScheme } from "@mantine/core";
+import { IconMessage } from "@tabler/icons-react";
 
 const KinerjaDivisi = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	// Data for division progress chart
-	const divisionProgressData = [
-		{ name: "Sekretariat", selesai: 12, berjalan: 5, tertunda: 2 },
-		{ name: "Keuangan", selesai: 8, berjalan: 7, tertunda: 1 },
-		{ name: "Sosial", selesai: 10, berjalan: 3, tertunda: 4 },
-		{ name: "Humas", selesai: 6, berjalan: 9, tertunda: 3 },
-	];
-
-	// Division task summaries
-	const divisionTasks = [
+	// Top row - 4 activity cards
+	const activities = [
 		{
-			name: "Sekretariat",
-			tasks: [
-				{ title: "Laporan Bulanan", status: "selesai" },
-				{ title: "Arsip Dokumen", status: "berjalan" },
-				{ title: "Undangan Rapat", status: "tertunda" },
-			],
-		},
-		{
-			name: "Keuangan",
-			tasks: [
-				{ title: "Laporan APBDes", status: "selesai" },
-				{ title: "Verifikasi Dana", status: "tertunda" },
-				{ title: "Pengeluaran Harian", status: "berjalan" },
-			],
-		},
-		{
-			name: "Sosial",
-			tasks: [
-				{ title: "Program Bantuan", status: "selesai" },
-				{ title: "Kegiatan Posyandu", status: "berjalan" },
-				{ title: "Monitoring Stunting", status: "tertunda" },
-			],
-		},
-		{
-			name: "Humas",
-			tasks: [
-				{ title: "Publikasi Kegiatan", status: "selesai" },
-				{ title: "Koordinasi Media", status: "berjalan" },
-				{ title: "Laporan Kegiatan", status: "tertunda" },
-			],
-		},
-	];
-
-	// Archive items
-	const archiveItems = [
-		{ name: "Surat Keputusan", count: 12 },
-		{ name: "Laporan Keuangan", count: 8 },
-		{ name: "Dokumentasi", count: 24 },
-		{ name: "Notulensi Rapat", count: 15 },
-	];
-
-	// Activity progress
-	const activityProgress = [
-		{
-			name: "Pembangunan Jalan",
-			progress: 75,
-			date: "15 Feb 2026",
-			status: "berjalan",
-		},
-		{
-			name: "Posyandu Bulanan",
+			title: "Rakor 2025",
 			progress: 100,
-			date: "10 Feb 2026",
-			status: "selesai",
+			date: "15 Jan 2025",
 		},
 		{
-			name: "Vaksinasi Massal",
-			progress: 45,
-			date: "20 Feb 2026",
-			status: "berjalan",
+			title: "Pemutakhiran Indeks Desa",
+			progress: 100,
+			date: "20 Feb 2025",
 		},
 		{
-			name: "Festival Budaya",
-			progress: 20,
-			date: "5 Mar 2026",
-			status: "berjalan",
+			title: "Mengurus akta cerai warga",
+			progress: 100,
+			date: "5 Mar 2025",
+		},
+		{
+			title: "Pasek 7 desa adat",
+			progress: 100,
+			date: "10 Mar 2025",
 		},
 	];
 
 	// Document statistics
 	const documentStats = [
-		{ name: "Gambar", value: 42 },
-		{ name: "Dokumen", value: 87 },
+		{ name: "Gambar", value: 300, color: "#FAC858" },
+		{ name: "Dokumen", value: 310, color: "#92CC76" },
 	];
 
 	// Activity progress statistics
 	const activityProgressStats = [
-		{ name: "Selesai", value: 12, fill: "#10B981" },
-		{ name: "Dikerjakan", value: 8, fill: "#F59E0B" },
-		{ name: "Segera Dikerjakan", value: 5, fill: "#EF4444" },
-		{ name: "Dibatalkan", value: 2, fill: "#6B7280" },
+		{ name: "Selesai", value: 83.33, fill: "#92CC76" },
+		{ name: "Dikerjakan", value: 16.67, fill: "#FAC858" },
+		{ name: "Segera Dikerjakan", value: 0, fill: "#5470C6" },
+		{ name: "Dibatalkan", value: 0, fill: "#EE6767" },
 	];
-
-	const COLORS = ["#10B981", "#F59E0B", "#EF4444", "#6B7280"];
-	const STATUS_COLORS: Record<string, string> = {
-		selesai: "green",
-		berjalan: "blue",
-		tertunda: "red",
-		proses: "yellow",
-	};
 
 	// Discussion data
 	const discussions = [
 		{
 			title: "Pembahasan APBDes 2026",
 			sender: "Kepala Desa",
-			timestamp: "2 jam yang lalu",
+			date: "10 Mar 2025",
 		},
 		{
 			title: "Kegiatan Posyandu",
 			sender: "Divisi Sosial",
-			timestamp: "5 jam yang lalu",
+			date: "9 Mar 2025",
 		},
 		{
 			title: "Festival Budaya",
 			sender: "Divisi Humas",
-			timestamp: "1 hari yang lalu",
+			date: "8 Mar 2025",
 		},
 	];
 
-	// Today's agenda
-	const todayAgenda = [
-		{ time: "09:00", event: "Rapat Evaluasi Bulanan" },
-		{ time: "14:00", event: "Koordinasi Program Bantuan" },
-	];
-
 	return (
-		<Stack gap="lg">
-			{/* Grafik Progres Tugas per Divisi */}
-			<Card
-				p="md"
-				radius="md"
-				withBorder
-				bg={dark ? "#141D34" : "white"}
-				style={{ borderColor: dark ? "#141D34" : "white" }}
+		<div
+			className="min-h-screen"
+			style={{
+				backgroundColor: dark ? "#10192D" : "#F3F4F6",
+				minHeight: "100vh",
+				padding: "1.5rem",
+			}}
+		>
+			{/* Top Row - 4 Activity Cards */}
+			<div
+				className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+				style={{
+					display: "grid",
+					gridTemplateColumns: "repeat(4, 1fr)",
+					gap: "1.5rem",
+					marginBottom: "1.5rem",
+				}}
 			>
-				<Title order={4} mb="md" c={dark ? "white" : "darmasaba-navy"}>
-					Grafik Progres Tugas per Divisi
-				</Title>
-				<ResponsiveContainer width="100%" height={300}>
-					<BarChart data={divisionProgressData}>
-						<CartesianGrid
-							strokeDasharray="3 3"
-							vertical={false}
-							stroke={dark ? "#141D34" : "white"}
-						/>
-						<XAxis
-							dataKey="name"
-							axisLine={false}
-							tickLine={false}
-							tick={{
-								fill: dark
-									? "var(--mantine-color-text)"
-									: "var(--mantine-color-text)",
-							}}
-						/>
-						<YAxis
-							axisLine={false}
-							tickLine={false}
-							tick={{
-								fill: dark
-									? "var(--mantine-color-text)"
-									: "var(--mantine-color-text)",
-							}}
-						/>
-						<Tooltip
-							contentStyle={
-								dark
-									? {
-										backgroundColor: "var(--mantine-color-dark-7)",
-										borderColor: "var(--mantine-color-dark-6)",
-									}
-									: {}
-							}
-						/>
-						<Bar
-							dataKey="selesai"
-							stackId="a"
-							fill="#10B981"
-							name="Selesai"
-							radius={[4, 4, 0, 0]}
-						/>
-						<Bar
-							dataKey="berjalan"
-							stackId="a"
-							fill="#3B82F6"
-							name="Berjalan"
-							radius={[4, 4, 0, 0]}
-						/>
-						<Bar
-							dataKey="tertunda"
-							stackId="a"
-							fill="#EF4444"
-							name="Tertunda"
-							radius={[4, 4, 0, 0]}
-						/>
-					</BarChart>
-				</ResponsiveContainer>
-			</Card>
-
-			{/* Ringkasan Tugas per Divisi */}
-			<Grid gutter="md">
-				{divisionTasks.map((division, index) => (
-					<GridCol key={index} span={{ base: 12, md: 6, lg: 3 }}>
-						<Card
-							p="md"
-							radius="md"
-							withBorder
-							bg={dark ? "#141D34" : "white"}
-							style={{ borderColor: dark ? "#141D34" : "white" }}
-							h="100%"
+				{activities.map((activity, index) => (
+					<div
+						key={index}
+						className="rounded-xl shadow-sm p-5"
+						style={{
+							backgroundColor: dark ? "#141D34" : "white",
+							border: `1px solid ${dark ? "#141D34" : "white"}`,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.25rem",
+						}}
+					>
+						{/* Dark blue title bar */}
+						<div
+							className="text-white px-3 py-2 rounded-t-lg -mx-5 -mt-5 mb-4"
+							style={{ backgroundColor: "#1E3A5F" }}
 						>
-							<Title order={4} mb="sm" c={dark ? "white" : "darmasaba-navy"}>
-								{division.name}
-							</Title>
-							<Stack gap="sm">
-								{division.tasks.map((task, taskIndex) => (
-									<Box key={taskIndex}>
-										<Group justify="space-between">
-											<Text size="sm" c={dark ? "white" : "darmasaba-navy"}>
-												{task.title}
-											</Text>
-											<MantineBadge
-												color={STATUS_COLORS[task.status] || "gray"}
-												variant="light"
-											>
-												{task.status}
-											</MantineBadge>
-										</Group>
-									</Box>
-								))}
-							</Stack>
-						</Card>
-					</GridCol>
-				))}
-			</Grid>
+							<h3 className="text-sm font-semibold">{activity.title}</h3>
+						</div>
 
-			{/* Arsip Digital Perangkat Desa */}
-			<Card
-				p="md"
-				radius="md"
-				withBorder
-				bg={dark ? "#141D34" : "white"}
-				style={{ borderColor: dark ? "#141D34" : "white" }}
-			>
-				<Title order={4} mb="md" c={dark ? "white" : "darmasaba-navy"}>
-					Arsip Digital Perangkat Desa
-				</Title>
-				<Grid gutter="md">
-					{archiveItems.map((item, index) => (
-						<GridCol key={index} span={{ base: 12, md: 6, lg: 3 }}>
-							<Card
-								p="md"
-								radius="md"
-								withBorder
-								bg={dark ? "#263852ff" : "#F1F5F9"}
-								style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
+						{/* Orange progress bar */}
+						<div
+							className="w-full rounded-full h-2 mb-3"
+							style={{ backgroundColor: dark ? "#2d3748" : "#E5E7EB" }}
+						>
+							<div
+								className="bg-orange-500 h-2 rounded-full"
+								style={{ width: `${activity.progress}%` }}
+							/>
+						</div>
+
+						{/* Date and badge */}
+						<div className="flex justify-between items-center">
+							<span
+								className="text-xs"
+								style={{ color: dark ? "#9CA3AF" : "#6B7280" }}
 							>
-								<Group justify="space-between">
-									<Text c={dark ? "white" : "darmasaba-navy"} fw={500}>
-										{item.name}
-									</Text>
-									<Text c={dark ? "white" : "darmasaba-navy"} fw={700}>
-										{item.count}
-									</Text>
-								</Group>
-							</Card>
-						</GridCol>
-					))}
-				</Grid>
-			</Card>
-
-			{/* Kartu Progres Kegiatan */}
-			<Card
-				p="md"
-				radius="md"
-				withBorder
-				bg={dark ? "#141D34" : "white"}
-				style={{ borderColor: dark ? "#141D34" : "white" }}
-			>
-				<Title order={4} mb="md" c={dark ? "white" : "darmasaba-navy"}>
-					Progres Kegiatan / Program
-				</Title>
-				<Stack gap="md">
-					{activityProgress.map((activity, index) => (
-						<Card
-							key={index}
-							p="md"
-							radius="md"
-							withBorder
-							bg={dark ? "#263852ff" : "#F1F5F9"}
-							style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
-						>
-							<Group justify="space-between" mb="sm">
-								<Text c={dark ? "white" : "darmasaba-navy"} fw={500}>
-									{activity.name}
-								</Text>
-								<MantineBadge
-									color={STATUS_COLORS[activity.status] || "gray"}
-									variant="light"
-								>
-									{activity.status}
-								</MantineBadge>
-							</Group>
-							<Group justify="space-between">
-								<MantineProgress
-									value={activity.progress}
-									size="sm"
-									radius="xl"
-									color={activity.progress === 100 ? "green" : "blue"}
-									w="calc(100% - 80px)"
-								/>
-								<Text size="sm" c={dark ? "white" : "darmasaba-navy"}>
-									{activity.progress}%
-								</Text>
-							</Group>
-							<Text size="sm" c="dimmed" mt="sm">
 								{activity.date}
-							</Text>
-						</Card>
-					))}
-				</Stack>
-			</Card>
+							</span>
+							<span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+								Selesai
+							</span>
+						</div>
+					</div>
+				))}
+			</div>
 
-			{/* Statistik Dokumen & Progres Kegiatan */}
-			<Grid gutter="md">
-				<GridCol span={{ base: 12, lg: 6 }}>
-					<Card
-						p="md"
-						radius="md"
-						withBorder
-						bg={dark ? "#141D34" : "white"}
-						style={{ borderColor: dark ? "#141D34" : "white" }}
+			{/* Second Row - Charts */}
+			<div
+				className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"
+				style={{
+					display: "grid",
+					gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+					gap: "1.5rem",
+					marginBottom: "1.5rem",
+				}}
+			>
+				{/* Left Card - Jumlah Dokumen (Bar Chart) */}
+				<div
+					className="rounded-xl shadow-sm p-5"
+					style={{
+						backgroundColor: dark ? "#141D34" : "white",
+						border: `1px solid ${dark ? "#141D34" : "white"}`,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.25rem",
+					}}
+				>
+					<h3
+						className="text-lg font-semibold mb-4"
+						style={{ color: dark ? "white" : "#1F2937" }}
 					>
-						<Title order={4} mb="md" c={dark ? "white" : "darmasaba-navy"}>
-							Jumlah Dokumen
-						</Title>
-						<ResponsiveContainer width="100%" height={200}>
-							<BarChart data={documentStats}>
-								<CartesianGrid
-									strokeDasharray="3 3"
-									vertical={false}
-									stroke={dark ? "#141D34" : "white"}
-								/>
-								<XAxis
-									dataKey="name"
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark
-											? "var(--mantine-color-text)"
-											: "var(--mantine-color-text)",
-									}}
-								/>
-								<YAxis
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark
-											? "var(--mantine-color-text)"
-											: "var(--mantine-color-text)",
-									}}
-								/>
-								<Tooltip
-									contentStyle={
-										dark
-											? {
-												backgroundColor: "var(--mantine-color-dark-7)",
-												borderColor: "var(--mantine-color-dark-6)",
-											}
-											: {}
-									}
-								/>
-								<Bar
-									dataKey="value"
-									fill={
-										dark
-											? "var(--mantine-color-blue-6)"
-											: "var(--mantine-color-blue-filled)"
-									}
-									radius={[4, 4, 0, 0]}
-								/>
-							</BarChart>
-						</ResponsiveContainer>
-					</Card>
-				</GridCol>
+						Jumlah Dokumen
+					</h3>
+					<ResponsiveContainer width="100%" height={250}>
+						<BarChart data={documentStats}>
+							<CartesianGrid
+								strokeDasharray="3 3"
+								vertical={false}
+								stroke={dark ? "#2d3748" : "#E5E7EB"}
+							/>
+							<XAxis
+								dataKey="name"
+								axisLine={false}
+								tickLine={false}
+								tick={{ fill: dark ? "#9CA3AF" : "#6B7280" }}
+							/>
+							<YAxis
+								axisLine={false}
+								tickLine={false}
+								tick={{ fill: dark ? "#9CA3AF" : "#6B7280" }}
+							/>
+							<Tooltip
+								contentStyle={{
+									backgroundColor: dark ? "#1F2937" : "white",
+									border: `1px solid ${dark ? "#374151" : "#E5E7EB"}`,
+									borderRadius: "8px",
+									color: dark ? "white" : "#1F2937",
+								}}
+							/>
+							<Bar dataKey="value" radius={[4, 4, 0, 0]}>
+								{documentStats.map((entry, index) => (
+									<Cell key={`cell-${index}`} fill={entry.color} />
+								))}
+							</Bar>
+						</BarChart>
+					</ResponsiveContainer>
+				</div>
 
-				<GridCol span={{ base: 12, lg: 6 }}>
-					<Card
-						p="md"
-						radius="md"
-						withBorder
-						bg={dark ? "#141D34" : "white"}
-						style={{ borderColor: dark ? "#141D34" : "white" }}
+				{/* Right Card - Progres Kegiatan (Pie Chart) */}
+				<div
+					className="rounded-xl shadow-sm p-5"
+					style={{
+						backgroundColor: dark ? "#141D34" : "white",
+						border: `1px solid ${dark ? "#141D34" : "white"}`,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.25rem",
+					}}
+				>
+					<h3
+						className="text-lg font-semibold mb-4"
+						style={{ color: dark ? "white" : "#1F2937" }}
 					>
-						<Title order={4} mb="md" c={dark ? "white" : "darmasaba-navy"}>
-							Progres Kegiatan
-						</Title>
-						<ResponsiveContainer width="100%" height={200}>
-							<PieChart
-								margin={{ top: 20, right: 80, bottom: 20, left: 80 }}
+						Progres Kegiatan
+					</h3>
+					<ResponsiveContainer width="100%" height={250}>
+						<PieChart>
+							<Pie
+								data={activityProgressStats.filter(item => item.value > 0)}
+								cx="50%"
+								cy="50%"
+								outerRadius={80}
+								dataKey="value"
+								label={({ name, percent }) =>
+									`${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
+								}
 							>
-								<Pie
-									data={activityProgressStats}
-									cx="50%"
-									cy="50%"
-									labelLine
-									outerRadius={65}
-									dataKey="value"
-									label={({ name, percent }) =>
-										`${name}: ${percent ? (percent * 100).toFixed(0) : "0"}%`
-									}
-								/>
-								<Tooltip
-									contentStyle={
-										dark
-											? {
-												backgroundColor: "var(--mantine-color-dark-7)",
-												borderColor: "var(--mantine-color-dark-6)",
-											}
-											: {}
-									}
-								/>
-							</PieChart>
-						</ResponsiveContainer>
-					</Card>
-				</GridCol>
-			</Grid>
+								{activityProgressStats
+									.filter(item => item.value > 0)
+									.map((entry, index) => (
+										<Cell key={`cell-${index}`} fill={entry.fill} />
+									))}
+							</Pie>
+							<Tooltip
+								contentStyle={{
+									backgroundColor: dark ? "#1F2937" : "white",
+									border: `1px solid ${dark ? "#374151" : "#E5E7EB"}`,
+									borderRadius: "8px",
+									color: dark ? "white" : "#1F2937",
+								}}
+							/>
+						</PieChart>
+					</ResponsiveContainer>
 
-			{/* Diskusi Internal */}
-			<Card
-				p="md"
-				radius="md"
-				withBorder
-				bg={dark ? "#141D34" : "white"}
-				style={{ borderColor: dark ? "#141D34" : "white" }}
-			>
-				<Title order={4} mb="md" c={dark ? "white" : "darmasaba-navy"}>
-					Diskusi Internal
-				</Title>
-				<Stack gap="sm">
-					{discussions.map((discussion, index) => (
-						<Card
-							key={index}
-							p="md"
-							radius="md"
-							withBorder
-							bg={dark ? "#263852ff" : "#F1F5F9"}
-							style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
-						>
-							<Group justify="space-between">
-								<Text c={dark ? "white" : "darmasaba-navy"} fw={500}>
-									{discussion.title}
-								</Text>
-								<Text size="sm" c="dimmed">
-									{discussion.timestamp}
-								</Text>
-							</Group>
-							<Text size="sm" c="dimmed">
-								{discussion.sender}
-							</Text>
-						</Card>
-					))}
-				</Stack>
-			</Card>
+					{/* Legend */}
+					<div className="mt-4 space-y-2">
+						<div className="flex items-center gap-2">
+							<div className="w-3 h-3 rounded-full bg-blue-500"></div>
+							<span
+								className="text-sm"
+								style={{ color: dark ? "#9CA3AF" : "#4B5563" }}
+							>
+								Segera Dikerjakan
+							</span>
+						</div>
+						<div className="flex items-center gap-2">
+							<div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+							<span
+								className="text-sm"
+								style={{ color: dark ? "#9CA3AF" : "#4B5563" }}
+							>
+								Dikerjakan
+							</span>
+						</div>
+						<div className="flex items-center gap-2">
+							<div className="w-3 h-3 rounded-full bg-green-500"></div>
+							<span
+								className="text-sm"
+								style={{ color: dark ? "#9CA3AF" : "#4B5563" }}
+							>
+								Selesai
+							</span>
+						</div>
+						<div className="flex items-center gap-2">
+							<div className="w-3 h-3 rounded-full bg-red-500"></div>
+							<span
+								className="text-sm"
+								style={{ color: dark ? "#9CA3AF" : "#4B5563" }}
+							>
+								Dibatalkan
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
 
-			{/* Agenda / Acara Hari Ini */}
-			<Card
-				p="md"
-				radius="md"
-				withBorder
-				bg={dark ? "#141D34" : "white"}
-				style={{ borderColor: dark ? "#141D34" : "white" }}
+			{/* Bottom Row */}
+			<div
+				className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+				style={{
+					display: "grid",
+					gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+					gap: "1.5rem",
+				}}
 			>
-				<Title order={4} mb="md" c={dark ? "white" : "darmasaba-navy"}>
-					Agenda / Acara Hari Ini
-				</Title>
-				{todayAgenda.length > 0 ? (
-					<Stack gap="sm">
-						{todayAgenda.map((agenda, index) => (
-							<Group key={index} align="flex-start">
-								<Box w={60}>
-									<Text c="dimmed">{agenda.time}</Text>
-								</Box>
-								<Divider orientation="vertical" mx="sm" />
-								<Text c={dark ? "white" : "darmasaba-navy"}>
-									{agenda.event}
-								</Text>
-							</Group>
+				{/* Left Card - Diskusi */}
+				<div
+					className="rounded-xl shadow-sm p-5"
+					style={{
+						backgroundColor: dark ? "#141D34" : "white",
+						border: `1px solid ${dark ? "#141D34" : "white"}`,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.25rem",
+					}}
+				>
+					<h3
+						className="text-lg font-semibold mb-4"
+						style={{ color: dark ? "white" : "#1F2937" }}
+					>
+						Diskusi
+					</h3>
+					<div className="space-y-3">
+						{discussions.map((discussion, index) => (
+							<div
+								key={index}
+								className="flex items-start gap-3 p-3 rounded-lg transition-colors"
+								style={{
+									backgroundColor: dark ? "#1F2937" : "#F9FAFB",
+								}}
+							>
+								<div className="flex-shrink-0">
+									<div
+										className="w-8 h-8 rounded-full flex items-center justify-center"
+										style={{ backgroundColor: "#DBEAFE" }}
+									>
+										<IconMessage
+											className="w-4 h-4"
+											style={{ color: "#1E3A5F" }}
+											stroke={2}
+										/>
+									</div>
+								</div>
+								<div className="flex-1">
+									<h4
+										className="text-sm font-medium"
+										style={{ color: dark ? "white" : "#1F2937" }}
+									>
+										{discussion.title}
+									</h4>
+									<p
+										className="text-xs mt-1"
+										style={{ color: dark ? "#9CA3AF" : "#6B7280" }}
+									>
+										{discussion.sender} • {discussion.date}
+									</p>
+								</div>
+							</div>
 						))}
-					</Stack>
-				) : (
-					<Text c="dimmed" ta="center" py="md">
-						Tidak ada acara hari ini
-					</Text>
-				)}
-			</Card>
-		</Stack>
+					</div>
+				</div>
+
+				{/* Right Card - Acara Hari Ini */}
+				<div
+					className="rounded-xl shadow-sm p-5"
+					style={{
+						backgroundColor: dark ? "#141D34" : "white",
+						border: `1px solid ${dark ? "#141D34" : "white"}`,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.25rem",
+					}}
+				>
+					<h3
+						className="text-lg font-semibold mb-4"
+						style={{ color: dark ? "white" : "#1F2937" }}
+					>
+						Acara Hari Ini
+					</h3>
+					<div className="flex items-center justify-center h-32">
+						<p
+							className="text-sm"
+							style={{ color: dark ? "#9CA3AF" : "#6B7280" }}
+						>
+							Tidak ada acara hari ini
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
 	);
 };
 

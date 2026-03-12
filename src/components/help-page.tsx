@@ -142,7 +142,7 @@ const HelpPage = () => {
 	};
 
 	return (
-		<Container size="lg" py="xl">
+		<Container size="lg" py="lg">
 			{/* Statistics Section */}
 			<SimpleGrid cols={3} spacing="lg" mb="xl">
 				{stats.map((stat, index) => (
