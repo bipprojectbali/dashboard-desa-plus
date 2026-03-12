@@ -428,6 +428,7 @@ const SosialPage = () => {
 						style={{ borderColor: dark ? "#141D34" : "white" }}
 						h="100%"
 					>
+						
 						<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
 							Kalender Event Budaya
 						</Title>
