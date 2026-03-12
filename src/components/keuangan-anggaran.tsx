@@ -123,16 +123,40 @@ const KeuanganAnggaran = () => {
 	return (
 		<div
 			className="min-h-screen"
-			style={{ backgroundColor: dark ? "#0F172A" : "#F3F4F6" }}
+			style={{
+				backgroundColor: dark ? "#0F172A" : "#F3F4F6",
+				minHeight: "100vh",
+				padding: "1.5rem",
+			}}
 		>
-			<div className="max-w-7xl mx-auto">
+			<div
+				className="max-w-7xl mx-auto"
+				style={{
+					maxWidth: "80rem",
+					marginLeft: "auto",
+					marginRight: "auto",
+				}}
+			>
 				{/* Row 1: 4 Summary Metrics Cards */}
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+				<div
+					className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(4, 1fr)",
+						gap: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
+				>
 					{kpiData.map((kpi) => (
 						<div
 							key={kpi.id}
 							className="rounded-xl shadow-sm p-6"
-							style={cardStyle}
+							style={{
+								...cardStyle,
+								borderRadius: "12px",
+								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+								padding: "1.5rem",
+							}}
 						>
 							<div className="flex items-center justify-between">
 								<div className="flex-1">
@@ -155,7 +179,7 @@ const KeuanganAnggaran = () => {
 										{kpi.subtitle}
 									</p>
 									{kpi.delta && (
-										<p className="text-xs text-green-500 mt-1">
+										<p className="text-xs mt-1" style={{ color: "#22C55E" }}>
 											{kpi.delta}
 										</p>
 									)}
@@ -176,7 +200,13 @@ const KeuanganAnggaran = () => {
 				{/* Row 2: Line Chart Section */}
 				<div
 					className="rounded-xl shadow-sm p-6 mb-6"
-					style={cardStyle}
+					style={{
+						...cardStyle,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
 				>
 					<h3
 						className="text-lg font-semibold mb-4"
@@ -258,11 +288,24 @@ const KeuanganAnggaran = () => {
 				{/* Row 3: Analytics Section */}
 
 
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+				<div
+					className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(2, 1fr)",
+						gap: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
+				>
 					{/* Left: Horizontal Bar Chart */}
 					<div
 						className="rounded-xl shadow-sm p-6"
-						style={cardStyle}
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
 					>
 						<h3
 							className="text-lg font-semibold mb-4"
@@ -314,7 +357,12 @@ const KeuanganAnggaran = () => {
 					{/* Right: Assistance Funds List */}
 					<div
 						className="rounded-xl shadow-sm p-6"
-						style={cardStyle}
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
 					>
 						<h3
 							className="text-lg font-semibold mb-4"
@@ -368,7 +416,12 @@ const KeuanganAnggaran = () => {
 				{/* Row 4: Report Section */}
 				<div
 					className="rounded-xl shadow-sm p-6"
-					style={cardStyle}
+					style={{
+						...cardStyle,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.5rem",
+					}}
 				>
 					<h3
 						className="text-lg font-semibold mb-6"
@@ -376,7 +429,14 @@ const KeuanganAnggaran = () => {
 					>
 						Laporan APBDes
 					</h3>
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+					<div
+						className="grid grid-cols-1 md:grid-cols-2 gap-8"
+						style={{
+							display: "grid",
+							gridTemplateColumns: "repeat(2, 1fr)",
+							gap: "2rem",
+						}}
+					>
 						{/* Left: Pendapatan */}
 						<div>
 							<h4

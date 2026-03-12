@@ -149,16 +149,40 @@ const BumdesPage = () => {
 	return (
 		<div
 			className="min-h-screen"
-			style={{ backgroundColor: dark ? "#0F172A" : "#F3F4F6" }}
+			style={{
+				backgroundColor: dark ? "#0F172A" : "#F3F4F6",
+				minHeight: "100vh",
+				padding: "1.5rem",
+			}}
 		>
-			<div className="max-w-7xl mx-auto">
+			<div
+				className="max-w-7xl mx-auto"
+				style={{
+					maxWidth: "80rem",
+					marginLeft: "auto",
+					marginRight: "auto",
+				}}
+			>
 				{/* Row 1: Top 4 Metrics Cards */}
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+				<div
+					className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(4, 1fr)",
+						gap: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
+				>
 					{kpiData.map((kpi, index) => (
 						<div
 							key={index}
 							className="rounded-xl shadow-sm p-6"
-							style={cardStyle}
+							style={{
+								...cardStyle,
+								borderRadius: "12px",
+								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+								padding: "1.5rem",
+							}}
 						>
 							<div className="flex items-center justify-between">
 								<div className="flex-1">
@@ -197,7 +221,12 @@ const BumdesPage = () => {
 				{/* Row 2: Sales Update Header */}
 				<div
 					className="rounded-xl shadow-sm mb-6 overflow-hidden"
-					style={cardStyle}
+					style={{
+						...cardStyle,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						marginBottom: "1.5rem",
+					}}
 				>
 					<div
 						className="px-6 py-4 flex items-center justify-between"
@@ -232,13 +261,25 @@ const BumdesPage = () => {
 				</div>
 
 				{/* Row 3: Main Content Grid */}
-				<div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
+				<div
+					className="grid grid-cols-1 lg:grid-cols-10 gap-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(10, 1fr)",
+						gap: "1.5rem",
+					}}
+				>
 					{/* Left Column (30%) */}
 					<div className="lg:col-span-3 space-y-6">
 						{/* Produk Unggulan Section */}
 						<div
 							className="rounded-xl shadow-sm p-6"
-							style={cardStyle}
+							style={{
+								...cardStyle,
+								borderRadius: "12px",
+								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+								padding: "1.5rem",
+							}}
 						>
 							<h3
 								className="text-lg font-semibold mb-4"
@@ -271,11 +312,7 @@ const BumdesPage = () => {
 										</p>
 										{stat.subtitle && (
 											<p
-												className={`text-xs mt-1 ${
-													stat.isPositive
-														? "text-green-500"
-														: subtitleStyle.color
-												}`}
+												className="text-xs mt-1"
 												style={
 													stat.isPositive
 														? { color: "#22C55E" }
@@ -332,7 +369,7 @@ const BumdesPage = () => {
 												{product.umkmOwner}
 											</p>
 											<div className="flex items-center justify-between mt-2">
-												<p className="text-xs font-medium text-green-500">
+												<p className="text-xs font-medium" style={{ color: "#22C55E" }}>
 													{product.sales}
 												</p>
 												<p
@@ -356,7 +393,12 @@ const BumdesPage = () => {
 					<div className="lg:col-span-7">
 						<div
 							className="rounded-xl shadow-sm p-6"
-							style={cardStyle}
+							style={{
+								...cardStyle,
+								borderRadius: "12px",
+								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+								padding: "1.5rem",
+							}}
 						>
 							<div className="flex items-center justify-between mb-6">
 								<h3
@@ -505,11 +547,11 @@ const BumdesPage = () => {
 												</td>
 												<td className="py-4 px-4">
 													<span
-														className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-															parseInt(product.stok) > 200
-																? "bg-green-100 text-green-800"
-																: "bg-red-100 text-red-800"
-														}`}
+														className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+														style={{
+															backgroundColor: parseInt(product.stok) > 200 ? "#DCFCE7" : "#FEE2E2",
+															color: parseInt(product.stok) > 200 ? "#166534" : "#991B1B",
+														}}
 													>
 														{product.stok}
 													</span>

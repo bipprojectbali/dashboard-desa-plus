@@ -78,8 +78,8 @@ const PengaduanLayananPublik = () => {
 			type: "KTP Elektronik",
 			date: "10 Mar 2025",
 			status: "Selesai",
-			statusColor: "green",
-			statusText: "bg-green-100 text-green-800",
+			statusBg: "bg-darmasaba-success-100",
+			statusText: "text-darmasaba-success-800",
 		},
 		{
 			id: 2,
@@ -87,8 +87,8 @@ const PengaduanLayananPublik = () => {
 			type: "Surat Domisili",
 			date: "10 Mar 2025",
 			status: "Diproses",
-			statusColor: "yellow",
-			statusText: "bg-yellow-100 text-yellow-800",
+			statusBg: "bg-darmasaba-warning-100",
+			statusText: "text-darmasaba-warning-800",
 		},
 		{
 			id: 3,
@@ -96,8 +96,8 @@ const PengaduanLayananPublik = () => {
 			type: "Kartu Keluarga",
 			date: "9 Mar 2025",
 			status: "Baru",
-			statusColor: "blue",
-			statusText: "bg-blue-100 text-blue-800",
+			statusBg: "bg-darmasaba-blue-100",
+			statusText: "text-darmasaba-blue-800",
 		},
 		{
 			id: 4,
@@ -105,8 +105,8 @@ const PengaduanLayananPublik = () => {
 			type: "Surat Usaha",
 			date: "9 Mar 2025",
 			status: "Selesai",
-			statusColor: "green",
-			statusText: "bg-green-100 text-green-800",
+			statusBg: "bg-darmasaba-success-100",
+			statusText: "text-darmasaba-success-800",
 		},
 		{
 			id: 5,
@@ -114,8 +114,8 @@ const PengaduanLayananPublik = () => {
 			type: "SKCK",
 			date: "8 Mar 2025",
 			status: "Diproses",
-			statusColor: "yellow",
-			statusText: "bg-yellow-100 text-yellow-800",
+			statusBg: "bg-darmasaba-warning-100",
+			statusText: "text-darmasaba-warning-800",
 		},
 	];
 
@@ -165,16 +165,40 @@ const PengaduanLayananPublik = () => {
 	return (
 		<div
 			className="min-h-screen"
-			style={{ backgroundColor: dark ? "#10192D" : "#F3F4F6" }}
+			style={{
+				backgroundColor: dark ? "#10192D" : "#F3F4F6",
+				minHeight: "100vh",
+				padding: "1.5rem",
+			}}
 		>
-			<div className="max-w-7xl mx-auto">
+			<div
+				className="max-w-7xl mx-auto"
+				style={{
+					maxWidth: "80rem",
+					marginLeft: "auto",
+					marginRight: "auto",
+				}}
+			>
 				{/* Row 1: 4 Statistic Cards */}
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+				<div
+					className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(4, 1fr)",
+						gap: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
+				>
 					{statsData.map((stat, index) => (
 						<div
 							key={index}
 							className="rounded-xl shadow-sm p-6"
-							style={cardStyle}
+							style={{
+								...cardStyle,
+								borderRadius: "12px",
+								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+								padding: "1.5rem",
+							}}
 						>
 							<div className="flex items-center justify-between">
 								<div className="flex-1">
@@ -213,7 +237,13 @@ const PengaduanLayananPublik = () => {
 				{/* Row 2: Full Width Line Chart */}
 				<div
 					className="rounded-xl shadow-sm p-6 mb-6"
-					style={cardStyle}
+					style={{
+						...cardStyle,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
 				>
 					<h3
 						className="text-lg font-semibold mb-4"
@@ -260,11 +290,23 @@ const PengaduanLayananPublik = () => {
 				</div>
 
 				{/* Row 3: 3 Column Grid */}
-				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+				<div
+					className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+						gap: "1.5rem",
+					}}
+				>
 					{/* Left: Most Requested Documents (Horizontal Bar Chart) */}
 					<div
 						className="rounded-xl shadow-sm p-6"
-						style={cardStyle}
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
 					>
 						<h3
 							className="text-lg font-semibold mb-4"
@@ -316,7 +358,12 @@ const PengaduanLayananPublik = () => {
 					{/* Middle: Recent Applications */}
 					<div
 						className="rounded-xl shadow-sm p-6"
-						style={cardStyle}
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
 					>
 						<h3
 							className="text-lg font-semibold mb-4"
@@ -349,7 +396,7 @@ const PengaduanLayananPublik = () => {
 									</div>
 									<div className="text-right">
 										<span
-											className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${app.statusText}`}
+											className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${app.statusBg} ${app.statusText}`}
 										>
 											{app.status}
 										</span>
@@ -368,7 +415,12 @@ const PengaduanLayananPublik = () => {
 					{/* Right: Innovation Ideas */}
 					<div
 						className="rounded-xl shadow-sm p-6"
-						style={cardStyle}
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
 					>
 						<h3
 							className="text-lg font-semibold mb-4"

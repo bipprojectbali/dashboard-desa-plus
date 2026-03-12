@@ -11,6 +11,7 @@ import {
 	YAxis,
 } from "recharts";
 import { useMantineColorScheme } from "@mantine/core";
+import { IconMessage } from "@tabler/icons-react";
 
 const KinerjaDivisi = () => {
 	const { colorScheme } = useMantineColorScheme();
@@ -76,10 +77,22 @@ const KinerjaDivisi = () => {
 	return (
 		<div
 			className="min-h-screen"
-			style={{ backgroundColor: dark ? "#10192D" : "#F3F4F6" }}
+			style={{
+				backgroundColor: dark ? "#10192D" : "#F3F4F6",
+				minHeight: "100vh",
+				padding: "1.5rem",
+			}}
 		>
 			{/* Top Row - 4 Activity Cards */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+			<div
+				className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+				style={{
+					display: "grid",
+					gridTemplateColumns: "repeat(4, 1fr)",
+					gap: "1.5rem",
+					marginBottom: "1.5rem",
+				}}
+			>
 				{activities.map((activity, index) => (
 					<div
 						key={index}
@@ -87,6 +100,9 @@ const KinerjaDivisi = () => {
 						style={{
 							backgroundColor: dark ? "#141D34" : "white",
 							border: `1px solid ${dark ? "#141D34" : "white"}`,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.25rem",
 						}}
 					>
 						{/* Dark blue title bar */}
@@ -125,13 +141,24 @@ const KinerjaDivisi = () => {
 			</div>
 
 			{/* Second Row - Charts */}
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+			<div
+				className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"
+				style={{
+					display: "grid",
+					gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+					gap: "1.5rem",
+					marginBottom: "1.5rem",
+				}}
+			>
 				{/* Left Card - Jumlah Dokumen (Bar Chart) */}
 				<div
 					className="rounded-xl shadow-sm p-5"
 					style={{
 						backgroundColor: dark ? "#141D34" : "white",
 						border: `1px solid ${dark ? "#141D34" : "white"}`,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.25rem",
 					}}
 				>
 					<h3
@@ -181,6 +208,9 @@ const KinerjaDivisi = () => {
 					style={{
 						backgroundColor: dark ? "#141D34" : "white",
 						border: `1px solid ${dark ? "#141D34" : "white"}`,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.25rem",
 					}}
 				>
 					<h3
@@ -261,13 +291,23 @@ const KinerjaDivisi = () => {
 			</div>
 
 			{/* Bottom Row */}
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+			<div
+				className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+				style={{
+					display: "grid",
+					gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+					gap: "1.5rem",
+				}}
+			>
 				{/* Left Card - Diskusi */}
 				<div
 					className="rounded-xl shadow-sm p-5"
 					style={{
 						backgroundColor: dark ? "#141D34" : "white",
 						border: `1px solid ${dark ? "#141D34" : "white"}`,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.25rem",
 					}}
 				>
 					<h3
@@ -290,20 +330,11 @@ const KinerjaDivisi = () => {
 										className="w-8 h-8 rounded-full flex items-center justify-center"
 										style={{ backgroundColor: "#DBEAFE" }}
 									>
-										<svg
+										<IconMessage
 											className="w-4 h-4"
 											style={{ color: "#1E3A5F" }}
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-											/>
-										</svg>
+											stroke={2}
+										/>
 									</div>
 								</div>
 								<div className="flex-1">
@@ -331,6 +362,9 @@ const KinerjaDivisi = () => {
 					style={{
 						backgroundColor: dark ? "#141D34" : "white",
 						border: `1px solid ${dark ? "#141D34" : "white"}`,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.25rem",
 					}}
 				>
 					<h3

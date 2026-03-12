@@ -1,1 +1,100 @@
 @import "tailwindcss";
+
+/* Custom CSS variables for Tailwind */
+:root {
+	/* Darmasaba Navy Colors */
+	--darmasaba-navy-50: #E1E4F2;
+	--darmasaba-navy-100: #B9C2DD;
+	--darmasaba-navy-200: #91A0C9;
+	--darmasaba-navy-300: #697EBA;
+	--darmasaba-navy-400: #4C6CAE;
+	--darmasaba-navy-500: #3B5B97;
+	--darmasaba-navy-600: #2C497F;
+	--darmasaba-navy-700: #1E3766;
+	--darmasaba-navy-800: #12264D;
+	--darmasaba-navy-900: #071833;
+	--darmasaba-navy: #1E3A5F;
+
+	/* Darmasaba Blue Colors */
+	--darmasaba-blue-50: #E3F0FF;
+	--darmasaba-blue-100: #B6D9FF;
+	--darmasaba-blue-200: #89C2FF;
+	--darmasaba-blue-300: #5CA9FF;
+	--darmasaba-blue-400: #3B8FFF;
+	--darmasaba-blue-500: #237AE0;
+	--darmasaba-blue-600: #1C6BBF;
+	--darmasaba-blue-700: #155BA0;
+	--darmasaba-blue-800: #0E4980;
+	--darmasaba-blue-900: #073260;
+	--darmasaba-blue: #3B82F6;
+
+	/* Darmasaba Success Colors */
+	--darmasaba-success-50: #E3F9E7;
+	--darmasaba-success-100: #BFEEC7;
+	--darmasaba-success-200: #9BD8A7;
+	--darmasaba-success-300: #77C387;
+	--darmasaba-success-400: #5DB572;
+	--darmasaba-success-500: #499A5D;
+	--darmasaba-success-600: #3C7F4A;
+	--darmasaba-success-700: #2F6438;
+	--darmasaba-success-800: #234926;
+	--darmasaba-success-900: #17301B;
+	--darmasaba-success: #22C55E;
+
+	/* Darmasaba Warning Colors */
+	--darmasaba-warning-50: #FFF8E1;
+	--darmasaba-warning-100: #FEE7B3;
+	--darmasaba-warning-200: #FDD785;
+	--darmasaba-warning-300: #FDC757;
+	--darmasaba-warning-400: #FBBF3B;
+	--darmasaba-warning-500: #E1AC23;
+	--darmasaba-warning-600: #C2981D;
+	--darmasaba-warning-700: #A38418;
+	--darmasaba-warning-800: #856F12;
+	--darmasaba-warning-900: #675A0D;
+	--darmasaba-warning: #FACC15;
+
+	/* Darmasaba Danger Colors */
+	--darmasaba-danger-50: #FFE3E3;
+	--darmasaba-danger-100: #FFBABA;
+	--darmasaba-danger-200: #FF9191;
+	--darmasaba-danger-300: #FF6868;
+	--darmasaba-danger-400: #FA4B4B;
+	--darmasaba-danger-500: #E03333;
+	--darmasaba-danger-600: #C22A2A;
+	--darmasaba-danger-700: #A32020;
+	--darmasaba-danger-800: #851616;
+	--darmasaba-danger-900: #670C0C;
+	--darmasaba-danger: #EF4444;
+
+	/* Darmasaba Background */
+	--darmasaba-background: #F5F8FB;
+
+	/* Standard colors for dark mode */
+	--slate-900: #0F172A;
+	--slate-800: #1E293B;
+	--slate-700: #334155;
+	--slate-600: #475569;
+	--gray-50: #F9FAFB;
+	--gray-100: #F3F4F6;
+	--gray-200: #E5E7EB;
+	--gray-600: #4B5563;
+	--gray-700: #1F2937;
+	--gray-400: #9CA3AF;
+	--gray-500: #6B7280;
+	--gray-800: #1F2937;
+	--blue-50: #EFF6FF;
+	--blue-100: #DBEAFE;
+	--blue-900: #1E3A5F;
+	--red-500: #EF4444;
+	--green-500: #22C55E;
+}
+
+/* Dark mode support */
+[data-mantine-color-scheme="dark"] {
+	color-scheme: dark;
+}
+
+[data-mantine-color-scheme="light"] {
+	color-scheme: light;
+}

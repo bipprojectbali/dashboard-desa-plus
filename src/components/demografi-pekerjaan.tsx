@@ -140,16 +140,40 @@ const DemografiPekerjaan = () => {
 	return (
 		<div
 			className="min-h-screen"
-			style={{ backgroundColor: dark ? "#10192D" : "#F3F4F6" }}
+			style={{
+				backgroundColor: dark ? "#10192D" : "#F3F4F6",
+				minHeight: "100vh",
+				padding: "1.5rem",
+			}}
 		>
-			<div className="max-w-7xl mx-auto">
+			<div
+				className="max-w-7xl mx-auto"
+				style={{
+					maxWidth: "80rem",
+					marginLeft: "auto",
+					marginRight: "auto",
+				}}
+			>
 				{/* Row 1: 4 Statistic Cards */}
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+				<div
+					className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(4, 1fr)",
+						gap: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
+				>
 					{kpiData.map((kpi) => (
 						<div
 							key={kpi.id}
 							className="rounded-xl shadow-sm p-6"
-							style={cardStyle}
+							style={{
+								...cardStyle,
+								borderRadius: "12px",
+								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+								padding: "1.5rem",
+							}}
 						>
 							<div className="flex items-center justify-between">
 								<div className="flex-1">
@@ -186,11 +210,24 @@ const DemografiPekerjaan = () => {
 				</div>
 
 				{/* Row 2: 2 Chart Cards */}
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+				<div
+					className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(2, 1fr)",
+						gap: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
+				>
 					{/* Age Distribution Bar Chart */}
 					<div
 						className="rounded-xl shadow-sm p-6"
-						style={cardStyle}
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
 					>
 						<h3
 							className="text-lg font-semibold mb-4"
@@ -239,7 +276,12 @@ const DemografiPekerjaan = () => {
 					{/* Job Distribution Bar Chart */}
 					<div
 						className="rounded-xl shadow-sm p-6"
-						style={cardStyle}
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
 					>
 						<h3
 							className="text-lg font-semibold mb-4"
@@ -287,11 +329,24 @@ const DemografiPekerjaan = () => {
 				</div>
 
 				{/* Row 3: 3 Insight Cards */}
-				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+				<div
+					className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6"
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(3, 1fr)",
+						gap: "1.5rem",
+						marginBottom: "1.5rem",
+					}}
+				>
 					{/* Religion Distribution Pie Chart */}
 					<div
 						className="rounded-xl shadow-sm p-6"
-						style={cardStyle}
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
 					>
 						<h3
 							className="text-lg font-semibold mb-4"
@@ -331,7 +386,12 @@ const DemografiPekerjaan = () => {
 					{/* Population per Banjar Table */}
 					<div
 						className="rounded-xl shadow-sm p-6 lg:col-span-2"
-						style={cardStyle}
+						style={{
+							...cardStyle,
+							borderRadius: "12px",
+							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+							padding: "1.5rem",
+						}}
 					>
 						<h3
 							className="text-lg font-semibold mb-4"
@@ -416,7 +476,12 @@ const DemografiPekerjaan = () => {
 				{/* Population Dynamics Stats */}
 				<div
 					className="rounded-xl shadow-sm p-6"
-					style={cardStyle}
+					style={{
+						...cardStyle,
+						borderRadius: "12px",
+						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+						padding: "1.5rem",
+					}}
 				>
 					<h3
 						className="text-lg font-semibold mb-4"
@@ -424,13 +489,22 @@ const DemografiPekerjaan = () => {
 					>
 						Statistik Dinamika Penduduk
 					</h3>
-					<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+					<div
+						className="grid grid-cols-1 md:grid-cols-4 gap-4"
+						style={{
+							display: "grid",
+							gridTemplateColumns: "repeat(4, 1fr)",
+							gap: "1rem",
+						}}
+					>
 						{dynamicStats.map((stat, index) => (
 							<div
 								key={index}
 								className="p-4 rounded-lg"
 								style={{
 									backgroundColor: dark ? "#1F2937" : "#F9FAFB",
+									borderRadius: "8px",
+									padding: "1rem",
 								}}
 							>
 								<div className="flex items-center justify-between">
