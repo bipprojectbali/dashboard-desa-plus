@@ -1,5 +1,4 @@
 import {
-	Briefcase,
 	Calendar,
 	CheckCircle,
 	FileText,
@@ -28,9 +27,7 @@ import {
 	Card, // Added for icon containers
 	Grid,
 	Group,
-	Image,
 	Progress,
-	SimpleGrid,
 	Stack,
 	Text,
 	ThemeIcon,
@@ -67,19 +64,6 @@ const eventData = [
 	{ date: "1 Oktober 2025", title: "Hari Kesaktian Pancasila" },
 	{ date: "15 Oktober 2025", title: "Davest" },
 	{ date: "19 Oktober 2025", title: "Rapat Koordinasi" },
-];
-
-const apbdesData = [
-	{ name: "Belanja", value: 390, label: "390M" },
-	{ name: "Pendapatan", value: 470, label: "470M" },
-	{ name: "Pembiayaan", value: 290, label: "290M" },
-];
-
-const sdgsData = [
-	{ label: "Desa Berenergi Bersih Dan Terbarukan", value: 99.64, image: "/SDGS-7.png" },
-	{ label: "Desa Damai Berkeadilan", value: 78.65, image: "/SDGS-16.png" },
-	{ label: "Desa Sehat Dan Sejahtera", value: 77.37, image: "/SDGS-3.png" },
-	{ label: "Desa Tanpa Kemiskinan", value: 52.62, image: "/SDGS-1.png" }
 ];
 
 export function DashboardContent() {
@@ -119,7 +103,7 @@ export function DashboardContent() {
 								variant="filled"
 								size="xl"
 								radius="xl"
-								color={dark ? "gray" : "darmasaba-navy"}
+								color={dark ? "gray" : "darmasaba-blue"}
 							>
 								<FileText style={{ width: "70%", height: "70%" }} />
 							</ThemeIcon>
@@ -153,7 +137,7 @@ export function DashboardContent() {
 								variant="filled"
 								size="xl"
 								radius="xl"
-								color={dark ? "gray" : "darmasaba-navy"}
+								color={dark ? "gray" : "darmasaba-blue"}
 							>
 								<MessageCircle style={{ width: "70%", height: "70%" }} />
 							</ThemeIcon>
@@ -190,7 +174,7 @@ export function DashboardContent() {
 								variant="filled"
 								size="xl"
 								radius="xl"
-								color={dark ? "gray" : "darmasaba-navy"}
+								color={dark ? "gray" : "darmasaba-blue"}
 							>
 								<CheckCircle style={{ width: "70%", height: "70%" }} />
 							</ThemeIcon>
@@ -224,7 +208,7 @@ export function DashboardContent() {
 								variant="filled"
 								size="xl"
 								radius="xl"
-								color={dark ? "gray" : "darmasaba-navy"}
+								color={dark ? "gray" : "darmasaba-blue"}
 							>
 								<Users style={{ width: "70%", height: "70%" }} />
 							</ThemeIcon>
@@ -292,7 +276,7 @@ export function DashboardContent() {
 								<Tooltip />
 								<Bar
 									dataKey="value"
-									fill="#1E3A5F"
+									fill="var(--mantine-color-blue-filled)"
 									radius={[4, 4, 0, 0]}
 								/>
 							</BarChart>
@@ -385,7 +369,46 @@ export function DashboardContent() {
 						<Group gap="xs" mb="lg">
 							<Box>
 								{/* Original SVG icon */}
-								<Briefcase color="#1E3A5F" />
+								<svg
+									width="24"
+									height="24"
+									viewBox="0 0 24 24"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<rect
+										x="3"
+										y="3"
+										width="7"
+										height="7"
+										rx="1"
+										fill="currentColor"
+									/>
+									<rect
+										x="3"
+										y="14"
+										width="7"
+										height="7"
+										rx="1"
+										fill="currentColor"
+									/>
+									<rect
+										x="14"
+										y="3"
+										width="7"
+										height="7"
+										rx="1"
+										fill="currentColor"
+									/>
+									<rect
+										x="14"
+										y="14"
+										width="7"
+										height="7"
+										rx="1"
+										fill="currentColor"
+									/>
+								</svg>
 							</Box>
 							<Title order={4}>Divisi Teraktif</Title>
 						</Group>
@@ -404,7 +427,7 @@ export function DashboardContent() {
 										value={(divisi.value / 37) * 100}
 										size="sm"
 										radius="xl"
-										color="#1E3A5F"
+										color="blue"
 									/>
 								</Box>
 							))}
@@ -430,7 +453,7 @@ export function DashboardContent() {
 								<Box
 									key={index}
 									style={{
-										borderLeft: "4px solid #1E3A5F",
+										borderLeft: "4px solid var(--mantine-color-blue-filled)",
 										paddingLeft: 12,
 									}}
 								>
@@ -457,59 +480,43 @@ export function DashboardContent() {
 					Grafik APBDes
 				</Title>
 				<Stack gap="xs">
-					{apbdesData.map((data, index) => (
-						<Grid key={index} align="center">
-							<Grid.Col span={3}>
-								<Text size="sm" fw={500}>
-									{data.name}
-								</Text>
-							</Grid.Col>
-							<Grid.Col span={7}>
-								<Progress
-									value={(data.value / 470) * 100}
-									size="lg"
-									radius="xl"
-									color="#1E3A5F"
-								/>
-							</Grid.Col>
-							<Grid.Col span={2}>
-								<Text size="sm" fw={600} ta="right">
-									{data.label}
-								</Text>
-							</Grid.Col>
-						</Grid>
-					))}
+					<Group align="center" gap="md">
+						<Text size="sm" fw={500} w={60}>
+							Belanja
+						</Text>
+						<Progress
+							value={70}
+							size="lg"
+							radius="xl"
+							color="blue"
+							style={{ flex: 1 }}
+						/>
+					</Group>
+					<Group align="center" gap="md">
+						<Text size="sm" fw={500} w={60}>
+							Pendapatan
+						</Text>
+						<Progress
+							value={90}
+							size="lg"
+							radius="xl"
+							color="green"
+							style={{ flex: 1 }}
+						/>
+					</Group>
+					<Group align="center" gap="md">
+						<Text size="sm" fw={500} w={60}>
+							Pembangunan
+						</Text>
+						<Progress
+							value={50}
+							size="lg"
+							radius="xl"
+							color="orange"
+							style={{ flex: 1 }}
+						/>
+					</Group>
 				</Stack>
-			</Card>
-
-			{/* SDGS Desa */}
-			<Card
-				p="md"
-				style={{ borderColor: dark ? "#141D34" : "white" }}
-				radius="md"
-				withBorder
-				bg={dark ? "#141D34" : "white"}
-			>
-				<Title order={4} mb="lg">
-					SDGS Desa
-				</Title>
-				<SimpleGrid cols={{ base: 2, md: 5 }}>
-					{sdgsData.map((data, index) => (
-						<Card key={index} withBorder bg={dark ? "#141D34" : "white"} p="md">
-							<Group gap="sm" align="center">
-								<Image src={data.image} width={40} height={40} />
-								<Box>
-									<Text size="sm" ta={"center"}  fw={500} lineClamp={2}>
-										{data.label}
-									</Text>
-									<Text size="sm" ta={"center"} fw={600} c="darmasaba-blue">
-										{data.value}
-									</Text>
-								</Box>
-							</Group>
-						</Card>
-					))}
-				</SimpleGrid>
 			</Card>
 		</Stack>
 	);

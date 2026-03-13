@@ -1,13 +1,23 @@
 import {
+	Badge,
+	Button,
+	Card,
+	Grid,
+	GridCol,
+	Group,
+	Select,
+	Stack,
+	Table,
+	Text,
+	Title,
+	useMantineColorScheme,
+} from "@mantine/core";
+import {
 	IconBuildingStore,
 	IconCategory,
 	IconCurrency,
 	IconUsers,
-	IconTrendingUp,
-	IconTrendingDown,
-	IconChevronDown,
 } from "@tabler/icons-react";
-import { useMantineColorScheme } from "@mantine/core";
 import { useState } from "react";
 
 const BumdesPage = () => {
@@ -15,98 +25,69 @@ const BumdesPage = () => {
 	const dark = colorScheme === "dark";
 
 	const [timeFilter, setTimeFilter] = useState<string>("bulan");
-	const [categoryFilter, setCategoryFilter] = useState<string>("semua");
 
-	// KPI Data
+	// Sample data for KPI cards
 	const kpiData = [
 		{
 			title: "UMKM Aktif",
-			value: "45",
-			subtitle: "Beroperasi",
-			icon: IconUsers,
+			value: 45,
+			icon: <IconUsers size={24} />,
+			color: "darmasaba-blue",
 		},
 		{
 			title: "UMKM Terdaftar",
-			value: "68",
-			subtitle: "Total terdaftar",
-			icon: IconBuildingStore,
+			value: 68,
+			icon: <IconBuildingStore size={24} />,
+			color: "darmasaba-success",
 		},
 		{
 			title: "Omzet",
-			value: "48 JT",
-			subtitle: "Bulan ini",
-			icon: IconCurrency,
+			value: "Rp 48.000.000",
+			icon: <IconCurrency size={24} />,
+			color: "darmasaba-warning",
 		},
 		{
 			title: "Kategori UMKM",
-			value: "34",
-			subtitle: "Jenis produk",
-			icon: IconCategory,
+			value: 34,
+			icon: <IconCategory size={24} />,
+			color: "darmasaba-danger",
 		},
 	];
 
-	// Mini stats data
-	const miniStats = [
-		{
-			title: "Total Penjualan",
-			value: "Rp 30.900.000",
-			subtitle: "+18% vs bulan lalu",
-			isPositive: true,
-		},
-		{
-			title: "Produk Aktif",
-			value: "7",
-			subtitle: "Kategori produk",
-		},
-		{
-			title: "Total Transaksi",
-			value: "500",
-			subtitle: "Transaksi bulan ini",
-		},
-	];
-
-	// Top 3 products data
+	// Sample data for top products
 	const topProducts = [
 		{
 			rank: 1,
 			name: "Beras Premium Organik",
-			umkmOwner: "Kelompok Tani Subak",
-			sales: "Rp 8.500.000",
-			volume: "650 Kg Terjual",
-			growth: "+15%",
+			umkmOwner: "Warung Pak Joko",
+			growth: "+12%",
 		},
 		{
 			rank: 2,
 			name: "Keripik Singkong",
 			umkmOwner: "Ibu Sari Snack",
-			sales: "Rp 4.200.000",
-			volume: "320 Kg Terjual",
 			growth: "+8%",
 		},
 		{
 			rank: 3,
 			name: "Madu Alami",
 			umkmOwner: "Peternakan Lebah",
-			sales: "Rp 3.750.000",
-			volume: "150 Liter Terjual",
 			growth: "+5%",
 		},
 	];
 
-	// Product sales data
+	// Sample data for product sales
 	const productSales = [
 		{
 			produk: "Beras Premium Organik",
-			umkm: "Kelompok Tani Subak",
 			penjualanBulanIni: "Rp 8.500.000",
-			bulanLalu: "Rp 7.400.000",
-			trend: 15,
+			bulanLalu: "Rp 8.500.000",
+			trend: 10,
 			volume: "650 Kg",
 			stok: "850 Kg",
 		},
 		{
 			produk: "Keripik Singkong",
-			umkm: "Ibu Sari Snack",
 			penjualanBulanIni: "Rp 4.200.000",
 			bulanLalu: "Rp 3.800.000",
 			trend: 10,
@@ -115,7 +96,6 @@ const BumdesPage = () => {
 		},
 		{
 			produk: "Madu Alami",
-			umkm: "Peternakan Lebah",
 			penjualanBulanIni: "Rp 3.750.000",
 			bulanLalu: "Rp 4.100.000",
 			trend: -8,
@@ -124,7 +104,6 @@ const BumdesPage = () => {
 		},
 		{
 			produk: "Kecap Tradisional",
-			umkm: "Bu Darmi",
 			penjualanBulanIni: "Rp 2.800.000",
 			bulanLalu: "Rp 2.500.000",
 			trend: 12,
@@ -133,456 +112,277 @@ const BumdesPage = () => {
 		},
 	];
 
-	const cardStyle = {
-		backgroundColor: dark ? "#1E293B" : "white",
-		border: `1px solid ${dark ? "#1E293B" : "white"}`,
-	};
-
-	const textStyle = {
-		color: dark ? "white" : "#1F2937",
-	};
-
-	const subtitleStyle = {
-		color: dark ? "#9CA3AF" : "#6B7280",
-	};
-
 	return (
-		<div
-			className="min-h-screen"
-			style={{
-				backgroundColor: dark ? "#0F172A" : "#F3F4F6",
-				minHeight: "100vh",
-				padding: "1.5rem",
-			}}
-		>
-			<div
-				className="max-w-7xl mx-auto"
-				style={{
-					maxWidth: "80rem",
-					marginLeft: "auto",
-					marginRight: "auto",
-				}}
-			>
-				{/* Row 1: Top 4 Metrics Cards */}
-				<div
-					className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
-					style={{
-						display: "grid",
-						gridTemplateColumns: "repeat(4, 1fr)",
-						gap: "1.5rem",
-						marginBottom: "1.5rem",
-					}}
-				>
-					{kpiData.map((kpi, index) => (
-						<div
-							key={index}
-							className="rounded-xl shadow-sm p-6"
-							style={{
-								...cardStyle,
-								borderRadius: "12px",
-								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-								padding: "1.5rem",
-							}}
+		<Stack gap="lg">
+			{/* KPI Cards */}
+			<Grid gutter="md">
+				{kpiData.map((kpi, index) => (
+					<GridCol key={index} span={{ base: 12, sm: 6, md: 3 }}>
+						<Card
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#141D34" : "white"}
+							style={{ borderColor: dark ? "#141D34" : "white" }}
 						>
-							<div className="flex items-center justify-between">
-								<div className="flex-1">
-									<h3
-										className="text-sm font-medium mb-1"
-										style={subtitleStyle}
-									>
+							<Group justify="space-between" align="center">
+								<Stack gap={0}>
+									<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
 										{kpi.title}
-									</h3>
-									<p
-										className="text-3xl font-bold mb-1"
-										style={textStyle}
-									>
-										{kpi.value}
-									</p>
-									<p
-										className="text-xs"
-										style={subtitleStyle}
-									>
-										{kpi.subtitle}
-									</p>
-								</div>
-								<div className="flex-shrink-0 ml-4">
-									<div
-										className="w-12 h-12 rounded-full flex items-center justify-center text-white"
-										style={{ backgroundColor: "#1F3A5F" }}
-									>
-										<kpi.icon size={24} />
-									</div>
-								</div>
-							</div>
-						</div>
-					))}
-				</div>
+									</Text>
+									<Text size="xl" fw={700} c={dark ? "dark.0" : "black"}>
+										{typeof kpi.value === "number"
+											? kpi.value.toLocaleString()
+											: kpi.value}
+									</Text>
+								</Stack>
+								<Badge variant="light" color={kpi.color} p={8} radius="md">
+									{kpi.icon}
+								</Badge>
+							</Group>
+						</Card>
+					</GridCol>
+				))}
+			</Grid>
 
-				{/* Row 2: Sales Update Header */}
-				<div
-					className="rounded-xl shadow-sm mb-6 overflow-hidden"
-					style={{
-						...cardStyle,
-						borderRadius: "12px",
-						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-						marginBottom: "1.5rem",
-					}}
-				>
-					<div
-						className="px-6 py-4 flex items-center justify-between"
-						style={{ backgroundColor: "#1F3A5F" }}
-					>
-						<h3 className="text-lg font-semibold text-white">
-							Update Penjualan Produk
-						</h3>
-						<div className="flex items-center gap-2">
-							<button
-								onClick={() => setTimeFilter("minggu")}
-								className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-									timeFilter === "minggu"
-										? "bg-white text-[#1F3A5F]"
-										: "bg-white/20 text-white hover:bg-white/30"
-								}`}
-							>
-								Minggu ini
-							</button>
-							<button
-								onClick={() => setTimeFilter("bulan")}
-								className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-									timeFilter === "bulan"
-										? "bg-white text-[#1F3A5F]"
-										: "bg-white/20 text-white hover:bg-white/30"
-								}`}
-							>
-								Bulan ini
-							</button>
-						</div>
-					</div>
-				</div>
-
-				{/* Row 3: Main Content Grid */}
-				<div
-					className="grid grid-cols-1 lg:grid-cols-10 gap-6"
-					style={{
-						display: "grid",
-						gridTemplateColumns: "repeat(10, 1fr)",
-						gap: "1.5rem",
-					}}
-				>
-					{/* Left Column (30%) */}
-					<div className="lg:col-span-3 space-y-6">
-						{/* Produk Unggulan Section */}
-						<div
-							className="rounded-xl shadow-sm p-6"
-							style={{
-								...cardStyle,
-								borderRadius: "12px",
-								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-								padding: "1.5rem",
-							}}
+			{/* Update Penjualan Produk Header */}
+			<Card
+				p="md"
+				radius="md"
+				withBorder
+				bg={dark ? "#141D34" : "white"}
+				style={{ borderColor: dark ? "#141D34" : "white" }}
+			>
+				<Group justify="space-between" align="center" px="md" py="xs">
+					<Title order={3} c={dark ? "dark.0" : "black"}>
+						Update Penjualan Produk
+					</Title>
+					<Group>
+						<Button
+							variant={timeFilter === "minggu" ? "filled" : "light"}
+							onClick={() => setTimeFilter("minggu")}
+							color="darmasaba-blue"
 						>
-							<h3
-								className="text-lg font-semibold mb-4"
-								style={textStyle}
-							>
-								Produk Unggulan
-							</h3>
+							Minggu ini
+						</Button>
+						<Button
+							variant={timeFilter === "bulan" ? "filled" : "light"}
+							onClick={() => setTimeFilter("bulan")}
+							color="darmasaba-blue"
+						>
+							Bulan ini
+						</Button>
+					</Group>
+				</Group>
+			</Card>
 
-							{/* Mini Stats Cards */}
-							<div className="space-y-4 mb-6">
-								{miniStats.map((stat, index) => (
-									<div
-										key={index}
-										className="p-4 rounded-lg"
-										style={{
-											backgroundColor: dark ? "#334155" : "#F9FAFB",
-										}}
+			<Grid gutter="md">
+				{/* Produk Unggulan (Left Column) */}
+				<GridCol span={{ base: 12, lg: 4 }}>
+					<Stack gap="md">
+						{/* Total Penjualan, Produk Aktif, Total Transaksi */}
+						<Card
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#141D34" : "white"}
+							style={{ borderColor: dark ? "#141D34" : "white" }}
+						>
+							<Stack gap="md">
+								<Group justify="space-between">
+									<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+										Total Penjualan
+									</Text>
+									<Text size="lg" fw={700} c={dark ? "dark.0" : "black"}>
+										Rp 28.500.000
+									</Text>
+								</Group>
+								<Group justify="space-between">
+									<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+										Produk Aktif
+									</Text>
+									<Text size="lg" fw={700} c={dark ? "dark.0" : "black"}>
+										124 Produk
+									</Text>
+								</Group>
+								<Group justify="space-between">
+									<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+										Total Transaksi
+									</Text>
+									<Text size="lg" fw={700} c={dark ? "dark.0" : "black"}>
+										1.240 Transaksi
+									</Text>
+								</Group>
+							</Stack>
+						</Card>
+
+						{/* Top 3 Produk Terlaris */}
+						<Card
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#141D34" : "white"}
+							style={{ borderColor: dark ? "#141D34" : "white" }}
+						>
+							<Title order={4} mb="md" c={dark ? "dark.0" : "black"}>
+								Top 3 Produk Terlaris
+							</Title>
+							<Stack gap="sm">
+								{topProducts.map((product) => (
+									<Group
+										key={product.rank}
+										justify="space-between"
+										align="center"
 									>
-										<p
-											className="text-sm font-medium mb-1"
-											style={subtitleStyle}
+										<Group gap="sm">
+											<Badge
+												variant="filled"
+												color={
+													product.rank === 1
+														? "gold"
+														: product.rank === 2
+															? "gray"
+															: "bronze"
+												}
+												radius="xl"
+												size="lg"
+											>
+												{product.rank}
+											</Badge>
+											<Stack gap={0}>
+												<Text fw={500} c={dark ? "dark.0" : "black"}>
+													{product.name}
+												</Text>
+												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+													{product.umkmOwner}
+												</Text>
+											</Stack>
+										</Group>
+										<Badge
+											variant="light"
+											color={product.growth.startsWith("+") ? "green" : "red"}
 										>
-											{stat.title}
-										</p>
-										<p
-											className="text-xl font-bold"
-											style={textStyle}
-										>
-											{stat.value}
-										</p>
-										{stat.subtitle && (
-											<p
-												className="text-xs mt-1"
-												style={
-													stat.isPositive
-														? { color: "#22C55E" }
-														: subtitleStyle
+											{product.growth}
+										</Badge>
+									</Group>
+								))}
+							</Stack>
+						</Card>
+					</Stack>
+				</GridCol>
+
+				{/* Detail Penjualan Produk (Right Column) */}
+				<GridCol span={{ base: 12, lg: 8 }}>
+					<Card
+						p="md"
+						radius="md"
+						withBorder
+						bg={dark ? "#141D34" : "white"}
+						style={{ borderColor: dark ? "#141D34" : "white" }}
+					>
+						<Group justify="space-between" mb="md">
+							<Title order={4} c={dark ? "dark.0" : "black"}>
+								Detail Penjualan Produk
+							</Title>
+							<Select
+								placeholder="Filter kategori"
+								data={[
+									{ value: "semua", label: "Semua Kategori" },
+									{ value: "makanan", label: "Makanan" },
+									{ value: "minuman", label: "Minuman" },
+									{ value: "kerajinan", label: "Kerajinan" },
+								]}
+								defaultValue="semua"
+								w={200}
+							/>
+						</Group>
+
+						<Table striped highlightOnHover withColumnBorders>
+							<Table.Thead>
+								<Table.Tr>
+									<Table.Th>
+										<Text c={dark ? "white" : "dimmed"}>Produk</Text>
+									</Table.Th>
+									<Table.Th>
+										<Text c={dark ? "white" : "dimmed"}>
+											Penjualan Bulan Ini
+										</Text>
+									</Table.Th>
+									<Table.Th>
+										<Text c={dark ? "white" : "dimmed"}>Bulan Lalu</Text>
+									</Table.Th>
+									<Table.Th>
+										<Text c={dark ? "white" : "dimmed"}>Trend</Text>
+									</Table.Th>
+									<Table.Th>
+										<Text c={dark ? "white" : "dimmed"}>Volume</Text>
+									</Table.Th>
+									<Table.Th>
+										<Text c={dark ? "white" : "dimmed"}>Stok</Text>
+									</Table.Th>
+									<Table.Th>
+										<Text c={dark ? "white" : "dimmed"}>Aksi</Text>
+									</Table.Th>
+								</Table.Tr>
+							</Table.Thead>
+							<Table.Tbody>
+								{productSales.map((product, index) => (
+									<Table.Tr key={index}>
+										<Table.Td>
+											<Text fw={500} c={dark ? "dark.0" : "black"}>
+												{product.produk}
+											</Text>
+										</Table.Td>
+										<Table.Td>
+											<Text fz={"sm"} c={dark ? "dark.0" : "black"}>
+												{product.penjualanBulanIni}
+											</Text>
+										</Table.Td>
+										<Table.Td>
+											<Text fz={"sm"} c={dark ? "white" : "dimmed"}>
+												{product.bulanLalu}
+											</Text>
+										</Table.Td>
+										<Table.Td>
+											<Group gap="xs">
+												<Text c={product.trend >= 0 ? "green" : "red"}>
+													{product.trend >= 0 ? "↑" : "↓"}{" "}
+													{Math.abs(product.trend)}%
+												</Text>
+											</Group>
+										</Table.Td>
+										<Table.Td>
+											<Text fz={"sm"} c={dark ? "dark.0" : "black"}>
+												{product.volume}
+											</Text>
+										</Table.Td>
+										<Table.Td>
+											<Badge
+												variant="light"
+												color={
+													parseInt(product.stok) > 200 ? "green" : "yellow"
 												}
 											>
-												{stat.subtitle}
-											</p>
-										)}
-									</div>
+												{product.stok}
+											</Badge>
+										</Table.Td>
+										<Table.Td>
+											<Button
+												variant="subtle"
+												size="compact-sm"
+												color="darmasaba-blue"
+											>
+												Detail
+											</Button>
+										</Table.Td>
+									</Table.Tr>
 								))}
-							</div>
-
-							{/* Top 3 Products */}
-							<h4
-								className="text-base font-semibold mb-4"
-								style={textStyle}
-							>
-								Top 3 Produk Terlaris
-							</h4>
-							<div className="space-y-4">
-								{topProducts.map((product) => (
-									<div
-										key={product.rank}
-										className="flex items-start gap-3 p-3 rounded-lg"
-										style={{
-											backgroundColor: dark ? "#334155" : "#F9FAFB",
-										}}
-									>
-										<div
-											className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-											style={{
-												backgroundColor:
-													product.rank === 1
-														? "#FFD700"
-														: product.rank === 2
-															? "#C0C0C0"
-															: "#CD7F32",
-											}}
-										>
-											#{product.rank}
-										</div>
-										<div className="flex-1">
-											<p
-												className="text-sm font-medium"
-												style={textStyle}
-											>
-												{product.name}
-											</p>
-											<p
-												className="text-xs mt-1"
-												style={subtitleStyle}
-											>
-												{product.umkmOwner}
-											</p>
-											<div className="flex items-center justify-between mt-2">
-												<p className="text-xs font-medium" style={{ color: "#22C55E" }}>
-													{product.sales}
-												</p>
-												<p
-													className="text-xs"
-													style={{ color: "#22C55E" }}
-												>
-													{product.growth}
-												</p>
-											</div>
-											<p className="text-xs mt-1" style={subtitleStyle}>
-												{product.volume}
-											</p>
-										</div>
-									</div>
-								))}
-							</div>
-						</div>
-					</div>
-
-					{/* Right Column (70%) */}
-					<div className="lg:col-span-7">
-						<div
-							className="rounded-xl shadow-sm p-6"
-							style={{
-								...cardStyle,
-								borderRadius: "12px",
-								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-								padding: "1.5rem",
-							}}
-						>
-							<div className="flex items-center justify-between mb-6">
-								<h3
-									className="text-lg font-semibold"
-									style={textStyle}
-								>
-									Detail Penjualan Produk
-								</h3>
-								<div className="relative">
-									<select
-										value={categoryFilter}
-										onChange={(e) => setCategoryFilter(e.target.value)}
-										className="appearance-none px-4 py-2 pr-8 rounded-lg text-sm font-medium border-0 focus:ring-2 focus:ring-[#1F3A5F] cursor-pointer"
-										style={{
-											backgroundColor: dark ? "#334155" : "#F9FAFB",
-											color: dark ? "white" : "#1F2937",
-										}}
-									>
-										<option value="semua">Semua Kategori</option>
-										<option value="makanan">Makanan</option>
-										<option value="minuman">Minuman</option>
-										<option value="kerajinan">Kerajinan</option>
-									</select>
-									<IconChevronDown
-										size={16}
-										className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"
-										style={{ color: dark ? "#9CA3AF" : "#6B7280" }}
-									/>
-								</div>
-							</div>
-
-							{/* Data Table */}
-							<div className="overflow-x-auto">
-								<table className="w-full">
-									<thead>
-										<tr
-											style={{
-												borderBottom: `2px solid ${dark ? "#334155" : "#E5E7EB"}`,
-											}}
-										>
-											<th
-												className="text-left py-3 px-4 text-sm font-medium"
-												style={subtitleStyle}
-											>
-												Produk
-											</th>
-											<th
-												className="text-left py-3 px-4 text-sm font-medium"
-												style={subtitleStyle}
-											>
-												Penjualan Bulan Ini
-											</th>
-											<th
-												className="text-left py-3 px-4 text-sm font-medium"
-												style={subtitleStyle}
-											>
-												Bulan Lalu
-											</th>
-											<th
-												className="text-left py-3 px-4 text-sm font-medium"
-												style={subtitleStyle}
-											>
-												Trend
-											</th>
-											<th
-												className="text-left py-3 px-4 text-sm font-medium"
-												style={subtitleStyle}
-											>
-												Volume
-											</th>
-											<th
-												className="text-left py-3 px-4 text-sm font-medium"
-												style={subtitleStyle}
-											>
-												Stok
-											</th>
-											<th
-												className="text-left py-3 px-4 text-sm font-medium"
-												style={subtitleStyle}
-											>
-												Aksi
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{productSales.map((product, index) => (
-											<tr
-												key={index}
-												style={{
-													borderBottom: `1px solid ${dark ? "#334155" : "#F3F4F6"}`,
-												}}
-											>
-												<td className="py-4 px-4">
-													<p
-														className="text-sm font-medium"
-														style={textStyle}
-													>
-														{product.produk}
-													</p>
-													<p
-														className="text-xs mt-1"
-														style={subtitleStyle}
-													>
-														{product.umkm}
-													</p>
-												</td>
-												<td className="py-4 px-4">
-													<p
-														className="text-sm font-medium"
-														style={textStyle}
-													>
-														{product.penjualanBulanIni}
-													</p>
-												</td>
-												<td className="py-4 px-4">
-													<p
-														className="text-sm"
-														style={subtitleStyle}
-													>
-														{product.bulanLalu}
-													</p>
-												</td>
-												<td className="py-4 px-4">
-													<div
-														className="flex items-center gap-1 text-sm font-medium"
-														style={{
-															color: product.trend >= 0 ? "#22C55E" : "#EF4444",
-														}}
-													>
-														{product.trend >= 0 ? (
-															<IconTrendingUp size={16} />
-														) : (
-															<IconTrendingDown size={16} />
-														)}
-														{product.trend >= 0 ? "+" : ""}
-														{product.trend}%
-													</div>
-												</td>
-												<td className="py-4 px-4">
-													<p
-														className="text-sm"
-														style={textStyle}
-													>
-														{product.volume}
-													</p>
-												</td>
-												<td className="py-4 px-4">
-													<span
-														className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
-														style={{
-															backgroundColor: parseInt(product.stok) > 200 ? "#DCFCE7" : "#FEE2E2",
-															color: parseInt(product.stok) > 200 ? "#166534" : "#991B1B",
-														}}
-													>
-														{product.stok}
-													</span>
-												</td>
-												<td className="py-4 px-4">
-													<button
-														className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
-														style={{
-															backgroundColor: "#1F3A5F",
-															color: "white",
-														}}
-														onMouseEnter={(e) =>
-															(e.currentTarget.style.backgroundColor = "#2d4a6f")
-														}
-														onMouseLeave={(e) =>
-															(e.currentTarget.style.backgroundColor = "#1F3A5F")
-														}
-													>
-														Detail
-													</button>
-												</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+							</Table.Tbody>
+						</Table>
+					</Card>
+				</GridCol>
+			</Grid>
+		</Stack>
 	);
 };
 

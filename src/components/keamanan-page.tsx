@@ -118,6 +118,13 @@ const KeamananPage = () => {
 
 	return (
 		<Stack gap="lg">
+			{/* Page Header */}
+			<Group justify="space-between" align="center">
+				<Title order={2} c={dark ? "dark.0" : "black"}>
+					Keamanan Lingkungan Desa
+				</Title>
+			</Group>
+
 			{/* KPI Cards */}
 			<Grid gutter="md">
 				{kpiData.map((kpi, index) => (

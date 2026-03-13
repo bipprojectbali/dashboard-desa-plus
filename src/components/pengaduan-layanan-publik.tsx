@@ -1,16 +1,36 @@
 import {
-	IconMessage,
+	ActionIcon,
+	Badge,
+	Box,
+	Button,
+	Card,
+	Divider,
+	Grid,
+	GridCol,
+	Group,
+	List,
+	Select,
+	Stack,
+	Table,
+	Text,
+	Textarea,
+	TextInput,
+	Title,
+	useMantineColorScheme,
+} from "@mantine/core";
+import {
 	IconAlertTriangle,
-	IconClock,
 	IconCheck,
 	IconChevronRight,
+	IconClock,
+	IconMessage,
 } from "@tabler/icons-react";
-import { useMantineColorScheme } from "@mantine/core";
+import type React from "react";
+import { useState } from "react";
 import {
 	Bar,
 	BarChart,
 	CartesianGrid,
-	Cell,
 	Line,
 	LineChart,
 	ResponsiveContainer,
@@ -23,462 +43,800 @@ const PengaduanLayananPublik = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	// Statistic cards data
-	const statsData = [
+	// Summary data
+	const summaryData = {
+		total: 42,
+		baru: 14,
+		diproses: 14,
+		selesai: 14,
+	};
+
+	// Tren pengaduan data
+	const trenData = [
+		{ bulan: "Jan", jumlah: 30 },
+		{ bulan: "Feb", jumlah: 50 },
+		{ bulan: "Mar", jumlah: 42 },
+		{ bulan: "Apr", jumlah: 38 },
+		{ bulan: "Mei", jumlah: 45 },
+		{ bulan: "Jun", jumlah: 42 },
+	];
+
+	// Surat terbanyak data
+	const suratData = [
+		{ jenis: "KTP", jumlah: 24 },
+		{ jenis: "KK", jumlah: 18 },
+		{ jenis: "Domisili", jumlah: 15 },
+		{ jenis: "Usaha", jumlah: 12 },
+		{ jenis: "Lainnya", jumlah: 8 },
+	];
+
+	// Pengajuan terbaru data
+	const pengajuanTerbaru = [
 		{
-			title: "Total Pengaduan",
-			value: 156,
-			subtitle: "+12% dari bulan lalu",
-			icon: IconMessage,
+			nama: "Budi Santoso",
+			jenis: "Ketertiban Umum",
+			waktu: "2 jam yang lalu",
+			status: "baru",
 		},
 		{
-			title: "Pengaduan Baru",
-			value: 24,
-			subtitle: "Perlu tindakan segera",
-			icon: IconAlertTriangle,
+			nama: "Siti Rahayu",
+			jenis: "Pelayanan Kesehatan",
+			waktu: "5 jam yang lalu",
+			status: "diproses",
 		},
 		{
-			title: "Sedang Diproses",
-			value: 48,
-			subtitle: "Dalam penanganan",
-			icon: IconClock,
+			nama: "Ahmad Fauzi",
+			jenis: "Infrastruktur",
+			waktu: "1 hari yang lalu",
+			status: "selesai",
 		},
 		{
-			title: "Selesai",
-			value: 84,
-			subtitle: "92% tingkat kepuasan",
-			icon: IconCheck,
+			nama: "Dewi Lestari",
+			jenis: "Administrasi",
+			waktu: "1 hari yang lalu",
+			status: "baru",
+		},
+		{
+			nama: "Joko Widodo",
+			jenis: "Keamanan",
+			waktu: "2 hari yang lalu",
+			status: "diproses",
 		},
 	];
 
-	// Line chart data for complaint trends
-	const trendData = [
-		{ month: "Jan", complaints: 32 },
-		{ month: "Feb", complaints: 45 },
-		{ month: "Mar", complaints: 38 },
-		{ month: "Apr", complaints: 52 },
-		{ month: "Mei", complaints: 48 },
-		{ month: "Jun", complaints: 61 },
+	// Ide inovatif data
+	const ideInovatif = [
+		{
+			nama: "Andi Prasetyo",
+			judul: "Penerapan Smart Village",
+			kategori: "Teknologi",
+		},
+		{
+			nama: "Rina Kusuma",
+			judul: "Program Ekowisata Desa",
+			kategori: "Ekonomi",
+		},
+		{
+			nama: "Bambang Suryono",
+			judul: "Peningkatan Sanitasi",
+			kategori: "Kesehatan",
+		},
+		{
+			nama: "Lina Marlina",
+			judul: "Pusat Kreatif Anak Muda",
+			kategori: "Pendidikan",
+		},
 	];
 
-	// Horizontal bar chart data for most requested documents
-	const documentData = [
-		{ name: "KTP", count: 145 },
-		{ name: "Kartu Keluarga", count: 128 },
-		{ name: "Surat Domisili", count: 96 },
-		{ name: "Surat Usaha", count: 74 },
-		{ name: "SKCK", count: 52 },
-	];
+	const [activeTab, setActiveTab] = useState<"complaints" | "services">(
+		"complaints",
+	);
+	const [newComplaint, setNewComplaint] = useState({
+		title: "",
+		category: "",
+		description: "",
+	});
 
-	// Recent applications data
-	const recentApplications = [
+	// Sample data for complaints
+	const complaints = [
 		{
 			id: 1,
-			name: "Budi Santoso",
-			type: "KTP Elektronik",
-			date: "10 Mar 2025",
-			status: "Selesai",
-			statusBg: "bg-darmasaba-success-100",
-			statusText: "text-darmasaba-success-800",
+			title: "Jalan Rusak di Jalan Raya",
+			category: "Infrastruktur",
+			status: "Pending",
+			priority: "High",
+			date: "2024-02-01",
+			reporter: "Bapak Ahmad",
 		},
 		{
 			id: 2,
-			name: "Siti Aminah",
-			type: "Surat Domisili",
-			date: "10 Mar 2025",
-			status: "Diproses",
-			statusBg: "bg-darmasaba-warning-100",
-			statusText: "text-darmasaba-warning-800",
+			title: "Pemadaman Listrik Berkelanjutan",
+			category: "Utilitas",
+			status: "In Progress",
+			priority: "Medium",
+			date: "2024-02-03",
+			reporter: "Ibu Sari",
 		},
 		{
 			id: 3,
-			name: "Ahmad Fauzi",
-			type: "Kartu Keluarga",
-			date: "9 Mar 2025",
-			status: "Baru",
-			statusBg: "bg-darmasaba-blue-100",
-			statusText: "text-darmasaba-blue-800",
-		},
-		{
-			id: 4,
-			name: "Dewi Lestari",
-			type: "Surat Usaha",
-			date: "9 Mar 2025",
-			status: "Selesai",
-			statusBg: "bg-darmasaba-success-100",
-			statusText: "text-darmasaba-success-800",
-		},
-		{
-			id: 5,
-			name: "Joko Widodo",
-			type: "SKCK",
-			date: "8 Mar 2025",
-			status: "Diproses",
-			statusBg: "bg-darmasaba-warning-100",
-			statusText: "text-darmasaba-warning-800",
-		},
-	];
-
-	// Innovation ideas data
-	const innovationIdeas = [
-		{
-			id: 1,
-			title: "Sistem Antrian Online",
-			submitter: "Andi Prasetyo",
-			category: "Teknologi",
-		},
-		{
-			id: 2,
-			title: "Layanan Jemput Dokumen",
-			submitter: "Rina Kusuma",
-			category: "Pelayanan",
-		},
-		{
-			id: 3,
-			title: "Digitalisasi Arsip Desa",
-			submitter: "Bambang Suryono",
+			title: "Pelayanan Administrasi Lambat",
 			category: "Administrasi",
+			status: "Resolved",
+			priority: "Low",
+			date: "2024-01-28",
+			reporter: "Pak Joko",
 		},
 		{
 			id: 4,
-			title: "Aplikasi Pengaduan Mobile",
-			submitter: "Lina Marlina",
-			category: "Teknologi",
+			title: "Kebersihan Lingkungan",
+			category: "Sanitasi",
+			status: "Pending",
+			priority: "Medium",
+			date: "2024-02-05",
+			reporter: "Bu Dewi",
 		},
 	];
 
-	const COLORS = ["#1E3A5F", "#3B82F6", "#60A5FA", "#93C5FD", "#DBEAFE"];
+	// Sample data for public services
+	const services = [
+		{
+			id: 1,
+			name: "Pembuatan KTP",
+			description:
+				"Pelayanan pembuatan Kartu Tanda Penduduk baru atau perpanjangan",
+			status: "Available",
+			category: "Administrasi",
+			lastUpdated: "2024-02-01",
+		},
+		{
+			id: 2,
+			name: "Pembuatan Surat Keterangan Usaha",
+			description: "Surat keterangan untuk keperluan usaha atau perizinan",
+			status: "Available",
+			category: "Administrasi",
+			lastUpdated: "2024-02-02",
+		},
+		{
+			id: 3,
+			name: "Pelayanan Kesehatan",
+			description: "Pelayanan kesehatan dasar di puskesmas desa",
+			status: "Available",
+			category: "Kesehatan",
+			lastUpdated: "2024-01-30",
+		},
+		{
+			id: 4,
+			name: "Program Bantuan Sosial",
+			description:
+				"Informasi dan pendaftaran program bantuan sosial dari pemerintah",
+			status: "Limited",
+			category: "Sosial",
+			lastUpdated: "2024-02-04",
+		},
+	];
 
-	const cardStyle = {
-		backgroundColor: dark ? "#141D34" : "white",
-		border: `1px solid ${dark ? "#141D34" : "white"}`,
+	const handleInputChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
+		const { name, value } = e.target;
+		setNewComplaint((prev) => ({
+			...prev,
+			[name]: value,
+		}));
 	};
 
-	const textStyle = {
-		color: dark ? "white" : "#1F2937",
+	const handleSelectChange = (value: string | null) => {
+		setNewComplaint((prev) => ({
+			...prev,
+			category: value || "", // Ensure category is always a string
+		}));
 	};
 
-	const subtitleStyle = {
-		color: dark ? "#9CA3AF" : "#6B7280",
+	const handleSubmitComplaint = (e: React.FormEvent) => {
+		e.preventDefault();
+		console.log("Submitting complaint:", newComplaint);
+		// Here you would typically send the complaint to your backend
+		alert("Pengaduan berhasil dikirim!");
+		setNewComplaint({ title: "", category: "", description: "" });
+	};
+
+	// Render complaint table rows
+	const complaintRows = complaints.map((complaint) => (
+		<Table.Tr key={complaint.id}>
+			<Table.Td className="font-medium">
+				<Text c={dark ? "white" : "dark.3"}>{complaint.title}</Text>
+			</Table.Td>
+			<Table.Td>
+				<Text c={dark ? "white" : "dark.3"}>{complaint.category}</Text>
+			</Table.Td>
+			<Table.Td>
+				<Badge
+					variant="filled"
+					color={
+						complaint.status === "Resolved"
+							? "green"
+							: complaint.status === "In Progress"
+								? "yellow"
+								: "red"
+					}
+				>
+					{complaint.status}
+				</Badge>
+			</Table.Td>
+			<Table.Td>
+				<Badge
+					variant="filled"
+					color={
+						complaint.priority === "High"
+							? "red"
+							: complaint.priority === "Medium"
+								? "yellow"
+								: "blue"
+					}
+				>
+					{complaint.priority}
+				</Badge>
+			</Table.Td>
+			<Table.Td>
+				<Text c={dark ? "white" : "dark.3"}>{complaint.date}</Text>
+			</Table.Td>
+		</Table.Tr>
+	));
+
+	// Status badge color mapping
+	const getStatusColor = (status: string) => {
+		switch (status) {
+			case "baru":
+				return "red";
+			case "diproses":
+				return "yellow";
+			case "selesai":
+				return "green";
+			default:
+				return "gray";
+		}
 	};
 
 	return (
-		<div
-			className="min-h-screen"
-			style={{
-				backgroundColor: dark ? "#10192D" : "#F3F4F6",
-				minHeight: "100vh",
-				padding: "1.5rem",
-			}}
-		>
-			<div
-				className="max-w-7xl mx-auto"
-				style={{
-					maxWidth: "80rem",
-					marginLeft: "auto",
-					marginRight: "auto",
-				}}
-			>
-				{/* Row 1: 4 Statistic Cards */}
-				<div
-					className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
-					style={{
-						display: "grid",
-						gridTemplateColumns: "repeat(4, 1fr)",
-						gap: "1.5rem",
-						marginBottom: "1.5rem",
-					}}
-				>
-					{statsData.map((stat, index) => (
-						<div
-							key={index}
-							className="rounded-xl shadow-sm p-6"
-							style={{
-								...cardStyle,
-								borderRadius: "12px",
-								boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-								padding: "1.5rem",
-							}}
-						>
-							<div className="flex items-center justify-between">
-								<div className="flex-1">
-									<h3
-										className="text-sm font-medium mb-1"
-										style={subtitleStyle}
+		<Stack gap="lg">
+			{activeTab === "complaints" ? (
+				<>
+					{/* Summary Cards */}
+					<Grid gutter="md">
+						<GridCol span={{ base: 12, md: 6, lg: 3 }}>
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
+								<Group justify="space-between" align="center">
+									<Stack gap={0}>
+										<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+											Total Pengaduan
+										</Text>
+										<Text size="xl" fw={700} c={dark ? "dark.0" : "black"}>
+											{summaryData.total}
+										</Text>
+									</Stack>
+									<Badge
+										variant="light"
+										color="darmasaba-blue"
+										p={8}
+										radius="md"
 									>
-										{stat.title}
-									</h3>
-									<p
-										className="text-3xl font-bold mb-1"
-										style={textStyle}
-									>
-										{stat.value}
-									</p>
-									<p
-										className="text-xs"
-										style={subtitleStyle}
-									>
-										{stat.subtitle}
-									</p>
-								</div>
-								<div className="flex-shrink-0 ml-4">
-									<div
-										className="w-12 h-12 rounded-full flex items-center justify-center text-white"
-										style={{ backgroundColor: "#1E3A5F" }}
-									>
-										<stat.icon size={24} />
-									</div>
-								</div>
-							</div>
-						</div>
-					))}
-				</div>
+										<IconMessage size={20} />
+									</Badge>
+								</Group>
+							</Card>
+						</GridCol>
 
-				{/* Row 2: Full Width Line Chart */}
-				<div
-					className="rounded-xl shadow-sm p-6 mb-6"
-					style={{
-						...cardStyle,
-						borderRadius: "12px",
-						boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-						padding: "1.5rem",
-						marginBottom: "1.5rem",
-					}}
-				>
-					<h3
-						className="text-lg font-semibold mb-4"
-						style={textStyle}
-					>
-						Tren Pengaduan Warga
-					</h3>
-					<ResponsiveContainer width="100%" height={300}>
-						<LineChart data={trendData}>
-							<CartesianGrid
-								strokeDasharray="3 3"
-								vertical={false}
-								stroke={dark ? "#2d3748" : "#E5E7EB"}
-							/>
-							<XAxis
-								dataKey="month"
-								axisLine={false}
-								tickLine={false}
-								tick={{ fill: dark ? "#9CA3AF" : "#6B7280" }}
-							/>
-							<YAxis
-								axisLine={false}
-								tickLine={false}
-								tick={{ fill: dark ? "#9CA3AF" : "#6B7280" }}
-							/>
-							<Tooltip
-								contentStyle={{
-									backgroundColor: dark ? "#1F2937" : "white",
-									border: `1px solid ${dark ? "#374151" : "#E5E7EB"}`,
-									borderRadius: "8px",
-									color: dark ? "white" : "#1F2937",
-								}}
-							/>
-							<Line
-								type="monotone"
-								dataKey="complaints"
-								stroke="#1E3A5F"
-								strokeWidth={3}
-								dot={{ fill: "#1E3A5F", strokeWidth: 2, r: 5 }}
-								activeDot={{ r: 7 }}
-							/>
-						</LineChart>
-					</ResponsiveContainer>
-				</div>
+						<GridCol span={{ base: 12, md: 6, lg: 3 }}>
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
+								<Group justify="space-between" align="center">
+									<Stack gap={0}>
+										<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+											Baru
+										</Text>
+										<Text size="xl" fw={700} c={dark ? "dark.0" : "black"}>
+											{summaryData.baru}
+										</Text>
+									</Stack>
+									<Badge variant="light" color="red" p={8} radius="md">
+										<IconAlertTriangle size={20} />
+									</Badge>
+								</Group>
+							</Card>
+						</GridCol>
 
-				{/* Row 3: 3 Column Grid */}
-				<div
-					className="grid grid-cols-1 lg:grid-cols-3 gap-6"
-					style={{
-						display: "grid",
-						gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-						gap: "1.5rem",
-					}}
-				>
-					{/* Left: Most Requested Documents (Horizontal Bar Chart) */}
-					<div
-						className="rounded-xl shadow-sm p-6"
-						style={{
-							...cardStyle,
-							borderRadius: "12px",
-							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-							padding: "1.5rem",
-						}}
+						<GridCol span={{ base: 12, md: 6, lg: 3 }}>
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
+								<Group justify="space-between" align="center">
+									<Stack gap={0}>
+										<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+											Diproses
+										</Text>
+										<Text size="xl" fw={700} c={dark ? "dark.0" : "black"}>
+											{summaryData.diproses}
+										</Text>
+									</Stack>
+									<Badge variant="light" color="yellow" p={8} radius="md">
+										<IconClock size={20} />
+									</Badge>
+								</Group>
+							</Card>
+						</GridCol>
+
+						<GridCol span={{ base: 12, md: 6, lg: 3 }}>
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
+								<Group justify="space-between" align="center">
+									<Stack gap={0}>
+										<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+											Selesai
+										</Text>
+										<Text size="xl" fw={700} c={dark ? "dark.0" : "black"}>
+											{summaryData.selesai}
+										</Text>
+									</Stack>
+									<Badge variant="light" color="green" p={8} radius="md">
+										<IconCheck size={20} />
+									</Badge>
+								</Group>
+							</Card>
+						</GridCol>
+					</Grid>
+
+					{/* Grafik Tren Pengaduan */}
+					<Card
+						p="md"
+						radius="md"
+						withBorder
+						bg={dark ? "#141D34" : "white"}
+						style={{ borderColor: dark ? "#141D34" : "white" }}
 					>
-						<h3
-							className="text-lg font-semibold mb-4"
-							style={textStyle}
-						>
-							Dokumen Paling Banyak Diminta
-						</h3>
-						<ResponsiveContainer width="100%" height={280}>
-							<BarChart data={documentData} layout="vertical">
+						<Title order={4} mb="md" c={dark ? "dark.0" : "black"}>
+							Grafik Tren Pengaduan
+						</Title>
+						<ResponsiveContainer width="100%" height={300}>
+							<LineChart data={trenData}>
 								<CartesianGrid
 									strokeDasharray="3 3"
-									horizontal={false}
-									stroke={dark ? "#2d3748" : "#E5E7EB"}
+									vertical={false}
+									stroke={
+										dark
+											? "var(--mantine-color-gray-7)"
+											: "var(--mantine-color-gray-3)"
+									}
 								/>
 								<XAxis
-									type="number"
+									dataKey="bulan"
 									axisLine={false}
 									tickLine={false}
-									tick={{ fill: dark ? "#9CA3AF" : "#6B7280" }}
+									tick={{
+										fill: dark
+											? "var(--mantine-color-text)"
+											: "var(--mantine-color-text)",
+									}}
 								/>
 								<YAxis
-									dataKey="name"
-									type="category"
 									axisLine={false}
 									tickLine={false}
-									tick={{ fill: dark ? "#9CA3AF" : "#374151" }}
-									width={120}
+									tick={{
+										fill: dark
+											? "var(--mantine-color-text)"
+											: "var(--mantine-color-text)",
+									}}
 								/>
 								<Tooltip
-									contentStyle={{
-										backgroundColor: dark ? "#1F2937" : "white",
-										border: `1px solid ${dark ? "#374151" : "#E5E7EB"}`,
-										borderRadius: "8px",
-										color: dark ? "white" : "#1F2937",
-									}}
+									contentStyle={
+										dark
+											? {
+													backgroundColor: "var(--mantine-color-dark-7)",
+													borderColor: "var(--mantine-color-dark-6)",
+												}
+											: {}
+									}
 								/>
-								<Bar dataKey="count" radius={[0, 4, 4, 0]}>
-									{documentData.map((entry, index) => (
-										<Cell
-											key={`cell-${index}`}
-											fill={COLORS[index % COLORS.length]}
-										/>
-									))}
-								</Bar>
-							</BarChart>
+								<Line
+									type="monotone"
+									dataKey="jumlah"
+									stroke={
+										dark
+											? "var(--mantine-color-blue-6)"
+											: "var(--mantine-color-blue-filled)"
+									}
+									strokeWidth={2}
+									dot={{
+										stroke: dark
+											? "var(--mantine-color-blue-6)"
+											: "var(--mantine-color-blue-filled)",
+										strokeWidth: 2,
+										r: 4,
+									}}
+									activeDot={{ r: 6, stroke: "#fff", strokeWidth: 2 }}
+								/>
+							</LineChart>
 						</ResponsiveContainer>
-					</div>
+					</Card>
 
-					{/* Middle: Recent Applications */}
-					<div
-						className="rounded-xl shadow-sm p-6"
-						style={{
-							...cardStyle,
-							borderRadius: "12px",
-							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-							padding: "1.5rem",
-						}}
-					>
-						<h3
-							className="text-lg font-semibold mb-4"
-							style={textStyle}
-						>
-							Pengajuan Terbaru
-						</h3>
-						<div className="space-y-4">
-							{recentApplications.map((app) => (
-								<div
-									key={app.id}
-									className="flex items-center justify-between py-3"
-									style={{
-										borderBottom: `1px solid ${dark ? "#2d3748" : "#E5E7EB"}`,
-									}}
-								>
-									<div className="flex-1">
-										<p
-											className="text-sm font-medium"
-											style={textStyle}
-										>
-											{app.name}
-										</p>
-										<p
-											className="text-xs"
-											style={subtitleStyle}
-										>
-											{app.type}
-										</p>
-									</div>
-									<div className="text-right">
-										<span
-											className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${app.statusBg} ${app.statusText}`}
-										>
-											{app.status}
-										</span>
-										<p
-											className="text-xs mt-1"
-											style={subtitleStyle}
-										>
-											{app.date}
-										</p>
-									</div>
-								</div>
-							))}
-						</div>
-					</div>
+					{/* Surat Terbanyak & Pengajuan Terbaru & Ide Inovatif */}
+					<Grid gutter="md">
+						{/* Surat Terbanyak */}
+						<GridCol span={{ base: 12, lg: 4 }}>
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
+								<Title order={4} mb="md" c={dark ? "dark.0" : "black"}>
+									Surat Terbanyak
+								</Title>
+								<ResponsiveContainer width="100%" height={250}>
+									<BarChart data={suratData} layout="horizontal">
+										<CartesianGrid
+											strokeDasharray="3 3"
+											horizontal={false}
+											stroke={
+												dark
+													? "var(--mantine-color-gray-7)"
+													: "var(--mantine-color-gray-3)"
+											}
+										/>
+										<XAxis
+											dataKey="jumlah"
+											axisLine={false}
+											tickLine={false}
+											tick={{
+												fill: dark
+													? "var(--mantine-color-text)"
+													: "var(--mantine-color-text)",
+											}}
+										/>
+										<YAxis
+											dataKey="jenis"
+											type="category"
+											axisLine={false}
+											tickLine={false}
+											tick={{
+												fill: dark
+													? "var(--mantine-color-text)"
+													: "var(--mantine-color-text)",
+											}}
+											width={80}
+										/>
+										<Tooltip
+											contentStyle={
+												dark
+													? {
+															backgroundColor: "var(--mantine-color-dark-7)",
+															borderColor: "var(--mantine-color-dark-6)",
+														}
+													: {}
+											}
+										/>
+										<Bar
+											dataKey="jumlah"
+											fill={
+												dark
+													? "var(--mantine-color-blue-6)"
+													: "var(--mantine-color-blue-filled)"
+											}
+											radius={[0, 4, 4, 0]}
+										/>
+									</BarChart>
+								</ResponsiveContainer>
+							</Card>
+						</GridCol>
 
-					{/* Right: Innovation Ideas */}
-					<div
-						className="rounded-xl shadow-sm p-6"
-						style={{
-							...cardStyle,
-							borderRadius: "12px",
-							boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-							padding: "1.5rem",
-						}}
-					>
-						<h3
-							className="text-lg font-semibold mb-4"
-							style={textStyle}
-						>
-							Ide Inovatif Warga
-						</h3>
-						<div className="space-y-4">
-							{innovationIdeas.map((idea) => (
-								<div
-									key={idea.id}
-									className="py-3"
-									style={{
-										borderBottom: `1px solid ${dark ? "#2d3748" : "#E5E7EB"}`,
-									}}
-								>
-									<div className="flex items-start justify-between">
-										<div className="flex-1">
-											<p
-												className="text-sm font-medium"
-												style={textStyle}
-											>
-												{idea.title}
-											</p>
-											<p
-												className="text-xs mt-1"
-												style={subtitleStyle}
-											>
-												{idea.submitter}
-											</p>
-										</div>
-										<div className="flex items-center gap-2">
-											<span
-												className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
-												style={{
-													backgroundColor: dark ? "#2d3748" : "#F3F4F6",
-													color: dark ? "#E5E7EB" : "#1F2937",
-												}}
-											>
-												{idea.category}
-											</span>
-											<button
-												className="p-1"
-												style={{
-													color: dark ? "#60A5FA" : "#2563EB",
-												}}
-											>
-												<IconChevronRight size={20} />
-											</button>
-										</div>
-									</div>
-								</div>
-							))}
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+						{/* Pengajuan Terbaru */}
+						<GridCol span={{ base: 12, lg: 4 }}>
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
+								<Title order={4} mb="md" c={dark ? "dark.0" : "black"}>
+									Pengajuan Terbaru
+								</Title>
+								{pengajuanTerbaru.map((item, index) => (
+									<Box key={index}>
+										<Group justify="space-between">
+											<Stack gap={0}>
+												<Text fw={500} c={dark ? "dark.0" : "black"}>
+													{item.nama}
+												</Text>
+												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+													{item.jenis}
+												</Text>
+											</Stack>
+											<Stack gap={0} align="flex-end">
+												<Badge
+													color={getStatusColor(item.status)}
+													variant="light"
+												>
+													{item.status}
+												</Badge>
+												<Text size="xs" c={dark ? "dark.4" : "dimmed"}>
+													{item.waktu}
+												</Text>
+											</Stack>
+										</Group>
+										<Divider my="sm" />
+									</Box>
+								))}
+							</Card>
+						</GridCol>
+
+						{/* Ajuan Ide Inovatif */}
+						<GridCol span={{ base: 12, lg: 4 }}>
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
+								<Title order={4} mb="md" c={dark ? "dark.0" : "black"}>
+									Ajuan Ide Inovatif
+								</Title>
+								{ideInovatif.map((item, index) => (
+									<Box key={index}>
+										<Group justify="space-between">
+											<Stack gap={0}>
+												<Text fw={500} c={dark ? "dark.0" : "black"}>
+													{item.judul}
+												</Text>
+												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+													{item.nama}
+												</Text>
+											</Stack>
+											<Group>
+												<Badge color="blue" variant="light">
+													{item.kategori}
+												</Badge>
+												<ActionIcon variant="subtle" color="darmasaba-blue">
+													<IconChevronRight size={16} />
+												</ActionIcon>
+											</Group>
+										</Group>
+										<Divider my="sm" />
+									</Box>
+								))}
+							</Card>
+						</GridCol>
+					</Grid>
+
+					{/* Complaint Submission Form and List */}
+					<Grid gutter="md">
+						{/* Complaint Submission Form */}
+						<GridCol span={{ base: 12, lg: 4 }}>
+							<Card
+								p="md"
+								withBorder
+								radius="md"
+								h="100%"
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+							>
+								<Card.Section withBorder inheritPadding py="xs">
+									<Title order={3} py="xs">
+										Ajukan Pengaduan
+									</Title>
+								</Card.Section>
+								<Card.Section>
+									<form onSubmit={handleSubmitComplaint}>
+										<Stack gap="md" p={"sm"}>
+											<TextInput
+												label="Judul Pengaduan"
+												id="title"
+												name="title"
+												value={newComplaint.title}
+												onChange={handleInputChange}
+												placeholder="Masukkan judul pengaduan"
+												required
+												withAsterisk
+											/>
+
+											<Select
+												label="Kategori"
+												id="category"
+												name="category"
+												value={newComplaint.category}
+												onChange={handleSelectChange}
+												placeholder="Pilih kategori"
+												data={[
+													{ value: "infrastruktur", label: "Infrastruktur" },
+													{ value: "administrasi", label: "Administrasi" },
+													{ value: "utilitas", label: "Utilitas" },
+													{ value: "sanitasi", label: "Sanitasi" },
+													{ value: "kesehatan", label: "Kesehatan" },
+													{ value: "pendidikan", label: "Pendidikan" },
+												]}
+												clearable
+											/>
+
+											<Textarea
+												label="Deskripsi"
+												id="description"
+												name="description"
+												value={newComplaint.description}
+												onChange={handleInputChange}
+												placeholder="Jelaskan pengaduan Anda secara detail..."
+												minRows={4}
+												required
+												withAsterisk
+											/>
+
+											<Button type="submit" mt="md" color="darmasaba-blue">
+												Kirim Pengaduan
+											</Button>
+										</Stack>
+									</form>
+								</Card.Section>
+							</Card>
+						</GridCol>
+
+						{/* Complaints List */}
+						<GridCol span={{ base: 12, lg: 8 }}>
+							<Card
+								withBorder
+								radius="md"
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+							>
+								<Card.Section withBorder inheritPadding py="xs">
+									<Title order={3} py="xs">
+										Daftar Pengaduan
+									</Title>
+								</Card.Section>
+								<Card.Section py="md" px="xs">
+									<Table withColumnBorders>
+										<Table.Thead>
+											<Table.Tr>
+												<Table.Th>
+													<Text c={dark ? "white" : "dark.3"}>Judul</Text>
+												</Table.Th>
+												<Table.Th>
+													<Text c={dark ? "white" : "dark.3"}>Kategori</Text>
+												</Table.Th>
+												<Table.Th>
+													<Text c={dark ? "white" : "dark.3"}>Status</Text>
+												</Table.Th>
+												<Table.Th>
+													<Text c={dark ? "white" : "dark.3"}>Prioritas</Text>
+												</Table.Th>
+												<Table.Th>
+													<Text c={dark ? "white" : "dark.3"}>Tanggal</Text>
+												</Table.Th>
+											</Table.Tr>
+										</Table.Thead>
+										<Table.Tbody>{complaintRows}</Table.Tbody>
+									</Table>
+								</Card.Section>
+							</Card>
+						</GridCol>
+					</Grid>
+				</>
+			) : (
+				<Stack gap="lg">
+					<Card withBorder radius="md">
+						<Card.Section withBorder inheritPadding py="xs">
+							<Title order={3} py="xs">
+								Layanan Publik Tersedia
+							</Title>
+						</Card.Section>
+						<Card.Section pt="md">
+							<Grid gutter="md">
+								{services.map((service) => (
+									<GridCol key={service.id} span={{ base: 12, md: 6, lg: 4 }}>
+										<Card withBorder radius="md" h="100%">
+											<Title order={4} mb="sm">
+												{service.name}
+											</Title>
+											<Text size="sm" c={dark ? "white" : "dark.3"} mb="md">
+												{service.description}
+											</Text>
+											<Group justify="space-between">
+												<Badge
+													variant="filled"
+													color={
+														service.status === "Available"
+															? "green"
+															: service.status === "Limited"
+																? "yellow"
+																: "red"
+													}
+												>
+													{service.status}
+												</Badge>
+												<Text size="sm" c={dark ? "white" : "dark.3"}>
+													{service.category}
+												</Text>
+											</Group>
+											<Text size="xs" c={dark ? "white" : "dark.3"} mt="sm">
+												Terakhir diperbarui: {service.lastUpdated}
+											</Text>
+										</Card>
+									</GridCol>
+								))}
+							</Grid>
+						</Card.Section>
+					</Card>
+
+					<Card withBorder radius="md">
+						<Card.Section withBorder inheritPadding py="xs">
+							<Title order={3} py="xs">
+								Statistik Layanan
+							</Title>
+						</Card.Section>
+						<Card.Section pt="md">
+							<Grid gutter="md">
+								<GridCol span={{ base: 12, md: 4 }}>
+									<Card p="md" bg={dark ? "dark.7" : "gray.0"} radius="md">
+										<Title order={4} mb="xs">
+											Jumlah Layanan Tersedia
+										</Title>
+										<Text size="xl" fw={700} c="darmasaba-blue">
+											12
+										</Text>
+									</Card>
+								</GridCol>
+								<GridCol span={{ base: 12, md: 4 }}>
+									<Card p="md" bg={dark ? "dark.7" : "gray.0"} radius="md">
+										<Title order={4} mb="xs">
+											Layanan Terpopuler
+										</Title>
+										<Text size="xl" fw={700} c="darmasaba-success">
+											4
+										</Text>
+									</Card>
+								</GridCol>
+								<GridCol span={{ base: 12, md: 4 }}>
+									<Card p="md" bg={dark ? "dark.7" : "gray.0"} radius="md">
+										<Title order={4} mb="xs">
+											Permintaan Baru
+										</Title>
+										<Text size="xl" fw={700} c="darmasaba-warning">
+											23
+										</Text>
+									</Card>
+								</GridCol>
+							</Grid>
+						</Card.Section>
+					</Card>
+				</Stack>
+			)}
+		</Stack>
 	);
 };
 
