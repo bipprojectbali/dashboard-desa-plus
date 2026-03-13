@@ -143,6 +143,13 @@ const HelpPage = () => {
 
 	return (
 		<Container size="lg" py="xl">
+			<Title order={1} mb="xl" ta="center">
+				Pusat Bantuan
+			</Title>
+			<Text size="lg" color="dimmed" ta="center" mb="xl">
+				Temukan jawaban untuk pertanyaan Anda atau hubungi tim support kami
+			</Text>
+
 			{/* Statistics Section */}
 			<SimpleGrid cols={3} spacing="lg" mb="xl">
 				{stats.map((stat, index) => (

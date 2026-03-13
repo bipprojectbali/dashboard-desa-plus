@@ -122,10 +122,10 @@ const KinerjaDivisi = () => {
 
 	// Activity progress statistics
 	const activityProgressStats = [
-		{ name: "Selesai", value: 12, fill: "#10B981" },
-		{ name: "Dikerjakan", value: 8, fill: "#F59E0B" },
-		{ name: "Segera Dikerjakan", value: 5, fill: "#EF4444" },
-		{ name: "Dibatalkan", value: 2, fill: "#6B7280" },
+		{ name: "Selesai", value: 12 },
+		{ name: "Dikerjakan", value: 8 },
+		{ name: "Segera Dikerjakan", value: 5 },
+		{ name: "Dibatalkan", value: 2 },
 	];
 
 	const COLORS = ["#10B981", "#F59E0B", "#EF4444", "#6B7280"];
@@ -204,9 +204,9 @@ const KinerjaDivisi = () => {
 							contentStyle={
 								dark
 									? {
-										backgroundColor: "var(--mantine-color-dark-7)",
-										borderColor: "var(--mantine-color-dark-6)",
-									}
+											backgroundColor: "var(--mantine-color-dark-7)",
+											borderColor: "var(--mantine-color-dark-6)",
+										}
 									: {}
 							}
 						/>
@@ -402,9 +402,9 @@ const KinerjaDivisi = () => {
 									contentStyle={
 										dark
 											? {
-												backgroundColor: "var(--mantine-color-dark-7)",
-												borderColor: "var(--mantine-color-dark-6)",
-											}
+													backgroundColor: "var(--mantine-color-dark-7)",
+													borderColor: "var(--mantine-color-dark-6)",
+												}
 											: {}
 									}
 								/>
@@ -434,27 +434,33 @@ const KinerjaDivisi = () => {
 							Progres Kegiatan
 						</Title>
 						<ResponsiveContainer width="100%" height={200}>
-							<PieChart
-								margin={{ top: 20, right: 80, bottom: 20, left: 80 }}
-							>
+							<PieChart>
 								<Pie
 									data={activityProgressStats}
 									cx="50%"
 									cy="50%"
-									labelLine
-									outerRadius={65}
+									labelLine={false}
+									outerRadius={80}
+									fill="#8884d8"
 									dataKey="value"
 									label={({ name, percent }) =>
 										`${name}: ${percent ? (percent * 100).toFixed(0) : "0"}%`
 									}
-								/>
+								>
+									{activityProgressStats.map((entry, index) => (
+										<Cell
+											key={`cell-${index}`}
+											fill={COLORS[index % COLORS.length]}
+										/>
+									))}
+								</Pie>
 								<Tooltip
 									contentStyle={
 										dark
 											? {
-												backgroundColor: "var(--mantine-color-dark-7)",
-												borderColor: "var(--mantine-color-dark-6)",
-											}
+													backgroundColor: "var(--mantine-color-dark-7)",
+													borderColor: "var(--mantine-color-dark-6)",
+												}
 											: {}
 									}
 								/>

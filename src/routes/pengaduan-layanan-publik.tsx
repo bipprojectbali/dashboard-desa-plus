@@ -1,15 +1,15 @@
 import { AppShell, Burger, Group, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { createFileRoute } from "@tanstack/react-router";
-import { DashboardContent } from "@/components/dashboard-content";
 import { Header } from "@/components/header";
+import PengaduanLayananPublik from "@/components/pengaduan-layanan-publik";
 import { Sidebar } from "@/components/sidebar";
 
-export const Route = createFileRoute("/")({
-	component: DashboardPage,
+export const Route = createFileRoute("/pengaduan-layanan-publik")({
+	component: PengaduanLayananPublikPage,
 });
 
-function DashboardPage() {
+function PengaduanLayananPublikPage() {
 	const [opened, { toggle }] = useDisclosure();
 	const { colorScheme } = useMantineColorScheme();
 	const headerBgColor = colorScheme === "dark" ? "#11192D" : "#19355E";
@@ -44,7 +44,7 @@ function DashboardPage() {
 			</AppShell.Navbar>
 
 			<AppShell.Main bg={mainBgColor}>
-				<DashboardContent />
+				<PengaduanLayananPublik />
 			</AppShell.Main>
 		</AppShell>
 	);
