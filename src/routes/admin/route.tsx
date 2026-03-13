@@ -154,7 +154,6 @@ function DashboardLayout() {
 					</Group>
 
 					<Group gap="md">
-
 						<Menu
 							shadow="md"
 							width={200}

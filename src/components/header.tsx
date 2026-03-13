@@ -1,46 +1,52 @@
-import { useLocation } from "@tanstack/react-router";
-import { Bell, Moon, Sun, User as UserIcon } from "lucide-react"; // Renamed User to UserIcon to avoid conflict with Mantine's User component if it exists
-
 import {
+	ActionIcon,
+	Avatar,
+	Badge,
+	Box,
+	Divider,
 	Group,
 	Text,
 	Title,
-	ActionIcon,
-	Divider,
-	Avatar,
-	Box,
-	Badge,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { IconUserShield } from "@tabler/icons-react";
+import { useLocation, useNavigate } from "@tanstack/react-router";
+import { Bell, Moon, Sun, User as UserIcon } from "lucide-react"; // Renamed User to UserIcon to avoid conflict with Mantine's User component if it exists
 
 export function Header() {
 	const location = useLocation();
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const navigate = useNavigate();
 
 	// Define page titles based on route
 	const getPageTitle = () => {
 		switch (location.pathname) {
 			case "/":
-				return "Desa Darmasaba";
+				return "Beranda";
 			case "/kinerja-divisi":
 				return "Kinerja Divisi";
-			case "/pengaduan":
+			case "/pengaduan-layanan-publik":
 				return "Pengaduan & Layanan Publik";
-			case "/analytic":
+			case "/jenna-analytic":
 				return "Jenna Analytic";
-			case "/demografi":
+			case "/demografi-pekerjaan":
 				return "Demografi & Kependudukan";
-			case "/keuangan":
+			case "/keuangan-anggaran":
 				return "Keuangan & Anggaran";
 			case "/bumdes":
 				return "Bumdes & UMKM Desa";
 			case "/sosial":
+				return "Sosial";
 			case "/keamanan":
 				return "Keamanan";
 			case "/bantuan":
 				return "Bantuan";
 			case "/pengaturan":
+			case "/pengaturan/umum":
+			case "/pengaturan/notifikasi":
+			case "/pengaturan/keamanan":
+			case "/pengaturan/akses-dan-tim":
 				return "Pengaturan";
 			default:
 				return "Desa Darmasaba";
@@ -50,12 +56,12 @@ export function Header() {
 	return (
 		<Group justify="space-between" w="100%">
 			{/* Title */}
-			<Title order={3} c={"white"}>{getPageTitle()}</Title>
+			<Title order={3} c={"white"}>
+				{getPageTitle()}
+			</Title>
 
 			{/* Right Section */}
 			<Group gap="md">
-
-
 				{/* User Info */}
 				<Group gap="sm">
 					<Box ta="right">
@@ -100,6 +106,13 @@ export function Header() {
 						>
 							10
 						</Badge>
+					</ActionIcon>
+					<ActionIcon variant="subtle" size="lg" radius="xl">
+						<IconUserShield
+							color="white"
+							style={{ width: "70%", height: "70%" }}
+							onClick={() => navigate({ to: "/signin" })}
+						/>
 					</ActionIcon>
 				</Group>
 			</Group>

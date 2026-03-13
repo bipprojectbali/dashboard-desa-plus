@@ -1,38 +1,54 @@
-import type React from "react";
-import { useState } from "react";
 import {
+	ActionIcon,
+	Badge,
+	Box,
 	Button,
 	Card,
+	Divider,
 	Grid,
 	GridCol,
 	Group,
-	Text,
-	Title,
-	TextInput,
-	Textarea,
-	Select,
-	Table,
-	Badge,
-	Stack,
-	useMantineColorScheme,
 	List,
-	Divider,
-	ActionIcon,
-	Box
+	Select,
+	Stack,
+	Table,
+	Text,
+	Textarea,
+	TextInput,
+	Title,
+	useMantineColorScheme,
 } from "@mantine/core";
-import { IconMessage, IconAlertTriangle, IconClock, IconCheck, IconChevronRight } from "@tabler/icons-react";
-import { Line, LineChart, Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import {
+	IconAlertTriangle,
+	IconCheck,
+	IconChevronRight,
+	IconClock,
+	IconMessage,
+} from "@tabler/icons-react";
+import type React from "react";
+import { useState } from "react";
+import {
+	Bar,
+	BarChart,
+	CartesianGrid,
+	Line,
+	LineChart,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
 
 const PengaduanLayananPublik = () => {
 	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === 'dark';
+	const dark = colorScheme === "dark";
 
 	// Summary data
 	const summaryData = {
 		total: 42,
 		baru: 14,
 		diproses: 14,
-		selesai: 14
+		selesai: 14,
 	};
 
 	// Tren pengaduan data
@@ -42,7 +58,7 @@ const PengaduanLayananPublik = () => {
 		{ bulan: "Mar", jumlah: 42 },
 		{ bulan: "Apr", jumlah: 38 },
 		{ bulan: "Mei", jumlah: 45 },
-		{ bulan: "Jun", jumlah: 42 }
+		{ bulan: "Jun", jumlah: 42 },
 	];
 
 	// Surat terbanyak data
@@ -51,24 +67,65 @@ const PengaduanLayananPublik = () => {
 		{ jenis: "KK", jumlah: 18 },
 		{ jenis: "Domisili", jumlah: 15 },
 		{ jenis: "Usaha", jumlah: 12 },
-		{ jenis: "Lainnya", jumlah: 8 }
+		{ jenis: "Lainnya", jumlah: 8 },
 	];
 
 	// Pengajuan terbaru data
 	const pengajuanTerbaru = [
-		{ nama: "Budi Santoso", jenis: "Ketertiban Umum", waktu: "2 jam yang lalu", status: "baru" },
-		{ nama: "Siti Rahayu", jenis: "Pelayanan Kesehatan", waktu: "5 jam yang lalu", status: "diproses" },
-		{ nama: "Ahmad Fauzi", jenis: "Infrastruktur", waktu: "1 hari yang lalu", status: "selesai" },
-		{ nama: "Dewi Lestari", jenis: "Administrasi", waktu: "1 hari yang lalu", status: "baru" },
-		{ nama: "Joko Widodo", jenis: "Keamanan", waktu: "2 hari yang lalu", status: "diproses" }
+		{
+			nama: "Budi Santoso",
+			jenis: "Ketertiban Umum",
+			waktu: "2 jam yang lalu",
+			status: "baru",
+		},
+		{
+			nama: "Siti Rahayu",
+			jenis: "Pelayanan Kesehatan",
+			waktu: "5 jam yang lalu",
+			status: "diproses",
+		},
+		{
+			nama: "Ahmad Fauzi",
+			jenis: "Infrastruktur",
+			waktu: "1 hari yang lalu",
+			status: "selesai",
+		},
+		{
+			nama: "Dewi Lestari",
+			jenis: "Administrasi",
+			waktu: "1 hari yang lalu",
+			status: "baru",
+		},
+		{
+			nama: "Joko Widodo",
+			jenis: "Keamanan",
+			waktu: "2 hari yang lalu",
+			status: "diproses",
+		},
 	];
 
 	// Ide inovatif data
 	const ideInovatif = [
-		{ nama: "Andi Prasetyo", judul: "Penerapan Smart Village", kategori: "Teknologi" },
-		{ nama: "Rina Kusuma", judul: "Program Ekowisata Desa", kategori: "Ekonomi" },
-		{ nama: "Bambang Suryono", judul: "Peningkatan Sanitasi", kategori: "Kesehatan" },
-		{ nama: "Lina Marlina", judul: "Pusat Kreatif Anak Muda", kategori: "Pendidikan" }
+		{
+			nama: "Andi Prasetyo",
+			judul: "Penerapan Smart Village",
+			kategori: "Teknologi",
+		},
+		{
+			nama: "Rina Kusuma",
+			judul: "Program Ekowisata Desa",
+			kategori: "Ekonomi",
+		},
+		{
+			nama: "Bambang Suryono",
+			judul: "Peningkatan Sanitasi",
+			kategori: "Kesehatan",
+		},
+		{
+			nama: "Lina Marlina",
+			judul: "Pusat Kreatif Anak Muda",
+			kategori: "Pendidikan",
+		},
 	];
 
 	const [activeTab, setActiveTab] = useState<"complaints" | "services">(
@@ -229,10 +286,14 @@ const PengaduanLayananPublik = () => {
 	// Status badge color mapping
 	const getStatusColor = (status: string) => {
 		switch (status) {
-			case 'baru': return 'red';
-			case 'diproses': return 'yellow';
-			case 'selesai': return 'green';
-			default: return 'gray';
+			case "baru":
+				return "red";
+			case "diproses":
+				return "yellow";
+			case "selesai":
+				return "green";
+			default:
+				return "gray";
 		}
 	};
 
@@ -243,7 +304,14 @@ const PengaduanLayananPublik = () => {
 					{/* Summary Cards */}
 					<Grid gutter="md">
 						<GridCol span={{ base: 12, md: 6, lg: 3 }}>
-							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}  h="100%">
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
 								<Group justify="space-between" align="center">
 									<Stack gap={0}>
 										<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
@@ -266,7 +334,14 @@ const PengaduanLayananPublik = () => {
 						</GridCol>
 
 						<GridCol span={{ base: 12, md: 6, lg: 3 }}>
-							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}  h="100%">
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
 								<Group justify="space-between" align="center">
 									<Stack gap={0}>
 										<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
@@ -276,12 +351,7 @@ const PengaduanLayananPublik = () => {
 											{summaryData.baru}
 										</Text>
 									</Stack>
-									<Badge
-										variant="light"
-										color="red"
-										p={8}
-										radius="md"
-									>
+									<Badge variant="light" color="red" p={8} radius="md">
 										<IconAlertTriangle size={20} />
 									</Badge>
 								</Group>
@@ -289,7 +359,14 @@ const PengaduanLayananPublik = () => {
 						</GridCol>
 
 						<GridCol span={{ base: 12, md: 6, lg: 3 }}>
-							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}  h="100%">
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
 								<Group justify="space-between" align="center">
 									<Stack gap={0}>
 										<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
@@ -299,12 +376,7 @@ const PengaduanLayananPublik = () => {
 											{summaryData.diproses}
 										</Text>
 									</Stack>
-									<Badge
-										variant="light"
-										color="yellow"
-										p={8}
-										radius="md"
-									>
+									<Badge variant="light" color="yellow" p={8} radius="md">
 										<IconClock size={20} />
 									</Badge>
 								</Group>
@@ -312,7 +384,14 @@ const PengaduanLayananPublik = () => {
 						</GridCol>
 
 						<GridCol span={{ base: 12, md: 6, lg: 3 }}>
-							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}  h="100%">
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
 								<Group justify="space-between" align="center">
 									<Stack gap={0}>
 										<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
@@ -322,12 +401,7 @@ const PengaduanLayananPublik = () => {
 											{summaryData.selesai}
 										</Text>
 									</Stack>
-									<Badge
-										variant="light"
-										color="green"
-										p={8}
-										radius="md"
-									>
+									<Badge variant="light" color="green" p={8} radius="md">
 										<IconCheck size={20} />
 									</Badge>
 								</Group>
@@ -336,7 +410,13 @@ const PengaduanLayananPublik = () => {
 					</Grid>
 
 					{/* Grafik Tren Pengaduan */}
-					<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }} >
+					<Card
+						p="md"
+						radius="md"
+						withBorder
+						bg={dark ? "#141D34" : "white"}
+						style={{ borderColor: dark ? "#141D34" : "white" }}
+					>
 						<Title order={4} mb="md" c={dark ? "dark.0" : "black"}>
 							Grafik Tren Pengaduan
 						</Title>
@@ -345,31 +425,58 @@ const PengaduanLayananPublik = () => {
 								<CartesianGrid
 									strokeDasharray="3 3"
 									vertical={false}
-									stroke={dark ? "var(--mantine-color-gray-7)" : "var(--mantine-color-gray-3)"}
+									stroke={
+										dark
+											? "var(--mantine-color-gray-7)"
+											: "var(--mantine-color-gray-3)"
+									}
 								/>
 								<XAxis
 									dataKey="bulan"
 									axisLine={false}
 									tickLine={false}
-									tick={{ fill: dark ? "var(--mantine-color-text)" : "var(--mantine-color-text)" }}
+									tick={{
+										fill: dark
+											? "var(--mantine-color-text)"
+											: "var(--mantine-color-text)",
+									}}
 								/>
 								<YAxis
 									axisLine={false}
 									tickLine={false}
-									tick={{ fill: dark ? "var(--mantine-color-text)" : "var(--mantine-color-text)" }}
+									tick={{
+										fill: dark
+											? "var(--mantine-color-text)"
+											: "var(--mantine-color-text)",
+									}}
 								/>
 								<Tooltip
-									contentStyle={dark
-										? { backgroundColor: 'var(--mantine-color-dark-7)', borderColor: 'var(--mantine-color-dark-6)' }
-										: {}}
+									contentStyle={
+										dark
+											? {
+													backgroundColor: "var(--mantine-color-dark-7)",
+													borderColor: "var(--mantine-color-dark-6)",
+												}
+											: {}
+									}
 								/>
 								<Line
 									type="monotone"
 									dataKey="jumlah"
-									stroke={dark ? "var(--mantine-color-blue-6)" : "var(--mantine-color-blue-filled)"}
+									stroke={
+										dark
+											? "var(--mantine-color-blue-6)"
+											: "var(--mantine-color-blue-filled)"
+									}
 									strokeWidth={2}
-									dot={{ stroke: dark ? "var(--mantine-color-blue-6)" : "var(--mantine-color-blue-filled)", strokeWidth: 2, r: 4 }}
-									activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2 }}
+									dot={{
+										stroke: dark
+											? "var(--mantine-color-blue-6)"
+											: "var(--mantine-color-blue-filled)",
+										strokeWidth: 2,
+										r: 4,
+									}}
+									activeDot={{ r: 6, stroke: "#fff", strokeWidth: 2 }}
 								/>
 							</LineChart>
 						</ResponsiveContainer>
@@ -379,7 +486,14 @@ const PengaduanLayananPublik = () => {
 					<Grid gutter="md">
 						{/* Surat Terbanyak */}
 						<GridCol span={{ base: 12, lg: 4 }}>
-							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}  h="100%">
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
 								<Title order={4} mb="md" c={dark ? "dark.0" : "black"}>
 									Surat Terbanyak
 								</Title>
@@ -388,30 +502,51 @@ const PengaduanLayananPublik = () => {
 										<CartesianGrid
 											strokeDasharray="3 3"
 											horizontal={false}
-											stroke={dark ? "var(--mantine-color-gray-7)" : "var(--mantine-color-gray-3)"}
+											stroke={
+												dark
+													? "var(--mantine-color-gray-7)"
+													: "var(--mantine-color-gray-3)"
+											}
 										/>
 										<XAxis
 											dataKey="jumlah"
 											axisLine={false}
 											tickLine={false}
-											tick={{ fill: dark ? "var(--mantine-color-text)" : "var(--mantine-color-text)" }}
+											tick={{
+												fill: dark
+													? "var(--mantine-color-text)"
+													: "var(--mantine-color-text)",
+											}}
 										/>
 										<YAxis
 											dataKey="jenis"
 											type="category"
 											axisLine={false}
 											tickLine={false}
-											tick={{ fill: dark ? "var(--mantine-color-text)" : "var(--mantine-color-text)" }}
+											tick={{
+												fill: dark
+													? "var(--mantine-color-text)"
+													: "var(--mantine-color-text)",
+											}}
 											width={80}
 										/>
 										<Tooltip
-											contentStyle={dark
-												? { backgroundColor: 'var(--mantine-color-dark-7)', borderColor: 'var(--mantine-color-dark-6)' }
-												: {}}
+											contentStyle={
+												dark
+													? {
+															backgroundColor: "var(--mantine-color-dark-7)",
+															borderColor: "var(--mantine-color-dark-6)",
+														}
+													: {}
+											}
 										/>
 										<Bar
 											dataKey="jumlah"
-											fill={dark ? "var(--mantine-color-blue-6)" : "var(--mantine-color-blue-filled)"}
+											fill={
+												dark
+													? "var(--mantine-color-blue-6)"
+													: "var(--mantine-color-blue-filled)"
+											}
 											radius={[0, 4, 4, 0]}
 										/>
 									</BarChart>
@@ -421,7 +556,14 @@ const PengaduanLayananPublik = () => {
 
 						{/* Pengajuan Terbaru */}
 						<GridCol span={{ base: 12, lg: 4 }}>
-							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}  h="100%">
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
 								<Title order={4} mb="md" c={dark ? "dark.0" : "black"}>
 									Pengajuan Terbaru
 								</Title>
@@ -429,14 +571,23 @@ const PengaduanLayananPublik = () => {
 									<Box key={index}>
 										<Group justify="space-between">
 											<Stack gap={0}>
-												<Text fw={500} c={dark ? "dark.0" : "black"}>{item.nama}</Text>
-												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>{item.jenis}</Text>
+												<Text fw={500} c={dark ? "dark.0" : "black"}>
+													{item.nama}
+												</Text>
+												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+													{item.jenis}
+												</Text>
 											</Stack>
 											<Stack gap={0} align="flex-end">
-												<Badge color={getStatusColor(item.status)} variant="light">
+												<Badge
+													color={getStatusColor(item.status)}
+													variant="light"
+												>
 													{item.status}
 												</Badge>
-												<Text size="xs" c={dark ? "dark.4" : "dimmed"}>{item.waktu}</Text>
+												<Text size="xs" c={dark ? "dark.4" : "dimmed"}>
+													{item.waktu}
+												</Text>
 											</Stack>
 										</Group>
 										<Divider my="sm" />
@@ -447,7 +598,14 @@ const PengaduanLayananPublik = () => {
 
 						{/* Ajuan Ide Inovatif */}
 						<GridCol span={{ base: 12, lg: 4 }}>
-							<Card p="md" radius="md" withBorder bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}  h="100%">
+							<Card
+								p="md"
+								radius="md"
+								withBorder
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+								h="100%"
+							>
 								<Title order={4} mb="md" c={dark ? "dark.0" : "black"}>
 									Ajuan Ide Inovatif
 								</Title>
@@ -455,8 +613,12 @@ const PengaduanLayananPublik = () => {
 									<Box key={index}>
 										<Group justify="space-between">
 											<Stack gap={0}>
-												<Text fw={500} c={dark ? "dark.0" : "black"}>{item.judul}</Text>
-												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>{item.nama}</Text>
+												<Text fw={500} c={dark ? "dark.0" : "black"}>
+													{item.judul}
+												</Text>
+												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+													{item.nama}
+												</Text>
 											</Stack>
 											<Group>
 												<Badge color="blue" variant="light">
@@ -478,9 +640,18 @@ const PengaduanLayananPublik = () => {
 					<Grid gutter="md">
 						{/* Complaint Submission Form */}
 						<GridCol span={{ base: 12, lg: 4 }}>
-							<Card p="md" withBorder radius="md" h="100%" bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+							<Card
+								p="md"
+								withBorder
+								radius="md"
+								h="100%"
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+							>
 								<Card.Section withBorder inheritPadding py="xs">
-									<Title order={3} py="xs">Ajukan Pengaduan</Title>
+									<Title order={3} py="xs">
+										Ajukan Pengaduan
+									</Title>
 								</Card.Section>
 								<Card.Section>
 									<form onSubmit={handleSubmitComplaint}>
@@ -537,24 +708,39 @@ const PengaduanLayananPublik = () => {
 
 						{/* Complaints List */}
 						<GridCol span={{ base: 12, lg: 8 }}>
-							<Card withBorder radius="md" bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
+							<Card
+								withBorder
+								radius="md"
+								bg={dark ? "#141D34" : "white"}
+								style={{ borderColor: dark ? "#141D34" : "white" }}
+							>
 								<Card.Section withBorder inheritPadding py="xs">
-									<Title order={3} py="xs">Daftar Pengaduan</Title>
+									<Title order={3} py="xs">
+										Daftar Pengaduan
+									</Title>
 								</Card.Section>
 								<Card.Section py="md" px="xs">
 									<Table withColumnBorders>
 										<Table.Thead>
 											<Table.Tr>
-												<Table.Th><Text c={dark ? "white" : "dark.3" }>Judul</Text></Table.Th>
-												<Table.Th><Text c={dark ? "white" : "dark.3" }>Kategori</Text></Table.Th>
-												<Table.Th><Text c={dark ? "white" : "dark.3" }>Status</Text></Table.Th>
-												<Table.Th><Text c={dark ? "white" : "dark.3" }>Prioritas</Text></Table.Th>
-												<Table.Th><Text c={dark ? "white" : "dark.3" }>Tanggal</Text></Table.Th>
+												<Table.Th>
+													<Text c={dark ? "white" : "dark.3"}>Judul</Text>
+												</Table.Th>
+												<Table.Th>
+													<Text c={dark ? "white" : "dark.3"}>Kategori</Text>
+												</Table.Th>
+												<Table.Th>
+													<Text c={dark ? "white" : "dark.3"}>Status</Text>
+												</Table.Th>
+												<Table.Th>
+													<Text c={dark ? "white" : "dark.3"}>Prioritas</Text>
+												</Table.Th>
+												<Table.Th>
+													<Text c={dark ? "white" : "dark.3"}>Tanggal</Text>
+												</Table.Th>
 											</Table.Tr>
 										</Table.Thead>
-										<Table.Tbody>
-											{complaintRows}
-										</Table.Tbody>
+										<Table.Tbody>{complaintRows}</Table.Tbody>
 									</Table>
 								</Card.Section>
 							</Card>
@@ -565,15 +751,19 @@ const PengaduanLayananPublik = () => {
 				<Stack gap="lg">
 					<Card withBorder radius="md">
 						<Card.Section withBorder inheritPadding py="xs">
-							<Title order={3} py="xs">Layanan Publik Tersedia</Title>
+							<Title order={3} py="xs">
+								Layanan Publik Tersedia
+							</Title>
 						</Card.Section>
 						<Card.Section pt="md">
 							<Grid gutter="md">
 								{services.map((service) => (
 									<GridCol key={service.id} span={{ base: 12, md: 6, lg: 4 }}>
 										<Card withBorder radius="md" h="100%">
-											<Title order={4} mb="sm">{service.name}</Title>
-											<Text size="sm" c={dark ? "white" : "dark.3" } mb="md">
+											<Title order={4} mb="sm">
+												{service.name}
+											</Title>
+											<Text size="sm" c={dark ? "white" : "dark.3"} mb="md">
 												{service.description}
 											</Text>
 											<Group justify="space-between">
@@ -589,11 +779,11 @@ const PengaduanLayananPublik = () => {
 												>
 													{service.status}
 												</Badge>
-												<Text size="sm" c={dark ? "white" : "dark.3" }>
+												<Text size="sm" c={dark ? "white" : "dark.3"}>
 													{service.category}
 												</Text>
 											</Group>
-											<Text size="xs" c={dark ? "white" : "dark.3" } mt="sm">
+											<Text size="xs" c={dark ? "white" : "dark.3"} mt="sm">
 												Terakhir diperbarui: {service.lastUpdated}
 											</Text>
 										</Card>
@@ -605,13 +795,17 @@ const PengaduanLayananPublik = () => {
 
 					<Card withBorder radius="md">
 						<Card.Section withBorder inheritPadding py="xs">
-							<Title order={3} py="xs">Statistik Layanan</Title>
+							<Title order={3} py="xs">
+								Statistik Layanan
+							</Title>
 						</Card.Section>
 						<Card.Section pt="md">
 							<Grid gutter="md">
 								<GridCol span={{ base: 12, md: 4 }}>
 									<Card p="md" bg={dark ? "dark.7" : "gray.0"} radius="md">
-										<Title order={4} mb="xs">Jumlah Layanan Tersedia</Title>
+										<Title order={4} mb="xs">
+											Jumlah Layanan Tersedia
+										</Title>
 										<Text size="xl" fw={700} c="darmasaba-blue">
 											12
 										</Text>
@@ -619,7 +813,9 @@ const PengaduanLayananPublik = () => {
 								</GridCol>
 								<GridCol span={{ base: 12, md: 4 }}>
 									<Card p="md" bg={dark ? "dark.7" : "gray.0"} radius="md">
-										<Title order={4} mb="xs">Layanan Terpopuler</Title>
+										<Title order={4} mb="xs">
+											Layanan Terpopuler
+										</Title>
 										<Text size="xl" fw={700} c="darmasaba-success">
 											4
 										</Text>
@@ -627,7 +823,9 @@ const PengaduanLayananPublik = () => {
 								</GridCol>
 								<GridCol span={{ base: 12, md: 4 }}>
 									<Card p="md" bg={dark ? "dark.7" : "gray.0"} radius="md">
-										<Title order={4} mb="xs">Permintaan Baru</Title>
+										<Title order={4} mb="xs">
+											Permintaan Baru
+										</Title>
 										<Text size="xl" fw={700} c="darmasaba-warning">
 											23
 										</Text>

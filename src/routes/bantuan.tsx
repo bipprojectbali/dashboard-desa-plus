@@ -1,19 +1,21 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Header } from "@/components/header";
-import { Sidebar } from "@/components/sidebar";
 import { AppShell, Burger, Group, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { createFileRoute } from "@tanstack/react-router";
+import { Header } from "@/components/header";
+import HelpPage from "@/components/help-page";
+import { Sidebar } from "@/components/sidebar";
 
-export const Route = createFileRoute("/dashboard")({
-	component: RouteComponent,
+export const Route = createFileRoute("/bantuan")({
+	component: BantuanPage,
 });
 
-function RouteComponent() {
+function BantuanPage() {
 	const [opened, { toggle }] = useDisclosure();
 	const { colorScheme } = useMantineColorScheme();
-	const headerBgColor = colorScheme === 'dark' ? "#11192D" : "#19355E";
-	const navbarBgColor = colorScheme === 'dark' ? "#11192D" : "white";
-	const mainBgColor = colorScheme === 'dark' ? "#11192D" : "#edf3f8ff";
+	const headerBgColor = colorScheme === "dark" ? "#11192D" : "#19355E";
+	const navbarBgColor = colorScheme === "dark" ? "#11192D" : "white";
+	const mainBgColor = colorScheme === "dark" ? "#11192D" : "#edf3f8ff";
+
 	return (
 		<AppShell
 			header={{ height: 60 }}
@@ -31,14 +33,18 @@ function RouteComponent() {
 				</Group>
 			</AppShell.Header>
 
-			<AppShell.Navbar p="md" bg={navbarBgColor} style={{ display: 'flex', flexDirection: 'column' }}>
-				<div style={{ flex: 1, overflowY: 'auto' }}>
+			<AppShell.Navbar
+				p="md"
+				bg={navbarBgColor}
+				style={{ display: "flex", flexDirection: "column" }}
+			>
+				<div style={{ flex: 1, overflowY: "auto" }}>
 					<Sidebar />
 				</div>
 			</AppShell.Navbar>
 
 			<AppShell.Main bg={mainBgColor}>
-				<Outlet />
+				<HelpPage />
 			</AppShell.Main>
 		</AppShell>
 	);
