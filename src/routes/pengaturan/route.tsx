@@ -1,11 +1,10 @@
-import {
-	AppShell,
-	Burger,
-	Group,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { AppShell, Burger, Group, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	Outlet,
+	useRouterState,
+} from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
@@ -44,12 +43,7 @@ function PengaturanLayout() {
 		>
 			<AppShell.Header bg={headerBgColor}>
 				<Group h="100%" px="lg" align="center" wrap="nowrap">
-					<Burger
-						opened={opened}
-						onClick={toggle}
-						hiddenFrom="sm"
-						size="sm"
-					/>
+					<Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
 					<Header />
 				</Group>
 			</AppShell.Header>

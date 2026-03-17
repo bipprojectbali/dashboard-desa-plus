@@ -4,18 +4,10 @@ import type { ReactNode } from "react";
 interface SDGSCardProps {
 	title: string;
 	score: number;
-	icon: ReactNode;
-	color: string;
-	bgColor: string;
+	image: ReactNode;
 }
 
-export function SDGSCard({
-	title,
-	score,
-	icon,
-	color,
-	bgColor,
-}: SDGSCardProps) {
+export function SDGSCard({ title, score, image }: SDGSCardProps) {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -24,28 +16,27 @@ export function SDGSCard({
 			p="md"
 			radius="xl"
 			withBorder
-			bg={bgColor}
 			style={{
-				borderColor: dark ? "#334155" : bgColor,
+				borderColor: dark ? "#334155" : "white",
 				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
 			}}
+			h="100%"
 		>
 			<Group justify="space-between" align="flex-start" w="100%">
+				<Box>{image}</Box>
 				<Box style={{ flex: 1 }}>
-					<Text size="sm" c={dark ? "white" : "gray.8"} fw={500} mb="xs">
+					<Text
+						ta={"center"}
+						size="sm"
+						c={dark ? "white" : "gray.8"}
+						fw={500}
+						mb="xs"
+					>
 						{title}
 					</Text>
-					<Text size="xl" fw={700} c={color}>
+					<Text ta={"center"} size="xl" c={dark ? "white" : "gray.8"} fw={700}>
 						{score.toFixed(2)}
 					</Text>
-				</Box>
-				<Box
-					style={{
-						color,
-						opacity: 0.8,
-					}}
-				>
-					{icon}
 				</Box>
 			</Group>
 		</Card>
