@@ -37,6 +37,9 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # Dashboard-MD
 Dashboard-MD
 
+# md
+*.md
+
 # Playwright artifacts
 test-results/
 playwright-report/

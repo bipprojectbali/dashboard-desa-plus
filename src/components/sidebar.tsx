@@ -61,7 +61,10 @@ export function Sidebar({ className }: SidebarProps) {
 	return (
 		<Box className={className}>
 			{/* Logo */}
-			<Image src="/logo-desa-plus.png" alt="Logo" />
+			<Image
+				src={dark ? "/white.png" : "/light-mode.png"}
+				alt="Logo"
+			/>
 
 			{/* Search */}
 			<Box p="md">
