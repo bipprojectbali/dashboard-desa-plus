@@ -48,6 +48,7 @@ export function DiscussionPanel() {
 					? "0 1px 3px 0 rgb(0 0 0 / 0.1)"
 					: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
 			}}
+			h="100%"
 		>
 			<Group gap="xs" mb="md">
 				<MessageCircle size={20} color={dark ? "#E2E8F0" : "#1E3A5F"} />

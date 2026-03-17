@@ -3,6 +3,7 @@ import {
 	Bar,
 	BarChart,
 	CartesianGrid,
+	Cell,
 	ResponsiveContainer,
 	Tooltip,
 	XAxis,
@@ -10,8 +11,8 @@ import {
 } from "recharts";
 
 const documentData = [
-	{ name: "Gambar", value: 300 },
-	{ name: "Dokumen", value: 310 },
+	{ name: "Gambar", jumlah: 300, color: "#FACC15" },
+	{ name: "Dokumen", jumlah: 310, color: "#22C55E" },
 ];
 
 export function DocumentChart() {
@@ -61,7 +62,11 @@ export function DocumentChart() {
 						}}
 						labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 					/>
-					<Bar dataKey="value" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+					<Bar dataKey="jumlah" radius={[4, 4, 0, 0]}>
+						{documentData.map((entry, index) => (
+							<Cell key={`cell-${index}`} fill={entry.color} />
+						))}
+					</Bar>
 				</BarChart>
 			</ResponsiveContainer>
 		</Card>

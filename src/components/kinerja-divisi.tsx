@@ -1,5 +1,5 @@
 import { Grid, Stack } from "@mantine/core";
-import { ActivityCard,  } from "./kinerja-divisi/activity-card";
+import { ActivityCard } from "./kinerja-divisi/activity-card";
 import { DivisionList } from "./kinerja-divisi/division-list";
 import { DocumentChart } from "./kinerja-divisi/document-chart";
 import { ProgressChart } from "./kinerja-divisi/progress-chart";
@@ -14,25 +14,25 @@ const programKegiatanData = [
 		title: "Rakor 2025",
 		date: "3 Juli 2025",
 		progress: 90,
-		status: "selesai" as const,
+		status: "Selesai" as const,
 	},
 	{
 		title: "Pemutakhiran Indeks Desa",
 		date: "3 Juli 2025",
 		progress: 85,
-		status: "selesai" as const,
+		status: "Selesai" as const,
 	},
 	{
 		title: "Mengurus Akta Cerai Warga",
 		date: "3 Juli 2025",
 		progress: 80,
-		status: "selesai" as const,
+		status: "Selesai" as const,
 	},
 	{
 		title: "Pasek 7 Desa Adat",
 		date: "3 Juli 2025",
 		progress: 92,
-		status: "selesai" as const,
+		status: "Selesai" as const,
 	},
 ];
 

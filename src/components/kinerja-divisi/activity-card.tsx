@@ -1,17 +1,10 @@
-import {
-	Box,
-	Card,
-	Group,
-	Progress,
-	Text,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Card, Text, Progress, Group, Box } from "@mantine/core";
 
 interface ActivityCardProps {
 	title: string;
 	date: string;
 	progress: number;
-	status: "selesai" | "berjalan" | "tertunda";
+	status: "Selesai" | "Berjalan" | "Tertunda";
 }
 
 export function ActivityCard({
@@ -20,16 +13,13 @@ export function ActivityCard({
 	progress,
 	status,
 }: ActivityCardProps) {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
-
-	const getStatusColor = (s: string) => {
-		switch (s) {
-			case "selesai":
+	const getStatusColor = () => {
+		switch (status) {
+			case "Selesai":
 				return "#22C55E";
-			case "berjalan":
+			case "Berjalan":
 				return "#3B82F6";
-			case "tertunda":
+			case "Tertunda":
 				return "#EF4444";
 			default:
 				return "#9CA3AF";
@@ -38,58 +28,62 @@ export function ActivityCard({
 
 	return (
 		<Card
-			p="md"
 			radius="xl"
-			withBorder
-			bg={dark ? "#1E293B" : "white"}
+			p={0}
+			withBorder={false}
 			style={{
-				borderColor: dark ? "#334155" : "white",
-				boxShadow: dark
-					? "0 1px 3px 0 rgb(0 0 0 / 0.1)"
-					: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				backgroundColor: "#F3F4F6",
+				overflow: "hidden",
 			}}
 		>
+			{/* 🔵 HEADER */}
 			<Box
 				style={{
-					borderLeft: `4px solid #3B82F6`,
-					paddingLeft: 12,
-					marginBottom: 12,
+					backgroundColor: "#1E3A5F",
+					padding: "16px",
+					textAlign: "center",
 				}}
 			>
-				<Text size="sm" fw={600} c={dark ? "white" : "#1E3A5F"}>
+				<Text c="white" fw={700} size="md">
 					{title}
 				</Text>
 			</Box>
 
-			<Group justify="space-between" mb="xs">
-				<Text size="xs" c="dimmed">
-					{date}
-				</Text>
-				<Box
-					style={{
-						backgroundColor: getStatusColor(status),
-						color: "white",
-						padding: "2px 8px",
-						borderRadius: 4,
-						fontSize: 11,
-						fontWeight: 600,
+			{/* CONTENT */}
+			<Box p="md">
+				{/* PROGRESS */}
+				<Progress
+					value={progress}
+					radius="xl"
+					size="lg"
+					color="orange"
+					styles={{
+						root: {
+							height: 16,
+						},
 					}}
-				>
-					{status.toUpperCase()}
-				</Box>
-			</Group>
+				/>
 
-			<Progress
-				value={progress}
-				size="sm"
-				radius="xl"
-				color={progress === 100 ? "green" : "yellow"}
-				animated={progress < 100}
-			/>
+				{/* FOOTER */}
+				<Group justify="space-between" mt="md">
+					<Text size="sm" fw={500}>
+						{date}
+					</Text>
 
-			<Text size="xs" c="dimmed" mt="xs" ta="right">
-				{progress}%
-			</Text>
+					<Box
+						style={{
+							backgroundColor: getStatusColor(),
+							color: "white",
+							padding: "4px 12px",
+							borderRadius: 999,
+							fontSize: 12,
+							fontWeight: 600,
+						}}
+					>
+						{status}
+					</Box>
+				</Group>
+			</Box>
 		</Card>
 	);
 }

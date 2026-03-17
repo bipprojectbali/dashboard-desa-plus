@@ -10,7 +10,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 const progressData = [
 	{ name: "Selesai", value: 83.33, color: "#22C55E" },
-	{ name: "Dikerjakan", value: 16.67, color: "#FACC15" },
+	{ name: "Dikerjakan", value: 16.67, color: "#F59E0B" },
 	{ name: "Segera Dikerjakan", value: 0, color: "#3B82F6" },
 	{ name: "Dibatalkan", value: 0, color: "#EF4444" },
 ];

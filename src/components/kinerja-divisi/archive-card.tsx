@@ -28,6 +28,7 @@ export function ArchiveCard({ item, onClick }: ArchiveCardProps) {
 				cursor: "pointer",
 				transition: "transform 0.2s, box-shadow 0.2s",
 			}}
+			h="100%"
 			onClick={onClick}
 		>
 			<Group gap="md">
