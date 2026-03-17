@@ -39,6 +39,7 @@ export function ChartAPBDes() {
 					? "0 1px 3px 0 rgb(0 0 0 / 0.1)"
 					: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
 			}}
+			h="100%"
 		>
 			<Title order={4} c={dark ? "white" : "gray.9"} mb="lg">
 				Grafik APBDes
