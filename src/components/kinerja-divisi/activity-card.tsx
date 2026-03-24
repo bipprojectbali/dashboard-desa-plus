@@ -1,4 +1,4 @@
-import { Card, Text, Progress, Group, Box } from "@mantine/core";
+import { Box, Card, Group, Progress, Text } from "@mantine/core";
 
 interface ActivityCardProps {
 	title: string;

@@ -1,12 +1,11 @@
 import { Grid, Stack } from "@mantine/core";
 import { ActivityCard } from "./kinerja-divisi/activity-card";
+import { ArchiveCard } from "./kinerja-divisi/archive-card";
+import { DiscussionPanel } from "./kinerja-divisi/discussion-panel";
 import { DivisionList } from "./kinerja-divisi/division-list";
 import { DocumentChart } from "./kinerja-divisi/document-chart";
-import { ProgressChart } from "./kinerja-divisi/progress-chart";
-import { DiscussionPanel } from "./kinerja-divisi/discussion-panel";
 import { EventCard } from "./kinerja-divisi/event-card";
-import { ArchiveCard } from "./kinerja-divisi/archive-card";
-
+import { ProgressChart } from "./kinerja-divisi/progress-chart";
 
 // Data for program kegiatan (Section 1)
 const programKegiatanData = [

@@ -2,8 +2,8 @@ import { AppShell, Burger, Group, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/header";
-import { Sidebar } from "@/components/sidebar";
 import KeamananPage from "@/components/keamanan-page";
+import { Sidebar } from "@/components/sidebar";
 
 export const Route = createFileRoute("/keamanan")({
 	component: KeamananRoute,

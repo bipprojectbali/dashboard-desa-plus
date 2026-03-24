@@ -8,7 +8,7 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme
+	useMantineColorScheme,
 } from "@mantine/core";
 import { CheckCircle, Clock, FileText, MessageCircle } from "lucide-react";
 import {

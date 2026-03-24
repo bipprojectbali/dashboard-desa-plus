@@ -12,12 +12,12 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import {
-	Coins,
 	CheckCircle,
-	TrendingUp,
-	TrendingDown,
+	Coins,
 	PieChart as PieChartIcon,
 	Receipt,
+	TrendingDown,
+	TrendingUp,
 } from "lucide-react";
 import {
 	Bar,
@@ -144,18 +144,10 @@ const KeuanganAnggaran = () => {
 										{item.value}
 									</Text>
 									<Group gap={4} align="flex-start">
-										{item.trend && (
-											<TrendingUp size={14} color="#22C55E" />
-										)}
+										{item.trend && <TrendingUp size={14} color="#22C55E" />}
 										<Text
 											size="xs"
-											c={
-												item.trend
-													? "green"
-													: dark
-														? "gray.4"
-														: "gray.5"
-											}
+											c={item.trend ? "green" : dark ? "gray.4" : "gray.5"}
 										>
 											{item.subtitle}
 										</Text>
@@ -313,7 +305,10 @@ const KeuanganAnggaran = () => {
 										borderColor: dark ? "#334155" : "#e5e7eb",
 										borderRadius: "8px",
 									}}
-									formatter={(value: number | undefined) => [`Rp ${value}jt`, "Jumlah"]}
+									formatter={(value: number | undefined) => [
+										`Rp ${value}jt`,
+										"Jumlah",
+									]}
 								/>
 								<Bar
 									dataKey="amount"
@@ -354,11 +349,7 @@ const KeuanganAnggaran = () => {
 						<Grid gutter="md">
 							{/* Pendapatan */}
 							<Grid.Col span={6}>
-								<Card
-									p="sm"
-									radius="lg"
-									bg={dark ? "#064E3B" : "#DCFCE7"}
-								>
+								<Card p="sm" radius="lg" bg={dark ? "#064E3B" : "#DCFCE7"}>
 									<Title order={5} c="#22C55E" mb="sm">
 										Pendapatan
 									</Title>
@@ -394,11 +385,7 @@ const KeuanganAnggaran = () => {
 
 							{/* Belanja */}
 							<Grid.Col span={6}>
-								<Card
-									p="sm"
-									radius="lg"
-									bg={dark ? "#7F1D1D" : "#FEE2E2"}
-								>
+								<Card p="sm" radius="lg" bg={dark ? "#7F1D1D" : "#FEE2E2"}>
 									<Title order={5} c="#EF4444" mb="sm">
 										Belanja
 									</Title>

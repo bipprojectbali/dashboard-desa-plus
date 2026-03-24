@@ -13,13 +13,13 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import {
-	Users,
-	Home,
 	Baby,
-	TrendingDown,
 	BarChart3,
-	PieChart as PieChartIcon,
 	Building2,
+	Home,
+	PieChart as PieChartIcon,
+	TrendingDown,
+	Users,
 } from "lucide-react";
 import {
 	Bar,

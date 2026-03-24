@@ -13,10 +13,10 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import {
-	MessageCircle,
-	CheckCircle,
 	AlertTriangle,
+	CheckCircle,
 	Clock,
+	MessageCircle,
 	TrendingUp,
 } from "lucide-react";
 import {

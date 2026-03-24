@@ -1,9 +1,9 @@
 import { AppShell, Burger, Group, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { createFileRoute } from "@tanstack/react-router";
+import BumdesPage from "@/components/bumdes-page";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
-import BumdesPage from "@/components/bumdes-page";
 
 export const Route = createFileRoute("/bumdes")({
 	component: BumdesRoute,
