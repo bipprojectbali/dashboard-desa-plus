@@ -2,14 +2,14 @@ import { AppShell, Burger, Group, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/header";
-import HelpPage from "@/components/help-page";
 import { Sidebar } from "@/components/sidebar";
+import HelpPage from "@/components/help-page";
 
 export const Route = createFileRoute("/bantuan")({
-	component: BantuanPage,
+	component: BantuanRoute,
 });
 
-function BantuanPage() {
+function BantuanRoute() {
 	const [opened, { toggle }] = useDisclosure();
 	const { colorScheme } = useMantineColorScheme();
 	const headerBgColor = colorScheme === "dark" ? "#11192D" : "#19355E";
