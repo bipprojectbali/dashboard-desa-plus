@@ -209,7 +209,7 @@ export const SalesTable = ({ data, onDetailClick }: SalesTableProps) => {
 									</Text>
 								</Table.Td>
 								<Table.Td>
-									<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+									<Text size="sm" c={dark ? "white" : "dimmed"}>
 										{formatCurrency(product.bulanLalu)}
 									</Text>
 								</Table.Td>

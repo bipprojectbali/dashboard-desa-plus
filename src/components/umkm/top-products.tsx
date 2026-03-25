@@ -105,20 +105,20 @@ export const TopProducts = ({ products }: TopProductsProps) => {
 								{product.rank}
 							</Badge>
 							<Stack gap={0}>
-								<Text fw={600} c={dark ? "dark.0" : "#1e3a5f"}>
+								<Text fw={600} c={dark ? "white" : "#1e3a5f"}>
 									{product.name}
 								</Text>
-								<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+								<Text size="sm" c={dark ? "white" : "dimmed"}>
 									{product.umkmName}
 								</Text>
 								<Group gap="xs" mt={2}>
-									<Text size="xs" c={dark ? "dark.4" : "gray.6"}>
+									<Text size="xs" c={dark ? "white" : "gray.6"}>
 										Rp {formatCurrency(product.revenue)}
 									</Text>
-									<Text size="xs" c={dark ? "dark.4" : "gray.6"}>
+									<Text size="xs" c={dark ? "white" : "gray.6"}>
 										•
 									</Text>
-									<Text size="xs" c={dark ? "dark.4" : "gray.6"}>
+									<Text size="xs" c={dark ? "white" : "gray.6"}>
 										{formatNumber(product.quantitySold)} terjual
 									</Text>
 								</Group>

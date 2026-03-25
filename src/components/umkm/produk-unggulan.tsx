@@ -15,11 +15,11 @@ const MetricCard = ({ title, value, trend }: MetricCardProps) => {
 
 	return (
 		<Group justify="space-between" align="center">
-			<Text size="sm" c={dark ? "dark.3" : "dimmed"} fw={500}>
+			<Text size="sm" c={dark ? "white" : "dimmed"} fw={500}>
 				{title}
 			</Text>
 			<Stack gap={0} align="flex-end">
-				<Text size="lg" fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
+				<Text size="lg" fw={700} c={dark ? "white" : "#1e3a5f"}>
 					{value}
 				</Text>
 				{trend && (
