@@ -37,7 +37,7 @@ export const HealthStats = ({ data }: HealthStatsProps) => {
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#141D34" : "white"}
+			bg={dark ? "#1E293B" : "white"}
 			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
 			h={"100%"}
 		>

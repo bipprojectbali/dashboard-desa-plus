@@ -58,7 +58,7 @@ export const PosyanduSchedule = ({ data }: PosyanduScheduleProps) => {
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#141D34" : "white"}
+			bg={dark ? "#1E293B" : "white"}
 			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
 		>
 			<Title order={3} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>
@@ -73,14 +73,13 @@ export const PosyanduSchedule = ({ data }: PosyanduScheduleProps) => {
 						withBorder
 						bg={dark ? "#263852ff" : "#F1F5F9"}
 						style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
-						hoverable
 					>
 						<Group justify="space-between">
 							<Stack gap={0}>
-								<Text fw={600} c={dark ? "dark.0" : "#1e3a5f"}>
+								<Text fw={600} c={dark ? "white" : "#1e3a5f"}>
 									{item.nama}
 								</Text>
-								<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+								<Text size="sm" c={dark ? "white" : "dimmed"}>
 									{item.tanggal}
 								</Text>
 							</Stack>
