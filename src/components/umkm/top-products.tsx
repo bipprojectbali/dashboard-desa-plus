@@ -84,7 +84,7 @@ export const TopProducts = ({ products }: TopProductsProps) => {
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#141D34" : "white"}
+			bg={dark ? "#1E293B" : "white"}
 			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
 		>
 			<Title order={4} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>

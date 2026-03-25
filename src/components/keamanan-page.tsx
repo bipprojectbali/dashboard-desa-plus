@@ -126,7 +126,7 @@ const KeamananPage = () => {
 										p="md"
 										radius="md"
 										withBorder
-										bg={dark ? "#141D34" : "white"}
+										bg={dark ? "#1E293B" : "white"}
 										style={{ borderColor: dark ? "#141D34" : "white" }}
 										h="100%"
 									>
@@ -143,7 +143,7 @@ const KeamananPage = () => {
 													>
 														{kpi.value}
 													</Text>
-													<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+													<Text size="sm" c={dark ? "white" : "dimmed"}>
 														{kpi.title}
 													</Text>
 												</Group>
@@ -165,14 +165,14 @@ const KeamananPage = () => {
 							p="md"
 							radius="md"
 							withBorder
-							bg={dark ? "#141D34" : "white"}
+							bg={dark ? "#1E293B" : "white"}
 							style={{ borderColor: dark ? "#141D34" : "white" }}
 							h="100%"
 						>
 							<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
 								Peta Keamanan CCTV
 							</Title>
-							<Text size="sm" c={dark ? "dark.3" : "dimmed"} mb="md">
+							<Text size="sm" c={dark ? "white" : "dimmed"} mb="md">
 								Titik Lokasi CCTV
 							</Text>
 
@@ -228,13 +228,13 @@ const KeamananPage = () => {
 														{cctv.status === "active" ? "Online" : "Offline"}
 													</Badge>
 												</Group>
-												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+												<Text size="sm" c={dark ? "white" : "dimmed"}>
 													{cctv.location}
 												</Text>
 											</Stack>
 											<Group gap="xs">
 												<IconClock size={16} stroke={1.5} />
-												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+												<Text size="sm" c={dark ? "white" : "dimmed"}>
 													{cctv.lastSeen}
 												</Text>
 											</Group>
@@ -252,7 +252,7 @@ const KeamananPage = () => {
 						p="md"
 						radius="md"
 						withBorder
-						bg={dark ? "#141D34" : "white"}
+						bg={dark ? "#1E293B" : "white"}
 						style={{ borderColor: dark ? "#141D34" : "white" }}
 						h="100%"
 					>
@@ -287,19 +287,19 @@ const KeamananPage = () => {
 									<Group justify="space-between">
 										<Group gap="xs">
 											<IconMapPin size={16} stroke={1.5} />
-											<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+											<Text size="sm" c={dark ? "white" : "dimmed"}>
 												{report.location}
 											</Text>
 										</Group>
 										<Group gap="xs">
 											<IconClock size={16} stroke={1.5} />
-											<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+											<Text size="sm" c={dark ? "white" : "dimmed"}>
 												{report.reportedAt}
 											</Text>
 										</Group>
 									</Group>
 
-									<Text size="sm" c={dark ? "dark.3" : "dimmed"} mt="sm">
+									<Text size="sm" c={dark ? "white" : "dimmed"} mt="sm">
 										{report.date}
 									</Text>
 								</Card>

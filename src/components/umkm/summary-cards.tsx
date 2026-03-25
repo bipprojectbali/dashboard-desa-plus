@@ -54,7 +54,7 @@ const KpiCard = ({
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#141D34" : "white"}
+			bg={dark ? "#1E293B" : "white"}
 			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
 		>
 			<Group justify="space-between" align="center">
@@ -62,11 +62,11 @@ const KpiCard = ({
 					<Text size="sm" c={dark ? "dark.3" : "dimmed"} fw={500}>
 						{title}
 					</Text>
-					<Text size="xl" fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
+					<Text size="xl" fw={700} c={dark ? "white" : "#1e3a5f"}>
 						{formatValue(value)}
 					</Text>
 					{subtitle && (
-						<Text size="xs" c={dark ? "dark.4" : "gray.6"}>
+						<Text size="xs" c={dark ? "white" : "gray.6"}>
 							{subtitle}
 						</Text>
 					)}

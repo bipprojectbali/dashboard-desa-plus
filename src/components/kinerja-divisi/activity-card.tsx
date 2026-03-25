@@ -1,4 +1,4 @@
-import { Box, Card, Group, Progress, Text } from "@mantine/core";
+import { Box, Card, Group, Progress, Text, useMantineColorScheme } from "@mantine/core";
 
 interface ActivityCardProps {
 	title: string;
@@ -26,13 +26,16 @@ export function ActivityCard({
 		}
 	};
 
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
+
 	return (
 		<Card
 			radius="xl"
 			p={0}
 			withBorder={false}
 			style={{
-				backgroundColor: "#F3F4F6",
+				backgroundColor: dark ? "#334155" : "white",
 				overflow: "hidden",
 			}}
 		>
