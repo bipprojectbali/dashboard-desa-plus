@@ -21,10 +21,6 @@ import { authStore } from "../../store/auth";
 export const Route = createFileRoute("/profile/edit")({
 	component: EditProfile,
 	beforeLoad: protectedRouteMiddleware,
-	onEnter({ context }) {
-		authStore.user = context?.user as any;
-		authStore.session = context?.session as any;
-	},
 });
 
 function EditProfile() {

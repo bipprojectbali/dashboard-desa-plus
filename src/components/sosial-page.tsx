@@ -1,10 +1,10 @@
 import { Grid, GridCol, Stack } from "@mantine/core";
-import { SummaryCards } from "./sosial/summary-cards";
-import { HealthStats } from "./sosial/health-stats";
-import { PosyanduSchedule } from "./sosial/posyandu-schedule";
-import { Pendidikan } from "./sosial/pendidikan";
 import { Beasiswa } from "./sosial/beasiswa";
 import { EventCalendar } from "./sosial/event-calendar";
+import { HealthStats } from "./sosial/health-stats";
+import { Pendidikan } from "./sosial/pendidikan";
+import { PosyanduSchedule } from "./sosial/posyandu-schedule";
+import { SummaryCards } from "./sosial/summary-cards";
 
 const SosialPage = () => {
 	return (

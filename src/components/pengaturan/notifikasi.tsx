@@ -20,30 +20,35 @@ const NotifikasiSettings = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	return (
-		<Stack
-			pr={"20%"}
-			gap={"xs"}
-		>
-			<Grid gutter={{ base: 5, xs: 'md', md: 'xl', xl: 50 }}>
+		<Stack pr={"20%"} gap={"xs"}>
+			<Grid gutter={{ base: 5, xs: "md", md: "xl", xl: 50 }}>
 				<GridCol span={6}>
 					<Stack gap={"xs"}>
 						<Title order={3} mb="sm">
 							Metode Notifikasi
 						</Title>
 						<Group mb="md" justify="space-between">
-							<Text fw={"bold"} fz={"sm"}>Laporan Harian</Text>
+							<Text fw={"bold"} fz={"sm"}>
+								Laporan Harian
+							</Text>
 							<Switch defaultChecked />
 						</Group>
 						<Group mb="md" justify="space-between">
-							<Text fw={"bold"} fz={"sm"}>Alert Sistem</Text>
+							<Text fw={"bold"} fz={"sm"}>
+								Alert Sistem
+							</Text>
 							<Switch defaultChecked />
 						</Group>
 						<Group mb="md" justify="space-between">
-							<Text fw={"bold"} fz={"sm"}>Update Keamanan</Text>
+							<Text fw={"bold"} fz={"sm"}>
+								Update Keamanan
+							</Text>
 							<Switch defaultChecked />
 						</Group>
 						<Group mb="md" justify="space-between">
-							<Text fw={"bold"} fz={"sm"}>Newsletter Bulanan</Text>
+							<Text fw={"bold"} fz={"sm"}>
+								Newsletter Bulanan
+							</Text>
 							<Switch defaultChecked />
 						</Group>
 					</Stack>
@@ -54,15 +59,21 @@ const NotifikasiSettings = () => {
 							Preferensi Alert
 						</Title>
 						<Group mb="md" justify="space-between">
-							<Text fw={"bold"} fz={"sm"}>Treshold Memori</Text>
+							<Text fw={"bold"} fz={"sm"}>
+								Treshold Memori
+							</Text>
 							<Switch defaultChecked />
 						</Group>
 						<Group mb="md" justify="space-between">
-							<Text fw={"bold"} fz={"sm"}>Treshold CPU</Text>
+							<Text fw={"bold"} fz={"sm"}>
+								Treshold CPU
+							</Text>
 							<Switch defaultChecked />
 						</Group>
 						<Group mb="md" justify="space-between">
-							<Text fw={"bold"} fz={"sm"}>Treshold Disk</Text>
+							<Text fw={"bold"} fz={"sm"}>
+								Treshold Disk
+							</Text>
 							<Switch defaultChecked />
 						</Group>
 					</Stack>
@@ -73,19 +84,27 @@ const NotifikasiSettings = () => {
 							Notifikasi Push
 						</Title>
 						<Group mb="md" justify="space-between">
-							<Text fw={"bold"} fz={"sm"}>Alert Kritis</Text>
+							<Text fw={"bold"} fz={"sm"}>
+								Alert Kritis
+							</Text>
 							<Switch defaultChecked />
 						</Group>
 						<Group mb="md" justify="space-between">
-							<Text fw={"bold"} fz={"sm"}>Aktivitas Tim</Text>
+							<Text fw={"bold"} fz={"sm"}>
+								Aktivitas Tim
+							</Text>
 							<Switch defaultChecked />
 						</Group>
 						<Group mb="md" justify="space-between">
-							<Text fw={"bold"} fz={"sm"}>Komentar & Mention</Text>
+							<Text fw={"bold"} fz={"sm"}>
+								Komentar & Mention
+							</Text>
 							<Switch defaultChecked />
 						</Group>
 						<Group mb="md" justify="space-between">
-							<Text fw={"bold"} fz={"sm"}>Bunyi Notifikasi</Text>
+							<Text fw={"bold"} fz={"sm"}>
+								Bunyi Notifikasi
+							</Text>
 							<Switch defaultChecked />
 						</Group>
 					</Stack>

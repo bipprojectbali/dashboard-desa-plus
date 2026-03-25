@@ -1,5 +1,12 @@
-import { Card, Group, Stack, Text, ThemeIcon, Title } from "@mantine/core";
-import { useMantineColorScheme } from "@mantine/core";
+import {
+	Card,
+	Group,
+	Stack,
+	Text,
+	ThemeIcon,
+	Title,
+	useMantineColorScheme,
+} from "@mantine/core";
 import { IconAward } from "@tabler/icons-react";
 
 interface ScholarshipData {

@@ -1,5 +1,13 @@
-import { Card, Grid, GridCol, Group, Stack, Text, ThemeIcon } from "@mantine/core";
-import { useMantineColorScheme } from "@mantine/core";
+import {
+	Card,
+	Grid,
+	GridCol,
+	Group,
+	Stack,
+	Text,
+	ThemeIcon,
+	useMantineColorScheme,
+} from "@mantine/core";
 import {
 	IconBabyCarriage,
 	IconHeartbeat,
@@ -93,8 +101,8 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 					value={displayData.ibuHamil}
 					subtitle="Aktif"
 					icon={<IconHeartbeat size={20} />}
-					color= "white"
-					backgroundColor= "#1E3A5F"
+					color="white"
+					backgroundColor="#1E3A5F"
 				/>
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
@@ -103,8 +111,8 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 					value={displayData.balita}
 					subtitle="Terdaftar"
 					icon={<IconBabyCarriage size={20} />}
-					color= "white"
-					backgroundColor= "#1E3A5F"
+					color="white"
+					backgroundColor="#1E3A5F"
 				/>
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
@@ -113,8 +121,8 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 					value={displayData.alertStunting}
 					subtitle="Perhatian"
 					icon={<IconStethoscope size={20} />}
-					color= "white"
-					backgroundColor= "#1E3A5F"
+					color="white"
+					backgroundColor="#1E3A5F"
 				/>
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
@@ -123,8 +131,8 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 					value={displayData.posyanduAktif}
 					subtitle="Aktif"
 					icon={<IconMedicalCross size={20} />}
-					color= "white"
-					backgroundColor= "#1E3A5F"
+					color="white"
+					backgroundColor="#1E3A5F"
 				/>
 			</GridCol>
 		</Grid>
