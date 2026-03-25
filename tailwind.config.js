@@ -1,11 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+	content: [
+		"./src/index.html",
+		"./public/**/*.html",
+		"./src/**/*.{js,ts,jsx,tsx}",
+	],
 	theme: {
 		extend: {
 			colors: {
 				"darmasaba-navy": {
-					DEFAULT: "#1E3A5F", // Primary navy color
+					DEFAULT: "#1E3A5F",
 					50: "#E1E4F2",
 					100: "#B9C2DD",
 					200: "#91A0C9",
@@ -18,7 +22,7 @@ module.exports = {
 					900: "#071833",
 				},
 				"darmasaba-blue": {
-					DEFAULT: "#3B82F6", // Primary blue color
+					DEFAULT: "#3B82F6",
 					50: "#E3F0FF",
 					100: "#B6D9FF",
 					200: "#89C2FF",

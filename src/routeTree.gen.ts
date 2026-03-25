@@ -9,35 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SosialRouteImport } from './routes/sosial'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
-import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
+import { Route as PengaduanLayananPublikRouteImport } from './routes/pengaduan-layanan-publik'
+import { Route as KinerjaDivisiRouteImport } from './routes/kinerja-divisi'
+import { Route as KeuanganAnggaranRouteImport } from './routes/keuangan-anggaran'
+import { Route as KeamananRouteImport } from './routes/keamanan'
+import { Route as JennaAnalyticRouteImport } from './routes/jenna-analytic'
+import { Route as DemografiPekerjaanRouteImport } from './routes/demografi-pekerjaan'
+import { Route as BumdesRouteImport } from './routes/bumdes'
+import { Route as BantuanRouteImport } from './routes/bantuan'
+import { Route as PengaturanRouteRouteImport } from './routes/pengaturan/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UsersIndexRouteImport } from './routes/users/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UsersIdRouteImport } from './routes/users/$id'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
-import { Route as DashboardSosialRouteImport } from './routes/dashboard/sosial'
-import { Route as DashboardPengaduanLayananPublikRouteImport } from './routes/dashboard/pengaduan-layanan-publik'
-import { Route as DashboardKinerjaDivisiRouteImport } from './routes/dashboard/kinerja-divisi'
-import { Route as DashboardKeuanganAnggaranRouteImport } from './routes/dashboard/keuangan-anggaran'
-import { Route as DashboardKeamananRouteImport } from './routes/dashboard/keamanan'
-import { Route as DashboardJennaAnalyticRouteImport } from './routes/dashboard/jenna-analytic'
-import { Route as DashboardDemografiPekerjaanRouteImport } from './routes/dashboard/demografi-pekerjaan'
-import { Route as DashboardBumdesRouteImport } from './routes/dashboard/bumdes'
-import { Route as DashboardBantuanRouteImport } from './routes/dashboard/bantuan'
+import { Route as PengaturanUmumRouteImport } from './routes/pengaturan/umum'
+import { Route as PengaturanNotifikasiRouteImport } from './routes/pengaturan/notifikasi'
+import { Route as PengaturanKeamananRouteImport } from './routes/pengaturan/keamanan'
+import { Route as PengaturanAksesDanTimRouteImport } from './routes/pengaturan/akses-dan-tim'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
-import { Route as DashboardPengaturanRouteRouteImport } from './routes/dashboard/pengaturan/route'
-import { Route as DashboardPengaturanUmumRouteImport } from './routes/dashboard/pengaturan/umum'
-import { Route as DashboardPengaturanNotifikasiRouteImport } from './routes/dashboard/pengaturan/notifikasi'
-import { Route as DashboardPengaturanKeamananRouteImport } from './routes/dashboard/pengaturan/keamanan'
-import { Route as DashboardPengaturanAksesDanTimRouteImport } from './routes/dashboard/pengaturan/akses-dan-tim'
 
+const SosialRoute = SosialRouteImport.update({
+  id: '/sosial',
+  path: '/sosial',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -48,9 +51,49 @@ const SigninRoute = SigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRouteRoute = DashboardRouteRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const PengaduanLayananPublikRoute = PengaduanLayananPublikRouteImport.update({
+  id: '/pengaduan-layanan-publik',
+  path: '/pengaduan-layanan-publik',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KinerjaDivisiRoute = KinerjaDivisiRouteImport.update({
+  id: '/kinerja-divisi',
+  path: '/kinerja-divisi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KeuanganAnggaranRoute = KeuanganAnggaranRouteImport.update({
+  id: '/keuangan-anggaran',
+  path: '/keuangan-anggaran',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KeamananRoute = KeamananRouteImport.update({
+  id: '/keamanan',
+  path: '/keamanan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JennaAnalyticRoute = JennaAnalyticRouteImport.update({
+  id: '/jenna-analytic',
+  path: '/jenna-analytic',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemografiPekerjaanRoute = DemografiPekerjaanRouteImport.update({
+  id: '/demografi-pekerjaan',
+  path: '/demografi-pekerjaan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BumdesRoute = BumdesRouteImport.update({
+  id: '/bumdes',
+  path: '/bumdes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BantuanRoute = BantuanRouteImport.update({
+  id: '/bantuan',
+  path: '/bantuan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PengaturanRouteRoute = PengaturanRouteRouteImport.update({
+  id: '/pengaturan',
+  path: '/pengaturan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -73,11 +116,6 @@ const ProfileIndexRoute = ProfileIndexRouteImport.update({
   path: '/profile/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -93,53 +131,25 @@ const ProfileEditRoute = ProfileEditRouteImport.update({
   path: '/profile/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardSosialRoute = DashboardSosialRouteImport.update({
-  id: '/sosial',
-  path: '/sosial',
-  getParentRoute: () => DashboardRouteRoute,
+const PengaturanUmumRoute = PengaturanUmumRouteImport.update({
+  id: '/umum',
+  path: '/umum',
+  getParentRoute: () => PengaturanRouteRoute,
 } as any)
-const DashboardPengaduanLayananPublikRoute =
-  DashboardPengaduanLayananPublikRouteImport.update({
-    id: '/pengaduan-layanan-publik',
-    path: '/pengaduan-layanan-publik',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardKinerjaDivisiRoute = DashboardKinerjaDivisiRouteImport.update({
-  id: '/kinerja-divisi',
-  path: '/kinerja-divisi',
-  getParentRoute: () => DashboardRouteRoute,
+const PengaturanNotifikasiRoute = PengaturanNotifikasiRouteImport.update({
+  id: '/notifikasi',
+  path: '/notifikasi',
+  getParentRoute: () => PengaturanRouteRoute,
 } as any)
-const DashboardKeuanganAnggaranRoute =
-  DashboardKeuanganAnggaranRouteImport.update({
-    id: '/keuangan-anggaran',
-    path: '/keuangan-anggaran',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardKeamananRoute = DashboardKeamananRouteImport.update({
+const PengaturanKeamananRoute = PengaturanKeamananRouteImport.update({
   id: '/keamanan',
   path: '/keamanan',
-  getParentRoute: () => DashboardRouteRoute,
+  getParentRoute: () => PengaturanRouteRoute,
 } as any)
-const DashboardJennaAnalyticRoute = DashboardJennaAnalyticRouteImport.update({
-  id: '/jenna-analytic',
-  path: '/jenna-analytic',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardDemografiPekerjaanRoute =
-  DashboardDemografiPekerjaanRouteImport.update({
-    id: '/demografi-pekerjaan',
-    path: '/demografi-pekerjaan',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardBumdesRoute = DashboardBumdesRouteImport.update({
-  id: '/bumdes',
-  path: '/bumdes',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardBantuanRoute = DashboardBantuanRouteImport.update({
-  id: '/bantuan',
-  path: '/bantuan',
-  getParentRoute: () => DashboardRouteRoute,
+const PengaturanAksesDanTimRoute = PengaturanAksesDanTimRouteImport.update({
+  id: '/akses-dan-tim',
+  path: '/akses-dan-tim',
+  getParentRoute: () => PengaturanRouteRoute,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
@@ -156,222 +166,192 @@ const AdminApikeyRoute = AdminApikeyRouteImport.update({
   path: '/apikey',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const DashboardPengaturanRouteRoute =
-  DashboardPengaturanRouteRouteImport.update({
-    id: '/pengaturan',
-    path: '/pengaturan',
-    getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DashboardPengaturanUmumRoute = DashboardPengaturanUmumRouteImport.update({
-  id: '/umum',
-  path: '/umum',
-  getParentRoute: () => DashboardPengaturanRouteRoute,
-} as any)
-const DashboardPengaturanNotifikasiRoute =
-  DashboardPengaturanNotifikasiRouteImport.update({
-    id: '/notifikasi',
-    path: '/notifikasi',
-    getParentRoute: () => DashboardPengaturanRouteRoute,
-  } as any)
-const DashboardPengaturanKeamananRoute =
-  DashboardPengaturanKeamananRouteImport.update({
-    id: '/keamanan',
-    path: '/keamanan',
-    getParentRoute: () => DashboardPengaturanRouteRoute,
-  } as any)
-const DashboardPengaturanAksesDanTimRoute =
-  DashboardPengaturanAksesDanTimRouteImport.update({
-    id: '/akses-dan-tim',
-    path: '/akses-dan-tim',
-    getParentRoute: () => DashboardPengaturanRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
-  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/pengaturan': typeof PengaturanRouteRouteWithChildren
+  '/bantuan': typeof BantuanRoute
+  '/bumdes': typeof BumdesRoute
+  '/demografi-pekerjaan': typeof DemografiPekerjaanRoute
+  '/jenna-analytic': typeof JennaAnalyticRoute
+  '/keamanan': typeof KeamananRoute
+  '/keuangan-anggaran': typeof KeuanganAnggaranRoute
+  '/kinerja-divisi': typeof KinerjaDivisiRoute
+  '/pengaduan-layanan-publik': typeof PengaduanLayananPublikRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
-  '/dashboard/pengaturan': typeof DashboardPengaturanRouteRouteWithChildren
+  '/sosial': typeof SosialRoute
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
-  '/dashboard/bantuan': typeof DashboardBantuanRoute
-  '/dashboard/bumdes': typeof DashboardBumdesRoute
-  '/dashboard/demografi-pekerjaan': typeof DashboardDemografiPekerjaanRoute
-  '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
-  '/dashboard/keamanan': typeof DashboardKeamananRoute
-  '/dashboard/keuangan-anggaran': typeof DashboardKeuanganAnggaranRoute
-  '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
-  '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
-  '/dashboard/sosial': typeof DashboardSosialRoute
+  '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
+  '/pengaturan/keamanan': typeof PengaturanKeamananRoute
+  '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
+  '/pengaturan/umum': typeof PengaturanUmumRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin/': typeof AdminIndexRoute
-  '/dashboard/': typeof DashboardIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/users/': typeof UsersIndexRoute
-  '/dashboard/pengaturan/akses-dan-tim': typeof DashboardPengaturanAksesDanTimRoute
-  '/dashboard/pengaturan/keamanan': typeof DashboardPengaturanKeamananRoute
-  '/dashboard/pengaturan/notifikasi': typeof DashboardPengaturanNotifikasiRoute
-  '/dashboard/pengaturan/umum': typeof DashboardPengaturanUmumRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/pengaturan': typeof PengaturanRouteRouteWithChildren
+  '/bantuan': typeof BantuanRoute
+  '/bumdes': typeof BumdesRoute
+  '/demografi-pekerjaan': typeof DemografiPekerjaanRoute
+  '/jenna-analytic': typeof JennaAnalyticRoute
+  '/keamanan': typeof KeamananRoute
+  '/keuangan-anggaran': typeof KeuanganAnggaranRoute
+  '/kinerja-divisi': typeof KinerjaDivisiRoute
+  '/pengaduan-layanan-publik': typeof PengaduanLayananPublikRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
-  '/dashboard/pengaturan': typeof DashboardPengaturanRouteRouteWithChildren
+  '/sosial': typeof SosialRoute
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
-  '/dashboard/bantuan': typeof DashboardBantuanRoute
-  '/dashboard/bumdes': typeof DashboardBumdesRoute
-  '/dashboard/demografi-pekerjaan': typeof DashboardDemografiPekerjaanRoute
-  '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
-  '/dashboard/keamanan': typeof DashboardKeamananRoute
-  '/dashboard/keuangan-anggaran': typeof DashboardKeuanganAnggaranRoute
-  '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
-  '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
-  '/dashboard/sosial': typeof DashboardSosialRoute
+  '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
+  '/pengaturan/keamanan': typeof PengaturanKeamananRoute
+  '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
+  '/pengaturan/umum': typeof PengaturanUmumRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin': typeof AdminIndexRoute
-  '/dashboard': typeof DashboardIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/users': typeof UsersIndexRoute
-  '/dashboard/pengaturan/akses-dan-tim': typeof DashboardPengaturanAksesDanTimRoute
-  '/dashboard/pengaturan/keamanan': typeof DashboardPengaturanKeamananRoute
-  '/dashboard/pengaturan/notifikasi': typeof DashboardPengaturanNotifikasiRoute
-  '/dashboard/pengaturan/umum': typeof DashboardPengaturanUmumRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
-  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/pengaturan': typeof PengaturanRouteRouteWithChildren
+  '/bantuan': typeof BantuanRoute
+  '/bumdes': typeof BumdesRoute
+  '/demografi-pekerjaan': typeof DemografiPekerjaanRoute
+  '/jenna-analytic': typeof JennaAnalyticRoute
+  '/keamanan': typeof KeamananRoute
+  '/keuangan-anggaran': typeof KeuanganAnggaranRoute
+  '/kinerja-divisi': typeof KinerjaDivisiRoute
+  '/pengaduan-layanan-publik': typeof PengaduanLayananPublikRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
-  '/dashboard/pengaturan': typeof DashboardPengaturanRouteRouteWithChildren
+  '/sosial': typeof SosialRoute
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
-  '/dashboard/bantuan': typeof DashboardBantuanRoute
-  '/dashboard/bumdes': typeof DashboardBumdesRoute
-  '/dashboard/demografi-pekerjaan': typeof DashboardDemografiPekerjaanRoute
-  '/dashboard/jenna-analytic': typeof DashboardJennaAnalyticRoute
-  '/dashboard/keamanan': typeof DashboardKeamananRoute
-  '/dashboard/keuangan-anggaran': typeof DashboardKeuanganAnggaranRoute
-  '/dashboard/kinerja-divisi': typeof DashboardKinerjaDivisiRoute
-  '/dashboard/pengaduan-layanan-publik': typeof DashboardPengaduanLayananPublikRoute
-  '/dashboard/sosial': typeof DashboardSosialRoute
+  '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
+  '/pengaturan/keamanan': typeof PengaturanKeamananRoute
+  '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
+  '/pengaturan/umum': typeof PengaturanUmumRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin/': typeof AdminIndexRoute
-  '/dashboard/': typeof DashboardIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/users/': typeof UsersIndexRoute
-  '/dashboard/pengaturan/akses-dan-tim': typeof DashboardPengaturanAksesDanTimRoute
-  '/dashboard/pengaturan/keamanan': typeof DashboardPengaturanKeamananRoute
-  '/dashboard/pengaturan/notifikasi': typeof DashboardPengaturanNotifikasiRoute
-  '/dashboard/pengaturan/umum': typeof DashboardPengaturanUmumRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
-    | '/dashboard'
+    | '/pengaturan'
+    | '/bantuan'
+    | '/bumdes'
+    | '/demografi-pekerjaan'
+    | '/jenna-analytic'
+    | '/keamanan'
+    | '/keuangan-anggaran'
+    | '/kinerja-divisi'
+    | '/pengaduan-layanan-publik'
     | '/signin'
     | '/signup'
-    | '/dashboard/pengaturan'
+    | '/sosial'
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
-    | '/dashboard/bantuan'
-    | '/dashboard/bumdes'
-    | '/dashboard/demografi-pekerjaan'
-    | '/dashboard/jenna-analytic'
-    | '/dashboard/keamanan'
-    | '/dashboard/keuangan-anggaran'
-    | '/dashboard/kinerja-divisi'
-    | '/dashboard/pengaduan-layanan-publik'
-    | '/dashboard/sosial'
+    | '/pengaturan/akses-dan-tim'
+    | '/pengaturan/keamanan'
+    | '/pengaturan/notifikasi'
+    | '/pengaturan/umum'
     | '/profile/edit'
     | '/users/$id'
     | '/admin/'
-    | '/dashboard/'
     | '/profile/'
     | '/users/'
-    | '/dashboard/pengaturan/akses-dan-tim'
-    | '/dashboard/pengaturan/keamanan'
-    | '/dashboard/pengaturan/notifikasi'
-    | '/dashboard/pengaturan/umum'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/pengaturan'
+    | '/bantuan'
+    | '/bumdes'
+    | '/demografi-pekerjaan'
+    | '/jenna-analytic'
+    | '/keamanan'
+    | '/keuangan-anggaran'
+    | '/kinerja-divisi'
+    | '/pengaduan-layanan-publik'
     | '/signin'
     | '/signup'
-    | '/dashboard/pengaturan'
+    | '/sosial'
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
-    | '/dashboard/bantuan'
-    | '/dashboard/bumdes'
-    | '/dashboard/demografi-pekerjaan'
-    | '/dashboard/jenna-analytic'
-    | '/dashboard/keamanan'
-    | '/dashboard/keuangan-anggaran'
-    | '/dashboard/kinerja-divisi'
-    | '/dashboard/pengaduan-layanan-publik'
-    | '/dashboard/sosial'
+    | '/pengaturan/akses-dan-tim'
+    | '/pengaturan/keamanan'
+    | '/pengaturan/notifikasi'
+    | '/pengaturan/umum'
     | '/profile/edit'
     | '/users/$id'
     | '/admin'
-    | '/dashboard'
     | '/profile'
     | '/users'
-    | '/dashboard/pengaturan/akses-dan-tim'
-    | '/dashboard/pengaturan/keamanan'
-    | '/dashboard/pengaturan/notifikasi'
-    | '/dashboard/pengaturan/umum'
   id:
     | '__root__'
     | '/'
     | '/admin'
-    | '/dashboard'
+    | '/pengaturan'
+    | '/bantuan'
+    | '/bumdes'
+    | '/demografi-pekerjaan'
+    | '/jenna-analytic'
+    | '/keamanan'
+    | '/keuangan-anggaran'
+    | '/kinerja-divisi'
+    | '/pengaduan-layanan-publik'
     | '/signin'
     | '/signup'
-    | '/dashboard/pengaturan'
+    | '/sosial'
     | '/admin/apikey'
     | '/admin/settings'
     | '/admin/users'
-    | '/dashboard/bantuan'
-    | '/dashboard/bumdes'
-    | '/dashboard/demografi-pekerjaan'
-    | '/dashboard/jenna-analytic'
-    | '/dashboard/keamanan'
-    | '/dashboard/keuangan-anggaran'
-    | '/dashboard/kinerja-divisi'
-    | '/dashboard/pengaduan-layanan-publik'
-    | '/dashboard/sosial'
+    | '/pengaturan/akses-dan-tim'
+    | '/pengaturan/keamanan'
+    | '/pengaturan/notifikasi'
+    | '/pengaturan/umum'
     | '/profile/edit'
     | '/users/$id'
     | '/admin/'
-    | '/dashboard/'
     | '/profile/'
     | '/users/'
-    | '/dashboard/pengaturan/akses-dan-tim'
-    | '/dashboard/pengaturan/keamanan'
-    | '/dashboard/pengaturan/notifikasi'
-    | '/dashboard/pengaturan/umum'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
-  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  PengaturanRouteRoute: typeof PengaturanRouteRouteWithChildren
+  BantuanRoute: typeof BantuanRoute
+  BumdesRoute: typeof BumdesRoute
+  DemografiPekerjaanRoute: typeof DemografiPekerjaanRoute
+  JennaAnalyticRoute: typeof JennaAnalyticRoute
+  KeamananRoute: typeof KeamananRoute
+  KeuanganAnggaranRoute: typeof KeuanganAnggaranRoute
+  KinerjaDivisiRoute: typeof KinerjaDivisiRoute
+  PengaduanLayananPublikRoute: typeof PengaduanLayananPublikRoute
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
+  SosialRoute: typeof SosialRoute
   ProfileEditRoute: typeof ProfileEditRoute
   UsersIdRoute: typeof UsersIdRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
@@ -380,6 +360,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sosial': {
+      id: '/sosial'
+      path: '/sosial'
+      fullPath: '/sosial'
+      preLoaderRoute: typeof SosialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -394,11 +381,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteRouteImport
+    '/pengaduan-layanan-publik': {
+      id: '/pengaduan-layanan-publik'
+      path: '/pengaduan-layanan-publik'
+      fullPath: '/pengaduan-layanan-publik'
+      preLoaderRoute: typeof PengaduanLayananPublikRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kinerja-divisi': {
+      id: '/kinerja-divisi'
+      path: '/kinerja-divisi'
+      fullPath: '/kinerja-divisi'
+      preLoaderRoute: typeof KinerjaDivisiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/keuangan-anggaran': {
+      id: '/keuangan-anggaran'
+      path: '/keuangan-anggaran'
+      fullPath: '/keuangan-anggaran'
+      preLoaderRoute: typeof KeuanganAnggaranRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/keamanan': {
+      id: '/keamanan'
+      path: '/keamanan'
+      fullPath: '/keamanan'
+      preLoaderRoute: typeof KeamananRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jenna-analytic': {
+      id: '/jenna-analytic'
+      path: '/jenna-analytic'
+      fullPath: '/jenna-analytic'
+      preLoaderRoute: typeof JennaAnalyticRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demografi-pekerjaan': {
+      id: '/demografi-pekerjaan'
+      path: '/demografi-pekerjaan'
+      fullPath: '/demografi-pekerjaan'
+      preLoaderRoute: typeof DemografiPekerjaanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bumdes': {
+      id: '/bumdes'
+      path: '/bumdes'
+      fullPath: '/bumdes'
+      preLoaderRoute: typeof BumdesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bantuan': {
+      id: '/bantuan'
+      path: '/bantuan'
+      fullPath: '/bantuan'
+      preLoaderRoute: typeof BantuanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pengaturan': {
+      id: '/pengaturan'
+      path: '/pengaturan'
+      fullPath: '/pengaturan'
+      preLoaderRoute: typeof PengaturanRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -429,13 +472,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -457,68 +493,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileEditRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/sosial': {
-      id: '/dashboard/sosial'
-      path: '/sosial'
-      fullPath: '/dashboard/sosial'
-      preLoaderRoute: typeof DashboardSosialRouteImport
-      parentRoute: typeof DashboardRouteRoute
+    '/pengaturan/umum': {
+      id: '/pengaturan/umum'
+      path: '/umum'
+      fullPath: '/pengaturan/umum'
+      preLoaderRoute: typeof PengaturanUmumRouteImport
+      parentRoute: typeof PengaturanRouteRoute
     }
-    '/dashboard/pengaduan-layanan-publik': {
-      id: '/dashboard/pengaduan-layanan-publik'
-      path: '/pengaduan-layanan-publik'
-      fullPath: '/dashboard/pengaduan-layanan-publik'
-      preLoaderRoute: typeof DashboardPengaduanLayananPublikRouteImport
-      parentRoute: typeof DashboardRouteRoute
+    '/pengaturan/notifikasi': {
+      id: '/pengaturan/notifikasi'
+      path: '/notifikasi'
+      fullPath: '/pengaturan/notifikasi'
+      preLoaderRoute: typeof PengaturanNotifikasiRouteImport
+      parentRoute: typeof PengaturanRouteRoute
     }
-    '/dashboard/kinerja-divisi': {
-      id: '/dashboard/kinerja-divisi'
-      path: '/kinerja-divisi'
-      fullPath: '/dashboard/kinerja-divisi'
-      preLoaderRoute: typeof DashboardKinerjaDivisiRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/keuangan-anggaran': {
-      id: '/dashboard/keuangan-anggaran'
-      path: '/keuangan-anggaran'
-      fullPath: '/dashboard/keuangan-anggaran'
-      preLoaderRoute: typeof DashboardKeuanganAnggaranRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/keamanan': {
-      id: '/dashboard/keamanan'
+    '/pengaturan/keamanan': {
+      id: '/pengaturan/keamanan'
       path: '/keamanan'
-      fullPath: '/dashboard/keamanan'
-      preLoaderRoute: typeof DashboardKeamananRouteImport
-      parentRoute: typeof DashboardRouteRoute
+      fullPath: '/pengaturan/keamanan'
+      preLoaderRoute: typeof PengaturanKeamananRouteImport
+      parentRoute: typeof PengaturanRouteRoute
     }
-    '/dashboard/jenna-analytic': {
-      id: '/dashboard/jenna-analytic'
-      path: '/jenna-analytic'
-      fullPath: '/dashboard/jenna-analytic'
-      preLoaderRoute: typeof DashboardJennaAnalyticRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/demografi-pekerjaan': {
-      id: '/dashboard/demografi-pekerjaan'
-      path: '/demografi-pekerjaan'
-      fullPath: '/dashboard/demografi-pekerjaan'
-      preLoaderRoute: typeof DashboardDemografiPekerjaanRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/bumdes': {
-      id: '/dashboard/bumdes'
-      path: '/bumdes'
-      fullPath: '/dashboard/bumdes'
-      preLoaderRoute: typeof DashboardBumdesRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/bantuan': {
-      id: '/dashboard/bantuan'
-      path: '/bantuan'
-      fullPath: '/dashboard/bantuan'
-      preLoaderRoute: typeof DashboardBantuanRouteImport
-      parentRoute: typeof DashboardRouteRoute
+    '/pengaturan/akses-dan-tim': {
+      id: '/pengaturan/akses-dan-tim'
+      path: '/akses-dan-tim'
+      fullPath: '/pengaturan/akses-dan-tim'
+      preLoaderRoute: typeof PengaturanAksesDanTimRouteImport
+      parentRoute: typeof PengaturanRouteRoute
     }
     '/admin/users': {
       id: '/admin/users'
@@ -541,41 +542,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminApikeyRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/dashboard/pengaturan': {
-      id: '/dashboard/pengaturan'
-      path: '/pengaturan'
-      fullPath: '/dashboard/pengaturan'
-      preLoaderRoute: typeof DashboardPengaturanRouteRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/pengaturan/umum': {
-      id: '/dashboard/pengaturan/umum'
-      path: '/umum'
-      fullPath: '/dashboard/pengaturan/umum'
-      preLoaderRoute: typeof DashboardPengaturanUmumRouteImport
-      parentRoute: typeof DashboardPengaturanRouteRoute
-    }
-    '/dashboard/pengaturan/notifikasi': {
-      id: '/dashboard/pengaturan/notifikasi'
-      path: '/notifikasi'
-      fullPath: '/dashboard/pengaturan/notifikasi'
-      preLoaderRoute: typeof DashboardPengaturanNotifikasiRouteImport
-      parentRoute: typeof DashboardPengaturanRouteRoute
-    }
-    '/dashboard/pengaturan/keamanan': {
-      id: '/dashboard/pengaturan/keamanan'
-      path: '/keamanan'
-      fullPath: '/dashboard/pengaturan/keamanan'
-      preLoaderRoute: typeof DashboardPengaturanKeamananRouteImport
-      parentRoute: typeof DashboardPengaturanRouteRoute
-    }
-    '/dashboard/pengaturan/akses-dan-tim': {
-      id: '/dashboard/pengaturan/akses-dan-tim'
-      path: '/akses-dan-tim'
-      fullPath: '/dashboard/pengaturan/akses-dan-tim'
-      preLoaderRoute: typeof DashboardPengaturanAksesDanTimRouteImport
-      parentRoute: typeof DashboardPengaturanRouteRoute
-    }
   }
 }
 
@@ -597,64 +563,39 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
   AdminRouteRouteChildren,
 )
 
-interface DashboardPengaturanRouteRouteChildren {
-  DashboardPengaturanAksesDanTimRoute: typeof DashboardPengaturanAksesDanTimRoute
-  DashboardPengaturanKeamananRoute: typeof DashboardPengaturanKeamananRoute
-  DashboardPengaturanNotifikasiRoute: typeof DashboardPengaturanNotifikasiRoute
-  DashboardPengaturanUmumRoute: typeof DashboardPengaturanUmumRoute
+interface PengaturanRouteRouteChildren {
+  PengaturanAksesDanTimRoute: typeof PengaturanAksesDanTimRoute
+  PengaturanKeamananRoute: typeof PengaturanKeamananRoute
+  PengaturanNotifikasiRoute: typeof PengaturanNotifikasiRoute
+  PengaturanUmumRoute: typeof PengaturanUmumRoute
 }
 
-const DashboardPengaturanRouteRouteChildren: DashboardPengaturanRouteRouteChildren =
-  {
-    DashboardPengaturanAksesDanTimRoute: DashboardPengaturanAksesDanTimRoute,
-    DashboardPengaturanKeamananRoute: DashboardPengaturanKeamananRoute,
-    DashboardPengaturanNotifikasiRoute: DashboardPengaturanNotifikasiRoute,
-    DashboardPengaturanUmumRoute: DashboardPengaturanUmumRoute,
-  }
-
-const DashboardPengaturanRouteRouteWithChildren =
-  DashboardPengaturanRouteRoute._addFileChildren(
-    DashboardPengaturanRouteRouteChildren,
-  )
-
-interface DashboardRouteRouteChildren {
-  DashboardPengaturanRouteRoute: typeof DashboardPengaturanRouteRouteWithChildren
-  DashboardBantuanRoute: typeof DashboardBantuanRoute
-  DashboardBumdesRoute: typeof DashboardBumdesRoute
-  DashboardDemografiPekerjaanRoute: typeof DashboardDemografiPekerjaanRoute
-  DashboardJennaAnalyticRoute: typeof DashboardJennaAnalyticRoute
-  DashboardKeamananRoute: typeof DashboardKeamananRoute
-  DashboardKeuanganAnggaranRoute: typeof DashboardKeuanganAnggaranRoute
-  DashboardKinerjaDivisiRoute: typeof DashboardKinerjaDivisiRoute
-  DashboardPengaduanLayananPublikRoute: typeof DashboardPengaduanLayananPublikRoute
-  DashboardSosialRoute: typeof DashboardSosialRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
+const PengaturanRouteRouteChildren: PengaturanRouteRouteChildren = {
+  PengaturanAksesDanTimRoute: PengaturanAksesDanTimRoute,
+  PengaturanKeamananRoute: PengaturanKeamananRoute,
+  PengaturanNotifikasiRoute: PengaturanNotifikasiRoute,
+  PengaturanUmumRoute: PengaturanUmumRoute,
 }
 
-const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
-  DashboardPengaturanRouteRoute: DashboardPengaturanRouteRouteWithChildren,
-  DashboardBantuanRoute: DashboardBantuanRoute,
-  DashboardBumdesRoute: DashboardBumdesRoute,
-  DashboardDemografiPekerjaanRoute: DashboardDemografiPekerjaanRoute,
-  DashboardJennaAnalyticRoute: DashboardJennaAnalyticRoute,
-  DashboardKeamananRoute: DashboardKeamananRoute,
-  DashboardKeuanganAnggaranRoute: DashboardKeuanganAnggaranRoute,
-  DashboardKinerjaDivisiRoute: DashboardKinerjaDivisiRoute,
-  DashboardPengaduanLayananPublikRoute: DashboardPengaduanLayananPublikRoute,
-  DashboardSosialRoute: DashboardSosialRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
-}
-
-const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
-  DashboardRouteRouteChildren,
+const PengaturanRouteRouteWithChildren = PengaturanRouteRoute._addFileChildren(
+  PengaturanRouteRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
-  DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  PengaturanRouteRoute: PengaturanRouteRouteWithChildren,
+  BantuanRoute: BantuanRoute,
+  BumdesRoute: BumdesRoute,
+  DemografiPekerjaanRoute: DemografiPekerjaanRoute,
+  JennaAnalyticRoute: JennaAnalyticRoute,
+  KeamananRoute: KeamananRoute,
+  KeuanganAnggaranRoute: KeuanganAnggaranRoute,
+  KinerjaDivisiRoute: KinerjaDivisiRoute,
+  PengaduanLayananPublikRoute: PengaduanLayananPublikRoute,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
+  SosialRoute: SosialRoute,
   ProfileEditRoute: ProfileEditRoute,
   UsersIdRoute: UsersIdRoute,
   ProfileIndexRoute: ProfileIndexRoute,

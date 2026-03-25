@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "bun run gen:api && REACT_EDITOR=antigravity bun --hot src/index.ts",
+		"dev": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true; bun run gen:api && REACT_EDITOR=antigravity bun --hot src/index.ts",
 		"lint": "biome check .",
 		"check": "biome check --write .",
 		"format": "biome format --write .",
@@ -12,7 +12,7 @@
 		"test": "bun test __tests__/api",
 		"test:ui": "bun test --ui __tests__/api",
 		"test:e2e": "bun run build && playwright test",
-		"build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='VITE_*'",
+		"build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='VITE_*' && cp -r public/* dist/ 2>/dev/null || true",
 		"start": "NODE_ENV=production bun src/index.ts",
 		"seed": "bun prisma/seed.ts"
 	},
@@ -59,6 +59,7 @@
 		"@tabler/icons-react": "^3.36.1",
 		"@tailwindcss/vite": "^4.1.18",
 		"@tanstack/react-router": "^1.158.1",
+		"bcryptjs": "^3.0.3",
 		"better-auth": "^1.4.18",
 		"class-variance-authority": "^0.7.1",
 		"cmdk": "^1.0.1",
@@ -92,6 +93,7 @@
 		"@tanstack/react-router-devtools": "^1.158.1",
 		"@tanstack/router-cli": "1.158.1",
 		"@tanstack/router-vite-plugin": "^1.158.1",
+		"@types/bcryptjs": "^3.0.0",
 		"@types/bun": "latest",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",

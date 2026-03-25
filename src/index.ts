@@ -6,7 +6,21 @@ import { Elysia } from "elysia";
 import api from "./api";
 import { openInEditor } from "./utils/open-in-editor";
 
+const PORT = process.env.PORT || 3000;
+
 const isProduction = process.env.NODE_ENV === "production";
+
+// Auto-seed database in production (ensure admin user exists)
+if (isProduction && process.env.ADMIN_EMAIL) {
+	try {
+		console.log("🌱 Running database seed in production...");
+		const { runSeed } = await import("../prisma/seed.ts");
+		await runSeed();
+	} catch (error) {
+		console.error("⚠️ Production seed failed:", error);
+		// Don't crash the server if seed fails
+	}
+}
 
 const app = new Elysia().use(api);
 
@@ -81,10 +95,25 @@ if (!isProduction) {
 				getHeader(name: string) {
 					return this.headers[name.toLowerCase()];
 				},
+				writeHead(code: number, headers: Record<string, string>) {
+					this.statusCode = code;
+					Object.assign(this.headers, headers);
+				},
+				write(chunk: any, callback?: () => void) {
+					// Collect chunks for streaming responses
+					if (!this._chunks) this._chunks = [];
+					this._chunks.push(chunk);
+					if (callback) callback();
+					return true; // Indicate we can accept more data
+				},
 				headers: {} as Record<string, string>,
 				end(data: any) {
 					// Handle potential Buffer or string data from Vite
 					let body = data;
+					// If we have collected chunks from write() calls, combine them
+					if (this._chunks && this._chunks.length > 0) {
+						body = Buffer.concat(this._chunks);
+					}
 					if (data instanceof Uint8Array) {
 						body = data;
 					} else if (typeof data === "string") {
@@ -144,6 +173,11 @@ if (!isProduction) {
 			if (fs.existsSync(srcPath)) {
 				filePath = srcPath;
 			}
+			// Check public folder for static assets
+			const publicPath = path.join("public", pathname);
+			if (fs.existsSync(publicPath)) {
+				filePath = publicPath;
+			}
 		}
 
 		// 2. If not found and looks like an asset (has extension), try root of dist or src
@@ -159,8 +193,18 @@ if (!isProduction) {
 				) {
 					filePath = fallbackDistPath;
 				}
+				// Try public folder
+				else {
+					const fallbackPublicPath = path.join("public", filename);
+					if (
+						fs.existsSync(fallbackPublicPath) &&
+						fs.statSync(fallbackPublicPath).isFile()
+					) {
+						filePath = fallbackPublicPath;
+					}
+				}
 				// Special handling for PWA files in src
-				else if (pathname.includes("assetlinks.json")) {
+				if (pathname.includes("assetlinks.json")) {
 					const srcFilename = pathname.includes("assetlinks.json")
 						? ".well-known/assetlinks.json"
 						: filename;
@@ -198,10 +242,10 @@ if (!isProduction) {
 	});
 }
 
-app.listen(3000);
+app.listen(PORT);
 
 console.log(
-	`🚀 Server running at http://localhost:3000 in ${isProduction ? "production" : "development"} mode`,
+	`🚀 Server running at http://localhost:${PORT} in ${isProduction ? "production" : "development"} mode`,
 );
 
 export type ApiApp = typeof app;

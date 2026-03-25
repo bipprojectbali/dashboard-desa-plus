@@ -1,57 +1,65 @@
-import { Card, Title, Text, Space, Button, Group, Alert, PasswordInput, Switch, useMantineColorScheme } from '@mantine/core';
-import { IconInfoCircle, IconLock } from '@tabler/icons-react';
+import { Box, Button, Group, Stack, Switch, Text, Title } from "@mantine/core";
 
 const KeamananSettings = () => {
-  const { colorScheme } = useMantineColorScheme();
-  const dark = colorScheme === 'dark';
-  return (
-    <Card withBorder radius="md" p="xl" bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
-      <Title order={2} mb="lg">Pengaturan Keamanan</Title>
-      <Text color="dimmed" mb="xl">Kelola keamanan akun Anda</Text>
-
-      <Space h="lg" />
-
-      <PasswordInput
-        label="Kata Sandi Saat Ini"
-        placeholder="Masukkan kata sandi saat ini"
-        mb="md"
-      />
-
-      <PasswordInput
-        label="Kata Sandi Baru"
-        placeholder="Masukkan kata sandi baru"
-        mb="md"
-      />
-
-      <PasswordInput
-        label="Konfirmasi Kata Sandi Baru"
-        placeholder="Konfirmasi kata sandi baru"
-        mb="md"
-      />
-
-      <Space h="md" />
-
-      <Group mb="md">
-        <Switch label="Verifikasi Dua Langkah" />
-        <Switch label="Login Otentikasi Aplikasi" />
-      </Group>
-
-      <Space h="md" />
-
-      <Alert icon={<IconLock size={16} />} title="Keamanan" color="orange" mb="md">
-        Gunakan kata sandi yang kuat dan unik. Hindari menggunakan kata sandi yang sama di banyak layanan.
-      </Alert>
-
-      <Alert icon={<IconInfoCircle size={16} />} title="Informasi" color="blue" mb="md">
-        Setelah mengganti kata sandi, Anda akan diminta logout dari semua perangkat.
-      </Alert>
-
-      <Group justify="flex-end" mt="xl">
-        <Button variant="outline">Batal</Button>
-        <Button>Perbarui Kata Sandi</Button>
-      </Group>
-    </Card>
-  );
+	return (
+		<Stack pr={"50%"} gap={"xl"}>
+			<Box>
+				<Stack gap={"xs"}>
+					<Title order={2}>Autentikasi</Title>
+					<Group mb="md" justify="space-between">
+						<Text fw={"bold"} fz={"sm"}>
+							Two-Factor Authentication
+						</Text>
+						<Switch defaultChecked />
+					</Group>
+					<Group mb="md" justify="space-between">
+						<Text fw={"bold"} fz={"sm"}>
+							Biometrik Login
+						</Text>
+						<Switch defaultChecked />
+					</Group>
+					<Group mb="md" justify="space-between">
+						<Text fw={"bold"} fz={"sm"}>
+							IP Whitelist
+						</Text>
+						<Switch defaultChecked />
+					</Group>
+				</Stack>
+			</Box>
+			<Box>
+				<Stack gap={"xs"}>
+					<Title order={2}>Password</Title>
+					<Button bg={"#1E3A5F"} radius={"md"} c={"white"} fullWidth>
+						Ubah Password
+					</Button>
+					<Button bg={"#1E3A5F"} radius={"md"} c={"white"} fullWidth>
+						Riwayat Login
+					</Button>
+					<Button bg={"#1E3A5F"} radius={"md"} c={"white"} fullWidth>
+						Perangkat Terdaftar
+					</Button>
+				</Stack>
+			</Box>
+			<Box>
+				<Stack gap={"xs"}>
+					<Title order={2}>Audit & Log</Title>
+					<Group mb="md" justify="space-between">
+						<Text fw={"bold"} fz={"sm"}>
+							Log Aktivitas
+						</Text>
+						<Switch defaultChecked />
+					</Group>
+					<Button bg={"#1E3A5F"} radius={"md"} c={"white"} fullWidth>
+						Download Log
+					</Button>
+				</Stack>
+			</Box>
+			<Group justify="flex-start" mt="xl">
+				<Button variant="outline">Batal</Button>
+				<Button>Simpan Perubahan</Button>
+			</Group>
+		</Stack>
+	);
 };
 
 export default KeamananSettings;

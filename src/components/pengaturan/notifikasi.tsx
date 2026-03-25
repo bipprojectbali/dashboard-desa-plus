@@ -1,55 +1,121 @@
-import { Card, Title, Text, Space, Switch, Group, Alert, Checkbox, Button, useMantineColorScheme } from '@mantine/core';
-import { IconInfoCircle } from '@tabler/icons-react';
+import {
+	Alert,
+	Box,
+	Button,
+	Card,
+	Checkbox,
+	Grid,
+	GridCol,
+	Group,
+	Space,
+	Stack,
+	Switch,
+	Text,
+	Title,
+	useMantineColorScheme,
+} from "@mantine/core";
+import { IconInfoCircle } from "@tabler/icons-react";
 
 const NotifikasiSettings = () => {
-  const { colorScheme } = useMantineColorScheme();
-  const dark = colorScheme === 'dark';
-  return (
-    <Card withBorder radius="md" p="xl" bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
-      <Title order={2} mb="lg">Pengaturan Notifikasi</Title>
-      <Text color="dimmed" mb="xl">Kelola preferensi notifikasi Anda</Text>
-
-      <Space h="lg" />
-
-      <Checkbox.Group defaultValue={['email', 'push']} mb="md">
-        <Title order={4} mb="sm">Metode Notifikasi</Title>
-        <Group>
-          <Checkbox value="email" label="Email" />
-          <Checkbox value="push" label="Notifikasi Push" />
-          <Checkbox value="sms" label="SMS" />
-        </Group>
-      </Checkbox.Group>
-
-      <Space h="md" />
-
-      <Group mb="md">
-        <Switch label="Notifikasi Email" defaultChecked />
-        <Switch label="Notifikasi Push" defaultChecked />
-      </Group>
-
-      <Space h="md" />
-
-      <Title order={4} mb="sm">Jenis Notifikasi</Title>
-      <Group align="start">
-        <Switch label="Pengaduan Baru" defaultChecked />
-        <Switch label="Update Status Pengaduan" defaultChecked />
-        <Switch label="Laporan Mingguan" />
-        <Switch label="Pemberitahuan Keamanan" defaultChecked />
-        <Switch label="Aktivitas Akun" defaultChecked />
-      </Group>
-
-      <Space h="md" />
-
-      <Alert icon={<IconInfoCircle size={16} />} title="Tip" color="blue" mb="md">
-        Anda dapat menyesuaikan frekuensi notifikasi mingguan sesuai kebutuhan Anda.
-      </Alert>
-
-      <Group justify="flex-end" mt="xl">
-        <Button variant="outline">Batal</Button>
-        <Button>Simpan Preferensi</Button>
-      </Group>
-    </Card>
-  );
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
+	return (
+		<Stack pr={"20%"} gap={"xs"}>
+			<Grid gutter={{ base: 5, xs: "md", md: "xl", xl: 50 }}>
+				<GridCol span={6}>
+					<Stack gap={"xs"}>
+						<Title order={3} mb="sm">
+							Metode Notifikasi
+						</Title>
+						<Group mb="md" justify="space-between">
+							<Text fw={"bold"} fz={"sm"}>
+								Laporan Harian
+							</Text>
+							<Switch defaultChecked />
+						</Group>
+						<Group mb="md" justify="space-between">
+							<Text fw={"bold"} fz={"sm"}>
+								Alert Sistem
+							</Text>
+							<Switch defaultChecked />
+						</Group>
+						<Group mb="md" justify="space-between">
+							<Text fw={"bold"} fz={"sm"}>
+								Update Keamanan
+							</Text>
+							<Switch defaultChecked />
+						</Group>
+						<Group mb="md" justify="space-between">
+							<Text fw={"bold"} fz={"sm"}>
+								Newsletter Bulanan
+							</Text>
+							<Switch defaultChecked />
+						</Group>
+					</Stack>
+				</GridCol>
+				<GridCol span={6}>
+					<Stack gap={"xs"}>
+						<Title order={3} mb="sm">
+							Preferensi Alert
+						</Title>
+						<Group mb="md" justify="space-between">
+							<Text fw={"bold"} fz={"sm"}>
+								Treshold Memori
+							</Text>
+							<Switch defaultChecked />
+						</Group>
+						<Group mb="md" justify="space-between">
+							<Text fw={"bold"} fz={"sm"}>
+								Treshold CPU
+							</Text>
+							<Switch defaultChecked />
+						</Group>
+						<Group mb="md" justify="space-between">
+							<Text fw={"bold"} fz={"sm"}>
+								Treshold Disk
+							</Text>
+							<Switch defaultChecked />
+						</Group>
+					</Stack>
+				</GridCol>
+				<GridCol span={6}>
+					<Stack gap={"xs"}>
+						<Title order={3} mb="sm">
+							Notifikasi Push
+						</Title>
+						<Group mb="md" justify="space-between">
+							<Text fw={"bold"} fz={"sm"}>
+								Alert Kritis
+							</Text>
+							<Switch defaultChecked />
+						</Group>
+						<Group mb="md" justify="space-between">
+							<Text fw={"bold"} fz={"sm"}>
+								Aktivitas Tim
+							</Text>
+							<Switch defaultChecked />
+						</Group>
+						<Group mb="md" justify="space-between">
+							<Text fw={"bold"} fz={"sm"}>
+								Komentar & Mention
+							</Text>
+							<Switch defaultChecked />
+						</Group>
+						<Group mb="md" justify="space-between">
+							<Text fw={"bold"} fz={"sm"}>
+								Bunyi Notifikasi
+							</Text>
+							<Switch defaultChecked />
+						</Group>
+					</Stack>
+				</GridCol>
+			</Grid>
+			<Group justify="flex-start" mt="xl">
+				<Button variant="outline">Batal</Button>
+				<Button>Simpan Preferensi</Button>
+			</Group>
+		</Stack>
+	);
 };
 
 export default NotifikasiSettings;

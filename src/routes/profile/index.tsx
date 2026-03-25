@@ -41,10 +41,6 @@ import { authStore } from "../../store/auth";
 export const Route = createFileRoute("/profile/")({
 	component: Profile,
 	beforeLoad: protectedRouteMiddleware,
-	onEnter({ context }) {
-		authStore.user = context?.user as any;
-		authStore.session = context?.session as any;
-	},
 });
 
 function Profile() {

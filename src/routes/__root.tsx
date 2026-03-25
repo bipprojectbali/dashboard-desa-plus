@@ -7,10 +7,16 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
 	component: RootComponent,
-	beforeLoad: protectedRouteMiddleware,
-	onEnter({ context }) {
-		authStore.user = context?.user as any;
-		authStore.session = context?.session as any;
+	beforeLoad: async ({ location }) => {
+		// Apply protected route middleware for all routes
+		// The middleware will determine which routes are public vs protected
+		const context = await protectedRouteMiddleware({ location });
+		
+		// Only set auth store if we have user data (for protected routes)
+		if (context?.user) {
+			authStore.user = context?.user as any;
+			authStore.session = context?.session as any;
+		}
 	},
 });
 

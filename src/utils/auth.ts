@@ -1,15 +1,10 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "../../generated/prisma";
-import logger from "./logger";
+import { VITE_PUBLIC_URL } from "./env";
 
-const baseUrl = process.env.VITE_PUBLIC_URL;
+const baseUrl = VITE_PUBLIC_URL;
 const prisma = new PrismaClient();
-
-if (!baseUrl) {
-	logger.error("VITE_PUBLIC_URL is not defined");
-	throw new Error("VITE_PUBLIC_URL is not defined");
-}
 
 // logger.info('Initializing Better Auth with Prisma adapter');
 export const auth = betterAuth({
@@ -26,6 +21,7 @@ export const auth = betterAuth({
 			clientId: process.env.GITHUB_CLIENT_ID || "CLIENT_ID_MISSING",
 			clientSecret: process.env.GITHUB_CLIENT_SECRET || "CLIENT_SECRET_MISSING",
 			enabled: true,
+			redirectURI: `${baseUrl}/api/auth/callback/github`,
 		},
 	},
 	user: {
@@ -37,8 +33,24 @@ export const auth = betterAuth({
 			},
 		},
 	},
+	databaseHooks: {
+		user: {
+			create: {
+				before: async (user) => {
+					if (user.email === process.env.ADMIN_EMAIL) {
+						return {
+							data: {
+								...user,
+								role: "admin",
+							},
+						};
+					}
+					return { data: user };
+				},
+			},
+		},
+	},
 	secret: process.env.BETTER_AUTH_SECRET,
-	trustedOrigins: ["http://localhost:5173", "http://localhost:3000"],
 	session: {
 		cookieCache: {
 			enabled: true,
@@ -48,5 +60,6 @@ export const auth = betterAuth({
 	},
 	advanced: {
 		cookiePrefix: "bun-react",
+		trustProxy: true,
 	},
 });

@@ -1,58 +1,82 @@
-import { Card, Title, Text, Space, TextInput, Select, Button, Group, Switch, Alert, useMantineColorScheme } from '@mantine/core';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { Box, Button, Group, Select, Switch, Text, Title } from "@mantine/core";
+import { DateInput } from "@mantine/dates";
 
 const UmumSettings = () => {
-  const { colorScheme } = useMantineColorScheme();
-  const dark = colorScheme === 'dark';
-  return (
-    <Card withBorder radius="md" p="xl" bg={dark ? "#141D34" : "white"} style={{ borderColor: dark ? "#141D34" : "white" }}>
-      <Title order={2} mb="lg">Pengaturan Umum</Title>
-      <Text color="dimmed" mb="xl">Kelola pengaturan umum aplikasi Anda</Text>
+	return (
+		<Box pr={"50%"}>
+			<Title order={2} mb="lg">
+				Preferensi Tampilan
+			</Title>
 
-      <Space h="lg" />
+			<Select
+				label="Bahasa Aplikasi"
+				data={[
+					{ value: "id", label: "Indonesia" },
+					{ value: "en", label: "English" },
+				]}
+				defaultValue="id"
+				mb="md"
+			/>
 
-      <TextInput
-        label="Nama Aplikasi"
-        placeholder="Masukkan nama aplikasi"
-        defaultValue="Dashboard Desa Plus"
-        mb="md"
-      />
+			<Select
+				label="Zona Waktu"
+				data={[
+					{ value: "Asia/Jakarta", label: "Asia/Jakarta (GMT+7)" },
+					{ value: "Asia/Makassar", label: "Asia/Makassar (GMT+8)" },
+					{ value: "Asia/Jayapura", label: "Asia/Jayapura (GMT+9)" },
+				]}
+				defaultValue="Asia/Jakarta"
+				mb="md"
+			/>
 
-      <Select
-        label="Bahasa Aplikasi"
-        data={[
-          { value: 'id', label: 'Indonesia' },
-          { value: 'en', label: 'English' },
-        ]}
-        defaultValue="id"
-        mb="md"
-      />
+			<DateInput label="Format Tanggal" mb={"xl"} />
 
-      <Select
-        label="Zona Waktu"
-        data={[
-          { value: 'Asia/Jakarta', label: 'Asia/Jakarta (GMT+7)' },
-          { value: 'Asia/Makassar', label: 'Asia/Makassar (GMT+8)' },
-          { value: 'Asia/Jayapura', label: 'Asia/Jayapura (GMT+9)' },
-        ]}
-        defaultValue="Asia/Jakarta"
-        mb="md"
-      />
+			<Title order={2} mb="lg">
+				Dashboard
+			</Title>
 
-      <Group mb="md">
-        <Switch label="Notifikasi Email" defaultChecked />
-      </Group>
+			<Group mb="md" justify="space-between">
+				<Text fw={"bold"} fz={"sm"}>
+					Refresh Otomatis
+				</Text>
+				<Switch defaultChecked />
+			</Group>
 
-      <Alert icon={<IconInfoCircle size={16} />} title="Informasi" color="blue" mb="md">
-        Beberapa pengaturan mungkin memerlukan restart aplikasi untuk diterapkan sepenuhnya.
-      </Alert>
+			<Group mb="md" justify="space-between">
+				<Text fw={"bold"} fz={"sm"}>
+					Interval Refresh
+				</Text>
+				<Select
+					data={[
+						{ value: "1", label: "30d" },
+						{ value: "2", label: "60d" },
+						{ value: "3", label: "90d" },
+					]}
+					defaultValue="1"
+					w={90}
+				/>
+			</Group>
 
-      <Group justify="flex-end" mt="xl">
-        <Button variant="outline">Batal</Button>
-        <Button>Simpan Perubahan</Button>
-      </Group>
-    </Card>
-  );
+			<Group mb="md" justify="space-between">
+				<Text fw={"bold"} fz={"sm"}>
+					Tampilkan Grid
+				</Text>
+				<Switch defaultChecked />
+			</Group>
+
+			<Group mb="md" justify="space-between">
+				<Text fw={"bold"} fz={"sm"}>
+					Animasi Transisi
+				</Text>
+				<Switch defaultChecked />
+			</Group>
+
+			<Group justify="flex-end" mt="xl">
+				<Button variant="outline">Batal</Button>
+				<Button>Simpan Perubahan</Button>
+			</Group>
+		</Box>
+	);
 };
 
 export default UmumSettings;
