@@ -52,8 +52,8 @@ export const HelpCard = ({
 						<div
 							style={{
 								backgroundColor: isDark
-									? theme.colors.blue[8]
-									: theme.colors.blue[0],
+									? "#263852ff"
+									: "#1E3A5F",
 								borderRadius: "8px",
 								padding: "8px",
 								display: "flex",

@@ -21,7 +21,7 @@ export const getEnv = (key: string, defaultValue = ""): string => {
 };
 
 export const VITE_PUBLIC_URL = (() => {
-	// Priority: 
+	// Priority:
 	// 1. BETTER_AUTH_URL (standard for better-auth)
 	// 2. VITE_PUBLIC_URL (our app standard)
 	// 3. window.location.origin (browser fallback)

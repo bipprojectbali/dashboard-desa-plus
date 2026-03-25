@@ -1,21 +1,27 @@
+import { AppShell, Burger, Group, useMantineColorScheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import {
-	AppShell,
-	Burger,
-	Group,
-	useMantineColorScheme,
-} from "@mantine/core";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
+	createFileRoute,
+	Outlet,
+	useRouterState,
+} from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
+import { useSidebarFullscreen } from "@/hooks/use-sidebar-fullscreen";
 
 export const Route = createFileRoute("/pengaturan")({
 	component: PengaturanLayout,
 });
 
 function PengaturanLayout() {
-	const [opened, { toggle, close }] = useDisclosure();
+	const {
+		opened,
+		toggleMobile,
+		sidebarCollapsed,
+		toggleSidebar,
+		handleMainClick,
+	} = useSidebarFullscreen();
 	const { colorScheme } = useMantineColorScheme();
 
 	const isMobile = useMediaQuery("(max-width: 48em)");
@@ -28,9 +34,9 @@ function PengaturanLayout() {
 	// Auto close navbar on route change (mobile only)
 	useEffect(() => {
 		if (isMobile && opened) {
-			close();
+			toggleMobile();
 		}
-	}, [routerState.location.pathname, isMobile, opened, close]);
+	}, [routerState.location.pathname, isMobile, opened, toggleMobile]);
 
 	return (
 		<AppShell
@@ -38,7 +44,7 @@ function PengaturanLayout() {
 			navbar={{
 				width: 300,
 				breakpoint: "sm",
-				collapsed: { mobile: !opened },
+				collapsed: { mobile: !opened, desktop: sidebarCollapsed },
 			}}
 			padding="md"
 		>
@@ -46,11 +52,11 @@ function PengaturanLayout() {
 				<Group h="100%" px="lg" align="center" wrap="nowrap">
 					<Burger
 						opened={opened}
-						onClick={toggle}
+						onClick={toggleMobile}
 						hiddenFrom="sm"
 						size="sm"
 					/>
-					<Header />
+					<Header onSidebarToggle={toggleSidebar} />
 				</Group>
 			</AppShell.Header>
 
@@ -64,7 +70,11 @@ function PengaturanLayout() {
 				</div>
 			</AppShell.Navbar>
 
-			<AppShell.Main bg={mainBgColor}>
+			<AppShell.Main
+				bg={mainBgColor}
+				onClick={handleMainClick}
+				style={{ cursor: sidebarCollapsed ? "default" : "pointer" }}
+			>
 				<div className="p-2">
 					<Outlet />
 				</div>

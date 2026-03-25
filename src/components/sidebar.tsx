@@ -3,6 +3,7 @@ import {
 	Box,
 	Collapse,
 	Group,
+	Image,
 	Input,
 	NavLink as MantineNavLink,
 	Stack,
@@ -60,30 +61,7 @@ export function Sidebar({ className }: SidebarProps) {
 	return (
 		<Box className={className}>
 			{/* Logo */}
-			<Box
-				p="md"
-				style={{ borderBottom: "1px solid var(--mantine-color-gray-3)" }}
-			>
-				<Group gap="xs">
-					<Badge
-						color="dark"
-						variant="filled"
-						size="xl"
-						radius="md"
-						py="xs"
-						px="md"
-						style={{ fontSize: "1.5rem", fontWeight: "bold" }}
-					>
-						DESA
-					</Badge>
-					<Badge color="green" variant="filled" size="md" radius="md">
-						+
-					</Badge>
-				</Group>
-				<Text size="xs" c="dimmed" mt="xs">
-					Digitalisasi Desa Transparansi Kerja
-				</Text>
-			</Box>
+			<Image src={dark ? "/white.png" : "/light-mode.png"} alt="Logo" />
 
 			{/* Search */}
 			<Box p="md">

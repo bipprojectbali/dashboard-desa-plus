@@ -181,7 +181,7 @@ const HelpPage = () => {
 							<HelpCard
 								style={{ borderColor: dark ? "#141D34" : "white" }}
 								bg={dark ? "#141D34" : "white"}
-								icon={<IconBook size={24} />}
+								icon={<IconBook size={24} color="white" />}
 								title="Panduan Memulai"
 								h="100%"
 							>
@@ -211,7 +211,7 @@ const HelpPage = () => {
 							<HelpCard
 								style={{ borderColor: dark ? "#141D34" : "white" }}
 								bg={dark ? "#141D34" : "white"}
-								icon={<IconVideo size={24} />}
+								icon={<IconVideo size={24} color="white" />}
 								title="Video Tutorial"
 								h="100%"
 							>
@@ -241,7 +241,7 @@ const HelpPage = () => {
 							<HelpCard
 								style={{ borderColor: dark ? "#141D34" : "white" }}
 								bg={dark ? "#141D34" : "white"}
-								icon={<IconHelpCircle size={24} />}
+								icon={<IconHelpCircle size={24} color="white" />}
 								title="FAQ"
 								h="100%"
 							>
@@ -273,7 +273,7 @@ const HelpPage = () => {
 							<HelpCard
 								style={{ borderColor: dark ? "#141D34" : "white" }}
 								bg={dark ? "#141D34" : "white"}
-								icon={<IconHeadphones size={24} />}
+								icon={<IconHeadphones size={24} color="white" />}
 								title="Hubungi Support"
 								h="100%"
 							>
@@ -308,7 +308,7 @@ const HelpPage = () => {
 							<HelpCard
 								style={{ borderColor: dark ? "#141D34" : "white" }}
 								bg={dark ? "#141D34" : "white"}
-								icon={<IconFileText size={24} />}
+								icon={<IconFileText size={24} color="white" />}
 								title="Dokumentasi"
 								h="100%"
 							>
@@ -340,7 +340,7 @@ const HelpPage = () => {
 							<HelpCard
 								style={{ borderColor: dark ? "#141D34" : "white" }}
 								bg={dark ? "#141D34" : "white"}
-								icon={<IconMessage size={24} />}
+								icon={<IconMessage size={24} color="white" />}
 								title="Jenna - Virtual Assistant"
 								h="100%"
 							>

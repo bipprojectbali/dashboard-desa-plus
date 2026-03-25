@@ -1,123 +1,79 @@
-import { BarChart } from "@mantine/charts";
 import {
 	Badge,
 	Box,
-	Button,
 	Card,
 	Grid,
+	GridCol,
 	Group,
 	Progress,
 	Stack,
 	Text,
+	ThemeIcon,
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import React from "react";
+import {
+	AlertTriangle,
+	CheckCircle,
+	Clock,
+	MessageCircle,
+	TrendingUp,
+} from "lucide-react";
+import {
+	Bar,
+	BarChart,
+	CartesianGrid,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
 
-// Sample Data
+// KPI Data
 const kpiData = [
 	{
 		id: 1,
 		title: "Interaksi Hari Ini",
 		value: "61",
-		delta: "+15% dari kemarin",
-		deltaType: "positive",
-		icon: (
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				strokeWidth={1.5}
-				stroke="currentColor"
-				className="h-6 w-6 text-muted-foreground"
-			>
-				<path
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H16.5m-13.5 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"
-				/>
-			</svg>
-		),
+		subtitle: "+15% dari kemarin",
+		trend: "positive",
+		icon: MessageCircle,
 	},
 	{
 		id: 2,
 		title: "Jawaban Otomatis",
 		value: "87%",
-		sub: "53 dari 61 interaksi",
-		icon: (
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				strokeWidth={1.5}
-				stroke="currentColor"
-				className="h-6 w-6 text-muted-foreground"
-			>
-				<path
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.473-1.688 3.342-.48.485-.926.97-1.378 1.44c-1.472 1.58-2.306 2.787-2.91 3.514-.15.18-.207.33-.207.33A.75.75 0 0 1 15 21h-3c-1.104 0-2.08-.542-2.657-1.455-.139-.201-.264-.406-.38-.614l-.014-.025C8.85 18.067 8.156 17.2 7.5 16.325.728 12.56.728 7.44 7.5 3.675c3.04-.482 5.584.47 7.042 1.956.674.672 1.228 1.462 1.696 2.307.426.786.793 1.582 1.113 2.392h.001Z"
-				/>
-			</svg>
-		),
+		subtitle: "53 dari 61 interaksi",
+		icon: CheckCircle,
 	},
 	{
 		id: 3,
 		title: "Belum Ditindak",
 		value: "8",
-		sub: "Perlu respon manual",
-		deltaType: "negative",
-		icon: (
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				strokeWidth={1.5}
-				stroke="currentColor"
-				className="h-6 w-6 text-muted-foreground"
-			>
-				<path
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-				/>
-			</svg>
-		),
+		subtitle: "Perlu respon manual",
+		icon: AlertTriangle,
 	},
 	{
 		id: 4,
 		title: "Waktu Respon",
 		value: "2.3 sec",
-		sub: "Rata-rata",
-		icon: (
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				strokeWidth={1.5}
-				stroke="currentColor"
-				className="h-6 w-6 text-muted-foreground"
-			>
-				<path
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-				/>
-			</svg>
-		),
+		subtitle: "Rata-rata",
+		icon: Clock,
 	},
 ];
 
+// Chart Data
 const chartData = [
-	{ day: "Sen", total: 100 },
-	{ day: "Sel", total: 120 },
-	{ day: "Rab", total: 90 },
-	{ day: "Kam", total: 150 },
-	{ day: "Jum", total: 110 },
-	{ day: "Sab", total: 80 },
-	{ day: "Min", total: 130 },
+	{ day: "Sen", total: 45 },
+	{ day: "Sel", total: 62 },
+	{ day: "Rab", total: 38 },
+	{ day: "Kam", total: 75 },
+	{ day: "Jum", total: 58 },
+	{ day: "Sab", total: 32 },
+	{ day: "Min", total: 51 },
 ];
 
+// Top Topics Data
 const topTopics = [
 	{ topic: "Cara mengurus KTP", count: 89 },
 	{ topic: "Syarat Kartu Keluarga", count: 76 },
@@ -126,6 +82,7 @@ const topTopics = [
 	{ topic: "Info program bansos", count: 48 },
 ];
 
+// Busy Hours Data
 const busyHours = [
 	{ period: "Pagi (08–12)", percentage: 30 },
 	{ period: "Siang (12–16)", percentage: 40 },
@@ -138,146 +95,206 @@ const JennaAnalytic = () => {
 	const dark = colorScheme === "dark";
 
 	return (
-		<Box className="space-y-6">
-			<Stack gap="xl">
-				{/* KPI Cards */}
-				<Grid gutter="lg">
-					{kpiData.map((kpi) => (
-						<Grid.Col key={kpi.id} span={{ base: 12, md: 6, lg: 3 }}>
-							<Card
-								p="md"
-								radius="md"
-								withBorder
-								bg={dark ? "#141D34" : "white"}
-								style={{ borderColor: dark ? "#141D34" : "white" }}
-							>
-								<Group justify="space-between" align="flex-start" mb="xs">
-									<Text size="sm" fw={500} c="dimmed">
-										{kpi.title}
-									</Text>
-									{React.cloneElement(kpi.icon, {
-										className: "h-6 w-6", // Keeping classes for now, can be replaced by Mantine Icon component if available or styled with sx prop
-										color: "var(--mantine-color-dimmed)", // Set color via prop
-									})}
-								</Group>
-								<Title order={3} fw={700} mt="xs">
-									{kpi.value}
-								</Title>
-								{kpi.delta && (
-									<Text
-										size="xs"
-										c={
-											kpi.deltaType === "positive"
-												? "green"
-												: kpi.deltaType === "negative"
-													? "red"
-													: "dimmed"
-										}
-										mt={4}
-									>
-										{kpi.delta}
-									</Text>
-								)}
-								{kpi.sub && (
-									<Text size="xs" c="dimmed" mt={2}>
-										{kpi.sub}
-									</Text>
-								)}
-							</Card>
-						</Grid.Col>
-					))}
-				</Grid>
-
-				<Card
-					p="md"
-					radius="md"
-					withBorder
-					bg={dark ? "#141D34" : "white"}
-					style={{ borderColor: dark ? "#141D34" : "white" }}
-				>
-					<Title order={3} fw={500} mb="md">
-						Interaksi Chatbot
-					</Title>
-					<BarChart
-						h={300}
-						data={chartData}
-						dataKey="day"
-						series={[{ name: "total", color: "blue" }]}
-						withLegend
-					/>
-				</Card>
-
-				{/* Charts and Lists Section */}
-				<Grid gutter="lg">
-					{/* Grafik Interaksi Chatbot (now Bar Chart) */}
-					<Grid.Col span={{ base: 12, lg: 6 }}>
+		<Stack gap="lg">
+			{/* TOP SECTION - 4 STAT CARDS */}
+			<Grid gutter="md">
+				{kpiData.map((item) => (
+					<Grid.Col key={item.id} span={{ base: 12, sm: 6, lg: 3 }}>
 						<Card
 							p="md"
-							radius="md"
+							radius="xl"
 							withBorder
-							bg={dark ? "#141D34" : "white"}
-							style={{ borderColor: dark ? "#141D34" : "white" }}
+							bg={dark ? "#1E293B" : "white"}
+							style={{
+								borderColor: dark ? "#334155" : "white",
+								boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+								transition: "transform 0.15s ease, box-shadow 0.15s ease",
+							}}
 							h="100%"
 						>
-							<Title order={3} fw={500} mb="md">
-								Jam Tersibuk
-							</Title>
-							<Stack gap="sm">
-								{busyHours.map((item, index) => (
-									<Box key={index}>
-										<Text size="sm">{item.period}</Text>
-										<Group align="center">
-											<Progress value={item.percentage} flex={1} />
-											<Text size="sm" fw={500}>
-												{item.percentage}%
-											</Text>
-										</Group>
-									</Box>
-								))}
-							</Stack>
+							<Group justify="space-between" align="flex-start" w="100%">
+								<Stack gap={2}>
+									<Text size="sm" c="dimmed">
+										{item.title}
+									</Text>
+									<Text size="xl" fw={700} c={dark ? "white" : "gray.9"}>
+										{item.value}
+									</Text>
+									<Group gap={4} align="flex-start">
+										{item.trend === "positive" && (
+											<TrendingUp size={14} color="#22C55E" />
+										)}
+										<Text
+											size="xs"
+											c={
+												item.trend === "positive"
+													? "green"
+													: dark
+														? "gray.4"
+														: "gray.5"
+											}
+										>
+											{item.subtitle}
+										</Text>
+									</Group>
+								</Stack>
+								<ThemeIcon
+									color="#1E3A5F"
+									variant="filled"
+									size="lg"
+									radius="xl"
+								>
+									<item.icon style={{ width: "60%", height: "60%" }} />
+								</ThemeIcon>
+							</Group>
 						</Card>
 					</Grid.Col>
+				))}
+			</Grid>
 
-					{/* Topik Pertanyaan Terbanyak & Jam Tersibuk */}
-					<Grid.Col span={{ base: 12, lg: 6 }}>
-						<Stack gap="lg">
-							{/* Topik Pertanyaan Terbanyak */}
-							<Card
-								p="md"
-								radius="md"
-								withBorder
-								bg={dark ? "#141D34" : "white"}
-								style={{ borderColor: dark ? "#141D34" : "white" }}
-								h="100%"
-							>
-								<Title order={3} fw={500} mb="md">
-									Topik Pertanyaan Terbanyak
-								</Title>
-								<Stack gap="xs">
-									{topTopics.map((item, index) => (
-										<Group
-											key={index}
-											justify="space-between"
-											align="center"
-											p="xs"
+			{/* MAIN CHART - INTERAKSI CHATBOT */}
+			<Card
+				p="md"
+				radius="xl"
+				withBorder
+				bg={dark ? "#1E293B" : "white"}
+				style={{
+					borderColor: dark ? "#334155" : "white",
+					boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				}}
+			>
+				<Group justify="space-between" mb="md">
+					<Title order={4} c={dark ? "white" : "gray.9"}>
+						Interaksi Chatbot
+					</Title>
+				</Group>
+				<ResponsiveContainer width="100%" height={300}>
+					<BarChart data={chartData}>
+						<CartesianGrid
+							strokeDasharray="3 3"
+							vertical={false}
+							stroke={dark ? "#334155" : "#e5e7eb"}
+						/>
+						<XAxis
+							dataKey="day"
+							axisLine={false}
+							tickLine={false}
+							tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
+						/>
+						<YAxis
+							axisLine={false}
+							tickLine={false}
+							tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
+						/>
+						<Tooltip
+							contentStyle={{
+								backgroundColor: dark ? "#1E293B" : "white",
+								borderColor: dark ? "#334155" : "#e5e7eb",
+								borderRadius: "8px",
+							}}
+							labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+							cursor={{ fill: dark ? "#334155" : "#f3f4f6" }}
+						/>
+						<Bar
+							dataKey="total"
+							fill="#1E3A5F"
+							radius={[8, 8, 0, 0]}
+							maxBarSize={60}
+						/>
+					</BarChart>
+				</ResponsiveContainer>
+			</Card>
+
+			{/* BOTTOM SECTION - 2 COLUMNS */}
+			<Grid gutter="lg">
+				{/* LEFT: TOPIK PERTANYAAN TERBANYAK */}
+				<Grid.Col span={{ base: 12, lg: 6 }}>
+					<Card
+						p="md"
+						radius="xl"
+						withBorder
+						bg={dark ? "#1E293B" : "white"}
+						style={{
+							borderColor: dark ? "#334155" : "white",
+							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+						}}
+						h="100%"
+					>
+						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
+							Topik Pertanyaan Terbanyak
+						</Title>
+						<Stack gap="xs">
+							{topTopics.map((item, index) => (
+								<Box
+									key={index}
+									p="sm"
+									bg={dark ? "#334155" : "#F1F5F9"}
+									style={{
+										transition: "background-color 0.15s ease",
+										cursor: "pointer",
+									}}
+								>
+									<Group justify="space-between">
+										<Text size="sm" fw={500} c={dark ? "white" : "gray.9"}>
+											{item.topic}
+										</Text>
+										<Badge
+											variant="light"
+											color="darmasaba-blue"
+											radius="sm"
+											fw={600}
 										>
-											<Text size="sm" fw={500}>
-												{item.topic}
-											</Text>
-											<Badge variant="light" color="gray">
-												{item.count}x
-											</Badge>
-										</Group>
-									))}
-								</Stack>
-							</Card>
-
-							{/* Jam Tersibuk */}
+											{item.count}x
+										</Badge>
+									</Group>
+								</Box>
+							))}
 						</Stack>
-					</Grid.Col>
-				</Grid>
-			</Stack>
-		</Box>
+					</Card>
+				</Grid.Col>
+
+				{/* RIGHT: JAM TERSIBUK */}
+				<Grid.Col span={{ base: 12, lg: 6 }}>
+					<Card
+						p="md"
+						radius="xl"
+						withBorder
+						bg={dark ? "#1E293B" : "white"}
+						style={{
+							borderColor: dark ? "#334155" : "white",
+							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+						}}
+						h="100%"
+					>
+						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
+							Jam Tersibuk
+						</Title>
+						<Stack gap="md">
+							{busyHours.map((item, index) => (
+								<Box key={index}>
+									<Group justify="space-between" mb={5}>
+										<Text size="sm" fw={500} c={dark ? "white" : "gray.9"}>
+											{item.period}
+										</Text>
+										<Text size="sm" fw={600} c={dark ? "white" : "gray.9"}>
+											{item.percentage}%
+										</Text>
+									</Group>
+									<Progress
+										value={item.percentage}
+										size="lg"
+										radius="xl"
+										color="#1E3A5F"
+										animated
+									/>
+								</Box>
+							))}
+						</Stack>
+					</Card>
+				</Grid.Col>
+			</Grid>
+		</Stack>
 	);
 };
+
 export default JennaAnalytic;

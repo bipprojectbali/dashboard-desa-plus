@@ -1,44 +1,22 @@
 import {
-	Alert,
+	Box,
 	Button,
-	Card,
 	Group,
 	Select,
-	Space,
 	Switch,
 	Text,
-	TextInput,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
-import { IconInfoCircle } from "@tabler/icons-react";
+import { DateInput } from "@mantine/dates";
 
 const UmumSettings = () => {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
 	return (
-		<Card
-			withBorder
-			radius="md"
-			p="xl"
-			bg={dark ? "#141D34" : "white"}
-			style={{ borderColor: dark ? "#141D34" : "white" }}
+		<Box
+			pr={"50%"}
 		>
 			<Title order={2} mb="lg">
-				Pengaturan Umum
+				Preferensi Tampilan
 			</Title>
-			<Text color="dimmed" mb="xl">
-				Kelola pengaturan umum aplikasi Anda
-			</Text>
-
-			<Space h="lg" />
-
-			<TextInput
-				label="Nama Aplikasi"
-				placeholder="Masukkan nama aplikasi"
-				defaultValue="Dashboard Desa Plus"
-				mb="md"
-			/>
 
 			<Select
 				label="Bahasa Aplikasi"
@@ -61,25 +39,48 @@ const UmumSettings = () => {
 				mb="md"
 			/>
 
-			<Group mb="md">
-				<Switch label="Notifikasi Email" defaultChecked />
+			<DateInput
+				label="Format Tanggal"
+				mb={"xl"}
+			/>
+
+			<Title order={2} mb="lg">
+				Dashboard
+			</Title>
+
+			<Group mb="md" justify="space-between">
+				<Text fw={"bold"} fz={"sm"}>Refresh Otomatis</Text>
+				<Switch defaultChecked />
 			</Group>
 
-			<Alert
-				icon={<IconInfoCircle size={16} />}
-				title="Informasi"
-				color="blue"
-				mb="md"
-			>
-				Beberapa pengaturan mungkin memerlukan restart aplikasi untuk diterapkan
-				sepenuhnya.
-			</Alert>
+			<Group mb="md" justify="space-between">
+				<Text fw={"bold"} fz={"sm"}>Interval Refresh</Text>
+				<Select
+					data={[
+						{ value: "1", label: "30d" },
+						{ value: "2", label: "60d" },
+						{ value: "3", label: "90d" },
+					]}
+					defaultValue="1"
+					w={90}
+				/>
+			</Group>
+
+			<Group mb="md" justify="space-between">
+				<Text fw={"bold"} fz={"sm"}>Tampilkan Grid</Text>
+				<Switch defaultChecked />
+			</Group>
+
+			<Group mb="md" justify="space-between">
+				<Text fw={"bold"} fz={"sm"}>Animasi Transisi</Text>
+				<Switch defaultChecked />
+			</Group>
 
 			<Group justify="flex-end" mt="xl">
 				<Button variant="outline">Batal</Button>
 				<Button>Simpan Perubahan</Button>
 			</Group>
-		</Card>
+		</Box>
 	);
 };
 
