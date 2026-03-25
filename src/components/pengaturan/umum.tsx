@@ -1,23 +1,15 @@
 import {
-	Alert,
 	Box,
 	Button,
-	Card,
 	Group,
 	Select,
-	Space,
 	Switch,
 	Text,
-	TextInput,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { IconInfoCircle } from "@tabler/icons-react";
 
 const UmumSettings = () => {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
 	return (
 		<Box
 			pr={"50%"}

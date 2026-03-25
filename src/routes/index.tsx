@@ -1,6 +1,7 @@
 import { AppShell, Burger, Group, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { DashboardContent } from "@/components/dashboard-content";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/")({
 function DashboardPage() {
 	const [opened, { toggle }] = useDisclosure();
 	const [sidebarCollapsed, setSidebarCollapsed] = useDisclosure(false);
+	const [clickCount, setClickCount] = useState(0);
 	const { colorScheme } = useMantineColorScheme();
 	const headerBgColor = colorScheme === "dark" ? "#11192D" : "#19355E";
 	const navbarBgColor = colorScheme === "dark" ? "#11192D" : "white";
@@ -19,7 +21,15 @@ function DashboardPage() {
 
 	const handleMainClick = () => {
 		if (!sidebarCollapsed) {
-			setSidebarCollapsed.toggle();
+			const newCount = clickCount + 1;
+			setClickCount(newCount);
+
+			if (newCount === 2) {
+				setSidebarCollapsed.toggle();
+				setClickCount(0);
+			} else {
+				setTimeout(() => setClickCount(0), 300);
+			}
 		}
 	};
 
