@@ -25,7 +25,7 @@ export function StatCard({
 	trend,
 	trendValue,
 	icon,
-	iconColor = "darmasaba-blue",
+	iconColor = "#1E3A5F",
 }: StatCardProps) {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
@@ -77,6 +77,7 @@ export function StatCard({
 					size="xl"
 					radius="xl"
 					color={dark ? "gray" : iconColor}
+					bg={dark ? "gray" : iconColor}
 				>
 					{icon}
 				</ThemeIcon>

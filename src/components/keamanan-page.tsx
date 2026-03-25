@@ -125,10 +125,51 @@ const KeamananPage = () => {
 				</Title>
 			</Group>
 
-			{/* KPI Cards */}
+
+
 			<Grid gutter="md">
-				{kpiData.map((kpi, index) => (
-					<GridCol key={index} span={{ base: 12, sm: 6, md: 6 }}>
+				{/* Peta Keamanan CCTV */}
+				<GridCol span={{ base: 12, lg: 6 }}>
+					<Stack gap={"xs"}>
+						{/* KPI Cards */}
+						<Grid gutter="md">
+							{kpiData.map((kpi, index) => (
+								<GridCol key={index} span={{ base: 12, sm: 6, md: 6 }}>
+									<Card
+										p="md"
+										radius="md"
+										withBorder
+										bg={dark ? "#141D34" : "white"}
+										style={{ borderColor: dark ? "#141D34" : "white" }}
+										h="100%"
+									>
+										<Group justify="space-between" align="center">
+											<Stack gap={0}>
+												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+													{kpi.subtitle}
+												</Text>
+												<Group gap="xs" align="center">
+													<Text size="xl" fw={700} c={dark ? "dark.0" : "black"}>
+														{kpi.value}
+													</Text>
+													<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+														{kpi.title}
+													</Text>
+												</Group>
+											</Stack>
+											<ThemeIcon
+												variant="light"
+												color={kpi.color}
+												size="xl"
+												radius="xl"
+											>
+												{kpi.icon}
+											</ThemeIcon>
+										</Group>
+									</Card>
+								</GridCol>
+							))}
+						</Grid>
 						<Card
 							p="md"
 							radius="md"
@@ -137,119 +178,81 @@ const KeamananPage = () => {
 							style={{ borderColor: dark ? "#141D34" : "white" }}
 							h="100%"
 						>
-							<Group justify="space-between" align="center">
-								<Stack gap={0}>
-									<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
-										{kpi.subtitle}
-									</Text>
-									<Group gap="xs" align="center">
-										<Text size="xl" fw={700} c={dark ? "dark.0" : "black"}>
-											{kpi.value}
-										</Text>
-										<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
-											{kpi.title}
-										</Text>
-									</Group>
-								</Stack>
-								<ThemeIcon
-									variant="light"
-									color={kpi.color}
-									size="xl"
-									radius="xl"
-								>
-									{kpi.icon}
-								</ThemeIcon>
-							</Group>
-						</Card>
-					</GridCol>
-				))}
-			</Grid>
-
-			<Grid gutter="md">
-				{/* Peta Keamanan CCTV */}
-				<GridCol span={{ base: 12, lg: 6 }}>
-					<Card
-						p="md"
-						radius="md"
-						withBorder
-						bg={dark ? "#141D34" : "white"}
-						style={{ borderColor: dark ? "#141D34" : "white" }}
-						h="100%"
-					>
-						<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
-							Peta Keamanan CCTV
-						</Title>
-						<Text size="sm" c={dark ? "dark.3" : "dimmed"} mb="md">
-							Titik Lokasi CCTV
-						</Text>
-
-						{/* Placeholder for map */}
-						<Box
-							style={{
-								backgroundColor: dark ? "#2d3748" : "#e2e8f0",
-								borderRadius: "8px",
-								height: "400px",
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
-							}}
-						>
-							<Stack align="center">
-								<IconMapPin
-									size={48}
-									stroke={1.5}
-									color={dark ? "#94a3b8" : "#64748b"}
-								/>
-								<Text c={dark ? "dark.3" : "dimmed"}>Peta Lokasi CCTV</Text>
-								<Text size="sm" c={dark ? "dark.3" : "dimmed"} ta="center">
-									Integrasi dengan Google Maps atau Mapbox akan ditampilkan di
-									sini
-								</Text>
-							</Stack>
-						</Box>
-
-						{/* CCTV Locations List */}
-						<Stack mt="md" gap="sm">
-							<Title order={4} c={dark ? "dark.0" : "black"}>
-								Daftar CCTV
+							<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
+								Peta Keamanan CCTV
 							</Title>
-							{cctvLocations.map((cctv, index) => (
-								<Card
-									key={index}
-									p="md"
-									radius="md"
-									withBorder
-									bg={dark ? "#263852ff" : "#F1F5F9"}
-									style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
-								>
-									<Group justify="space-between">
-										<Stack gap={0}>
-											<Group gap="xs">
-												<Text fw={500} c={dark ? "dark.0" : "black"}>
-													{cctv.id}
+							<Text size="sm" c={dark ? "dark.3" : "dimmed"} mb="md">
+								Titik Lokasi CCTV
+							</Text>
+
+							{/* Placeholder for map */}
+							<Box
+								style={{
+									backgroundColor: dark ? "#2d3748" : "#e2e8f0",
+									borderRadius: "8px",
+									height: "400px",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+								}}
+							>
+								<Stack align="center">
+									<IconMapPin
+										size={48}
+										stroke={1.5}
+										color={dark ? "#94a3b8" : "#64748b"}
+									/>
+									<Text c={dark ? "dark.3" : "dimmed"}>Peta Lokasi CCTV</Text>
+									<Text size="sm" c={dark ? "dark.3" : "dimmed"} ta="center">
+										Integrasi dengan Google Maps atau Mapbox akan ditampilkan di
+										sini
+									</Text>
+								</Stack>
+							</Box>
+
+							{/* CCTV Locations List */}
+							<Stack mt="md" gap="sm">
+								<Title order={4} c={dark ? "dark.0" : "black"}>
+									Daftar CCTV
+								</Title>
+								{cctvLocations.map((cctv, index) => (
+									<Card
+										key={index}
+										p="md"
+										radius="md"
+										withBorder
+										bg={dark ? "#263852ff" : "#F1F5F9"}
+										style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
+									>
+										<Group justify="space-between">
+											<Stack gap={0}>
+												<Group gap="xs">
+													<Text fw={500} c={dark ? "dark.0" : "black"}>
+														{cctv.id}
+													</Text>
+													<Badge
+														variant="dot"
+														color={cctv.status === "active" ? "green" : "gray"}
+													>
+														{cctv.status === "active" ? "Online" : "Offline"}
+													</Badge>
+												</Group>
+												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+													{cctv.location}
 												</Text>
-												<Badge
-													variant="dot"
-													color={cctv.status === "active" ? "green" : "gray"}
-												>
-													{cctv.status === "active" ? "Online" : "Offline"}
-												</Badge>
+											</Stack>
+											<Group gap="xs">
+												<IconClock size={16} stroke={1.5} />
+												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+													{cctv.lastSeen}
+												</Text>
 											</Group>
-											<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
-												{cctv.location}
-											</Text>
-										</Stack>
-										<Group gap="xs">
-											<IconClock size={16} stroke={1.5} />
-											<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
-												{cctv.lastSeen}
-											</Text>
 										</Group>
-									</Group>
-								</Card>
-							))}
-						</Stack>
-					</Card>
+									</Card>
+								))}
+							</Stack>
+						</Card>
+					</Stack>
 				</GridCol>
 
 				{/* Daftar Laporan Keamanan */}
