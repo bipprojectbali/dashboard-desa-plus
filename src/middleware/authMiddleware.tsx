@@ -62,18 +62,10 @@ type RouteRule = {
 const routeRules: RouteRule[] = [
 	// Public routes - no auth required
 	{
-		match: (p) => p === "/" || p === "/signin" || p === "/signup",
-		requireAuth: false,
-	},
-	// Profile routes - auth required for all roles
-	{
-		match: (p) => p === "/profile" || p.startsWith("/profile/"),
-		requireAuth: true,
-		redirectTo: "/signin",
-	},
-	// Dashboard and main pages - auth required for all roles (not just admin)
-	{
 		match: (p) =>
+			p === "/" ||
+			p === "/signin" ||
+			p === "/signup" ||
 			p.startsWith("/kinerja-divisi") ||
 			p.startsWith("/pengaduan") ||
 			p.startsWith("/jenna") ||
@@ -83,7 +75,13 @@ const routeRules: RouteRule[] = [
 			p.startsWith("/sosial") ||
 			p.startsWith("/keamanan") ||
 			p.startsWith("/bantuan") ||
-			p.startsWith("/pengaturan"),
+			p.startsWith("/pengaturan") ||
+			p.startsWith("/users"),
+		requireAuth: false,
+	},
+	// Profile routes - auth required for all roles
+	{
+		match: (p) => p === "/profile" || p.startsWith("/profile/"),
 		requireAuth: true,
 		redirectTo: "/signin",
 	},

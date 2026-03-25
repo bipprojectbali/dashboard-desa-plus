@@ -114,13 +114,6 @@ const KeamananPage = () => {
 
 	return (
 		<Stack gap="lg">
-			{/* Page Header */}
-			<Group justify="space-between" align="center">
-				<Title order={2} c={dark ? "dark.0" : "black"}>
-					Keamanan Lingkungan Desa
-				</Title>
-			</Group>
-
 			<Grid gutter="md">
 				{/* Peta Keamanan CCTV */}
 				<GridCol span={{ base: 12, lg: 6 }}>

@@ -37,10 +37,6 @@ import { authStore } from "../../store/auth";
 export const Route = createFileRoute("/admin")({
 	component: DashboardLayout,
 	beforeLoad: protectedRouteMiddleware,
-	onEnter({ context }) {
-		authStore.user = context?.user as any;
-		authStore.session = context?.session as any;
-	},
 });
 
 function DashboardLayout() {
