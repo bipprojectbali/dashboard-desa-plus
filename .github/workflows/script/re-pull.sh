@@ -1,35 +1,45 @@
 #!/bin/bash
 
+set -e
+
 : "${PORTAINER_URL:?PORTAINER_URL tidak di-set}"
 : "${PORTAINER_USERNAME:?PORTAINER_USERNAME tidak di-set}"
 : "${PORTAINER_PASSWORD:?PORTAINER_PASSWORD tidak di-set}"
 : "${STACK_NAME:?STACK_NAME tidak di-set}"
 
+MAX_RETRY=30
+SLEEP_INTERVAL=5
+
 echo "🔐 Autentikasi ke Portainer..."
-TOKEN=$(curl -s -X POST https://${PORTAINER_URL}/api/auth \
+TOKEN=$(curl -s -X POST "https://${PORTAINER_URL}/api/auth" \
   -H "Content-Type: application/json" \
   -d "{\"username\": \"${PORTAINER_USERNAME}\", \"password\": \"${PORTAINER_PASSWORD}\"}" \
   | jq -r .jwt)
 
 if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
-  echo "❌ Autentikasi gagal! Cek PORTAINER_URL, USERNAME, dan PASSWORD."
+  echo "❌ Autentikasi gagal!"
   exit 1
 fi
 
 echo "🔍 Mencari stack: $STACK_NAME..."
-STACK=$(curl -s -X GET https://${PORTAINER_URL}/api/stacks \
+STACK=$(curl -s -X GET "https://${PORTAINER_URL}/api/stacks" \
   -H "Authorization: Bearer ${TOKEN}" \
   | jq ".[] | select(.Name == \"$STACK_NAME\")")
 
 if [ -z "$STACK" ]; then
-  echo "❌ Stack '$STACK_NAME' tidak ditemukan di Portainer!"
-  echo "   Pastikan nama stack sudah benar."
+  echo "❌ Stack '$STACK_NAME' tidak ditemukan!"
   exit 1
 fi
 
 STACK_ID=$(echo "$STACK" | jq -r .Id)
 ENDPOINT_ID=$(echo "$STACK" | jq -r .EndpointId)
 ENV=$(echo "$STACK" | jq '.Env // []')
+
+echo "📸 Snapshot container sebelum deploy..."
+OLD_IDS=$(curl -s -X GET \
+  "https://${PORTAINER_URL}/api/endpoints/${ENDPOINT_ID}/docker/containers/json?all=true&filters=%7B%22label%22%3A%5B%22com.docker.compose.project%3D${STACK_NAME}%22%5D%7D" \
+  -H "Authorization: Bearer ${TOKEN}" \
+  | jq -r '[.[] | .Id] | join(",")')
 
 echo "📄 Mengambil compose file..."
 STACK_FILE=$(curl -s -X GET "https://${PORTAINER_URL}/api/stacks/${STACK_ID}/file" \
@@ -41,7 +51,7 @@ PAYLOAD=$(jq -n \
   --argjson env "$ENV" \
   '{stackFileContent: $content, env: $env, pullImage: true}')
 
-echo "🚀 Redeploying $STACK_NAME (pull latest image)..."
+echo "🚀 Redeploying $STACK_NAME..."
 HTTP_STATUS=$(curl -s -o /tmp/portainer_response.json -w "%{http_code}" \
   -X PUT "https://${PORTAINER_URL}/api/stacks/${STACK_ID}?endpointId=${ENDPOINT_ID}" \
   -H "Authorization: Bearer ${TOKEN}" \
@@ -54,40 +64,37 @@ if [ "$HTTP_STATUS" != "200" ]; then
   exit 1
 fi
 
-echo "⏳ Menunggu container running..."
+echo "⏳ Menunggu container baru running..."
 
-MAX_RETRY=15
 COUNT=0
-
 while [ $COUNT -lt $MAX_RETRY ]; do
-  sleep 5
+  sleep $SLEEP_INTERVAL
   COUNT=$((COUNT + 1))
 
   CONTAINERS=$(curl -s -X GET \
     "https://${PORTAINER_URL}/api/endpoints/${ENDPOINT_ID}/docker/containers/json?all=true&filters=%7B%22label%22%3A%5B%22com.docker.compose.project%3D${STACK_NAME}%22%5D%7D" \
     -H "Authorization: Bearer ${TOKEN}")
 
-  TOTAL=$(echo "$CONTAINERS" | jq 'length')
-  RUNNING=$(echo "$CONTAINERS" | jq '[.[] | select(.State == "running")] | length')
-  FAILED=$(echo "$CONTAINERS" | jq '[.[] | select(.State == "exited" and (.Status | test("Exited \\(0\\)") | not))] | length')
+  NEW_RUNNING=$(echo "$CONTAINERS" | jq \
+    --arg old "$OLD_IDS" \
+    '[.[] | select(.State == "running" and ((.Id) as $id | ($old | split(",") | index($id)) == null))] | length')
 
-  echo "🔄 [${COUNT}/${MAX_RETRY}] Running: ${RUNNING} | Failed: ${FAILED} | Total: ${TOTAL}"
-  echo "$CONTAINERS" | jq -r '.[] | "   → \(.Names[0]) | \(.State) | \(.Status)"'
+  FAILED=$(echo "$CONTAINERS" | jq \
+    '[.[] | select(.State == "exited" and (.Status | test("Exited \\(0\\)") | not))] | length')
 
-  if [ "$FAILED" -gt "0" ]; then
-    echo ""
-    echo "❌ Ada container yang crash!"
-    echo "$CONTAINERS" | jq -r '.[] | select(.State == "exited" and (.Status | test("Exited \\(0\\)") | not)) | "   → \(.Names[0]) | \(.Status)"'
+  echo "🔄 [$COUNT/$MAX_RETRY] New running: $NEW_RUNNING | Failed: $FAILED"
+
+  if [ "$FAILED" -gt 0 ]; then
+    echo "❌ Ada container crash!"
+    echo "$CONTAINERS" | jq -r '.[] | select(.State == "exited") | "   → \(.Names[0]) | \(.Status)"'
     exit 1
   fi
 
-  if [ "$RUNNING" -gt "0" ]; then
-    echo ""
-    echo "✅ Stack $STACK_NAME berhasil di-redeploy dan running!"
+  if [ "$NEW_RUNNING" -gt 0 ]; then
+    echo "✅ Deploy sukses! Container baru sudah running."
     exit 0
   fi
 done
 
-echo ""
-echo "❌ Timeout! Stack tidak kunjung running setelah $((MAX_RETRY * 5)) detik."
+echo "❌ Timeout! Container baru tidak muncul."
 exit 1
