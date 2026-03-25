@@ -1,19 +1,9 @@
-import {
-	Box,
-	Button,
-	Group,
-	Select,
-	Switch,
-	Text,
-	Title,
-} from "@mantine/core";
+import { Box, Button, Group, Select, Switch, Text, Title } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 
 const UmumSettings = () => {
 	return (
-		<Box
-			pr={"50%"}
-		>
+		<Box pr={"50%"}>
 			<Title order={2} mb="lg">
 				Preferensi Tampilan
 			</Title>
@@ -39,22 +29,23 @@ const UmumSettings = () => {
 				mb="md"
 			/>
 
-			<DateInput
-				label="Format Tanggal"
-				mb={"xl"}
-			/>
+			<DateInput label="Format Tanggal" mb={"xl"} />
 
 			<Title order={2} mb="lg">
 				Dashboard
 			</Title>
 
 			<Group mb="md" justify="space-between">
-				<Text fw={"bold"} fz={"sm"}>Refresh Otomatis</Text>
+				<Text fw={"bold"} fz={"sm"}>
+					Refresh Otomatis
+				</Text>
 				<Switch defaultChecked />
 			</Group>
 
 			<Group mb="md" justify="space-between">
-				<Text fw={"bold"} fz={"sm"}>Interval Refresh</Text>
+				<Text fw={"bold"} fz={"sm"}>
+					Interval Refresh
+				</Text>
 				<Select
 					data={[
 						{ value: "1", label: "30d" },
@@ -67,12 +58,16 @@ const UmumSettings = () => {
 			</Group>
 
 			<Group mb="md" justify="space-between">
-				<Text fw={"bold"} fz={"sm"}>Tampilkan Grid</Text>
+				<Text fw={"bold"} fz={"sm"}>
+					Tampilkan Grid
+				</Text>
 				<Switch defaultChecked />
 			</Group>
 
 			<Group mb="md" justify="space-between">
-				<Text fw={"bold"} fz={"sm"}>Animasi Transisi</Text>
+				<Text fw={"bold"} fz={"sm"}>
+					Animasi Transisi
+				</Text>
 				<Switch defaultChecked />
 			</Group>
 

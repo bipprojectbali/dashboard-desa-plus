@@ -5,22 +5,18 @@ import {
 	Grid,
 	GridCol,
 	Group,
-	List,
 	Stack,
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
+	useMantineColorScheme
 } from "@mantine/core";
 import {
 	IconAlertTriangle,
 	IconCamera,
 	IconClock,
-	IconEye,
-	IconMapPin,
-	IconShieldLock,
+	IconMapPin
 } from "@tabler/icons-react";
-import { useState } from "react";
 
 const KeamananPage = () => {
 	const { colorScheme } = useMantineColorScheme();
@@ -125,8 +121,6 @@ const KeamananPage = () => {
 				</Title>
 			</Group>
 
-
-
 			<Grid gutter="md">
 				{/* Peta Keamanan CCTV */}
 				<GridCol span={{ base: 12, lg: 6 }}>
@@ -149,7 +143,11 @@ const KeamananPage = () => {
 													{kpi.subtitle}
 												</Text>
 												<Group gap="xs" align="center">
-													<Text size="xl" fw={700} c={dark ? "dark.0" : "black"}>
+													<Text
+														size="xl"
+														fw={700}
+														c={dark ? "dark.0" : "black"}
+													>
 														{kpi.value}
 													</Text>
 													<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
@@ -265,10 +263,6 @@ const KeamananPage = () => {
 						style={{ borderColor: dark ? "#141D34" : "white" }}
 						h="100%"
 					>
-						<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
-							Laporan Keamanan Lingkungan
-						</Title>
-
 						<Stack gap="sm">
 							{securityReports.map((report, index) => (
 								<Card

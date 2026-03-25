@@ -51,9 +51,7 @@ export const HelpCard = ({
 					{icon && (
 						<div
 							style={{
-								backgroundColor: isDark
-									? "#263852ff"
-									: "#1E3A5F",
+								backgroundColor: isDark ? "#263852ff" : "#1E3A5F",
 								borderRadius: "8px",
 								padding: "8px",
 								display: "flex",

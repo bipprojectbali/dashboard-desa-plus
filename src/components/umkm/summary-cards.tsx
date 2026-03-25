@@ -6,13 +6,13 @@ import {
 	Group,
 	Stack,
 	Text,
-	useMantineColorScheme
+	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconCategory,
 	IconCurrencyDollar,
 	IconTrendingUp,
-	IconUsers
+	IconUsers,
 } from "@tabler/icons-react";
 
 interface KpiCardProps {
@@ -24,7 +24,14 @@ interface KpiCardProps {
 	backgroundColor: string;
 }
 
-const KpiCard = ({ title, value, subtitle, icon, color, backgroundColor }: KpiCardProps) => {
+const KpiCard = ({
+	title,
+	value,
+	subtitle,
+	icon,
+	color,
+	backgroundColor,
+}: KpiCardProps) => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -108,7 +115,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			subtitle: "Beroperasi",
 			icon: <IconCurrencyDollar size={25} />,
 			color: "white",
-			backgroundColor: "#1E3A5F"
+			backgroundColor: "#1E3A5F",
 		},
 		{
 			title: "UMKM Terdaftar",
@@ -116,7 +123,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			subtitle: "Total registrasi",
 			icon: <IconUsers size={25} />,
 			color: "white",
-			backgroundColor: "#1E3A5F"
+			backgroundColor: "#1E3A5F",
 		},
 		{
 			title: "Omzet",
@@ -124,7 +131,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			subtitle: "Omzet BUMDes per bulan",
 			icon: <IconTrendingUp size={25} />,
 			color: "white",
-			backgroundColor: "#1E3A5F"
+			backgroundColor: "#1E3A5F",
 		},
 		{
 			title: "UMKM Terbanyak",
@@ -132,7 +139,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			subtitle: `Kategori ${displayData.kategoriTerbanyak.name}`,
 			icon: <IconTrendingUp size={25} />,
 			color: "white",
-			backgroundColor: "#1E3A5F"
+			backgroundColor: "#1E3A5F",
 		},
 	];
 

@@ -1,5 +1,12 @@
-import { Card, Group, Stack, Text, Title, ThemeIcon } from "@mantine/core";
-import { useMantineColorScheme } from "@mantine/core";
+import {
+	Card,
+	Group,
+	Stack,
+	Text,
+	ThemeIcon,
+	Title,
+	useMantineColorScheme,
+} from "@mantine/core";
 import { IconCalendarEvent } from "@tabler/icons-react";
 
 interface EventItem {

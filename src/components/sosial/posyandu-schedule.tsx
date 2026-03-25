@@ -1,5 +1,12 @@
-import { Badge, Card, Group, Stack, Text, Title } from "@mantine/core";
-import { useMantineColorScheme } from "@mantine/core";
+import {
+	Badge,
+	Card,
+	Group,
+	Stack,
+	Text,
+	Title,
+	useMantineColorScheme,
+} from "@mantine/core";
 
 interface PosyanduItem {
 	id: string;

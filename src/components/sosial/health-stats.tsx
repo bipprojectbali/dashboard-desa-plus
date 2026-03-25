@@ -1,5 +1,12 @@
-import { Card, Group, Progress, Stack, Text, Title } from "@mantine/core";
-import { useMantineColorScheme } from "@mantine/core";
+import {
+	Card,
+	Group,
+	Progress,
+	Stack,
+	Text,
+	Title,
+	useMantineColorScheme,
+} from "@mantine/core";
 
 interface HealthProgressItem {
 	label: string;
@@ -32,7 +39,7 @@ export const HealthStats = ({ data }: HealthStatsProps) => {
 			shadow="sm"
 			bg={dark ? "#141D34" : "white"}
 			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
-			h={'100%'}
+			h={"100%"}
 		>
 			<Title order={3} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>
 				Statistik Kesehatan
