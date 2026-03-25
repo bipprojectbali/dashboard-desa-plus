@@ -246,7 +246,7 @@ const PengaduanLayananPublik = () => {
 						<Line
 							type="monotone"
 							dataKey="jumlah"
-							stroke="#1E3A5F"
+							stroke="#396aaaff"
 							strokeWidth={2}
 							dot={{
 								fill: "#1E3A5F",
@@ -305,7 +305,7 @@ const PengaduanLayananPublik = () => {
 										borderRadius: "8px",
 									}}
 								/>
-								<Bar dataKey="jumlah" fill="#1E3A5F" radius={[0, 4, 4, 0]} />
+								<Bar dataKey="jumlah" fill="#396aaaff" radius={[0, 4, 4, 0]} />
 							</BarChart>
 						</ResponsiveContainer>
 					</Card>

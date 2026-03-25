@@ -312,7 +312,7 @@ const KeuanganAnggaran = () => {
 								/>
 								<Bar
 									dataKey="amount"
-									fill="#1E3A5F"
+									fill="#396aaaff"
 									radius={[0, 8, 8, 0]}
 									maxBarSize={30}
 								/>

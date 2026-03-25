@@ -259,7 +259,7 @@ const DemografiPekerjaan = () => {
 								/>
 								<Bar
 									dataKey="total"
-									fill="#1E3A5F"
+									fill="#396aaaff"
 									radius={[8, 8, 0, 0]}
 									maxBarSize={40}
 								/>
@@ -325,7 +325,7 @@ const DemografiPekerjaan = () => {
 								/>
 								<Bar
 									dataKey="total"
-									fill="#1E3A5F"
+									fill="#396aaaff"
 									radius={[0, 8, 8, 0]}
 									maxBarSize={30}
 								/>
@@ -663,12 +663,12 @@ const DemografiPekerjaan = () => {
 								/>
 								<Bar
 									dataKey="value"
-									fill="#1E3A5F"
+									fill="#396aaaff"
 									radius={[0, 8, 8, 0]}
 									maxBarSize={40}
 								>
 									{sektorUnggulanData.map((entry, index) => (
-										<Cell key={`cell-${index}`} fill="#1E3A5F" />
+										<Cell key={`cell-${index}`} fill="#396aaaff" />
 									))}
 								</Bar>
 							</BarChart>

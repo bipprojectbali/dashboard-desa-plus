@@ -197,7 +197,7 @@ const JennaAnalytic = () => {
 						/>
 						<Bar
 							dataKey="total"
-							fill="#1E3A5F"
+							fill="#396aaaff"
 							radius={[8, 8, 0, 0]}
 							maxBarSize={60}
 						/>

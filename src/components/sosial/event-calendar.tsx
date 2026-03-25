@@ -92,7 +92,7 @@ export const EventCalendar = ({ data }: EventCalendarProps) => {
 							</Text>
 						</Group>
 						<Group pl={36}>
-							<Text size="sm" c={dark ? "dark.4" : "gray.6"}>
+							<Text size="sm" c={dark ? "white" : "gray.6"}>
 								{event.tanggal}
 							</Text>
 						</Group>
