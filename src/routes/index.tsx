@@ -11,10 +11,17 @@ export const Route = createFileRoute("/")({
 
 function DashboardPage() {
 	const [opened, { toggle }] = useDisclosure();
+	const [sidebarCollapsed, setSidebarCollapsed] = useDisclosure(false);
 	const { colorScheme } = useMantineColorScheme();
 	const headerBgColor = colorScheme === "dark" ? "#11192D" : "#19355E";
 	const navbarBgColor = colorScheme === "dark" ? "#11192D" : "white";
 	const mainBgColor = colorScheme === "dark" ? "#11192D" : "#edf3f8ff";
+
+	const handleMainClick = () => {
+		if (!sidebarCollapsed) {
+			setSidebarCollapsed.toggle();
+		}
+	};
 
 	return (
 		<AppShell
@@ -22,14 +29,14 @@ function DashboardPage() {
 			navbar={{
 				width: 300,
 				breakpoint: "sm",
-				collapsed: { mobile: !opened },
+				collapsed: { mobile: !opened, desktop: sidebarCollapsed },
 			}}
 			padding="md"
 		>
 			<AppShell.Header bg={headerBgColor}>
 				<Group h="100%" px="md">
 					<Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-					<Header />
+					<Header onSidebarToggle={setSidebarCollapsed.toggle} />
 				</Group>
 			</AppShell.Header>
 
@@ -43,7 +50,11 @@ function DashboardPage() {
 				</div>
 			</AppShell.Navbar>
 
-			<AppShell.Main bg={mainBgColor}>
+			<AppShell.Main
+				bg={mainBgColor}
+				onClick={handleMainClick}
+				style={{ cursor: sidebarCollapsed ? "default" : "pointer" }}
+			>
 				<DashboardContent />
 			</AppShell.Main>
 		</AppShell>

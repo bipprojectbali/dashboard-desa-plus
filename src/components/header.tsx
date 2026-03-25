@@ -9,11 +9,18 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { IconUserShield } from "@tabler/icons-react";
+import {
+	IconLayoutSidebarLeftCollapse,
+	IconUserShield,
+} from "@tabler/icons-react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
-import { Bell, Moon, Sun, User as UserIcon } from "lucide-react"; // Renamed User to UserIcon to avoid conflict with Mantine's User component if it exists
+import { Bell, Moon, Sun, User as UserIcon } from "lucide-react";
 
-export function Header() {
+interface HeaderProps {
+	onSidebarToggle?: () => void;
+}
+
+export function Header({ onSidebarToggle }: HeaderProps) {
 	const location = useLocation();
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
@@ -56,9 +63,24 @@ export function Header() {
 	return (
 		<Group justify="space-between" w="100%">
 			{/* Title */}
-			<Title order={3} c={"white"}>
-				{getPageTitle()}
-			</Title>
+			<Group gap="md">
+				<ActionIcon
+					onClick={onSidebarToggle}
+					variant="subtle"
+					size="lg"
+					radius="xl"
+					visibleFrom="sm"
+					aria-label="Toggle sidebar"
+				>
+					<IconLayoutSidebarLeftCollapse
+						color="white"
+						style={{ width: "70%", height: "70%" }}
+					/>
+				</ActionIcon>
+				{/* <Title order={3} c={"white"}>
+					{getPageTitle()}
+				</Title> */}
+			</Group>
 
 			{/* Right Section */}
 			<Group gap="md">

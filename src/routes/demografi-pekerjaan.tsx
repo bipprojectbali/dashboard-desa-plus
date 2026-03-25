@@ -1,8 +1,8 @@
 import { AppShell, Burger, Group, useMantineColorScheme } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
+import { useSidebarFullscreen } from "@/hooks/use-sidebar-fullscreen";
 import DemografiPekerjaan from "../components/demografi-pekerjaan";
 
 export const Route = createFileRoute("/demografi-pekerjaan")({
@@ -10,7 +10,13 @@ export const Route = createFileRoute("/demografi-pekerjaan")({
 });
 
 function DemografiPekerjaanPage() {
-	const [opened, { toggle }] = useDisclosure();
+	const {
+		opened,
+		toggleMobile,
+		sidebarCollapsed,
+		toggleSidebar,
+		handleMainClick,
+	} = useSidebarFullscreen();
 	const { colorScheme } = useMantineColorScheme();
 	const headerBgColor = colorScheme === "dark" ? "#11192D" : "#19355E";
 	const navbarBgColor = colorScheme === "dark" ? "#11192D" : "white";
@@ -22,14 +28,19 @@ function DemografiPekerjaanPage() {
 			navbar={{
 				width: 300,
 				breakpoint: "sm",
-				collapsed: { mobile: !opened },
+				collapsed: { mobile: !opened, desktop: sidebarCollapsed },
 			}}
 			padding="md"
 		>
 			<AppShell.Header bg={headerBgColor}>
 				<Group h="100%" px="md">
-					<Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-					<Header />
+					<Burger
+						opened={opened}
+						onClick={toggleMobile}
+						hiddenFrom="sm"
+						size="sm"
+					/>
+					<Header onSidebarToggle={toggleSidebar} />
 				</Group>
 			</AppShell.Header>
 
@@ -43,7 +54,11 @@ function DemografiPekerjaanPage() {
 				</div>
 			</AppShell.Navbar>
 
-			<AppShell.Main bg={mainBgColor}>
+			<AppShell.Main
+				bg={mainBgColor}
+				onClick={handleMainClick}
+				style={{ cursor: sidebarCollapsed ? "default" : "pointer" }}
+			>
 				<DemografiPekerjaan />
 			</AppShell.Main>
 		</AppShell>

@@ -1,19 +1,18 @@
 import {
-	Badge,
+	Avatar,
 	Card,
 	Grid,
 	GridCol,
 	Group,
 	Stack,
 	Text,
-	useMantineColorScheme,
+	useMantineColorScheme
 } from "@mantine/core";
 import {
-	IconBuildingStore,
 	IconCategory,
-	IconCurrency,
 	IconCurrencyDollar,
-	IconUsers,
+	IconTrendingUp,
+	IconUsers
 } from "@tabler/icons-react";
 
 interface KpiCardProps {
@@ -22,9 +21,10 @@ interface KpiCardProps {
 	subtitle?: string;
 	icon: React.ReactNode;
 	color: string;
+	backgroundColor: string;
 }
 
-const KpiCard = ({ title, value, subtitle, icon, color }: KpiCardProps) => {
+const KpiCard = ({ title, value, subtitle, icon, color, backgroundColor }: KpiCardProps) => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -64,10 +64,10 @@ const KpiCard = ({ title, value, subtitle, icon, color }: KpiCardProps) => {
 						</Text>
 					)}
 				</Stack>
-				<Badge
-					variant="light"
+				<Avatar
 					color={color}
-					p={10}
+					bg={backgroundColor}
+					size={40}
 					radius="xl"
 					style={{
 						display: "flex",
@@ -76,7 +76,7 @@ const KpiCard = ({ title, value, subtitle, icon, color }: KpiCardProps) => {
 					}}
 				>
 					{icon}
-				</Badge>
+				</Avatar>
 			</Group>
 		</Card>
 	);
@@ -106,29 +106,33 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			title: "UMKM Aktif",
 			value: displayData.umkmAktif,
 			subtitle: "Beroperasi",
-			icon: <IconCurrencyDollar size={20} />,
-			color: "darmasaba-blue",
+			icon: <IconCurrencyDollar size={25} />,
+			color: "white",
+			backgroundColor: "#1E3A5F"
 		},
 		{
 			title: "UMKM Terdaftar",
 			value: displayData.umkmTerdaftar,
 			subtitle: "Total registrasi",
-			icon: <IconBuildingStore size={20} />,
-			color: "darmasaba-success",
+			icon: <IconUsers size={25} />,
+			color: "white",
+			backgroundColor: "#1E3A5F"
 		},
 		{
 			title: "Omzet",
 			value: displayData.omzet,
 			subtitle: "Omzet BUMDes per bulan",
-			icon: <IconCurrency size={20} />,
-			color: "darmasaba-warning",
+			icon: <IconTrendingUp size={25} />,
+			color: "white",
+			backgroundColor: "#1E3A5F"
 		},
 		{
 			title: "UMKM Terbanyak",
 			value: displayData.kategoriTerbanyak.count,
 			subtitle: `Kategori ${displayData.kategoriTerbanyak.name}`,
-			icon: <IconCategory size={20} />,
-			color: "darmasaba-danger",
+			icon: <IconTrendingUp size={25} />,
+			color: "white",
+			backgroundColor: "#1E3A5F"
 		},
 	];
 
