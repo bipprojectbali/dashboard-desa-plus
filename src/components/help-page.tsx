@@ -159,7 +159,9 @@ const HelpPage = () => {
 						p="lg"
 						style={{
 							textAlign: "center",
-							borderColor: dark ? "#141D34" : "white",
+							borderColor: dark ? "#334155" : "white",
+							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+							transition: "transform 0.15s ease, box-shadow 0.15s ease",
 						}}
 						h="100%"
 					>
@@ -179,7 +181,11 @@ const HelpPage = () => {
 						{/* Panduan Memulai */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconBook size={24} color="white" />}
 								title="Panduan Memulai"
@@ -209,7 +215,11 @@ const HelpPage = () => {
 						{/* Video Tutorial */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconVideo size={24} color="white" />}
 								title="Video Tutorial"
@@ -239,7 +249,11 @@ const HelpPage = () => {
 						{/* FAQ */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconHelpCircle size={24} color="white" />}
 								title="FAQ"
@@ -271,7 +285,11 @@ const HelpPage = () => {
 						{/* Hubungi Support */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconHeadphones size={24} color="white" />}
 								title="Hubungi Support"
@@ -306,7 +324,11 @@ const HelpPage = () => {
 						{/* Dokumentasi */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconFileText size={24} color="white" />}
 								title="Dokumentasi"
@@ -338,7 +360,11 @@ const HelpPage = () => {
 						{/* Jenna - Virtual Assistant */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconMessage size={24} color="white" />}
 								title="Jenna - Virtual Assistant"

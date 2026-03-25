@@ -38,7 +38,11 @@ export const Beasiswa = ({ data }: BeasiswaProps) => {
 			withBorder
 			shadow="sm"
 			bg={dark ? "#1E293B" : "white"}
-			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
+			style={{
+				borderColor: dark ? "#334155" : "white",
+				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				transition: "transform 0.15s ease, box-shadow 0.15s ease",
+			}}
 			h={"100%"}
 		>
 			<Group justify="space-between" align="center">
