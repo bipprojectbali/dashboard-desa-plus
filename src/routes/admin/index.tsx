@@ -4,7 +4,6 @@ import {
 	Box,
 	Button,
 	Card,
-	Container,
 	Grid,
 	Group,
 	Progress,
@@ -55,7 +54,7 @@ function DashboardComponent() {
 	];
 
 	return (
-		<Container size="lg" py="xl">
+		<Box py="xl">
 			<Title
 				order={1}
 				ta="center"
@@ -195,6 +194,6 @@ function DashboardComponent() {
 					</Card>
 				</Grid.Col>
 			</Grid>
-		</Container>
+		</Box>
 	);
 }

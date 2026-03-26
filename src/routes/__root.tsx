@@ -3,7 +3,12 @@ import { protectedRouteMiddleware } from "@/middleware/authMiddleware";
 import { authStore } from "@/store/auth";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import {
+	createRootRoute,
+	Outlet,
+	useRouterState,
+} from "@tanstack/react-router";
+import { MainLayout } from "@/components/layout/main-layout";
 
 export const Route = createRootRoute({
 	component: RootComponent,
@@ -21,5 +26,18 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-	return <Outlet />;
+	const routerState = useRouterState();
+	const isPublicRoute = ["/signin", "/signup", "/admin", "/profile"].some(
+		(path) => routerState.location.pathname.startsWith(path),
+	);
+
+	if (isPublicRoute) {
+		return <Outlet />;
+	}
+
+	return (
+		<MainLayout>
+			<Outlet />
+		</MainLayout>
+	);
 }

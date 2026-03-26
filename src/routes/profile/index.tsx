@@ -6,7 +6,6 @@ import {
 	Button,
 	Card,
 	Code,
-	Container,
 	Divider,
 	Grid,
 	Group,
@@ -141,213 +140,211 @@ function Profile() {
 	);
 
 	return (
-		<Container size="md" py={50}>
-			<Stack gap="xl">
-				{/* Header Section */}
-				<Group justify="space-between" align="center">
-					<Box>
-						<Title order={1} c="orange.6">
-							Profil Saya
-						</Title>
-						<Text c="dimmed" size="sm">
-							Kelola informasi akun dan pengaturan keamanan Anda
-						</Text>
-					</Box>
-					<Group>
-						{snap.user?.role === "admin" && (
-							<Button
-								variant="light"
-								color="orange"
-								leftSection={<IconDashboard size={18} />}
-								onClick={() => navigate({ to: "/admin" })}
-							>
-								Admin Panel
-							</Button>
-						)}
+		<Stack gap="xl" px={"lg"}>
+			{/* Header Section */}
+			<Group justify="space-between" align="center">
+				<Box>
+					<Title order={1} c="orange.6">
+						Profil Saya
+					</Title>
+					<Text c="dimmed" size="sm">
+						Kelola informasi akun dan pengaturan keamanan Anda
+					</Text>
+				</Box>
+				<Group>
+					{snap.user?.role === "admin" && (
 						<Button
 							variant="light"
-							color="blue"
-							leftSection={<IconEdit size={18} />}
-							onClick={() => navigate({ to: "/profile/edit" })}
+							color="orange"
+							leftSection={<IconDashboard size={18} />}
+							onClick={() => navigate({ to: "/admin" })}
 						>
-							Edit Profil
+							Admin Panel
 						</Button>
-						<Button
-							variant="outline"
-							color="red"
-							leftSection={<IconLogout size={18} />}
-							onClick={openLogoutModal}
-						>
-							Keluar
-						</Button>
-					</Group>
+					)}
+					<Button
+						variant="light"
+						color="blue"
+						leftSection={<IconEdit size={18} />}
+						onClick={() => navigate({ to: "/profile/edit" })}
+					>
+						Edit Profil
+					</Button>
+					<Button
+						variant="outline"
+						color="red"
+						leftSection={<IconLogout size={18} />}
+						onClick={openLogoutModal}
+					>
+						Keluar
+					</Button>
 				</Group>
+			</Group>
 
-				<Divider style={{ opacity: 0.1 }} />
+			<Divider style={{ opacity: 0.1 }} />
 
-				{/* Profile Overview Card */}
-				<Card withBorder radius="lg" p={0} style={{ overflow: "hidden" }}>
-					<Box
-						h={120}
-						style={{
-							background:
-								"linear-gradient(45deg, var(--mantine-color-gray-filled) 0%, var(--mantine-color-dark-filled) 100%)",
-							borderBottom: "1px solid var(--mantine-color-default-border)",
-						}}
-					/>
-					<Box px="xl" pb="xl" style={{ marginTop: rem(-60) }}>
-						<Group align="flex-end" gap="xl" mb="md">
-							<Avatar
-								src={snap.user?.image}
-								size={120}
-								radius={120}
-								style={{
-									border: "4px solid var(--mantine-color-body)",
-									boxShadow: "var(--mantine-shadow-md)",
-								}}
-							>
-								{snap.user?.name?.charAt(0).toUpperCase()}
-							</Avatar>
-							<Stack gap={0} pb="md">
-								<Title order={2}>{snap.user?.name}</Title>
-								<Group gap="xs">
-									<Text c="dimmed" size="sm">
-										{snap.user?.email}
+			{/* Profile Overview Card */}
+			<Card withBorder radius="lg" p={0} style={{ overflow: "hidden" }}>
+				<Box
+					h={120}
+					style={{
+						background:
+							"linear-gradient(45deg, var(--mantine-color-gray-filled) 0%, var(--mantine-color-dark-filled) 100%)",
+						borderBottom: "1px solid var(--mantine-color-default-border)",
+					}}
+				/>
+				<Box px="xl" pb="xl" style={{ marginTop: rem(-60) }}>
+					<Group align="flex-end" gap="xl" mb="md">
+						<Avatar
+							src={snap.user?.image}
+							size={120}
+							radius={120}
+							style={{
+								border: "4px solid var(--mantine-color-body)",
+								boxShadow: "var(--mantine-shadow-md)",
+							}}
+						>
+							{snap.user?.name?.charAt(0).toUpperCase()}
+						</Avatar>
+						<Stack gap={0} pb="md">
+							<Title order={2}>{snap.user?.name}</Title>
+							<Group gap="xs">
+								<Text c="dimmed" size="sm">
+									{snap.user?.email}
+								</Text>
+								<Text c="dimmed" size="xs">
+									•
+								</Text>
+								<Badge
+									variant="dot"
+									color={snap.user?.role === "admin" ? "orange" : "blue"}
+									size="sm"
+								>
+									{snap.user?.role || "user"}
+								</Badge>
+							</Group>
+						</Stack>
+					</Group>
+				</Box>
+			</Card>
+
+			<Grid gutter="lg">
+				<Grid.Col span={{ base: 12, md: 7 }}>
+					<Stack gap="md">
+						<Title order={4} c="orange.6">
+							Informasi Identitas
+						</Title>
+						<Grid gutter="sm">
+							<Grid.Col span={6}>
+								<InfoField
+									icon={IconUser}
+									label="Nama Lengkap"
+									value={snap.user?.name}
+								/>
+							</Grid.Col>
+							<Grid.Col span={6}>
+								<InfoField
+									icon={IconShield}
+									label="Peran"
+									value={snap.user?.role || "User"}
+								/>
+							</Grid.Col>
+							<Grid.Col span={12}>
+								<InfoField
+									icon={IconAt}
+									label="Alamat Email"
+									value={snap.user?.email}
+									copyable
+									id="email"
+								/>
+							</Grid.Col>
+							<Grid.Col span={12}>
+								<InfoField
+									icon={IconId}
+									label="Unique User ID"
+									value={snap.user?.id}
+									copyable
+									id="userid"
+								/>
+							</Grid.Col>
+						</Grid>
+					</Stack>
+				</Grid.Col>
+
+				<Grid.Col span={{ base: 12, md: 5 }}>
+					<Stack gap="md">
+						<Title order={4} c="orange.6">
+							Keamanan & Sesi
+						</Title>
+						<Card
+							withBorder
+							radius="md"
+							p="lg"
+							style={{
+								border: "1px solid var(--mantine-color-default-border)",
+							}}
+						>
+							<Stack gap="md">
+								<Box>
+									<Text size="xs" c="dimmed" tt="uppercase" fw={700} mb={8}>
+										Sesi Saat Ini
 									</Text>
-									<Text c="dimmed" size="xs">
-										•
+									<Group justify="space-between" align="center">
+										<Badge color="green" variant="light">
+											Aktif Sekarang
+										</Badge>
+										<Text size="xs" c="dimmed">
+											ID: {snap.session?.id?.substring(0, 8)}...
+										</Text>
+									</Group>
+								</Box>
+
+								<Box>
+									<Text size="xs" c="dimmed" tt="uppercase" fw={700} mb={8}>
+										Session Token
 									</Text>
-									<Badge
-										variant="dot"
-										color={snap.user?.role === "admin" ? "orange" : "blue"}
-										size="sm"
-									>
-										{snap.user?.role || "user"}
-									</Badge>
-								</Group>
+									<Group gap="xs" wrap="nowrap">
+										<Code
+											block
+											style={{
+												fontSize: rem(11),
+												flex: 1,
+											}}
+										>
+											{snap.session?.token
+												? `${snap.session.token.substring(0, 32)}...`
+												: "N/A"}
+										</Code>
+										<ActionIcon
+											variant="light"
+											color="gray"
+											onClick={() =>
+												snap.session?.token &&
+												copyToClipboard(snap.session.token, "token")
+											}
+										>
+											{copied === "token" ? (
+												<IconCheck size={16} />
+											) : (
+												<IconCopy size={16} />
+											)}
+										</ActionIcon>
+									</Group>
+								</Box>
+
+								<Button
+									variant="light"
+									color="gray"
+									fullWidth
+									leftSection={<IconExternalLink size={16} />}
+								>
+									Riwayat Sesi
+								</Button>
 							</Stack>
-						</Group>
-					</Box>
-				</Card>
-
-				<Grid gutter="lg">
-					<Grid.Col span={{ base: 12, md: 7 }}>
-						<Stack gap="md">
-							<Title order={4} c="orange.6">
-								Informasi Identitas
-							</Title>
-							<Grid gutter="sm">
-								<Grid.Col span={6}>
-									<InfoField
-										icon={IconUser}
-										label="Nama Lengkap"
-										value={snap.user?.name}
-									/>
-								</Grid.Col>
-								<Grid.Col span={6}>
-									<InfoField
-										icon={IconShield}
-										label="Peran"
-										value={snap.user?.role || "User"}
-									/>
-								</Grid.Col>
-								<Grid.Col span={12}>
-									<InfoField
-										icon={IconAt}
-										label="Alamat Email"
-										value={snap.user?.email}
-										copyable
-										id="email"
-									/>
-								</Grid.Col>
-								<Grid.Col span={12}>
-									<InfoField
-										icon={IconId}
-										label="Unique User ID"
-										value={snap.user?.id}
-										copyable
-										id="userid"
-									/>
-								</Grid.Col>
-							</Grid>
-						</Stack>
-					</Grid.Col>
-
-					<Grid.Col span={{ base: 12, md: 5 }}>
-						<Stack gap="md">
-							<Title order={4} c="orange.6">
-								Keamanan & Sesi
-							</Title>
-							<Card
-								withBorder
-								radius="md"
-								p="lg"
-								style={{
-									border: "1px solid var(--mantine-color-default-border)",
-								}}
-							>
-								<Stack gap="md">
-									<Box>
-										<Text size="xs" c="dimmed" tt="uppercase" fw={700} mb={8}>
-											Sesi Saat Ini
-										</Text>
-										<Group justify="space-between" align="center">
-											<Badge color="green" variant="light">
-												Aktif Sekarang
-											</Badge>
-											<Text size="xs" c="dimmed">
-												ID: {snap.session?.id?.substring(0, 8)}...
-											</Text>
-										</Group>
-									</Box>
-
-									<Box>
-										<Text size="xs" c="dimmed" tt="uppercase" fw={700} mb={8}>
-											Session Token
-										</Text>
-										<Group gap="xs" wrap="nowrap">
-											<Code
-												block
-												style={{
-													fontSize: rem(11),
-													flex: 1,
-												}}
-											>
-												{snap.session?.token
-													? `${snap.session.token.substring(0, 32)}...`
-													: "N/A"}
-											</Code>
-											<ActionIcon
-												variant="light"
-												color="gray"
-												onClick={() =>
-													snap.session?.token &&
-													copyToClipboard(snap.session.token, "token")
-												}
-											>
-												{copied === "token" ? (
-													<IconCheck size={16} />
-												) : (
-													<IconCopy size={16} />
-												)}
-											</ActionIcon>
-										</Group>
-									</Box>
-
-									<Button
-										variant="light"
-										color="gray"
-										fullWidth
-										leftSection={<IconExternalLink size={16} />}
-									>
-										Riwayat Sesi
-									</Button>
-								</Stack>
-							</Card>
-						</Stack>
-					</Grid.Col>
-				</Grid>
-			</Stack>
-		</Container>
+						</Card>
+					</Stack>
+				</Grid.Col>
+			</Grid>
+		</Stack>
 	);
 }

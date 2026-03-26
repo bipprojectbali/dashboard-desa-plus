@@ -20,6 +20,7 @@ import { Route as JennaAnalyticRouteImport } from './routes/jenna-analytic'
 import { Route as DemografiPekerjaanRouteImport } from './routes/demografi-pekerjaan'
 import { Route as BumdesRouteImport } from './routes/bumdes'
 import { Route as BantuanRouteImport } from './routes/bantuan'
+import { Route as ProfileRouteRouteImport } from './routes/profile/route'
 import { Route as PengaturanRouteRouteImport } from './routes/pengaturan/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -91,6 +92,11 @@ const BantuanRoute = BantuanRouteImport.update({
   path: '/bantuan',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRouteRoute = ProfileRouteRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PengaturanRouteRoute = PengaturanRouteRouteImport.update({
   id: '/pengaturan',
   path: '/pengaturan',
@@ -112,9 +118,9 @@ const UsersIndexRoute = UsersIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileIndexRoute = ProfileIndexRouteImport.update({
-  id: '/profile/',
-  path: '/profile/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProfileRouteRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -127,9 +133,9 @@ const UsersIdRoute = UsersIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileEditRoute = ProfileEditRouteImport.update({
-  id: '/profile/edit',
-  path: '/profile/edit',
-  getParentRoute: () => rootRouteImport,
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => ProfileRouteRoute,
 } as any)
 const PengaturanUmumRoute = PengaturanUmumRouteImport.update({
   id: '/umum',
@@ -171,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/pengaturan': typeof PengaturanRouteRouteWithChildren
+  '/profile': typeof ProfileRouteRouteWithChildren
   '/bantuan': typeof BantuanRoute
   '/bumdes': typeof BumdesRoute
   '/demografi-pekerjaan': typeof DemografiPekerjaanRoute
@@ -227,6 +234,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/pengaturan': typeof PengaturanRouteRouteWithChildren
+  '/profile': typeof ProfileRouteRouteWithChildren
   '/bantuan': typeof BantuanRoute
   '/bumdes': typeof BumdesRoute
   '/demografi-pekerjaan': typeof DemografiPekerjaanRoute
@@ -257,6 +265,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/pengaturan'
+    | '/profile'
     | '/bantuan'
     | '/bumdes'
     | '/demografi-pekerjaan'
@@ -312,6 +321,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/pengaturan'
+    | '/profile'
     | '/bantuan'
     | '/bumdes'
     | '/demografi-pekerjaan'
@@ -341,6 +351,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   PengaturanRouteRoute: typeof PengaturanRouteRouteWithChildren
+  ProfileRouteRoute: typeof ProfileRouteRouteWithChildren
   BantuanRoute: typeof BantuanRoute
   BumdesRoute: typeof BumdesRoute
   DemografiPekerjaanRoute: typeof DemografiPekerjaanRoute
@@ -352,9 +363,7 @@ export interface RootRouteChildren {
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
   SosialRoute: typeof SosialRoute
-  ProfileEditRoute: typeof ProfileEditRoute
   UsersIdRoute: typeof UsersIdRoute
-  ProfileIndexRoute: typeof ProfileIndexRoute
   UsersIndexRoute: typeof UsersIndexRoute
 }
 
@@ -437,6 +446,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BantuanRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pengaturan': {
       id: '/pengaturan'
       path: '/pengaturan'
@@ -467,10 +483,10 @@ declare module '@tanstack/react-router' {
     }
     '/profile/': {
       id: '/profile/'
-      path: '/profile'
+      path: '/'
       fullPath: '/profile/'
       preLoaderRoute: typeof ProfileIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProfileRouteRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -488,10 +504,10 @@ declare module '@tanstack/react-router' {
     }
     '/profile/edit': {
       id: '/profile/edit'
-      path: '/profile/edit'
+      path: '/edit'
       fullPath: '/profile/edit'
       preLoaderRoute: typeof ProfileEditRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProfileRouteRoute
     }
     '/pengaturan/umum': {
       id: '/pengaturan/umum'
@@ -581,10 +597,25 @@ const PengaturanRouteRouteWithChildren = PengaturanRouteRoute._addFileChildren(
   PengaturanRouteRouteChildren,
 )
 
+interface ProfileRouteRouteChildren {
+  ProfileEditRoute: typeof ProfileEditRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
+}
+
+const ProfileRouteRouteChildren: ProfileRouteRouteChildren = {
+  ProfileEditRoute: ProfileEditRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
+}
+
+const ProfileRouteRouteWithChildren = ProfileRouteRoute._addFileChildren(
+  ProfileRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   PengaturanRouteRoute: PengaturanRouteRouteWithChildren,
+  ProfileRouteRoute: ProfileRouteRouteWithChildren,
   BantuanRoute: BantuanRoute,
   BumdesRoute: BumdesRoute,
   DemografiPekerjaanRoute: DemografiPekerjaanRoute,
@@ -596,9 +627,7 @@ const rootRouteChildren: RootRouteChildren = {
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
   SosialRoute: SosialRoute,
-  ProfileEditRoute: ProfileEditRoute,
   UsersIdRoute: UsersIdRoute,
-  ProfileIndexRoute: ProfileIndexRoute,
   UsersIndexRoute: UsersIndexRoute,
 }
 export const routeTree = rootRouteImport

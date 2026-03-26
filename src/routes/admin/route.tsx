@@ -315,9 +315,7 @@ function DashboardLayout() {
 			</AppShell.Navbar>
 
 			<AppShell.Main>
-				<Box p="lg" style={{ minHeight: "calc(100vh - 100px)" }}>
-					<Outlet />
-				</Box>
+				<Outlet />
 			</AppShell.Main>
 		</AppShell>
 	);

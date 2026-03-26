@@ -1,7 +1,7 @@
 import {
+	Box,
 	Button,
 	Card,
-	Container,
 	Divider,
 	Group,
 	Stack,
@@ -63,77 +63,72 @@ function EditProfile() {
 	};
 
 	return (
-		<Container size="sm" py={50}>
-			<Stack gap="xl">
-				<Group justify="space-between" align="center">
-					<Box>
-						<Title order={1} c="orange.6">
-							Edit Profil
-						</Title>
-						<Text c="dimmed" size="sm">
-							Perbarui informasi profil publik Anda
-						</Text>
-					</Box>
-					<Button
-						variant="subtle"
-						color="gray"
-						leftSection={<IconChevronLeft size={18} />}
-						onClick={() => navigate({ to: "/profile" })}
-					>
-						Kembali
-					</Button>
-				</Group>
-
-				<Divider style={{ opacity: 0.1 }} />
-
-				<Card
-					withBorder
-					radius="md"
-					p="xl"
-					style={{ border: "1px solid var(--mantine-color-default-border)" }}
+		<Stack gap="xl" px={"lg"}>
+			<Group justify="space-between" align="center">
+				<Box>
+					<Title order={1} c="orange.6">
+						Edit Profil
+					</Title>
+					<Text c="dimmed" size="sm">
+						Perbarui informasi profil publik Anda
+					</Text>
+				</Box>
+				<Button
+					variant="subtle"
+					color="gray"
+					leftSection={<IconChevronLeft size={18} />}
+					onClick={() => navigate({ to: "/profile" })}
 				>
-					<form onSubmit={form.onSubmit(handleUpdateProfile)}>
-						<Stack gap="md">
-							<TextInput
-								label="Nama Lengkap"
-								placeholder="Masukkan nama lengkap Anda"
-								{...form.getInputProps("name")}
-								styles={{
-									label: { marginBottom: 8 },
-									input: {
-										backgroundColor: "var(--mantine-color-default-soft)",
-									},
-								}}
-							/>
-							<TextInput
-								label="URL Foto Profil"
-								placeholder="https://example.com/photo.jpg"
-								{...form.getInputProps("image")}
-								styles={{
-									label: { marginBottom: 8 },
-									input: {
-										backgroundColor: "var(--mantine-color-default-soft)",
-									},
-								}}
-							/>
-							<Button
-								type="submit"
-								fullWidth
-								mt="lg"
-								size="md"
-								color="orange"
-								loading={isUpdating}
-								leftSection={<IconEdit size={18} />}
-							>
-								Simpan Perubahan
-							</Button>
-						</Stack>
-					</form>
-				</Card>
-			</Stack>
-		</Container>
+					Kembali
+				</Button>
+			</Group>
+
+			<Divider style={{ opacity: 0.1 }} />
+
+			<Card
+				withBorder
+				radius="md"
+				p="xl"
+				style={{ border: "1px solid var(--mantine-color-default-border)" }}
+			>
+				<form onSubmit={form.onSubmit(handleUpdateProfile)}>
+					<Stack gap="md">
+						<TextInput
+							label="Nama Lengkap"
+							placeholder="Masukkan nama lengkap Anda"
+							{...form.getInputProps("name")}
+							styles={{
+								label: { marginBottom: 8 },
+								input: {
+									backgroundColor: "var(--mantine-color-default-soft)",
+								},
+							}}
+						/>
+						<TextInput
+							label="URL Foto Profil"
+							placeholder="https://example.com/photo.jpg"
+							{...form.getInputProps("image")}
+							styles={{
+								label: { marginBottom: 8 },
+								input: {
+									backgroundColor: "var(--mantine-color-default-soft)",
+								},
+							}}
+						/>
+						<Button
+							type="submit"
+							fullWidth
+							mt="lg"
+							size="md"
+							color="orange"
+							loading={isUpdating}
+							leftSection={<IconEdit size={18} />}
+						>
+							Simpan Perubahan
+						</Button>
+					</Stack>
+				</form>
+			</Card>
+		</Stack>
 	);
 }
-
-// Need Box from @mantine/core
-import { Box } from "@mantine/core";

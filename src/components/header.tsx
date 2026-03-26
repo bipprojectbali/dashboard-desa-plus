@@ -1,8 +1,10 @@
 import {
 	ActionIcon,
+	Anchor,
 	Avatar,
 	Badge,
 	Box,
+	Breadcrumbs,
 	Divider,
 	Group,
 	Text,
@@ -20,14 +22,70 @@ interface HeaderProps {
 }
 
 export function Header({ onSidebarToggle }: HeaderProps) {
-	const _location = useLocation();
+	const location = useLocation();
 	const navigate = useNavigate();
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
+	const pathnames = location.pathname.split("/").filter((x) => x);
+
+	const breadcrumbItems = [
+		<Anchor
+			key="home"
+			onClick={() => navigate({ to: "/" })}
+			c="white"
+			size="sm"
+			underline="hover"
+		>
+			Desa Darmasaba
+		</Anchor>,
+		...pathnames.map((value, index) => {
+			const to = `/${pathnames.slice(0, index + 1).join("/")}`;
+			const isLast = index === pathnames.length - 1;
+
+			// Map route path to human-readable label
+			const labelMap: Record<string, string> = {
+				"kinerja-divisi": "Kinerja Divisi",
+				"pengaduan-layanan-publik": "Pengaduan & Layanan Publik",
+				"jenna-analytic": "Jenna Analytic",
+				"demografi-pekerjaan": "Demografi & Kependudukan",
+				"keuangan-anggaran": "Keuangan & Anggaran",
+				bumdes: "Bumdes & UMKM",
+				sosial: "Sosial",
+				keamanan: "Keamanan",
+				bantuan: "Bantuan",
+				pengaturan: "Pengaturan",
+				umum: "Umum",
+				notifikasi: "Notifikasi",
+				"akses-dan-tim": "Akses & Tim",
+				profile: "Profil",
+				edit: "Edit",
+			};
+
+			const label =
+				labelMap[value] || value.charAt(0).toUpperCase() + value.slice(1);
+
+			return isLast ? (
+				<Text key={to} c="white" size="sm" fw={600}>
+					{label}
+				</Text>
+			) : (
+				<Anchor
+					key={to}
+					onClick={() => navigate({ to })}
+					c="white"
+					size="sm"
+					underline="hover"
+				>
+					{label}
+				</Anchor>
+			);
+		}),
+	];
+
 	return (
 		<Group justify="space-between" w="100%">
-			{/* Title */}
+			{/* Title & Breadcrumbs */}
 			<Group gap="md">
 				<ActionIcon
 					onClick={onSidebarToggle}
@@ -42,6 +100,18 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 						style={{ width: "70%", height: "70%" }}
 					/>
 				</ActionIcon>
+				<Breadcrumbs
+					separator={
+						<Text c="white" size="xs">
+							/
+						</Text>
+					}
+					styles={{
+						separator: { color: "white" },
+					}}
+				>
+					{breadcrumbItems}
+				</Breadcrumbs>
 			</Group>
 
 			{/* Right Section */}
