@@ -3,10 +3,12 @@ import {
 	Box,
 	Card,
 	Group,
+	Loader,
 	Text,
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { useEffect, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -16,19 +18,36 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-
-const chartData = [
-	{ month: "Jan", value: 150 },
-	{ month: "Feb", value: 165 },
-	{ month: "Mar", value: 195 },
-	{ month: "Apr", value: 160 },
-	{ month: "Mei", value: 205 },
-	{ month: "Jun", value: 185 },
-];
+import { apiClient } from "@/utils/api-client";
 
 export function ChartSurat() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+
+	const [data, setData] = useState<any[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		async function fetchTrends() {
+			try {
+				const res = await apiClient.GET("/api/complaint/service-trends");
+				if (res.data?.data) {
+					setData(
+						(res.data.data as any[]).map((d) => ({
+							month: d.month,
+							value: Number(d.count),
+						})),
+					);
+				}
+			} catch (error) {
+				console.error("Failed to fetch service trends", error);
+			} finally {
+				setLoading(false);
+			}
+		}
+
+		fetchTrends();
+	}, []);
 
 	return (
 		<Card
@@ -72,39 +91,44 @@ export function ChartSurat() {
 				</ActionIcon>
 			</Group>
 			<ResponsiveContainer width="100%" height={300}>
-				<BarChart data={chartData}>
-					<CartesianGrid
-						strokeDasharray="3 3"
-						vertical={false}
-						stroke={dark ? "#334155" : "#e5e7eb"}
-					/>
-					<XAxis
-						dataKey="month"
-						axisLine={false}
-						tickLine={false}
-						tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
-					/>
-					<YAxis
-						axisLine={false}
-						tickLine={false}
-						ticks={[0, 55, 110, 165, 220]}
-						tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
-					/>
-					<Tooltip
-						contentStyle={{
-							backgroundColor: dark ? "#1E293B" : "white",
-							borderColor: dark ? "#334155" : "#e5e7eb",
-							borderRadius: "8px",
-							boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-						}}
-						labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
-					/>
-					<Bar
-						dataKey="value"
-						fill="var(--mantine-color-blue-filled)"
-						radius={[4, 4, 0, 0]}
-					/>
-				</BarChart>
+				{loading ? (
+					<Group justify="center" align="center" h="100%">
+						<Loader />
+					</Group>
+				) : (
+					<BarChart data={data}>
+						<CartesianGrid
+							strokeDasharray="3 3"
+							vertical={false}
+							stroke={dark ? "#334155" : "#e5e7eb"}
+						/>
+						<XAxis
+							dataKey="month"
+							axisLine={false}
+							tickLine={false}
+							tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
+						/>
+						<YAxis
+							axisLine={false}
+							tickLine={false}
+							tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
+						/>
+						<Tooltip
+							contentStyle={{
+								backgroundColor: dark ? "#1E293B" : "white",
+								borderColor: dark ? "#334155" : "#e5e7eb",
+								borderRadius: "8px",
+								boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+							}}
+							labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+						/>
+						<Bar
+							dataKey="value"
+							fill="var(--mantine-color-blue-filled)"
+							radius={[4, 4, 0, 0]}
+						/>
+					</BarChart>
+				)}
 			</ResponsiveContainer>
 		</Card>
 	);

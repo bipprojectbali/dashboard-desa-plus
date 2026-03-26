@@ -1477,6 +1477,24 @@
         }
       }
     },
+    "/api/complaint/service-trends": {
+      "get": {
+        "operationId": "getApiComplaintService-trends",
+        "summary": "Get service letter trends for last 6 months",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/complaint/service-weekly": {
+      "get": {
+        "operationId": "getApiComplaintService-weekly",
+        "summary": "Get service letter count for current week",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
     "/api/resident/stats": {
       "get": {
         "operationId": "getApiResidentStats",

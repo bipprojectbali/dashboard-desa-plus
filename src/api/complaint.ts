@@ -82,4 +82,56 @@ export const complaint = new Elysia({
 		{
 			detail: { summary: "Get recent innovation ideas" },
 		},
+	)
+	.get(
+		"/service-trends",
+		async ({ set }) => {
+			try {
+				// Get last 6 months trends for service letters
+				const trends = await prisma.$queryRaw<any[]>`
+					SELECT 
+						TO_CHAR("createdAt", 'Mon') as month,
+						EXTRACT(MONTH FROM "createdAt") as month_num,
+						COUNT(*) as count
+					FROM service_letter
+					WHERE "createdAt" > NOW() - INTERVAL '6 months'
+					GROUP BY month, month_num
+					ORDER BY month_num ASC
+				`;
+				return { data: trends };
+			} catch (error) {
+				logger.error({ error }, "Failed to fetch service trends");
+				set.status = 500;
+				return { error: "Internal Server Error" };
+			}
+		},
+		{
+			detail: { summary: "Get service letter trends for last 6 months" },
+		},
+	)
+	.get(
+		"/service-weekly",
+		async ({ set }) => {
+			try {
+				const startOfWeek = new Date();
+				startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+				startOfWeek.setHours(0, 0, 0, 0);
+
+				const count = await prisma.serviceLetter.count({
+					where: {
+						createdAt: {
+							gte: startOfWeek,
+						},
+					},
+				});
+				return { data: { count } };
+			} catch (error) {
+				logger.error({ error }, "Failed to fetch weekly service stats");
+				set.status = 500;
+				return { error: "Internal Server Error" };
+			}
+		},
+		{
+			detail: { summary: "Get service letter count for current week" },
+		},
 	);

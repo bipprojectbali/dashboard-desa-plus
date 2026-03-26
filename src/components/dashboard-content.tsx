@@ -37,16 +37,20 @@ export function DashboardContent() {
 	const [stats, setStats] = useState({
 		complaints: { total: 0, baru: 0, proses: 0, selesai: 0 },
 		residents: { total: 0, heads: 0, poor: 0 },
+		weeklyService: 0,
 		loading: true,
 	});
 
 	useEffect(() => {
 		async function fetchStats() {
 			try {
-				const [complaintRes, residentRes] = await Promise.all([
-					apiClient.GET("/api/complaint/stats"),
-					apiClient.GET("/api/resident/stats"),
-				]);
+				const [complaintRes, residentRes, weeklyServiceRes] = await Promise.all(
+					[
+						apiClient.GET("/api/complaint/stats"),
+						apiClient.GET("/api/resident/stats"),
+						apiClient.GET("/api/complaint/service-weekly"),
+					],
+				);
 
 				setStats({
 					complaints: (complaintRes.data as any)?.data || {
@@ -60,6 +64,7 @@ export function DashboardContent() {
 						heads: 0,
 						poor: 0,
 					},
+					weeklyService: (weeklyServiceRes.data as any)?.data?.count || 0,
 					loading: false,
 				});
 			} catch (error) {
@@ -78,8 +83,8 @@ export function DashboardContent() {
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
 						title="Surat Minggu Ini"
-						value={0}
-						detail="Menunggu integrasi riil"
+						value={stats.weeklyService}
+						detail="Total surat diajukan"
 						trend="0%"
 						trendValue={0}
 						icon={<FileText style={{ width: "70%", height: "70%" }} />}
