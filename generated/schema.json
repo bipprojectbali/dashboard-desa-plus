@@ -1413,6 +1413,105 @@
           }
         }
       }
+    },
+    "/api/division/": {
+      "get": {
+        "operationId": "getApiDivision",
+        "summary": "Get all divisions",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/division/activities": {
+      "get": {
+        "operationId": "getApiDivisionActivities",
+        "summary": "Get recent activities",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/division/metrics": {
+      "get": {
+        "operationId": "getApiDivisionMetrics",
+        "summary": "Get division performance metrics",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/complaint/stats": {
+      "get": {
+        "operationId": "getApiComplaintStats",
+        "summary": "Get complaint statistics",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/complaint/recent": {
+      "get": {
+        "operationId": "getApiComplaintRecent",
+        "summary": "Get recent complaints",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/complaint/service-stats": {
+      "get": {
+        "operationId": "getApiComplaintService-stats",
+        "summary": "Get service letter statistics by type",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/resident/stats": {
+      "get": {
+        "operationId": "getApiResidentStats",
+        "summary": "Get resident statistics",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/resident/banjar-stats": {
+      "get": {
+        "operationId": "getApiResidentBanjar-stats",
+        "summary": "Get population data per banjar",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/resident/demographics": {
+      "get": {
+        "operationId": "getApiResidentDemographics",
+        "summary": "Get religious and gender demographics",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/event/": {
+      "get": {
+        "operationId": "getApiEvent",
+        "summary": "Get upcoming events",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/event/today": {
+      "get": {
+        "operationId": "getApiEventToday",
+        "summary": "Get events for today",
+        "responses": {
+          "200": {}
+        }
+      }
     }
   },
   "components": {

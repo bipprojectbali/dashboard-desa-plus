@@ -2,7 +2,6 @@ import {
 	Box,
 	Card,
 	Group,
-	Stack,
 	Text,
 	Title,
 	useMantineColorScheme,
@@ -51,8 +50,8 @@ export function SatisfactionChart() {
 						paddingAngle={2}
 						dataKey="value"
 					>
-						{satisfactionData.map((entry, index) => (
-							<Cell key={`cell-${index}`} fill={entry.color} />
+						{satisfactionData.map((entry) => (
+							<Cell key={`cell-${entry.name}`} fill={entry.color} />
 						))}
 					</Pie>
 					<Tooltip
@@ -65,8 +64,8 @@ export function SatisfactionChart() {
 				</PieChart>
 			</ResponsiveContainer>
 			<Group justify="center" gap="md" mt="md">
-				{satisfactionData.map((item, index) => (
-					<Group key={index} gap="xs">
+				{satisfactionData.map((item) => (
+					<Group key={item.name} gap="xs">
 						<Box
 							w={12}
 							h={12}

@@ -2,7 +2,7 @@
 
 **ID:** `TASK-DX-001`  
 **Konteks:** Developer Experience (DX)  
-**Status:** 🏗️ PROPOSED  
+**Status:** ✅ COMPLETED  
 **Prioritas:** 🟡 TINGGI (Peningkatan Produktivitas)  
 **Estimasi:** 1 Hari Kerja  
 
@@ -16,35 +16,35 @@ Mengaktifkan fitur **Click-to-Source** di lingkungan pengembangan: klik elemen U
 ## 📋 DAFTAR TUGAS (TODO)
 
 ### 1. Vite Plugin Configuration
-- [ ] Buat file `src/utils/dev-inspector-plugin.ts` yang berisi `inspectorPlugin()` (regex-based JSX attribute injection).
-- [ ] Modifikasi `src/vite.ts`:
-  - Impor `inspectorPlugin`.
-  - Tambahkan `inspectorPlugin()` ke array `plugins` **sebelum** `react()`.
-  - Gunakan `enforce: 'pre'` pada plugin tersebut.
+- [x] Buat file `src/utils/dev-inspector-plugin.ts` yang berisi `inspectorPlugin()` (regex-based JSX attribute injection).
+- [x] Modifikasi `src/vite.ts`:
+  - [x] Impor `inspectorPlugin`.
+  - [x] Tambahkan `inspectorPlugin()` ke array `plugins` **sebelum** `react()`.
+  - [x] Gunakan `enforce: 'pre'` pada plugin tersebut.
 
 ### 2. Frontend Component Development
-- [ ] Buat komponen `src/components/dev-inspector.tsx`:
-  - Implementasikan hotkey listener.
-  - Tambahkan overlay UI (border biru & tooltip nama file) saat hover.
-  - Implementasikan `getCodeInfoFromElement` dengan fallback (fiber props -> DOM attributes).
-  - Tambahkan fungsi `openInEditor` (POST ke `/__open-in-editor`).
+- [x] Buat komponen `src/components/dev-inspector.tsx`:
+  - [x] Implementasikan hotkey listener.
+  - [x] Tambahkan overlay UI (border biru & tooltip nama file) saat hover.
+  - [x] Implementasikan `getCodeInfoFromElement` dengan fallback (fiber props -> DOM attributes).
+  - [x] Tambahkan fungsi `openInEditor` (POST ke `/__open-in-editor`).
 
 ### 3. Backend Integration (Elysia)
-- [ ] Modifikasi `src/index.ts`:
-  - Tambahkan handler `onRequest` sebelum middleware lainnya.
-  - Intercept request ke path `/__open-in-editor` (POST).
-  - Gunakan `Bun.spawn()` untuk memanggil editor (berdasarkan `.env` `REACT_EDITOR`).
-  - Gunakan `Bun.which()` untuk verifikasi keberadaan editor di system PATH.
+- [x] Modifikasi `src/index.ts`:
+  - [x] Tambahkan handler `onRequest` sebelum middleware lainnya.
+  - [x] Intercept request ke path `/__open-in-editor` (POST).
+  - [x] Gunakan `Bun.spawn()` untuk memanggil editor (berdasarkan `.env` `REACT_EDITOR`).
+  - [x] Gunakan `Bun.which()` untuk verifikasi keberadaan editor di system PATH.
 
 ### 4. Application Root Integration
-- [ ] Modifikasi `src/frontend.tsx`:
-  - Implementasikan **Conditional Dynamic Import** untuk `DevInspector`.
-  - Gunakan `import.meta.env?.DEV` agar tidak ada overhead di production.
-  - Bungkus `<App />` (atau router) dengan `<DevInspectorWrapper>`.
+- [x] Modifikasi `src/frontend.tsx`:
+  - [x] Implementasikan **Conditional Dynamic Import** untuk `DevInspector`.
+  - [x] Gunakan `import.meta.env?.DEV` agar tidak ada overhead di production.
+  - [x] Bungkus `<App />` (atau router) dengan `<DevInspectorWrapper>`.
 
 ### 5. Environment Setup
-- [ ] Tambahkan `REACT_EDITOR=code` (atau `cursor`, `windsurf`) di file `.env`.
-- [ ] Pastikan alias `@/` berfungsi dengan benar di plugin Vite untuk resolusi path.
+- [x] Tambahkan `REACT_EDITOR=code` (atau `cursor`, `windsurf`) di file `.env`.
+- [x] Pastikan alias `@/` berfungsi dengan benar di plugin Vite untuk resolusi path.
 
 ---
 

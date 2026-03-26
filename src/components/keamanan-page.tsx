@@ -9,13 +9,13 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme
+	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconAlertTriangle,
 	IconCamera,
 	IconClock,
-	IconMapPin
+	IconMapPin,
 } from "@tabler/icons-react";
 
 const KeamananPage = () => {
@@ -120,8 +120,8 @@ const KeamananPage = () => {
 					<Stack gap={"xs"}>
 						{/* KPI Cards */}
 						<Grid gutter="md">
-							{kpiData.map((kpi, index) => (
-								<GridCol key={index} span={{ base: 12, sm: 6, md: 6 }}>
+							{kpiData.map((kpi) => (
+								<GridCol key={kpi.title} span={{ base: 12, sm: 6, md: 6 }}>
 									<Card
 										p="md"
 										radius="md"
@@ -214,9 +214,9 @@ const KeamananPage = () => {
 								<Title order={4} c={dark ? "dark.0" : "black"}>
 									Daftar CCTV
 								</Title>
-								{cctvLocations.map((cctv, index) => (
+								{cctvLocations.map((cctv) => (
 									<Card
-										key={index}
+										key={cctv.id}
 										p="md"
 										radius="md"
 										withBorder
@@ -269,9 +269,9 @@ const KeamananPage = () => {
 						h="100%"
 					>
 						<Stack gap="sm">
-							{securityReports.map((report, index) => (
+							{securityReports.map((report) => (
 								<Card
-									key={index}
+									key={report.id}
 									p="md"
 									radius="md"
 									withBorder

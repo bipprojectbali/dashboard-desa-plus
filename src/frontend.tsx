@@ -10,12 +10,11 @@
 import { createTheme, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { Inspector } from "react-dev-inspector";
 import { createRoot } from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";
 import "@mantine/charts/styles.css";
-import { IS_DEV, VITE_PUBLIC_URL } from "./utils/env";
+import { IS_DEV } from "./utils/env";
 
 // Create a new router instance
 export const router = createRouter({
@@ -101,29 +100,14 @@ const theme = createTheme({
 	primaryColor: "darmasaba-blue",
 });
 
+// Use dynamic import for DevInspector to avoid including it in production bundle
 const InspectorWrapper = IS_DEV
-	? Inspector
+	? (await import("./components/dev-inspector")).DevInspector
 	: ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
 const elem = document.getElementById("root")!;
 const app = (
-	<InspectorWrapper
-		keys={["shift", "a"]}
-		onClickElement={(e) => {
-			if (!e.codeInfo) return;
-
-			const url = VITE_PUBLIC_URL;
-			fetch(`${url}/__open-in-editor`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					relativePath: e.codeInfo.relativePath,
-					lineNumber: e.codeInfo.lineNumber,
-					columnNumber: e.codeInfo.columnNumber,
-				}),
-			});
-		}}
-	>
+	<InspectorWrapper>
 		<MantineProvider theme={theme} defaultColorScheme="auto">
 			<ModalsProvider>
 				<RouterProvider router={router} />

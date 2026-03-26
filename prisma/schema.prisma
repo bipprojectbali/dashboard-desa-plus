@@ -21,7 +21,457 @@ model User {
   sessions      Session[]
   apiKeys       ApiKey[]
 
+  // Relations
+  discussions       Discussion[]
+  events            Event[]
+  complaints        Complaint[]         @relation("ComplaintReporter")
+  assignedComplaints Complaint[]        @relation("ComplaintAssignee")
+  complaintUpdates  ComplaintUpdate[]
+  serviceLetters    ServiceLetter[]
+  innovationIdeas   InnovationIdea[]    @relation("IdeaReviewer")
+  healthRecords     HealthRecord[]
+  populationDynamics PopulationDynamic[]
+  budgets           Budget[]
+  budgetTransactions BudgetTransaction[]
+  posyandus         Posyandu[]
+  securityReports   SecurityReport[]
+
   @@map("user")
+}
+
+// --- KATEGORI 1: KINERJA DIVISI & AKTIVITAS ---
+
+model Division {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  color       String   @default("#1E3A5F")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  activities      Activity[]
+  documents       Document[]
+  discussions     Discussion[]
+  divisionMetrics DivisionMetric[]
+
+  @@map("division")
+}
+
+model Activity {
+  id          String         @id @default(cuid())
+  title       String
+  description String?
+  divisionId  String
+  startDate   DateTime?
+  endDate     DateTime?
+  dueDate     DateTime?
+  progress    Int            @default(0) // 0-100
+  status      ActivityStatus @default(BERJALAN)
+  priority    Priority       @default(SEDANG)
+  assignedTo  String? // JSON array of user IDs
+  completedAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  division Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+
+  @@index([divisionId])
+  @@index([status])
+  @@map("activity")
+}
+
+model Document {
+  id         String           @id @default(cuid())
+  title      String
+  category   DocumentCategory
+  type       String // "Gambar", "Dokumen", "PDF", etc
+  fileUrl    String
+  fileSize   Int? // in bytes
+  divisionId String?
+  uploadedBy String
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  division Division? @relation(fields: [divisionId], references: [id], onDelete: SetNull)
+
+  @@index([category])
+  @@index([divisionId])
+  @@map("document")
+}
+
+model Discussion {
+  id         String   @id @default(cuid())
+  message    String
+  senderId   String
+  parentId   String? // For threaded discussions
+  divisionId String?
+  isResolved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  sender   User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  parent   Discussion?  @relation("DiscussionThread", fields: [parentId], references: [id], onDelete: SetNull)
+  replies  Discussion[] @relation("DiscussionThread")
+  division Division?    @relation(fields: [divisionId], references: [id], onDelete: SetNull)
+
+  @@index([divisionId])
+  @@index([createdAt])
+  @@map("discussion")
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  eventType   EventType
+  startDate   DateTime
+  endDate     DateTime?
+  location    String?
+  isAllDay    Boolean   @default(false)
+  isRecurring Boolean   @default(false)
+  createdBy   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  creator User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@index([startDate])
+  @@index([eventType])
+  @@map("event")
+}
+
+model DivisionMetric {
+  id             String   @id @default(cuid())
+  divisionId     String
+  period         String // "2025-Q1", "2025-01"
+  activityCount  Int      @default(0)
+  completionRate Float    @default(0)
+  avgProgress    Float    @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  division Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+
+  @@unique([divisionId, period])
+  @@map("division_metric")
+}
+
+// --- KATEGORI 2: PENGADUAN & LAYANAN PUBLIK ---
+
+model Complaint {
+  id              String          @id @default(cuid())
+  complaintNumber String          @unique // Auto-generated: COMPLAINT-YYYYMMDD-XXX
+  title           String
+  description     String
+  category        ComplaintCategory
+  status          ComplaintStatus @default(BARU)
+  priority        Priority        @default(SEDANG)
+
+  reporterId    String?
+  reporterPhone String?
+  reporterEmail String?
+  isAnonymous   Boolean @default(false)
+
+  assignedTo String? // User ID
+  resolvedBy String? // User ID
+  resolvedAt DateTime?
+
+  location  String?
+  imageUrl  String[] // Array of image URLs
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reporter User? @relation("ComplaintReporter", fields: [reporterId], references: [id], onDelete: SetNull)
+  assignee User? @relation("ComplaintAssignee", fields: [assignedTo], references: [id], onDelete: SetNull)
+
+  complaintUpdates ComplaintUpdate[]
+
+  @@index([status])
+  @@index([category])
+  @@index([createdAt])
+  @@map("complaint")
+}
+
+model ComplaintUpdate {
+  id          String          @id @default(cuid())
+  complaintId String
+  message     String
+  status      ComplaintStatus?
+  updatedBy   String
+  createdAt   DateTime        @default(now())
+
+  complaint Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  updater   User      @relation(fields: [updatedBy], references: [id], onDelete: Cascade)
+
+  @@index([complaintId])
+  @@map("complaint_update")
+}
+
+model ServiceLetter {
+  id               String        @id @default(cuid())
+  letterNumber     String        @unique
+  letterType       LetterType
+  applicantName    String
+  applicantNik     String
+  applicantAddress String
+  purpose          String?
+  status           ServiceStatus @default(BARU)
+
+  processedBy String?
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  processor User? @relation(fields: [processedBy], references: [id], onDelete: SetNull)
+
+  @@index([letterType])
+  @@index([status])
+  @@index([createdAt])
+  @@map("service_letter")
+}
+
+model InnovationIdea {
+  id               String     @id @default(cuid())
+  title            String
+  description      String
+  category         String // "Teknologi", "Ekonomi", "Kesehatan", "Pendidikan"
+  submitterName    String
+  submitterContact String?
+  status           IdeaStatus @default(BARU)
+  reviewedBy       String?
+  reviewedAt       DateTime?
+  notes            String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reviewer User? @relation("IdeaReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
+
+  @@index([category])
+  @@index([status])
+  @@map("innovation_idea")
+}
+
+// --- KATEGORI 3: DEMOGRAFI & KEPENDUDUKAN ---
+
+model Resident {
+  id            String         @id @default(cuid())
+  nik           String         @unique
+  kk            String
+  name          String
+  birthDate     DateTime
+  birthPlace    String
+  gender        Gender
+  religion      Religion
+  maritalStatus MaritalStatus  @default(BELUM_KAWIN)
+  education     EducationLevel?
+  occupation    String?
+
+  banjarId String
+  rt       String
+  rw       String
+  address  String
+
+  isHeadOfHousehold Boolean @default(false)
+  isPoor            Boolean @default(false)
+  isStunting        Boolean @default(false)
+
+  deathDate   DateTime?
+  moveInDate  DateTime?
+  moveOutDate DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  banjar Banjar @relation(fields: [banjarId], references: [id], onDelete: Cascade)
+
+  healthRecords     HealthRecord[]
+  employmentRecords EmploymentRecord[]
+
+  @@index([banjarId])
+  @@index([religion])
+  @@index([occupation])
+  @@map("resident")
+}
+
+model Banjar {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  code        String   @unique
+  description String?
+
+  totalPopulation Int @default(0)
+  totalKK         Int @default(0)
+  totalPoor       Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  residents Resident[]
+  umkms     Umkm[]
+
+  @@map("banjar")
+}
+
+// --- STUBS FOR PHASE 2+ (To maintain relations) ---
+
+model HealthRecord {
+  id         String @id @default(cuid())
+  residentId String
+  resident   Resident @relation(fields: [residentId], references: [id])
+  recordedBy String
+  recorder   User @relation(fields: [recordedBy], references: [id])
+}
+
+model EmploymentRecord {
+  id         String @id @default(cuid())
+  residentId String
+  resident   Resident @relation(fields: [residentId], references: [id])
+}
+
+model PopulationDynamic {
+  id           String @id @default(cuid())
+  documentedBy String
+  documentor   User @relation(fields: [documentedBy], references: [id])
+}
+
+model Budget {
+  id         String @id @default(cuid())
+  approvedBy String?
+  approver   User? @relation(fields: [approvedBy], references: [id])
+}
+
+model BudgetTransaction {
+  id        String @id @default(cuid())
+  createdBy String
+  creator   User @relation(fields: [createdBy], references: [id])
+}
+
+model Umkm {
+  id       String @id @default(cuid())
+  banjarId String?
+  banjar   Banjar? @relation(fields: [banjarId], references: [id])
+}
+
+model Posyandu {
+  id            String @id @default(cuid())
+  coordinatorId String?
+  coordinator   User? @relation(fields: [coordinatorId], references: [id])
+}
+
+model SecurityReport {
+  id         String @id @default(cuid())
+  assignedTo String?
+  assignee   User? @relation(fields: [assignedTo], references: [id])
+}
+
+// --- ENUMS ---
+
+enum ActivityStatus {
+  BERJALAN
+  SELESAI
+  TERTUNDA
+  DIBATALKAN
+}
+
+enum Priority {
+  RENDAH
+  SEDANG
+  TINGGI
+  DARURAT
+}
+
+enum DocumentCategory {
+  SURAT_KEPUTUSAN
+  DOKUMENTASI
+  LAPORAN_KEUANGAN
+  NOTULENSI_RAPAT
+  UMUM
+}
+
+enum EventType {
+  RAPAT
+  KEGIATAN
+  UPACARA
+  SOSIAL
+  BUDAYA
+  LAINNYA
+}
+
+enum ComplaintCategory {
+  KETERTIBAN_UMUM
+  PELAYANAN_KESEHATAN
+  INFRASTRUKTUR
+  ADMINISTRASI
+  KEAMANAN
+  LAINNYA
+}
+
+enum ComplaintStatus {
+  BARU
+  DIPROSES
+  SELESAI
+  DITOLAK
+}
+
+enum LetterType {
+  KTP
+  KK
+  DOMISILI
+  USAHA
+  KETERANGAN_TIDAK_MAMPU
+  SURAT_PENGANTAR
+  LAINNYA
+}
+
+enum ServiceStatus {
+  BARU
+  DIPROSES
+  SELESAI
+  DIAMBIL
+}
+
+enum IdeaStatus {
+  BARU
+  DIKAJI
+  DISETUJUI
+  DITOLAK
+  DIIMPLEMENTASI
+}
+
+enum Gender {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+enum Religion {
+  HINDU
+  ISLAM
+  KRISTEN
+  KATOLIK
+  BUDDHA
+  KONGHUCU
+  LAINNYA
+}
+
+enum MaritalStatus {
+  BELUM_KAWIN
+  KAWIN
+  CERAI_HIDUP
+  CERAI_MATI
+}
+
+enum EducationLevel {
+  TIDAK_SEKOLAH
+  SD
+  SMP
+  SMA
+  D3
+  S1
+  S2
+  S3
 }
 
 model Session {

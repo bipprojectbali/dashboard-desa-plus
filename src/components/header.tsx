@@ -6,7 +6,6 @@ import {
 	Divider,
 	Group,
 	Text,
-	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
 import {
@@ -21,44 +20,10 @@ interface HeaderProps {
 }
 
 export function Header({ onSidebarToggle }: HeaderProps) {
-	const location = useLocation();
+	const _location = useLocation();
+	const navigate = useNavigate();
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
-	const navigate = useNavigate();
-
-	// Define page titles based on route
-	const getPageTitle = () => {
-		switch (location.pathname) {
-			case "/":
-				return "Beranda";
-			case "/kinerja-divisi":
-				return "Kinerja Divisi";
-			case "/pengaduan-layanan-publik":
-				return "Pengaduan & Layanan Publik";
-			case "/jenna-analytic":
-				return "Jenna Analytic";
-			case "/demografi-pekerjaan":
-				return "Demografi & Kependudukan";
-			case "/keuangan-anggaran":
-				return "Keuangan & Anggaran";
-			case "/bumdes":
-				return "Bumdes & UMKM Desa";
-			case "/sosial":
-				return "Sosial";
-			case "/keamanan":
-				return "Keamanan";
-			case "/bantuan":
-				return "Bantuan";
-			case "/pengaturan":
-			case "/pengaturan/umum":
-			case "/pengaturan/notifikasi":
-			case "/pengaturan/keamanan":
-			case "/pengaturan/akses-dan-tim":
-				return "Pengaturan";
-			default:
-				return "Desa Darmasaba";
-		}
-	};
 
 	return (
 		<Group justify="space-between" w="100%">
@@ -77,9 +42,6 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 						style={{ width: "70%", height: "70%" }}
 					/>
 				</ActionIcon>
-				{/* <Title order={3} c={"white"}>
-					{getPageTitle()}
-				</Title> */}
 			</Group>
 
 			{/* Right Section */}

@@ -48,9 +48,9 @@ export function ActivityList() {
 				</Title>
 			</Group>
 			<Stack gap="md">
-				{events.map((event, index) => (
+				{events.map((event) => (
 					<Box
-						key={index}
+						key={`${event.title}-${event.date}`}
 						style={{
 							borderLeft: "4px solid var(--mantine-color-blue-filled)",
 							paddingLeft: 12,

@@ -11,7 +11,7 @@ export const Route = createRootRoute({
 		// Apply protected route middleware for all routes
 		// The middleware will determine which routes are public vs protected
 		const context = await protectedRouteMiddleware({ location });
-		
+
 		// Only set auth store if we have user data (for protected routes)
 		if (context?.user) {
 			authStore.user = context?.user as any;

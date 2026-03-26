@@ -2,12 +2,25 @@ import Elysia, { t } from "elysia";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
 
+interface AuthenticatedUser {
+	id: string;
+	email: string;
+	name?: string | null;
+}
+
 export const profile = new Elysia({
 	prefix: "/profile",
 }).post(
 	"/update",
-	async (ctx) => {
-		const { body, set, user } = ctx as any;
+	async ({
+		body,
+		set,
+		user,
+	}: {
+		body: { name?: string; image?: string };
+		set: any;
+		user?: AuthenticatedUser;
+	}) => {
 		try {
 			if (!user) {
 				set.status = 401;

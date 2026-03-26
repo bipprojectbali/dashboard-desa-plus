@@ -45,8 +45,8 @@ export function ChartAPBDes() {
 				Grafik APBDes
 			</Title>
 			<Stack gap="xs">
-				{apbdesData.map((item, index) => (
-					<Group key={index} align="center" gap="md">
+				{apbdesData.map((item) => (
+					<Group key={item.name} align="center" gap="md">
 						<Text size="sm" fw={500} w={100} c={dark ? "white" : "gray.7"}>
 							{item.name}
 						</Text>

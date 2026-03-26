@@ -45,8 +45,8 @@ export function DivisionProgress() {
 				Divisi Teraktif
 			</Title>
 			<Stack gap="sm">
-				{divisionData.map((divisi, index) => (
-					<Box key={index}>
+				{divisionData.map((divisi) => (
+					<Box key={divisi.name}>
 						<Group justify="space-between" mb={5}>
 							<Text size="sm" fw={500} c={dark ? "white" : "gray.7"}>
 								{divisi.name}

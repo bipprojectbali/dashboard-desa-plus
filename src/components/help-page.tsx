@@ -152,9 +152,9 @@ const HelpPage = () => {
 
 			{/* Statistics Section */}
 			<SimpleGrid cols={3} spacing="lg" mb="xl">
-				{stats.map((stat, index) => (
+				{stats.map((stat) => (
 					<HelpCard
-						key={index}
+						key={stat.label}
 						bg={dark ? "#1E293B" : "white"}
 						p="lg"
 						style={{
@@ -192,9 +192,9 @@ const HelpPage = () => {
 								h="100%"
 							>
 								<Box>
-									{guideItems.map((item, index) => (
+									{guideItems.map((item) => (
 										<Box
-											key={index}
+											key={item.title}
 											py="sm"
 											style={{
 												borderBottom: "1px solid #eee",
@@ -226,9 +226,9 @@ const HelpPage = () => {
 								h="100%"
 							>
 								<Box>
-									{videoItems.map((item, index) => (
+									{videoItems.map((item) => (
 										<Box
-											key={index}
+											key={item.title}
 											py="sm"
 											style={{
 												borderBottom: "1px solid #eee",
@@ -260,13 +260,13 @@ const HelpPage = () => {
 								h="100%"
 							>
 								<Accordion variant="separated">
-									{faqItems.map((item, index) => (
+									{faqItems.map((item) => (
 										<Accordion.Item
 											style={{
 												backgroundColor: dark ? "#263852ff" : "#F1F5F9",
 											}}
-											key={index}
-											value={`faq-${index}`}
+											key={item.question}
+											value={item.question}
 										>
 											<Accordion.Control>{item.question}</Accordion.Control>
 											<Accordion.Panel>
@@ -335,9 +335,9 @@ const HelpPage = () => {
 								h="100%"
 							>
 								<Box>
-									{documentationItems.map((item, index) => (
+									{documentationItems.map((item) => (
 										<Box
-											key={index}
+											key={item.title}
 											py="sm"
 											style={{
 												borderBottom: "1px solid #eee",
@@ -434,6 +434,7 @@ const HelpPage = () => {
 											disabled={isLoading}
 										/>
 										<button
+											type="button"
 											onClick={handleSendMessage}
 											disabled={isLoading || inputValue.trim() === ""}
 											style={{
