@@ -4,7 +4,6 @@ import {
 	Stack,
 	Text,
 	ThemeIcon,
-	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
 import { IconAward } from "@tabler/icons-react";

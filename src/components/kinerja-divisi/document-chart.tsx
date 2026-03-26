@@ -63,8 +63,8 @@ export function DocumentChart() {
 						labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 					/>
 					<Bar dataKey="jumlah" radius={[4, 4, 0, 0]}>
-						{documentData.map((entry, index) => (
-							<Cell key={`cell-${index}`} fill={entry.color} />
+						{documentData.map((entry) => (
+							<Cell key={`cell-${entry.name}`} fill={entry.color} />
 						))}
 					</Bar>
 				</BarChart>

@@ -47,8 +47,8 @@ export function ProgressChart() {
 						paddingAngle={2}
 						dataKey="value"
 					>
-						{progressData.map((entry, index) => (
-							<Cell key={`cell-${index}`} fill={entry.color} />
+						{progressData.map((entry) => (
+							<Cell key={`cell-${entry.name}`} fill={entry.color} />
 						))}
 					</Pie>
 					<Tooltip
@@ -61,8 +61,8 @@ export function ProgressChart() {
 				</PieChart>
 			</ResponsiveContainer>
 			<Stack gap="xs" mt="md">
-				{progressData.map((item, index) => (
-					<Group key={index} justify="space-between">
+				{progressData.map((item) => (
+					<Group key={item.name} justify="space-between">
 						<Group gap="xs">
 							<Box
 								w={12}

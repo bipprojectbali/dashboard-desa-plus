@@ -27,12 +27,12 @@ export function DivisionList() {
 			try {
 				const { data } = await apiClient.GET("/api/division/");
 				if (data?.data) {
-					const mapped = data.data.map(
-						(div: { name: string; _count?: { activities: number } }) => ({
-							name: div.name,
-							count: div._count?.activities || 0,
-						}),
-					);
+					const mapped = (
+						data.data as { name: string; _count?: { activities: number } }[]
+					).map((div) => ({
+						name: div.name,
+						count: div._count?.activities || 0,
+					}));
 					setDivisions(mapped);
 				}
 			} catch (error) {
@@ -68,9 +68,9 @@ export function DivisionList() {
 						<Loader size="sm" />
 					</Group>
 				) : divisions.length > 0 ? (
-					divisions.map((division, index) => (
+					divisions.map((division) => (
 						<Group
-							key={index}
+							key={division.name}
 							justify="space-between"
 							align="center"
 							style={{

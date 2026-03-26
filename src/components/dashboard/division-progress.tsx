@@ -17,6 +17,14 @@ interface DivisionData {
 	value: number;
 }
 
+interface DivisionApiResponse {
+	id: string;
+	name: string;
+	_count?: {
+		activities: number;
+	};
+}
+
 export function DivisionProgress() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
@@ -30,7 +38,7 @@ export function DivisionProgress() {
 				const res = await apiClient.GET("/api/division/");
 				if (res.data?.data) {
 					setData(
-						(res.data.data as any[]).map((d) => ({
+						(res.data.data as DivisionApiResponse[]).map((d) => ({
 							name: d.name,
 							value: d._count?.activities || 0,
 						})),

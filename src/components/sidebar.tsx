@@ -1,13 +1,10 @@
 import {
-	Badge,
 	Box,
 	Collapse,
-	Group,
 	Image,
 	Input,
 	NavLink as MantineNavLink,
 	Stack,
-	Text,
 	useMantineColorScheme,
 } from "@mantine/core";
 import { useLocation, useNavigate } from "@tanstack/react-router";
@@ -80,11 +77,11 @@ export function Sidebar({ className }: SidebarProps) {
 
 			{/* Menu Items */}
 			<Stack gap={0} px="xs" style={{ overflowY: "auto" }}>
-				{menuItems.map((item, index) => {
+				{menuItems.map((item) => {
 					const isActive = location.pathname === item.path;
 					return (
 						<MantineNavLink
-							key={index}
+							key={item.path}
 							onClick={() => navigate({ to: item.path })}
 							label={item.name}
 							active={isActive}
@@ -146,11 +143,11 @@ export function Sidebar({ className }: SidebarProps) {
 							ml="lg"
 							style={{ overflowY: "auto", maxHeight: "200px" }}
 						>
-							{settingsItems.map((item, index) => {
+							{settingsItems.map((item) => {
 								const isActive = location.pathname === item.path;
 								return (
 									<MantineNavLink
-										key={index}
+										key={item.path}
 										onClick={() => navigate({ to: item.path })}
 										label={item.name}
 										active={isActive}

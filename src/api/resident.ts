@@ -1,4 +1,4 @@
-import Elysia from "elysia";
+import Elysia, { t } from "elysia";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
 
@@ -22,6 +22,16 @@ export const resident = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Object({
+						total: t.Number(),
+						heads: t.Number(),
+						poor: t.Number(),
+					}),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: { summary: "Get resident statistics" },
 		},
 	)
@@ -46,6 +56,12 @@ export const resident = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Array(t.Any()),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: { summary: "Get population data per banjar" },
 		},
 	)
@@ -69,7 +85,7 @@ export const resident = new Elysia({
 						take: 10,
 					}),
 					// Group by age ranges (simplified calculation)
-					prisma.$queryRaw<any[]>`
+					prisma.$queryRaw<{ range: string; count: number }[]>`
 						SELECT 
 							CASE 
 								WHEN date_part('year', age(now(), "birthDate")) BETWEEN 0 AND 16 THEN '0-16'
@@ -94,6 +110,17 @@ export const resident = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Object({
+						religion: t.Array(t.Any()),
+						gender: t.Array(t.Any()),
+						occupation: t.Array(t.Any()),
+						ageGroups: t.Array(t.Any()),
+					}),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: {
 				summary:
 					"Get demographics including religion, gender, occupation and age",

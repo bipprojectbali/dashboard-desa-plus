@@ -1,6 +1,6 @@
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
-import Elysia from "elysia";
+import Elysia, { t } from "elysia";
 import { apiMiddleware } from "../middleware/apiMiddleware";
 import { auth } from "../utils/auth";
 import { apikey } from "./apikey";
@@ -16,12 +16,24 @@ const api = new Elysia({
 	prefix: "/api",
 })
 	.use(cors())
-	.get("/health", () => ({ ok: true }))
-	.all("/auth/*", ({ request }) => auth.handler(request))
-	.get("/session", async ({ request }) => {
-		const data = await auth.api.getSession({ headers: request.headers });
-		return { data };
+	.get("/health", () => ({ ok: true }), {
+		response: {
+			200: t.Object({ ok: t.Boolean() }),
+		},
 	})
+	.all("/auth/*", ({ request }) => auth.handler(request))
+	.get(
+		"/session",
+		async ({ request }) => {
+			const data = await auth.api.getSession({ headers: request.headers });
+			return { data };
+		},
+		{
+			response: {
+				200: t.Object({ data: t.Any() }),
+			},
+		},
+	)
 	.use(apiMiddleware)
 	.use(apikey)
 	.use(profile)

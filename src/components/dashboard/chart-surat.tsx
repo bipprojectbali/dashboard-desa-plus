@@ -20,11 +20,16 @@ import {
 } from "recharts";
 import { apiClient } from "@/utils/api-client";
 
+interface ChartData {
+	month: string;
+	value: number;
+}
+
 export function ChartSurat() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const [data, setData] = useState<any[]>([]);
+	const [data, setData] = useState<ChartData[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -33,7 +38,7 @@ export function ChartSurat() {
 				const res = await apiClient.GET("/api/complaint/service-trends");
 				if (res.data?.data) {
 					setData(
-						(res.data.data as any[]).map((d) => ({
+						(res.data.data as { month: string; count: number }[]).map((d) => ({
 							month: d.month,
 							value: Number(d.count),
 						})),
@@ -79,7 +84,10 @@ export function ChartSurat() {
 						viewBox="0 0 20 20"
 						fill="none"
 						xmlns="http://www.w3.org/2000/svg"
+						role="img"
+						aria-label="Tampilkan Detail"
 					>
+						<title>Tampilkan Detail</title>
 						<path
 							d="M8 5L13 10L8 15"
 							stroke="currentColor"

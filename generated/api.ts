@@ -383,7 +383,17 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                    "multipart/form-data": {
+                        ok: boolean;
+                    };
+                    "text/plain": {
+                        ok: boolean;
+                    };
+                };
             };
         };
     };
@@ -400,7 +410,17 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
             };
         };
     };
@@ -894,7 +914,33 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -911,7 +957,33 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -928,7 +1000,33 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -945,7 +1043,48 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: {
+                            total: number;
+                            baru: number;
+                            proses: number;
+                            selesai: number;
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            total: number;
+                            baru: number;
+                            proses: number;
+                            selesai: number;
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            total: number;
+                            baru: number;
+                            proses: number;
+                            selesai: number;
+                        };
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -962,7 +1101,33 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -979,7 +1144,33 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -996,7 +1187,33 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -1013,7 +1230,33 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -1030,7 +1273,39 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: {
+                            count: number;
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            count: number;
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -1047,7 +1322,45 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: {
+                            total: number;
+                            heads: number;
+                            poor: number;
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            total: number;
+                            heads: number;
+                            poor: number;
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            total: number;
+                            heads: number;
+                            poor: number;
+                        };
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -1064,7 +1377,33 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -1081,7 +1420,48 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: {
+                            religion: unknown[];
+                            gender: unknown[];
+                            occupation: unknown[];
+                            ageGroups: unknown[];
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            religion: unknown[];
+                            gender: unknown[];
+                            occupation: unknown[];
+                            ageGroups: unknown[];
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            religion: unknown[];
+                            gender: unknown[];
+                            occupation: unknown[];
+                            ageGroups: unknown[];
+                        };
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -1098,7 +1478,33 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };
@@ -1115,7 +1521,33 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
             };
         };
     };

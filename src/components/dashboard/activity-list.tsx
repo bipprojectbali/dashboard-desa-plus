@@ -31,10 +31,12 @@ export function ActivityList() {
 				const res = await apiClient.GET("/api/event/");
 				if (res.data?.data) {
 					setData(
-						(res.data.data as any[]).map((e) => ({
-							date: dayjs(e.startDate).format("D MMMM YYYY"),
-							title: e.title,
-						})),
+						(res.data.data as { startDate: string; title: string }[]).map(
+							(e) => ({
+								date: dayjs(e.startDate).format("D MMMM YYYY"),
+								title: e.title,
+							}),
+						),
 					);
 				}
 			} catch (error) {

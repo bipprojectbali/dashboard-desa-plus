@@ -18,9 +18,23 @@ const archiveData = [
 	{ name: "Notulensi Rapat" },
 ];
 
+interface Activity {
+	id: string;
+	title: string;
+	createdAt: string;
+	progress: number;
+	status: "SELESAI" | "BERJALAN" | "TERTUNDA";
+}
+
+interface EventData {
+	id: string;
+	title: string;
+	startDate: string;
+}
+
 const KinerjaDivisi = () => {
-	const [activities, setActivities] = useState<any[]>([]);
-	const [todayEvents, setTodayEvents] = useState<any[]>([]);
+	const [activities, setActivities] = useState<Activity[]>([]);
+	const [todayEvents, setTodayEvents] = useState<EventData[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -32,10 +46,10 @@ const KinerjaDivisi = () => {
 				]);
 
 				if (activityRes.data?.data) {
-					setActivities(activityRes.data.data);
+					setActivities(activityRes.data.data as Activity[]);
 				}
 				if (eventRes.data?.data) {
-					setTodayEvents(eventRes.data.data);
+					setTodayEvents(eventRes.data.data as EventData[]);
 				}
 			} catch (error) {
 				console.error("Failed to fetch kinerja divisi data", error);
@@ -57,11 +71,8 @@ const KinerjaDivisi = () => {
 		<Stack gap="lg">
 			{/* SECTION 1 — PROGRAM KEGIATAN */}
 			<Grid gutter="md">
-				{activities.slice(0, 4).map((kegiatan, index) => (
-					<Grid.Col
-						key={kegiatan.id || index}
-						span={{ base: 12, md: 6, lg: 3 }}
-					>
+				{activities.slice(0, 4).map((kegiatan) => (
+					<Grid.Col key={kegiatan.id} span={{ base: 12, md: 6, lg: 3 }}>
 						<ActivityCard
 							title={kegiatan.title}
 							date={dayjs(kegiatan.createdAt).format("D MMMM YYYY")}
@@ -111,8 +122,8 @@ const KinerjaDivisi = () => {
 
 			{/* SECTION 5 — ARSIP DIGITAL PERANGKAT DESA */}
 			<Grid gutter="md">
-				{archiveData.map((item, index) => (
-					<Grid.Col key={index} span={{ base: 12, md: 6 }}>
+				{archiveData.map((item) => (
+					<Grid.Col key={item.name} span={{ base: 12, md: 6 }}>
 						<ArchiveCard item={item} />
 					</Grid.Col>
 				))}

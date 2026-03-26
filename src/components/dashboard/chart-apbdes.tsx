@@ -55,7 +55,10 @@ export function ChartAPBDes() {
 								<XAxis type="number" hide domain={[0, 100]} />
 								<YAxis type="category" hide dataKey="name" />
 								<Tooltip
-									formatter={(value: number) => [`${value}%`, ""]}
+									formatter={(value: number | string | undefined) => [
+										`${value}%`,
+										"",
+									]}
 									contentStyle={{
 										backgroundColor: dark ? "#1E293B" : "white",
 										borderColor: dark ? "#334155" : "#e5e7eb",

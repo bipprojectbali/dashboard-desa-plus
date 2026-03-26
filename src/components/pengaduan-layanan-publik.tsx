@@ -57,6 +57,26 @@ const ideInovatif = [
 	},
 ];
 
+interface Complaint {
+	id: string;
+	title: string;
+	category: string;
+	status: string;
+	createdAt: string;
+}
+
+interface ServiceStat {
+	jenis: string;
+	jumlah: number;
+}
+
+interface ServiceApiResponse {
+	letterType: string;
+	_count: {
+		_all: number;
+	};
+}
+
 const getStatusColor = (status: string) => {
 	switch (status.toLowerCase()) {
 		case "baru":
@@ -81,8 +101,8 @@ const PengaduanLayananPublik = () => {
 		proses: 0,
 		selesai: 0,
 	});
-	const [recentComplaints, setRecentComplaints] = useState<any[]>([]);
-	const [serviceStats, setServiceStats] = useState<any[]>([]);
+	const [recentComplaints, setRecentComplaints] = useState<Complaint[]>([]);
+	const [serviceStats, setServiceStats] = useState<ServiceStat[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -95,9 +115,12 @@ const PengaduanLayananPublik = () => {
 				]);
 
 				if (statsRes.data?.data) setStats(statsRes.data.data);
-				if (recentRes.data?.data) setRecentComplaints(recentRes.data.data);
+				if (recentRes.data?.data)
+					setRecentComplaints(recentRes.data.data as Complaint[]);
 				if (serviceRes.data?.data) {
-					const mappedService = serviceRes.data.data.map((item: any) => ({
+					const mappedService = (
+						serviceRes.data.data as ServiceApiResponse[]
+					).map((item) => ({
 						jenis: item.letterType,
 						jumlah: item._count?._all || 0,
 					}));
@@ -148,8 +171,8 @@ const PengaduanLayananPublik = () => {
 		<Stack gap="lg">
 			{/* TOP SECTION - 4 STAT CARDS */}
 			<Grid gutter="md">
-				{summaryData.map((item, index) => (
-					<Grid.Col key={index} span={{ base: 12, sm: 6, lg: 3 }}>
+				{summaryData.map((item) => (
+					<Grid.Col key={item.title} span={{ base: 12, sm: 6, lg: 3 }}>
 						<Card
 							p="md"
 							radius="xl"
@@ -330,9 +353,9 @@ const PengaduanLayananPublik = () => {
 									<Loader />
 								</Group>
 							) : recentComplaints.length > 0 ? (
-								recentComplaints.map((item, index) => (
+								recentComplaints.map((item) => (
 									<Card
-										key={item.id || index}
+										key={item.id}
 										p="sm"
 										radius="md"
 										withBorder
@@ -392,9 +415,9 @@ const PengaduanLayananPublik = () => {
 							Ajuan Ide Inovatif
 						</Title>
 						<Stack gap="sm">
-							{ideInovatif.map((item, index) => (
+							{ideInovatif.map((item) => (
 								<Card
-									key={index}
+									key={item.judul}
 									p="sm"
 									radius="md"
 									withBorder

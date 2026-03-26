@@ -129,7 +129,6 @@ export function DevInspector({ children }: { children: React.ReactNode }) {
 		tt.style.left = `${rect.left + window.scrollX}px`;
 	}, []);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: updateOverlay is stable
 	useEffect(() => {
 		if (!active) return;
 

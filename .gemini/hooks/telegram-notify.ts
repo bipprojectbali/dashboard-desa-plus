@@ -2,15 +2,21 @@
 import { readFileSync } from "node:fs";
 
 // Fungsi untuk mencari string terpanjang dalam objek (biasanya balasan AI)
-function findLongestString(obj: any): string {
+function findLongestString(obj: unknown): string {
 	let longest = "";
-	const search = (item: any) => {
+	const search = (item: unknown) => {
 		if (typeof item === "string") {
-			if (item.length > longest.length) longest = item;
+			if (item.length > longest.length) {
+				longest = item;
+			}
 		} else if (Array.isArray(item)) {
-			item.forEach(search);
-		} else if (item && typeof item === "object") {
-			Object.values(item).forEach(search);
+			for (const child of item) {
+				search(child);
+			}
+		} else if (item !== null && typeof item === "object") {
+			for (const value of Object.values(item)) {
+				search(value);
+			}
 		}
 	};
 	search(obj);

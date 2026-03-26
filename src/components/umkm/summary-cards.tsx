@@ -9,7 +9,6 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import {
-	IconCategory,
 	IconCurrencyDollar,
 	IconTrendingUp,
 	IconUsers,
@@ -149,8 +148,8 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 
 	return (
 		<Grid gutter="md">
-			{kpiData.map((kpi, index) => (
-				<GridCol key={index} span={{ base: 12, sm: 6, lg: 3 }}>
+			{kpiData.map((kpi) => (
+				<GridCol key={kpi.title} span={{ base: 12, sm: 6, lg: 3 }}>
 					<KpiCard {...kpi} />
 				</GridCol>
 			))}

@@ -1,4 +1,4 @@
-import Elysia from "elysia";
+import Elysia, { t } from "elysia";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
 
@@ -24,6 +24,12 @@ export const division = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Array(t.Any()),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: { summary: "Get all divisions" },
 		},
 	)
@@ -48,6 +54,12 @@ export const division = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Array(t.Any()),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: { summary: "Get recent activities" },
 		},
 	)
@@ -66,6 +78,12 @@ export const division = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Array(t.Any()),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: { summary: "Get division performance metrics" },
 		},
 	);

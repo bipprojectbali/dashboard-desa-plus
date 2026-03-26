@@ -25,7 +25,7 @@ function PengaturanLayout() {
 	const { colorScheme } = useMantineColorScheme();
 
 	const isMobile = useMediaQuery("(max-width: 48em)");
-	const routerState = useRouterState();
+	const _routerState = useRouterState();
 
 	const headerBgColor = colorScheme === "dark" ? "#11192D" : "#19355E";
 	const navbarBgColor = colorScheme === "dark" ? "#11192D" : "white";
@@ -36,7 +36,7 @@ function PengaturanLayout() {
 		if (isMobile && opened) {
 			toggleMobile();
 		}
-	}, [routerState.location.pathname, isMobile, opened, toggleMobile]);
+	}, [isMobile, opened, toggleMobile]);
 
 	return (
 		<AppShell

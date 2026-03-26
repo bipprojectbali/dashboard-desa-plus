@@ -1,14 +1,18 @@
 "use client";
 
-import { useTheme } from "next-themes";
+import { useMantineColorScheme } from "@mantine/core";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
 const Toaster = ({ ...props }: ToasterProps) => {
-	const { theme = "system" } = useTheme();
+	const { colorScheme } = useMantineColorScheme();
 
 	return (
 		<Sonner
-			theme={theme as ToasterProps["theme"]}
+			theme={
+				colorScheme === "auto"
+					? "system"
+					: (colorScheme as ToasterProps["theme"])
+			}
 			className="toaster group"
 			style={
 				{

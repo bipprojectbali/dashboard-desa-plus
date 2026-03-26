@@ -1,11 +1,4 @@
-import {
-	Box,
-	Card,
-	Group,
-	Stack,
-	Text,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Card, Group, Stack, Text, useMantineColorScheme } from "@mantine/core";
 import { MessageCircle } from "lucide-react";
 
 interface DiscussionItem {
@@ -57,9 +50,9 @@ export function DiscussionPanel() {
 				</Text>
 			</Group>
 			<Stack gap="sm">
-				{discussions.map((discussion, index) => (
+				{discussions.map((discussion) => (
 					<Card
-						key={index}
+						key={`${discussion.sender}-${discussion.date}`}
 						p="sm"
 						radius="md"
 						withBorder

@@ -43,8 +43,12 @@ export function EventCard({ agendas = [] }: EventCardProps) {
 			</Group>
 			{agendas.length > 0 ? (
 				<Stack gap="sm">
-					{agendas.map((agenda, index) => (
-						<Group key={index} align="flex-start" gap="md">
+					{agendas.map((agenda) => (
+						<Group
+							key={`${agenda.time}-${agenda.event}`}
+							align="flex-start"
+							gap="md"
+						>
 							<Box w={60}>
 								<Text size="sm" fw={600} c={dark ? "white" : "#1E3A5F"}>
 									{agenda.time}

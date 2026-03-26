@@ -49,8 +49,8 @@ export const HealthStats = ({ data }: HealthStatsProps) => {
 				Statistik Kesehatan
 			</Title>
 			<Stack gap="md">
-				{displayData.map((item, index) => (
-					<div key={index}>
+				{displayData.map((item) => (
+					<div key={item.label}>
 						<Group justify="space-between" mb={5}>
 							<Text size="sm" fw={500} c={dark ? "dark.0" : "#1e3a5f"}>
 								{item.label}

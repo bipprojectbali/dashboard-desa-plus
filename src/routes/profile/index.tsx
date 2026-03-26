@@ -77,13 +77,21 @@ function Profile() {
 		}
 	};
 
+	interface InfoFieldProps {
+		icon: React.ElementType;
+		label: string;
+		value: string | null | undefined;
+		copyable?: boolean;
+		id?: string;
+	}
+
 	const InfoField = ({
 		icon: Icon,
 		label,
 		value,
 		copyable = false,
 		id = "",
-	}: any) => (
+	}: InfoFieldProps) => (
 		<Paper
 			withBorder
 			p="md"

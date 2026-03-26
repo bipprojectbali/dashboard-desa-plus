@@ -2,7 +2,6 @@ import {
 	Progress as MantineProgress,
 	type ProgressProps as MantineProgressProps,
 } from "@mantine/core";
-import React from "react";
 import { cn } from "./utils";
 
 // Original ProgressProps likely had 'value' and 'max'.

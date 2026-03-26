@@ -1,12 +1,9 @@
 import {
-	Badge,
 	Box,
 	Card,
 	Grid,
-	GridCol,
 	Group,
 	Loader,
-	Progress,
 	Stack,
 	Text,
 	ThemeIcon,
@@ -45,6 +42,49 @@ const sektorUnggulanData = [
 	{ sektor: "Jasa", value: 52 },
 ];
 
+interface AgeData {
+	ageRange: string;
+	total: number;
+}
+
+interface JobData {
+	job: string;
+	total: number;
+}
+
+interface ReligionData {
+	name: string;
+	value: number;
+	color: string;
+}
+
+interface BanjarData {
+	id: string;
+	name: string;
+	totalPopulation: number;
+	totalKK: number;
+	totalPoor: number;
+}
+
+interface ReligionResponse {
+	religion: string;
+	_count: {
+		_all: number;
+	};
+}
+
+interface OccupationResponse {
+	occupation: string | null;
+	_count: {
+		_all: number;
+	};
+}
+
+interface AgeGroupResponse {
+	range: string;
+	count: number | string;
+}
+
 const DemografiPekerjaan = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
@@ -54,10 +94,10 @@ const DemografiPekerjaan = () => {
 		heads: 0,
 		poor: 0,
 	});
-	const [ageData, setAgeData] = useState<any[]>([]);
-	const [jobData, setJobData] = useState<any[]>([]);
-	const [religionData, setReligionData] = useState<any[]>([]);
-	const [banjarData, setBanjarData] = useState<any[]>([]);
+	const [ageData, setAgeData] = useState<AgeData[]>([]);
+	const [jobData, setJobData] = useState<JobData[]>([]);
+	const [religionData, setReligionData] = useState<ReligionData[]>([]);
+	const [banjarData, setBanjarData] = useState<BanjarData[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -70,7 +110,8 @@ const DemografiPekerjaan = () => {
 				]);
 
 				if (statsRes.data?.data) setStats(statsRes.data.data);
-				if (banjarRes.data?.data) setBanjarData(banjarRes.data.data);
+				if (banjarRes.data?.data)
+					setBanjarData(banjarRes.data.data as BanjarData[]);
 				if (demoRes.data?.data) {
 					const { religion, occupation, ageGroups } = demoRes.data.data;
 
@@ -85,7 +126,7 @@ const DemografiPekerjaan = () => {
 					};
 
 					setReligionData(
-						(religion as any[]).map((r) => ({
+						(religion as ReligionResponse[]).map((r) => ({
 							name: r.religion,
 							value: r._count._all,
 							color: religionColors[r.religion] || "#94A3B8",
@@ -93,14 +134,14 @@ const DemografiPekerjaan = () => {
 					);
 
 					setJobData(
-						(occupation as any[]).map((o) => ({
+						(occupation as OccupationResponse[]).map((o) => ({
 							job: o.occupation || "Lainnya",
 							total: o._count._all,
 						})),
 					);
 
 					setAgeData(
-						(ageGroups as any[]).map((a) => ({
+						(ageGroups as AgeGroupResponse[]).map((a) => ({
 							ageRange: a.range,
 							total: Number(a.count),
 						})),
@@ -401,8 +442,8 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<Grid gutter="sm">
-							{dynamicStats.map((stat, index) => (
-								<Grid.Col key={index} span={6}>
+							{dynamicStats.map((stat) => (
+								<Grid.Col key={stat.title} span={6}>
 									<Card
 										p="sm"
 										radius="lg"
@@ -480,8 +521,8 @@ const DemografiPekerjaan = () => {
 										paddingAngle={2}
 										dataKey="value"
 									>
-										{religionData.map((entry, index) => (
-											<Cell key={`cell-${index}`} fill={entry.color} />
+										{religionData.map((entry) => (
+											<Cell key={`cell-${entry.name}`} fill={entry.color} />
 										))}
 									</Pie>
 									<Tooltip
@@ -496,8 +537,8 @@ const DemografiPekerjaan = () => {
 						</ResponsiveContainer>
 						<Stack gap="xs" mt="md">
 							{!loading &&
-								religionData.map((item, index) => (
-									<Group key={index} justify="space-between">
+								religionData.map((item) => (
+									<Group key={item.name} justify="space-between">
 										<Group gap="xs">
 											<Box
 												w={10}
@@ -601,12 +642,12 @@ const DemografiPekerjaan = () => {
 										</tr>
 									</thead>
 									<tbody>
-										{banjarData.map((item, index) => (
+										{banjarData.map((item) => (
 											<tr
-												key={item.id || index}
+												key={item.id}
 												style={{
 													backgroundColor:
-														index % 2 === 0
+														banjarData.indexOf(item) % 2 === 0
 															? dark
 																? "#334155"
 																: "#F8FAFC"
@@ -725,8 +766,8 @@ const DemografiPekerjaan = () => {
 									radius={[0, 8, 8, 0]}
 									maxBarSize={40}
 								>
-									{sektorUnggulanData.map((entry, index) => (
-										<Cell key={`cell-${index}`} fill="#396aaaff" />
+									{sektorUnggulanData.map((entry) => (
+										<Cell key={`cell-${entry.sektor}`} fill="#396aaaff" />
 									))}
 								</Bar>
 							</BarChart>

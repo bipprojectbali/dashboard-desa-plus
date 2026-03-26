@@ -1,4 +1,4 @@
-import Elysia from "elysia";
+import Elysia, { t } from "elysia";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
 
@@ -23,6 +23,17 @@ export const complaint = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Object({
+						total: t.Number(),
+						baru: t.Number(),
+						proses: t.Number(),
+						selesai: t.Number(),
+					}),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: { summary: "Get complaint statistics" },
 		},
 	)
@@ -42,6 +53,12 @@ export const complaint = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Array(t.Any()),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: { summary: "Get recent complaints" },
 		},
 	)
@@ -61,6 +78,12 @@ export const complaint = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Array(t.Any()),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: { summary: "Get service letter statistics by type" },
 		},
 	)
@@ -80,6 +103,12 @@ export const complaint = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Array(t.Any()),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: { summary: "Get recent innovation ideas" },
 		},
 	)
@@ -88,7 +117,9 @@ export const complaint = new Elysia({
 		async ({ set }) => {
 			try {
 				// Get last 6 months trends for service letters
-				const trends = await prisma.$queryRaw<any[]>`
+				const trends = await prisma.$queryRaw<
+					{ month: string; month_num: number; count: number }[]
+				>`
 					SELECT 
 						TO_CHAR("createdAt", 'Mon') as month,
 						EXTRACT(MONTH FROM "createdAt") as month_num,
@@ -106,6 +137,12 @@ export const complaint = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Array(t.Any()),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: { summary: "Get service letter trends for last 6 months" },
 		},
 	)
@@ -132,6 +169,14 @@ export const complaint = new Elysia({
 			}
 		},
 		{
+			response: {
+				200: t.Object({
+					data: t.Object({
+						count: t.Number(),
+					}),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
 			detail: { summary: "Get service letter count for current week" },
 		},
 	);

@@ -165,7 +165,7 @@ async function seedResidents(banjarIds: string[]) {
 			gender: Gender.LAKI_LAKI,
 			religion: Religion.HINDU,
 			occupation: "Wiraswasta",
-			banjarId: banjarIds[0],
+			banjarId: banjarIds[0] || "",
 			rt: "001",
 			rw: "000",
 			address: "Jl. Raya Darmasaba No. 1",
@@ -180,7 +180,7 @@ async function seedResidents(banjarIds: string[]) {
 			gender: Gender.PEREMPUAN,
 			religion: Religion.HINDU,
 			occupation: "Guru",
-			banjarId: banjarIds[1],
+			banjarId: banjarIds[1] || banjarIds[0] || "",
 			rt: "002",
 			rw: "000",
 			address: "Gg. Manesa No. 5",
@@ -203,7 +203,7 @@ async function seedActivities(divisionIds: string[]) {
 		{
 			title: "Rapat Koordinasi 2025",
 			description: "Penyusunan rencana kerja tahunan",
-			divisionId: divisionIds[0],
+			divisionId: divisionIds[0] || "",
 			progress: 100,
 			status: ActivityStatus.SELESAI,
 			priority: Priority.TINGGI,
@@ -211,7 +211,7 @@ async function seedActivities(divisionIds: string[]) {
 		{
 			title: "Pemutakhiran Indeks Desa",
 			description: "Pendataan SDG's Desa 2025",
-			divisionId: divisionIds[0],
+			divisionId: divisionIds[0] || "",
 			progress: 65,
 			status: ActivityStatus.BERJALAN,
 			priority: Priority.SEDANG,
@@ -219,7 +219,7 @@ async function seedActivities(divisionIds: string[]) {
 		{
 			title: "Pembangunan Jalan Banjar Cabe",
 			description: "Pengaspalan jalan utama",
-			divisionId: divisionIds[1],
+			divisionId: divisionIds[1] || divisionIds[0] || "",
 			progress: 40,
 			status: ActivityStatus.BERJALAN,
 			priority: Priority.DARURAT,
@@ -296,7 +296,7 @@ async function seedEvents(adminId: string) {
 	}
 }
 
-async function main() {
+export async function runSeed() {
 	console.log("Starting seed...");
 
 	const adminId = await seedAdminUser();
@@ -315,11 +315,13 @@ async function main() {
 	console.log("Seed finished successfully!");
 }
 
-main()
-	.catch((e) => {
-		console.error(e);
-		process.exit(1);
-	})
-	.finally(async () => {
-		await prisma.$disconnect();
-	});
+if (import.meta.main) {
+	runSeed()
+		.catch((e) => {
+			console.error(e);
+			process.exit(1);
+		})
+		.finally(async () => {
+			await prisma.$disconnect();
+		});
+}

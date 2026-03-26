@@ -24,6 +24,9 @@ export function inspectorPlugin(): Plugin {
 
 			for (let i = 0; i < lines.length; i++) {
 				let line = lines[i];
+				if (line === undefined) {
+					continue;
+				}
 				// Match JSX opening tags: <Component, <div, or <item.icon
 				// Allow dots and hyphens in the tag name
 				const jsxPattern = /(<(?:[A-Za-z][a-zA-Z0-9.-]*))\b/g;
@@ -32,7 +35,8 @@ export function inspectorPlugin(): Plugin {
 				// biome-ignore lint/suspicious/noAssignInExpressions: match loop
 				while ((match = jsxPattern.exec(line)) !== null) {
 					// Skip if character before `<` is an identifier char (likely a TypeScript generic)
-					const charBefore = match.index > 0 ? line[match.index - 1] : "";
+					const charBefore =
+						match.index > 0 ? (line[match.index - 1] ?? "") : "";
 					if (/[a-zA-Z0-9_$.]/.test(charBefore)) continue;
 
 					const col = match.index + 1;

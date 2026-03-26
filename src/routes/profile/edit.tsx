@@ -50,7 +50,7 @@ function EditProfile() {
 				authStore.user = {
 					...authStore.user,
 					...data.user,
-				} as any;
+				} as NonNullable<typeof authStore.user>;
 				navigate({ to: "/profile" });
 			} else if (error) {
 				console.error("Update error:", error);

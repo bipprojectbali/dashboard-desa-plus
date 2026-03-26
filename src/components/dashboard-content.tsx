@@ -53,18 +53,22 @@ export function DashboardContent() {
 				);
 
 				setStats({
-					complaints: (complaintRes.data as any)?.data || {
+					complaints: (complaintRes.data as { data: typeof stats.complaints })
+						?.data || {
 						total: 0,
 						baru: 0,
 						proses: 0,
 						selesai: 0,
 					},
-					residents: (residentRes.data as any)?.data || {
+					residents: (residentRes.data as { data: typeof stats.residents })
+						?.data || {
 						total: 0,
 						heads: 0,
 						poor: 0,
 					},
-					weeklyService: (weeklyServiceRes.data as any)?.data?.count || 0,
+					weeklyService:
+						(weeklyServiceRes.data as { data: { count: number } })?.data
+							?.count || 0,
 					loading: false,
 				});
 			} catch (error) {
