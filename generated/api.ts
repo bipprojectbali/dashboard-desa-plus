@@ -222,6 +222,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/complaint/innovation-ideas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get recent innovation ideas */
+        get: operations["getApiComplaintInnovation-ideas"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/resident/stats": {
         parameters: {
             query?: never;
@@ -263,7 +280,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get religious and gender demographics */
+        /** Get demographics including religion, gender, occupation and age */
         get: operations["getApiResidentDemographics"];
         put?: never;
         post?: never;
@@ -916,6 +933,23 @@ export interface operations {
         };
     };
     "getApiComplaintService-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "getApiComplaintInnovation-ideas": {
         parameters: {
             query?: never;
             header?: never;

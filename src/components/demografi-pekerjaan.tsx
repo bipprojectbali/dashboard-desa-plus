@@ -5,6 +5,7 @@ import {
 	Grid,
 	GridCol,
 	Group,
+	Loader,
 	Progress,
 	Stack,
 	Text,
@@ -21,6 +22,7 @@ import {
 	TrendingDown,
 	Users,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -33,106 +35,9 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { apiClient } from "@/utils/api-client";
 
-// KPI Data
-const kpiData = [
-	{
-		id: 1,
-		title: "Total Penduduk",
-		value: "5.634",
-		subtitle: "Aktif terdaftar",
-		icon: Users,
-	},
-	{
-		id: 2,
-		title: "Kepala Keluarga",
-		value: "1.354",
-		subtitle: "Total KK",
-		icon: Home,
-	},
-	{
-		id: 3,
-		title: "Kelahiran",
-		value: "23",
-		subtitle: "Tahun ini",
-		icon: Baby,
-	},
-	{
-		id: 4,
-		title: "Kemiskinan",
-		value: "324",
-		subtitle: "-10% dari tahun lalu",
-		trend: "positive",
-		icon: TrendingDown,
-	},
-];
-
-// Age Distribution Data
-const ageDistributionData = [
-	{ ageRange: "17-25", total: 850 },
-	{ ageRange: "26-35", total: 1200 },
-	{ ageRange: "36-45", total: 1100 },
-	{ ageRange: "46-55", total: 950 },
-	{ ageRange: "56-65", total: 750 },
-	{ ageRange: "65+", total: 484 },
-];
-
-// Job Distribution Data
-const jobDistributionData = [
-	{ job: "Sipil", total: 1200 },
-	{ job: "Guru", total: 850 },
-	{ job: "Petani", total: 950 },
-	{ job: "Pedagang", total: 750 },
-	{ job: "Wiraswasta", total: 984 },
-];
-
-// Religion Data
-const religionData = [
-	{ name: "Hindu", value: 4234, color: "#EF4444" },
-	{ name: "Islam", value: 856, color: "#3B82F6" },
-	{ name: "Kristen", value: 412, color: "#22C55E" },
-	{ name: "Buddha", value: 202, color: "#FACC15" },
-];
-
-// Banjar Data
-const banjarData = [
-	{ banjar: "Darmasaba", population: 1200, kk: 300, poor: 45 },
-	{ banjar: "Manesa", population: 950, kk: 240, poor: 32 },
-	{ banjar: "Cabe", population: 800, kk: 200, poor: 28 },
-	{ banjar: "Penenjoan", population: 1100, kk: 280, poor: 38 },
-	{ banjar: "Baler Pasar", population: 984, kk: 250, poor: 42 },
-	{ banjar: "Bucu", population: 600, kk: 184, poor: 25 },
-];
-
-// Dynamic Stats Data
-const dynamicStats = [
-	{
-		title: "Kelahiran",
-		value: "23",
-		icon: Baby,
-		color: "#22C55E",
-	},
-	{
-		title: "Kematian",
-		value: "12",
-		icon: TrendingDown,
-		color: "#EF4444",
-	},
-	{
-		title: "Pindah Masuk",
-		value: "45",
-		icon: Users,
-		color: "#3B82F6",
-	},
-	{
-		title: "Pindah Keluar",
-		value: "32",
-		icon: Users,
-		color: "#3B82F6",
-	},
-];
-
-// Sektor Unggulan Data
+// Sektor Unggulan Data (Mock for now)
 const sektorUnggulanData = [
 	{ sektor: "Pertanian", value: 65 },
 	{ sektor: "Perdagangan", value: 45 },
@@ -143,6 +48,134 @@ const sektorUnggulanData = [
 const DemografiPekerjaan = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+
+	const [stats, setStats] = useState({
+		total: 0,
+		heads: 0,
+		poor: 0,
+	});
+	const [ageData, setAgeData] = useState<any[]>([]);
+	const [jobData, setJobData] = useState<any[]>([]);
+	const [religionData, setReligionData] = useState<any[]>([]);
+	const [banjarData, setBanjarData] = useState<any[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		async function fetchData() {
+			try {
+				const [statsRes, banjarRes, demoRes] = await Promise.all([
+					apiClient.GET("/api/resident/stats"),
+					apiClient.GET("/api/resident/banjar-stats"),
+					apiClient.GET("/api/resident/demographics"),
+				]);
+
+				if (statsRes.data?.data) setStats(statsRes.data.data);
+				if (banjarRes.data?.data) setBanjarData(banjarRes.data.data);
+				if (demoRes.data?.data) {
+					const { religion, occupation, ageGroups } = demoRes.data.data;
+
+					const religionColors: Record<string, string> = {
+						HINDU: "#EF4444",
+						ISLAM: "#3B82F6",
+						KRISTEN: "#22C55E",
+						KATOLIK: "#A855F7",
+						BUDDHA: "#FACC15",
+						KONGHUCU: "#F97316",
+						LAINNYA: "#94A3B8",
+					};
+
+					setReligionData(
+						(religion as any[]).map((r) => ({
+							name: r.religion,
+							value: r._count._all,
+							color: religionColors[r.religion] || "#94A3B8",
+						})),
+					);
+
+					setJobData(
+						(occupation as any[]).map((o) => ({
+							job: o.occupation || "Lainnya",
+							total: o._count._all,
+						})),
+					);
+
+					setAgeData(
+						(ageGroups as any[]).map((a) => ({
+							ageRange: a.range,
+							total: Number(a.count),
+						})),
+					);
+				}
+			} catch (error) {
+				console.error("Failed to fetch demografi data", error);
+			} finally {
+				setLoading(false);
+			}
+		}
+
+		fetchData();
+	}, []);
+
+	// KPI Data
+	const kpiData = [
+		{
+			id: 1,
+			title: "Total Penduduk",
+			value: stats.total.toLocaleString(),
+			subtitle: "Aktif terdaftar",
+			icon: Users,
+		},
+		{
+			id: 2,
+			title: "Kepala Keluarga",
+			value: stats.heads.toLocaleString(),
+			subtitle: "Total KK",
+			icon: Home,
+		},
+		{
+			id: 3,
+			title: "Kelahiran",
+			value: "0",
+			subtitle: "Tahun ini",
+			icon: Baby,
+		},
+		{
+			id: 4,
+			title: "Kemiskinan",
+			value: stats.poor.toLocaleString(),
+			subtitle: "Keluarga Prasejahtera",
+			trend: "positive",
+			icon: TrendingDown,
+		},
+	];
+
+	// Dynamic Stats Data (Mock for now as no records in DB yet)
+	const dynamicStats = [
+		{
+			title: "Kelahiran",
+			value: "0",
+			icon: Baby,
+			color: "#22C55E",
+		},
+		{
+			title: "Kematian",
+			value: "0",
+			icon: TrendingDown,
+			color: "#EF4444",
+		},
+		{
+			title: "Pindah Masuk",
+			value: "0",
+			icon: Users,
+			color: "#3B82F6",
+		},
+		{
+			title: "Pindah Keluar",
+			value: "0",
+			icon: Users,
+			color: "#3B82F6",
+		},
+	];
 
 	return (
 		<Stack gap="lg">
@@ -226,44 +259,50 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>
-							<BarChart data={ageDistributionData}>
-								<CartesianGrid
-									strokeDasharray="3 3"
-									vertical={false}
-									stroke={dark ? "#334155" : "#e5e7eb"}
-								/>
-								<XAxis
-									dataKey="ageRange"
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-								/>
-								<YAxis
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-								/>
-								<Tooltip
-									contentStyle={{
-										backgroundColor: dark ? "#1E293B" : "white",
-										borderColor: dark ? "#334155" : "#e5e7eb",
-										borderRadius: "8px",
-									}}
-									labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
-								/>
-								<Bar
-									dataKey="total"
-									fill="#396aaaff"
-									radius={[8, 8, 0, 0]}
-									maxBarSize={40}
-								/>
-							</BarChart>
+							{loading ? (
+								<Group justify="center" align="center" h="100%">
+									<Loader />
+								</Group>
+							) : (
+								<BarChart data={ageData}>
+									<CartesianGrid
+										strokeDasharray="3 3"
+										vertical={false}
+										stroke={dark ? "#334155" : "#e5e7eb"}
+									/>
+									<XAxis
+										dataKey="ageRange"
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 12,
+										}}
+									/>
+									<YAxis
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 12,
+										}}
+									/>
+									<Tooltip
+										contentStyle={{
+											backgroundColor: dark ? "#1E293B" : "white",
+											borderColor: dark ? "#334155" : "#e5e7eb",
+											borderRadius: "8px",
+										}}
+										labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+									/>
+									<Bar
+										dataKey="total"
+										fill="#396aaaff"
+										radius={[8, 8, 0, 0]}
+										maxBarSize={40}
+									/>
+								</BarChart>
+							)}
 						</ResponsiveContainer>
 					</Card>
 				</Grid.Col>
@@ -290,46 +329,52 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>
-							<BarChart data={jobDistributionData} layout="vertical">
-								<CartesianGrid
-									strokeDasharray="3 3"
-									horizontal={false}
-									stroke={dark ? "#334155" : "#e5e7eb"}
-								/>
-								<XAxis
-									type="number"
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-								/>
-								<YAxis
-									type="category"
-									dataKey="job"
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-									width={90}
-								/>
-								<Tooltip
-									contentStyle={{
-										backgroundColor: dark ? "#1E293B" : "white",
-										borderColor: dark ? "#334155" : "#e5e7eb",
-										borderRadius: "8px",
-									}}
-								/>
-								<Bar
-									dataKey="total"
-									fill="#396aaaff"
-									radius={[0, 8, 8, 0]}
-									maxBarSize={30}
-								/>
-							</BarChart>
+							{loading ? (
+								<Group justify="center" align="center" h="100%">
+									<Loader />
+								</Group>
+							) : (
+								<BarChart data={jobData} layout="vertical">
+									<CartesianGrid
+										strokeDasharray="3 3"
+										horizontal={false}
+										stroke={dark ? "#334155" : "#e5e7eb"}
+									/>
+									<XAxis
+										type="number"
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 12,
+										}}
+									/>
+									<YAxis
+										type="category"
+										dataKey="job"
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 12,
+										}}
+										width={90}
+									/>
+									<Tooltip
+										contentStyle={{
+											backgroundColor: dark ? "#1E293B" : "white",
+											borderColor: dark ? "#334155" : "#e5e7eb",
+											borderRadius: "8px",
+										}}
+									/>
+									<Bar
+										dataKey="total"
+										fill="#396aaaff"
+										radius={[0, 8, 8, 0]}
+										maxBarSize={30}
+									/>
+								</BarChart>
+							)}
 						</ResponsiveContainer>
 					</Card>
 				</Grid.Col>
@@ -420,50 +465,57 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>
-							<PieChart>
-								<Pie
-									data={religionData}
-									cx="50%"
-									cy="50%"
-									innerRadius={60}
-									outerRadius={90}
-									paddingAngle={2}
-									dataKey="value"
-								>
-									{religionData.map((entry, index) => (
-										<Cell key={`cell-${index}`} fill={entry.color} />
-									))}
-								</Pie>
-								<Tooltip
-									contentStyle={{
-										backgroundColor: dark ? "#1E293B" : "white",
-										borderColor: dark ? "#334155" : "#e5e7eb",
-										borderRadius: "8px",
-									}}
-								/>
-							</PieChart>
+							{loading ? (
+								<Group justify="center" align="center" h="100%">
+									<Loader />
+								</Group>
+							) : (
+								<PieChart>
+									<Pie
+										data={religionData}
+										cx="50%"
+										cy="50%"
+										innerRadius={60}
+										outerRadius={90}
+										paddingAngle={2}
+										dataKey="value"
+									>
+										{religionData.map((entry, index) => (
+											<Cell key={`cell-${index}`} fill={entry.color} />
+										))}
+									</Pie>
+									<Tooltip
+										contentStyle={{
+											backgroundColor: dark ? "#1E293B" : "white",
+											borderColor: dark ? "#334155" : "#e5e7eb",
+											borderRadius: "8px",
+										}}
+									/>
+								</PieChart>
+							)}
 						</ResponsiveContainer>
 						<Stack gap="xs" mt="md">
-							{religionData.map((item, index) => (
-								<Group key={index} justify="space-between">
-									<Group gap="xs">
-										<Box
-											w={10}
-											h={10}
-											style={{
-												backgroundColor: item.color,
-												borderRadius: 2,
-											}}
-										/>
-										<Text size="sm" c={dark ? "white" : "gray.7"}>
-											{item.name}
+							{!loading &&
+								religionData.map((item, index) => (
+									<Group key={index} justify="space-between">
+										<Group gap="xs">
+											<Box
+												w={10}
+												h={10}
+												style={{
+													backgroundColor: item.color,
+													borderRadius: 2,
+												}}
+											/>
+											<Text size="sm" c={dark ? "white" : "gray.7"}>
+												{item.name}
+											</Text>
+										</Group>
+										<Text size="sm" fw={600} c={dark ? "white" : "gray.9"}>
+											{item.value.toLocaleString()}
 										</Text>
 									</Group>
-									<Text size="sm" fw={600} c={dark ? "white" : "gray.9"}>
-										{item.value.toLocaleString()}
-									</Text>
-								</Group>
-							))}
+								))}
 						</Stack>
 					</Card>
 				</Grid.Col>
@@ -490,118 +542,124 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<Box style={{ overflowX: "auto" }}>
-							<table style={{ width: "100%", borderCollapse: "collapse" }}>
-								<thead>
-									<tr>
-										<th
-											style={{
-												textAlign: "left",
-												padding: "8px",
-												fontSize: "12px",
-												fontWeight: 600,
-												color: dark ? "#94A3B8" : "#64748B",
-												borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
-											}}
-										>
-											Banjar
-										</th>
-										<th
-											style={{
-												textAlign: "right",
-												padding: "8px",
-												fontSize: "12px",
-												fontWeight: 600,
-												color: dark ? "#94A3B8" : "#64748B",
-												borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
-											}}
-										>
-											Penduduk
-										</th>
-										<th
-											style={{
-												textAlign: "right",
-												padding: "8px",
-												fontSize: "12px",
-												fontWeight: 600,
-												color: dark ? "#94A3B8" : "#64748B",
-												borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
-											}}
-										>
-											KK
-										</th>
-										<th
-											style={{
-												textAlign: "right",
-												padding: "8px",
-												fontSize: "12px",
-												fontWeight: 600,
-												color: dark ? "#94A3B8" : "#64748B",
-												borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
-											}}
-										>
-											Miskin
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{banjarData.map((item, index) => (
-										<tr
-											key={index}
-											style={{
-												backgroundColor:
-													index % 2 === 0
-														? dark
-															? "#334155"
-															: "#F8FAFC"
-														: "transparent",
-												transition: "background-color 0.15s ease",
-											}}
-										>
-											<td
+							{loading ? (
+								<Group justify="center" py="xl">
+									<Loader />
+								</Group>
+							) : (
+								<table style={{ width: "100%", borderCollapse: "collapse" }}>
+									<thead>
+										<tr>
+											<th
 												style={{
-													padding: "10px 8px",
-													fontSize: "13px",
-													fontWeight: 500,
-													color: dark ? "#E2E8F0" : "#1E293B",
-												}}
-											>
-												{item.banjar}
-											</td>
-											<td
-												style={{
-													padding: "10px 8px",
-													textAlign: "right",
-													fontSize: "13px",
-													color: dark ? "#E2E8F0" : "#1E293B",
-												}}
-											>
-												{item.population.toLocaleString()}
-											</td>
-											<td
-												style={{
-													padding: "10px 8px",
-													textAlign: "right",
-													fontSize: "13px",
-													color: dark ? "#E2E8F0" : "#1E293B",
-												}}
-											>
-												{item.kk.toLocaleString()}
-											</td>
-											<td
-												style={{
-													padding: "10px 8px",
-													textAlign: "right",
-													fontSize: "13px",
-													color: "#EF4444",
+													textAlign: "left",
+													padding: "8px",
+													fontSize: "12px",
 													fontWeight: 600,
+													color: dark ? "#94A3B8" : "#64748B",
+													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
 												}}
 											>
-												{item.poor.toLocaleString()}
-											</td>
+												Banjar
+											</th>
+											<th
+												style={{
+													textAlign: "right",
+													padding: "8px",
+													fontSize: "12px",
+													fontWeight: 600,
+													color: dark ? "#94A3B8" : "#64748B",
+													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
+												}}
+											>
+												Penduduk
+											</th>
+											<th
+												style={{
+													textAlign: "right",
+													padding: "8px",
+													fontSize: "12px",
+													fontWeight: 600,
+													color: dark ? "#94A3B8" : "#64748B",
+													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
+												}}
+											>
+												KK
+											</th>
+											<th
+												style={{
+													textAlign: "right",
+													padding: "8px",
+													fontSize: "12px",
+													fontWeight: 600,
+													color: dark ? "#94A3B8" : "#64748B",
+													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
+												}}
+											>
+												Miskin
+											</th>
 										</tr>
-									))}
-								</tbody>
-							</table>
+									</thead>
+									<tbody>
+										{banjarData.map((item, index) => (
+											<tr
+												key={item.id || index}
+												style={{
+													backgroundColor:
+														index % 2 === 0
+															? dark
+																? "#334155"
+																: "#F8FAFC"
+															: "transparent",
+													transition: "background-color 0.15s ease",
+												}}
+											>
+												<td
+													style={{
+														padding: "10px 8px",
+														fontSize: "13px",
+														fontWeight: 500,
+														color: dark ? "#E2E8F0" : "#1E293B",
+													}}
+												>
+													{item.name}
+												</td>
+												<td
+													style={{
+														padding: "10px 8px",
+														textAlign: "right",
+														fontSize: "13px",
+														color: dark ? "#E2E8F0" : "#1E293B",
+													}}
+												>
+													{(item.totalPopulation || 0).toLocaleString()}
+												</td>
+												<td
+													style={{
+														padding: "10px 8px",
+														textAlign: "right",
+														fontSize: "13px",
+														color: dark ? "#E2E8F0" : "#1E293B",
+													}}
+												>
+													{(item.totalKK || 0).toLocaleString()}
+												</td>
+												<td
+													style={{
+														padding: "10px 8px",
+														textAlign: "right",
+														fontSize: "13px",
+														color: "#EF4444",
+														fontWeight: 600,
+													}}
+												>
+													{(item.totalPoor || 0).toLocaleString()}
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							)}
 						</Box>
 					</Card>
 				</Grid.Col>

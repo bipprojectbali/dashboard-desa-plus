@@ -63,4 +63,23 @@ export const complaint = new Elysia({
 		{
 			detail: { summary: "Get service letter statistics by type" },
 		},
+	)
+	.get(
+		"/innovation-ideas",
+		async ({ set }) => {
+			try {
+				const ideas = await prisma.innovationIdea.findMany({
+					orderBy: { createdAt: "desc" },
+					take: 5,
+				});
+				return { data: ideas };
+			} catch (error) {
+				logger.error({ error }, "Failed to fetch innovation ideas");
+				set.status = 500;
+				return { error: "Internal Server Error" };
+			}
+		},
+		{
+			detail: { summary: "Get recent innovation ideas" },
+		},
 	);

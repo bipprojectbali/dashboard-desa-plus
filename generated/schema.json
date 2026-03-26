@@ -1468,6 +1468,15 @@
         }
       }
     },
+    "/api/complaint/innovation-ideas": {
+      "get": {
+        "operationId": "getApiComplaintInnovation-ideas",
+        "summary": "Get recent innovation ideas",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
     "/api/resident/stats": {
       "get": {
         "operationId": "getApiResidentStats",
@@ -1489,7 +1498,7 @@
     "/api/resident/demographics": {
       "get": {
         "operationId": "getApiResidentDemographics",
-        "summary": "Get religious and gender demographics",
+        "summary": "Get demographics including religion, gender, occupation and age",
         "responses": {
           "200": {}
         }

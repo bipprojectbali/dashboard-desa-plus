@@ -55,7 +55,11 @@ export function DashboardContent() {
 						proses: 0,
 						selesai: 0,
 					},
-					residents: (residentRes.data as any)?.data || { total: 0, heads: 0, poor: 0 },
+					residents: (residentRes.data as any)?.data || {
+						total: 0,
+						heads: 0,
+						poor: 0,
+					},
 					loading: false,
 				});
 			} catch (error) {

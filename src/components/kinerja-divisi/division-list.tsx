@@ -27,10 +27,12 @@ export function DivisionList() {
 			try {
 				const { data } = await apiClient.GET("/api/division/");
 				if (data?.data) {
-					const mapped = data.data.map((div: { name: string; _count?: { activities: number } }) => ({
-						name: div.name,
-						count: div._count?.activities || 0,
-					}));
+					const mapped = data.data.map(
+						(div: { name: string; _count?: { activities: number } }) => ({
+							name: div.name,
+							count: div._count?.activities || 0,
+						}),
+					);
 					setDivisions(mapped);
 				}
 			} catch (error) {

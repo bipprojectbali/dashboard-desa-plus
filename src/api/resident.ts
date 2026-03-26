@@ -53,7 +53,7 @@ export const resident = new Elysia({
 		"/demographics",
 		async ({ set }) => {
 			try {
-				const [religion, gender] = await Promise.all([
+				const [religion, gender, occupation, ageGroups] = await Promise.all([
 					prisma.resident.groupBy({
 						by: ["religion"],
 						_count: { _all: true },
@@ -62,8 +62,31 @@ export const resident = new Elysia({
 						by: ["gender"],
 						_count: { _all: true },
 					}),
+					prisma.resident.groupBy({
+						by: ["occupation"],
+						_count: { _all: true },
+						orderBy: { _count: { occupation: "desc" } },
+						take: 10,
+					}),
+					// Group by age ranges (simplified calculation)
+					prisma.$queryRaw<any[]>`
+						SELECT 
+							CASE 
+								WHEN date_part('year', age(now(), "birthDate")) BETWEEN 0 AND 16 THEN '0-16'
+								WHEN date_part('year', age(now(), "birthDate")) BETWEEN 17 AND 25 THEN '17-25'
+								WHEN date_part('year', age(now(), "birthDate")) BETWEEN 26 AND 35 THEN '26-35'
+								WHEN date_part('year', age(now(), "birthDate")) BETWEEN 36 AND 45 THEN '36-45'
+								WHEN date_part('year', age(now(), "birthDate")) BETWEEN 46 AND 55 THEN '46-55'
+								WHEN date_part('year', age(now(), "birthDate")) BETWEEN 56 AND 65 THEN '56-65'
+								ELSE '65+' 
+							END as range,
+							COUNT(*) as count
+						FROM resident
+						GROUP BY range
+						ORDER BY range ASC
+					`,
 				]);
-				return { data: { religion, gender } };
+				return { data: { religion, gender, occupation, ageGroups } };
 			} catch (error) {
 				logger.error({ error }, "Failed to fetch demographics");
 				set.status = 500;
@@ -71,6 +94,9 @@ export const resident = new Elysia({
 			}
 		},
 		{
-			detail: { summary: "Get religious and gender demographics" },
+			detail: {
+				summary:
+					"Get demographics including religion, gender, occupation and age",
+			},
 		},
 	);
