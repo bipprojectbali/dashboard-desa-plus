@@ -123,7 +123,7 @@ export const complaint = new Elysia({
 					SELECT 
 						TO_CHAR("createdAt", 'Mon') as month,
 						EXTRACT(MONTH FROM "createdAt") as month_num,
-						COUNT(*) as count
+						COUNT(*)::INTEGER as count
 					FROM service_letter
 					WHERE "createdAt" > NOW() - INTERVAL '6 months'
 					GROUP BY month, month_num
