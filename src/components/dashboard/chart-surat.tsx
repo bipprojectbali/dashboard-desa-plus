@@ -36,19 +36,21 @@ export function ChartSurat() {
 		async function fetchTrends() {
 			try {
 				const res = await apiClient.GET("/api/complaint/service-trends");
-				console.log("Service trends response:", res);
-				if (res.data?.data) {
+				console.log("📊 Service trends response:", res);
+				
+				if (res.data?.data && res.data.data.length > 0) {
 					const chartData = (res.data.data as { month: string; count: number }[]).map((d) => ({
 						month: d.month,
 						value: Number(d.count),
 					}));
-					console.log("Mapped chart data:", chartData);
+					console.log("📈 Mapped chart data:", chartData);
 					setData(chartData);
 				} else {
-					console.log("No data in response");
+					console.log("⚠️ No data in response or empty data array");
+					setData([]);
 				}
 			} catch (error) {
-				console.error("Failed to fetch service trends", error);
+				console.error("❌ Failed to fetch service trends", error);
 			} finally {
 				setLoading(false);
 			}
@@ -101,46 +103,55 @@ export function ChartSurat() {
 					</svg>
 				</ActionIcon>
 			</Group>
-			<ResponsiveContainer width="100%" height={300}>
+			<Box style={{ width: "100%", height: 300 }}>
 				{loading ? (
 					<Group justify="center" align="center" h="100%">
 						<Loader />
 					</Group>
+				) : data.length > 0 ? (
+					<ResponsiveContainer width="100%" height="100%">
+						<BarChart data={data}>
+							<CartesianGrid
+								strokeDasharray="3 3"
+								vertical={false}
+								stroke={dark ? "#334155" : "#e5e7eb"}
+							/>
+							<XAxis
+								dataKey="month"
+								axisLine={false}
+								tickLine={false}
+								tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
+							/>
+							<YAxis
+								axisLine={false}
+								tickLine={false}
+								tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
+								allowDecimals={false}
+							/>
+							<Tooltip
+								contentStyle={{
+									backgroundColor: dark ? "#1E293B" : "white",
+									borderColor: dark ? "#334155" : "#e5e7eb",
+									borderRadius: "8px",
+									boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+								}}
+								labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+							/>
+							<Bar
+								dataKey="value"
+								fill={dark ? "#60A5FA" : "#3B82F6"}
+								radius={[4, 4, 0, 0]}
+							/>
+						</BarChart>
+					</ResponsiveContainer>
 				) : (
-					<BarChart data={data}>
-						<CartesianGrid
-							strokeDasharray="3 3"
-							vertical={false}
-							stroke={dark ? "#334155" : "#e5e7eb"}
-						/>
-						<XAxis
-							dataKey="month"
-							axisLine={false}
-							tickLine={false}
-							tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
-						/>
-						<YAxis
-							axisLine={false}
-							tickLine={false}
-							tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
-						/>
-						<Tooltip
-							contentStyle={{
-								backgroundColor: dark ? "#1E293B" : "white",
-								borderColor: dark ? "#334155" : "#e5e7eb",
-								borderRadius: "8px",
-								boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-							}}
-							labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
-						/>
-						<Bar
-							dataKey="value"
-							fill="var(--mantine-color-blue-filled)"
-							radius={[4, 4, 0, 0]}
-						/>
-					</BarChart>
+					<Group justify="center" align="center" h="100%">
+						<Text size="sm" c="dimmed">
+							Tidak ada data pengajuan surat 6 bulan terakhir
+						</Text>
+					</Group>
 				)}
-			</ResponsiveContainer>
+			</Box>
 		</Card>
 	);
 }
