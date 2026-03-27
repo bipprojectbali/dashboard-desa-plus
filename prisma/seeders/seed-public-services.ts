@@ -46,6 +46,18 @@ export async function seedComplaints(adminId: string) {
 			location: "Pasar Darmasaba",
 			assignedTo: adminId,
 		},
+		{
+			complaintNumber: `COMP-20250320-003`,
+			title: "Jalan Rusak",
+			description: "Jalan di Banjar Cabe rusak dan berlubang.",
+			category: ComplaintCategory.INFRASTRUKTUR,
+			status: ComplaintStatus.SELESAI,
+			priority: Priority.TINGGI,
+			location: "Banjar Cabe",
+			assignedTo: adminId,
+			resolvedBy: adminId,
+			resolvedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+		},
 	];
 
 	for (const comp of complaints) {
@@ -77,8 +89,8 @@ export async function seedServiceLetters(adminId: string) {
 			purpose: "Pembuatan KTP baru",
 			status: "SELESAI",
 			processedBy: adminId,
-			completedAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000), // 10 days ago
-			createdAt: new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000), // 15 days ago
+			completedAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+			createdAt: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000), // 5 days ago (this week!)
 		},
 		{
 			letterNumber: "SKT-2025-002",
