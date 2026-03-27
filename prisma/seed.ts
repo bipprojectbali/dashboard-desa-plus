@@ -20,11 +20,38 @@ import { seedPhase2 } from "./seeders/seed-phase2";
 const prisma = new PrismaClient();
 
 /**
+ * Check if seed has already been run
+ * Returns true if core data already exists
+ */
+export async function hasExistingData(): Promise<boolean> {
+	// Check for core entities that should always exist after seeding
+	const [userCount, banjarCount, divisionCount] = await Promise.all([
+		prisma.user.count(),
+		prisma.banjar.count(),
+		prisma.division.count(),
+	]);
+
+	// If we have more than 1 user (admin), 6 banjars, and 4 divisions, assume seeded
+	return userCount > 1 && banjarCount >= 6 && divisionCount >= 4;
+}
+
+/**
  * Run All Seeders
  * Executes all seeder functions in the correct order
  */
 export async function runSeed() {
 	console.log("🌱 Starting seed...\n");
+
+	// Check if data already exists
+	const existingData = await hasExistingData();
+	if (existingData) {
+		console.log("⏭️  Existing data detected. Skipping seed to prevent duplicates.\n");
+		console.log("💡 To re-seed, either:");
+		console.log("   1. Run: bun x prisma migrate reset (resets database)");
+		console.log("   2. Manually delete data from tables\n");
+		console.log("✅ Seed skipped successfully!\n");
+		return;
+	}
 
 	// 1. Seed Authentication (Admin & Demo Users)
 	console.log("📁 [1/7] Authentication & Users");
@@ -83,6 +110,17 @@ export async function runSeed() {
  */
 export async function runSpecificSeeder(name: string) {
 	console.log(`🌱 Running specific seeder: ${name}\n`);
+
+	// Check if data already exists for specific seeder
+	const existingData = await hasExistingData();
+	if (existingData && name !== "auth") {
+		console.log("⚠️  Warning: Existing data detected for this seeder category.\n");
+		console.log("💡 To re-seed, either:");
+		console.log("   1. Run: bun x prisma migrate reset (resets database)");
+		console.log("   2. Manually delete data from tables\n");
+		console.log("✅ Seeder skipped to prevent duplicates!\n");
+		return;
+	}
 
 	switch (name) {
 		case "auth":
