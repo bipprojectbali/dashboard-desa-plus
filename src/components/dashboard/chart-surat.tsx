@@ -36,13 +36,16 @@ export function ChartSurat() {
 		async function fetchTrends() {
 			try {
 				const res = await apiClient.GET("/api/complaint/service-trends");
+				console.log("Service trends response:", res);
 				if (res.data?.data) {
-					setData(
-						(res.data.data as { month: string; count: number }[]).map((d) => ({
-							month: d.month,
-							value: Number(d.count),
-						})),
-					);
+					const chartData = (res.data.data as { month: string; count: number }[]).map((d) => ({
+						month: d.month,
+						value: Number(d.count),
+					}));
+					console.log("Mapped chart data:", chartData);
+					setData(chartData);
+				} else {
+					console.log("No data in response");
 				}
 			} catch (error) {
 				console.error("Failed to fetch service trends", error);

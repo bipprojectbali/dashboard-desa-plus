@@ -76,8 +76,6 @@ export function DashboardContent() {
 						title="Surat Minggu Ini"
 						value={stats.weeklyService}
 						detail="Total surat diajukan"
-						trend="0%"
-						trendValue={0}
 						icon={<FileText style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
@@ -94,8 +92,6 @@ export function DashboardContent() {
 						title="Layanan Selesai"
 						value={stats.complaints.selesai}
 						detail="Total diselesaikan"
-						trend="+0%"
-						trendValue={0}
 						icon={<CheckCircle style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
