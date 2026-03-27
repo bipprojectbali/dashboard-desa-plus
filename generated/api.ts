@@ -1406,25 +1406,13 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: {
-                            month: string;
-                            month_num: number;
-                            count: number;
-                        }[];
+                        data: unknown[];
                     };
                     "multipart/form-data": {
-                        data: {
-                            month: string;
-                            month_num: number;
-                            count: number;
-                        }[];
+                        data: unknown[];
                     };
                     "text/plain": {
-                        data: {
-                            month: string;
-                            month_num: number;
-                            count: number;
-                        }[];
+                        data: unknown[];
                     };
                 };
             };

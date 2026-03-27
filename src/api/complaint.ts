@@ -89,13 +89,7 @@ export const complaint = new Elysia({
 		{
 			response: {
 				200: t.Object({
-					data: t.Array(
-						t.Object({
-							month: t.String(),
-							month_num: t.Number(),
-							count: t.Number(),
-						}),
-					),
+					data: t.Array(t.Any()),
 				}),
 				500: t.Object({ error: t.String() }),
 			},

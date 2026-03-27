@@ -2572,25 +2572,7 @@
                   "properties": {
                     "data": {
                       "type": "array",
-                      "items": {
-                        "type": "object",
-                        "required": [
-                          "month",
-                          "month_num",
-                          "count"
-                        ],
-                        "properties": {
-                          "month": {
-                            "type": "string"
-                          },
-                          "month_num": {
-                            "type": "number"
-                          },
-                          "count": {
-                            "type": "number"
-                          }
-                        }
-                      }
+                      "items": {}
                     }
                   },
                   "required": [
@@ -2604,25 +2586,7 @@
                   "properties": {
                     "data": {
                       "type": "array",
-                      "items": {
-                        "type": "object",
-                        "required": [
-                          "month",
-                          "month_num",
-                          "count"
-                        ],
-                        "properties": {
-                          "month": {
-                            "type": "string"
-                          },
-                          "month_num": {
-                            "type": "number"
-                          },
-                          "count": {
-                            "type": "number"
-                          }
-                        }
-                      }
+                      "items": {}
                     }
                   },
                   "required": [
@@ -2636,25 +2600,7 @@
                   "properties": {
                     "data": {
                       "type": "array",
-                      "items": {
-                        "type": "object",
-                        "required": [
-                          "month",
-                          "month_num",
-                          "count"
-                        ],
-                        "properties": {
-                          "month": {
-                            "type": "string"
-                          },
-                          "month_num": {
-                            "type": "number"
-                          },
-                          "count": {
-                            "type": "number"
-                          }
-                        }
-                      }
+                      "items": {}
                     }
                   },
                   "required": [
