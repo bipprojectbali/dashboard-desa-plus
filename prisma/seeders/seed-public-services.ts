@@ -61,11 +61,12 @@ export async function seedComplaints(adminId: string) {
 
 /**
  * Seed Service Letters
- * Creates sample administrative letter requests
+ * Creates sample administrative letter requests with dates spread across 6 months
  */
 export async function seedServiceLetters(adminId: string) {
 	console.log("Seeding Service Letters...");
 
+	const now = new Date();
 	const serviceLetters = [
 		{
 			letterNumber: "SKT-2025-001",
@@ -76,7 +77,8 @@ export async function seedServiceLetters(adminId: string) {
 			purpose: "Pembuatan KTP baru",
 			status: "SELESAI",
 			processedBy: adminId,
-			completedAt: new Date(),
+			completedAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000), // 10 days ago
+			createdAt: new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000), // 15 days ago
 		},
 		{
 			letterNumber: "SKT-2025-002",
@@ -87,6 +89,7 @@ export async function seedServiceLetters(adminId: string) {
 			purpose: "Perubahan data KK",
 			status: "DIPROSES",
 			processedBy: adminId,
+			createdAt: new Date(now.getTime() - 45 * 24 * 60 * 60 * 1000), // 45 days ago
 		},
 		{
 			letterNumber: "SKT-2025-003",
@@ -96,15 +99,49 @@ export async function seedServiceLetters(adminId: string) {
 			applicantAddress: "Jl. Cabe No. 10",
 			purpose: "Surat keterangan domisili",
 			status: "BARU",
+			createdAt: new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000), // 90 days ago
+		},
+		{
+			letterNumber: "SKT-2024-004",
+			letterType: "USAHA",
+			applicantName: "Made Wijaya",
+			applicantNik: "5103010101950004",
+			applicantAddress: "Jl. Penenjoan No. 15",
+			purpose: "Surat keterangan usaha",
+			status: "SELESAI",
+			processedBy: adminId,
+			completedAt: new Date(now.getTime() - 120 * 24 * 60 * 60 * 1000), // 120 days ago
+			createdAt: new Date(now.getTime() - 130 * 24 * 60 * 60 * 1000), // 130 days ago
+		},
+		{
+			letterNumber: "SKT-2024-005",
+			letterType: "KETERANGAN_TIDAK_MAMPU",
+			applicantName: "Putu Sari",
+			applicantNik: "5103010101980005",
+			applicantAddress: "Gg. Bucu No. 8",
+			purpose: "Keterangan tidak mampu untuk beasiswa",
+			status: "SELESAI",
+			processedBy: adminId,
+			completedAt: new Date(now.getTime() - 150 * 24 * 60 * 60 * 1000), // 150 days ago
+			createdAt: new Date(now.getTime() - 160 * 24 * 60 * 60 * 1000), // 160 days ago
 		},
 	];
 
 	for (const letter of serviceLetters) {
-		await prisma.serviceLetter.upsert({
+		const existing = await prisma.serviceLetter.findUnique({
 			where: { letterNumber: letter.letterNumber },
-			update: letter,
-			create: letter,
 		});
+
+		if (existing) {
+			await prisma.serviceLetter.update({
+				where: { letterNumber: letter.letterNumber },
+				data: letter,
+			});
+		} else {
+			await prisma.serviceLetter.create({
+				data: letter,
+			});
+		}
 	}
 
 	console.log("✅ Service Letters seeded successfully");
