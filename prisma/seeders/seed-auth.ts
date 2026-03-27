@@ -117,3 +117,45 @@ export async function seedDemoUsers() {
 		console.log(`✅ Demo user created: ${demo.email}`);
 	}
 }
+
+/**
+ * Seed API Keys
+ * Creates sample API keys for testing API access
+ */
+export async function seedApiKeys(adminId: string) {
+	console.log("Seeding API Keys...");
+
+	const existingKeys = await prisma.apiKey.findMany({
+		where: { userId: adminId },
+	});
+
+	if (existingKeys.length > 0) {
+		console.log("⏭️  API keys already exist, skipping");
+		return;
+	}
+
+	const apiKeys = [
+		{
+			name: "Development Key",
+			key: "dev_key_" + generateId(),
+			userId: adminId,
+			isActive: true,
+			expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
+		},
+		{
+			name: "Production Key",
+			key: "prod_key_" + generateId(),
+			userId: adminId,
+			isActive: true,
+			expiresAt: null,
+		},
+	];
+
+	for (const apiKey of apiKeys) {
+		await prisma.apiKey.create({
+			data: apiKey,
+		});
+	}
+
+	console.log("✅ API Keys seeded successfully");
+}

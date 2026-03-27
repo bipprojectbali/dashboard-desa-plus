@@ -9,6 +9,15 @@ import {
 const prisma = new PrismaClient();
 
 /**
+ * Get Complaint IDs
+ * Helper function to retrieve complaint IDs for other seeders
+ */
+export async function getComplaintIds(): Promise<string[]> {
+	const complaints = await prisma.complaint.findMany();
+	return complaints.map((c) => c.id);
+}
+
+/**
  * Seed Complaints
  * Creates sample citizen complaints for testing
  */
@@ -171,4 +180,40 @@ export async function seedInnovationIdeas(adminId: string) {
 	}
 
 	console.log("✅ Innovation Ideas seeded successfully");
+}
+
+/**
+ * Seed Complaint Updates
+ * Creates status update history for complaints
+ */
+export async function seedComplaintUpdates(complaintIds: string[], userId: string) {
+	console.log("Seeding Complaint Updates...");
+
+	if (complaintIds.length === 0) {
+		console.log("⏭️  No complaints found, skipping updates");
+		return;
+	}
+
+	const updates = [
+		{
+			complaintId: complaintIds[0],
+			message: "Laporan diterima, akan segera ditindaklanjuti",
+			status: ComplaintStatus.BARU,
+			updatedBy: userId,
+		},
+		{
+			complaintId: complaintIds[1],
+			message: "Tim kebersihan telah dikirim ke lokasi",
+			status: ComplaintStatus.DIPROSES,
+			updatedBy: userId,
+		},
+	];
+
+	for (const update of updates) {
+		await prisma.complaintUpdate.create({
+			data: update,
+		});
+	}
+
+	console.log("✅ Complaint Updates seeded successfully");
 }

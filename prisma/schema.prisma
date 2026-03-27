@@ -357,47 +357,88 @@ model SatisfactionRating {
 // --- STUBS FOR PHASE 2+ (To maintain relations) ---
 
 model HealthRecord {
-  id         String @id @default(cuid())
+  id         String   @id @default(cuid())
   residentId String
   resident   Resident @relation(fields: [residentId], references: [id])
   recordedBy String
-  recorder   User @relation(fields: [recordedBy], references: [id])
+  recorder   User     @relation(fields: [recordedBy], references: [id])
+  type       String   // "Pemeriksaan", "Imunisasi", "Ibu Hamil"
+  notes      String?
+  createdAt  DateTime @default(now())
 }
 
 model EmploymentRecord {
-  id         String @id @default(cuid())
-  residentId String
-  resident   Resident @relation(fields: [residentId], references: [id])
+  id           String    @id @default(cuid())
+  residentId   String
+  resident     Resident  @relation(fields: [residentId], references: [id])
+  companyName  String
+  position     String
+  startDate    DateTime
+  endDate      DateTime?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
 }
 
 model PopulationDynamic {
-  id           String @id @default(cuid())
+  id           String   @id @default(cuid())
   documentedBy String
-  documentor   User @relation(fields: [documentedBy], references: [id])
+  documentor   User     @relation(fields: [documentedBy], references: [id])
+  type         String   // "KELAHIRAN", "KEMATIAN", "KEDATANGAN", "KEPERGIAN"
+  residentName String
+  eventDate    DateTime
+  description  String?
+  createdAt    DateTime @default(now())
 }
 
 model BudgetTransaction {
-  id        String @id @default(cuid())
-  createdBy String
-  creator   User @relation(fields: [createdBy], references: [id])
+  id              String   @id @default(cuid())
+  createdBy       String
+  creator         User     @relation(fields: [createdBy], references: [id])
+  transactionNumber String @unique
+  type            String   // "PENGELUARAN", "PENDAPATAN"
+  category        String
+  amount          Float
+  description     String?
+  date            DateTime
+  createdAt       DateTime @default(now())
 }
 
 model Umkm {
-  id       String @id @default(cuid())
-  banjarId String?
-  banjar   Banjar? @relation(fields: [banjarId], references: [id])
+  id          String  @id @default(cuid())
+  banjarId    String?
+  banjar      Banjar? @relation(fields: [banjarId], references: [id])
+  name        String
+  owner       String
+  productType String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Posyandu {
-  id            String @id @default(cuid())
+  id            String   @id @default(cuid())
   coordinatorId String?
-  coordinator   User? @relation(fields: [coordinatorId], references: [id])
+  coordinator   User?    @relation(fields: [coordinatorId], references: [id])
+  name          String
+  location      String
+  schedule      String
+  type          String   // "Ibu dan Anak", "Lansia", etc.
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model SecurityReport {
-  id         String @id @default(cuid())
-  assignedTo String?
-  assignee   User? @relation(fields: [assignedTo], references: [id])
+  id            String   @id @default(cuid())
+  assignedTo    String?
+  assignee      User?    @relation(fields: [assignedTo], references: [id])
+  reportNumber  String   @unique
+  title         String
+  description   String
+  location      String?
+  reportedBy    String
+  status        String   @default("BARU") // BARU, DIPROSES, SELESAI
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 // --- ENUMS ---

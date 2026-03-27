@@ -19,7 +19,9 @@
 		"seed:demographics": "bun prisma/seed.ts demographics",
 		"seed:divisions": "bun prisma/seed.ts divisions",
 		"seed:services": "bun prisma/seed.ts services",
-		"seed:dashboard": "bun prisma/seed.ts dashboard"
+		"seed:documents": "bun prisma/seed.ts documents",
+		"seed:dashboard": "bun prisma/seed.ts dashboard",
+		"seed:phase2": "bun prisma/seed.ts phase2"
 	},
 	"dependencies": {
 		"@better-auth/cli": "^1.4.18",
