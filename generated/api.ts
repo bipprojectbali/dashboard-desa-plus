@@ -154,15 +154,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/division/metrics": {
+    "/api/division/activities/stats": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get division performance metrics */
-        get: operations["getApiDivisionMetrics"];
+        /** Get activity statistics by status */
+        get: operations["getApiDivisionActivitiesStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/division/documents/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get document statistics by type */
+        get: operations["getApiDivisionDocumentsStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/division/discussions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get recent discussions */
+        get: operations["getApiDivisionDiscussions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1035,7 +1069,7 @@ export interface operations {
             };
         };
     };
-    getApiDivisionMetrics: {
+    getApiDivisionActivitiesStats: {
         parameters: {
             query?: never;
             header?: never;
@@ -1050,13 +1084,174 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: unknown[];
+                        data: {
+                            total: number;
+                            counts: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                            percentages: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                        };
                     };
                     "multipart/form-data": {
-                        data: unknown[];
+                        data: {
+                            total: number;
+                            counts: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                            percentages: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                        };
                     };
                     "text/plain": {
-                        data: unknown[];
+                        data: {
+                            total: number;
+                            counts: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                            percentages: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                        };
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDivisionDocumentsStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            name: string;
+                            jumlah: number;
+                            color: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            name: string;
+                            jumlah: number;
+                            color: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            name: string;
+                            jumlah: number;
+                            color: string;
+                        }[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDivisionDiscussions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            message: string;
+                            sender: string;
+                            date: string;
+                            division: (string | null) | null;
+                            isResolved: boolean;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            id: string;
+                            message: string;
+                            sender: string;
+                            date: string;
+                            division: (string | null) | null;
+                            isResolved: boolean;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            id: string;
+                            message: string;
+                            sender: string;
+                            date: string;
+                            division: (string | null) | null;
+                            isResolved: boolean;
+                        }[];
                     };
                 };
             };

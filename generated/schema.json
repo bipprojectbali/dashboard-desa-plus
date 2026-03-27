@@ -1686,7 +1686,7 @@
         "summary": "Get recent activities"
       }
     },
-    "/api/division/metrics": {
+    "/api/division/activities/stats": {
       "get": {
         "responses": {
           "200": {
@@ -1696,8 +1696,63 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "array",
-                      "items": {}
+                      "type": "object",
+                      "required": [
+                        "total",
+                        "counts",
+                        "percentages"
+                      ],
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "counts": {
+                          "type": "object",
+                          "required": [
+                            "selesai",
+                            "berjalan",
+                            "tertunda",
+                            "dibatalkan"
+                          ],
+                          "properties": {
+                            "selesai": {
+                              "type": "number"
+                            },
+                            "berjalan": {
+                              "type": "number"
+                            },
+                            "tertunda": {
+                              "type": "number"
+                            },
+                            "dibatalkan": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "percentages": {
+                          "type": "object",
+                          "required": [
+                            "selesai",
+                            "berjalan",
+                            "tertunda",
+                            "dibatalkan"
+                          ],
+                          "properties": {
+                            "selesai": {
+                              "type": "number"
+                            },
+                            "berjalan": {
+                              "type": "number"
+                            },
+                            "tertunda": {
+                              "type": "number"
+                            },
+                            "dibatalkan": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      }
                     }
                   },
                   "required": [
@@ -1710,8 +1765,63 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "array",
-                      "items": {}
+                      "type": "object",
+                      "required": [
+                        "total",
+                        "counts",
+                        "percentages"
+                      ],
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "counts": {
+                          "type": "object",
+                          "required": [
+                            "selesai",
+                            "berjalan",
+                            "tertunda",
+                            "dibatalkan"
+                          ],
+                          "properties": {
+                            "selesai": {
+                              "type": "number"
+                            },
+                            "berjalan": {
+                              "type": "number"
+                            },
+                            "tertunda": {
+                              "type": "number"
+                            },
+                            "dibatalkan": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "percentages": {
+                          "type": "object",
+                          "required": [
+                            "selesai",
+                            "berjalan",
+                            "tertunda",
+                            "dibatalkan"
+                          ],
+                          "properties": {
+                            "selesai": {
+                              "type": "number"
+                            },
+                            "berjalan": {
+                              "type": "number"
+                            },
+                            "tertunda": {
+                              "type": "number"
+                            },
+                            "dibatalkan": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      }
                     }
                   },
                   "required": [
@@ -1724,8 +1834,63 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "array",
-                      "items": {}
+                      "type": "object",
+                      "required": [
+                        "total",
+                        "counts",
+                        "percentages"
+                      ],
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "counts": {
+                          "type": "object",
+                          "required": [
+                            "selesai",
+                            "berjalan",
+                            "tertunda",
+                            "dibatalkan"
+                          ],
+                          "properties": {
+                            "selesai": {
+                              "type": "number"
+                            },
+                            "berjalan": {
+                              "type": "number"
+                            },
+                            "tertunda": {
+                              "type": "number"
+                            },
+                            "dibatalkan": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "percentages": {
+                          "type": "object",
+                          "required": [
+                            "selesai",
+                            "berjalan",
+                            "tertunda",
+                            "dibatalkan"
+                          ],
+                          "properties": {
+                            "selesai": {
+                              "type": "number"
+                            },
+                            "berjalan": {
+                              "type": "number"
+                            },
+                            "tertunda": {
+                              "type": "number"
+                            },
+                            "dibatalkan": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      }
                     }
                   },
                   "required": [
@@ -1779,8 +1944,370 @@
             }
           }
         },
-        "operationId": "getApiDivisionMetrics",
-        "summary": "Get division performance metrics"
+        "operationId": "getApiDivisionActivitiesStats",
+        "summary": "Get activity statistics by status"
+      }
+    },
+    "/api/division/documents/stats": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "name",
+                          "jumlah",
+                          "color"
+                        ],
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "jumlah": {
+                            "type": "number"
+                          },
+                          "color": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "name",
+                          "jumlah",
+                          "color"
+                        ],
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "jumlah": {
+                            "type": "number"
+                          },
+                          "color": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "name",
+                          "jumlah",
+                          "color"
+                        ],
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "jumlah": {
+                            "type": "number"
+                          },
+                          "color": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDivisionDocumentsStats",
+        "summary": "Get document statistics by type"
+      }
+    },
+    "/api/division/discussions": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "message",
+                          "sender",
+                          "date",
+                          "division",
+                          "isResolved"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "sender": {
+                            "type": "string"
+                          },
+                          "date": {
+                            "type": "string"
+                          },
+                          "division": {
+                            "nullable": true,
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "isResolved": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "message",
+                          "sender",
+                          "date",
+                          "division",
+                          "isResolved"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "sender": {
+                            "type": "string"
+                          },
+                          "date": {
+                            "type": "string"
+                          },
+                          "division": {
+                            "nullable": true,
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "isResolved": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "message",
+                          "sender",
+                          "date",
+                          "division",
+                          "isResolved"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "sender": {
+                            "type": "string"
+                          },
+                          "date": {
+                            "type": "string"
+                          },
+                          "division": {
+                            "nullable": true,
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "isResolved": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDivisionDiscussions",
+        "summary": "Get recent discussions"
       }
     },
     "/api/complaint/stats": {
