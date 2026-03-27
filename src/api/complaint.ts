@@ -63,6 +63,46 @@ export const complaint = new Elysia({
 		},
 	)
 	.get(
+		"/trends",
+		async ({ set }) => {
+			try {
+				// Get last 7 months complaint trends
+				const trends = await prisma.$queryRaw<
+					{ month: string; month_num: number; count: number }[]
+				>`
+					SELECT 
+						TO_CHAR("createdAt", 'Mon') as month,
+						EXTRACT(MONTH FROM "createdAt") as month_num,
+						COUNT(*)::INTEGER as count
+					FROM complaint
+					WHERE "createdAt" > NOW() - INTERVAL '7 months'
+					GROUP BY month, month_num
+					ORDER BY month_num ASC
+				`;
+				return { data: trends };
+			} catch (error) {
+				logger.error({ error }, "Failed to fetch complaint trends");
+				set.status = 500;
+				return { error: "Internal Server Error" };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					data: t.Array(
+						t.Object({
+							month: t.String(),
+							month_num: t.Number(),
+							count: t.Number(),
+						}),
+					),
+				}),
+				500: t.Object({ error: t.String() }),
+			},
+			detail: { summary: "Get complaint trends for last 7 months" },
+		},
+	)
+	.get(
 		"/service-stats",
 		async ({ set }) => {
 			try {

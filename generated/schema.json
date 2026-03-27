@@ -2561,6 +2561,157 @@
         "summary": "Get recent complaints"
       }
     },
+    "/api/complaint/trends": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "month",
+                          "month_num",
+                          "count"
+                        ],
+                        "properties": {
+                          "month": {
+                            "type": "string"
+                          },
+                          "month_num": {
+                            "type": "number"
+                          },
+                          "count": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "month",
+                          "month_num",
+                          "count"
+                        ],
+                        "properties": {
+                          "month": {
+                            "type": "string"
+                          },
+                          "month_num": {
+                            "type": "number"
+                          },
+                          "count": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "month",
+                          "month_num",
+                          "count"
+                        ],
+                        "properties": {
+                          "month": {
+                            "type": "string"
+                          },
+                          "month_num": {
+                            "type": "number"
+                          },
+                          "count": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiComplaintTrends",
+        "summary": "Get complaint trends for last 7 months"
+      }
+    },
     "/api/complaint/service-stats": {
       "get": {
         "responses": {

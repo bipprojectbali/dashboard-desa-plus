@@ -239,6 +239,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/complaint/trends": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get complaint trends for last 7 months */
+        get: operations["getApiComplaintTrends"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/complaint/service-stats": {
         parameters: {
             query?: never;
@@ -1353,6 +1370,61 @@ export interface operations {
                     };
                     "text/plain": {
                         data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiComplaintTrends: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            month: string;
+                            month_num: number;
+                            count: number;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            month: string;
+                            month_num: number;
+                            count: number;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            month: string;
+                            month_num: number;
+                            count: number;
+                        }[];
                     };
                 };
             };
