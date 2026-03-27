@@ -19,25 +19,28 @@ export async function getComplaintIds(): Promise<string[]> {
 
 /**
  * Seed Complaints
- * Creates sample citizen complaints for testing
+ * Creates sample citizen complaints spread across 7 months for trend visualization
  */
 export async function seedComplaints(adminId: string) {
 	console.log("Seeding Complaints...");
 
+	const now = new Date();
+	
 	const complaints = [
+		// Recent complaints (this month)
 		{
-			complaintNumber: `COMP-20250326-001`,
+			complaintNumber: `COMP-20260327-001`,
 			title: "Lampu Jalan Mati",
-			description:
-				"Lampu jalan di depan Balai Banjar Manesa mati sejak 3 hari lalu.",
+			description: "Lampu jalan di depan Balai Banjar Manesa mati sejak 3 hari lalu.",
 			category: ComplaintCategory.INFRASTRUKTUR,
 			status: ComplaintStatus.BARU,
 			priority: Priority.SEDANG,
 			location: "Banjar Manesa",
 			reporterId: adminId,
+			createdAt: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
 		},
 		{
-			complaintNumber: `COMP-20250326-002`,
+			complaintNumber: `COMP-20260325-002`,
 			title: "Sampah Menumpuk",
 			description: "Tumpukan sampah di area pasar Darmasaba belum diangkut.",
 			category: ComplaintCategory.KETERTIBAN_UMUM,
@@ -45,9 +48,10 @@ export async function seedComplaints(adminId: string) {
 			priority: Priority.TINGGI,
 			location: "Pasar Darmasaba",
 			assignedTo: adminId,
+			createdAt: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
 		},
 		{
-			complaintNumber: `COMP-20250320-003`,
+			complaintNumber: `COMP-20260320-003`,
 			title: "Jalan Rusak",
 			description: "Jalan di Banjar Cabe rusak dan berlubang.",
 			category: ComplaintCategory.INFRASTRUKTUR,
@@ -56,7 +60,122 @@ export async function seedComplaints(adminId: string) {
 			location: "Banjar Cabe",
 			assignedTo: adminId,
 			resolvedBy: adminId,
-			resolvedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+			resolvedAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000),
+			createdAt: new Date(now.getTime() - 12 * 24 * 60 * 60 * 1000), // 12 days ago
+		},
+		// Last month (February 2026)
+		{
+			complaintNumber: `COMP-20260215-004`,
+			title: "Saluran Air Tersumbat",
+			description: "Saluran air di depan rumah warga tersumbat sampah.",
+			category: ComplaintCategory.INFRASTRUKTUR,
+			status: ComplaintStatus.SELESAI,
+			priority: Priority.SEDANG,
+			location: "Banjar Darmasaba",
+			assignedTo: adminId,
+			resolvedBy: adminId,
+			createdAt: new Date(now.getTime() - 45 * 24 * 60 * 60 * 1000), // 45 days ago
+		},
+		{
+			complaintNumber: `COMP-20260210-005`,
+			title: "Parkir Liar",
+			description: "Parkir liar di depan pasar mengganggu lalu lintas.",
+			category: ComplaintCategory.KETERTIBAN_UMUM,
+			status: ComplaintStatus.SELESAI,
+			priority: Priority.RENDAH,
+			location: "Pasar Darmasaba",
+			assignedTo: adminId,
+			resolvedBy: adminId,
+			createdAt: new Date(now.getTime() - 50 * 24 * 60 * 60 * 1000), // 50 days ago
+		},
+		// January 2026
+		{
+			complaintNumber: `COMP-20260120-006`,
+			title: "Penerangan Jalan Umum Rusak",
+			description: "5 titik lampu jalan di Jl. Raya Darmasaba tidak menyala.",
+			category: ComplaintCategory.INFRASTRUKTUR,
+			status: ComplaintStatus.SELESAI,
+			priority: Priority.TINGGI,
+			location: "Jl. Raya Darmasaba",
+			assignedTo: adminId,
+			resolvedBy: adminId,
+			createdAt: new Date(now.getTime() - 70 * 24 * 60 * 60 * 1000), // 70 days ago
+		},
+		{
+			complaintNumber: `COMP-20260115-007`,
+			title: "Pelayanan Administrasi Lambat",
+			description: "Proses pembuatan surat keterangan lambat.",
+			category: ComplaintCategory.ADMINISTRASI,
+			status: ComplaintStatus.SELESAI,
+			priority: Priority.SEDANG,
+			location: "Kantor Desa",
+			assignedTo: adminId,
+			resolvedBy: adminId,
+			createdAt: new Date(now.getTime() - 75 * 24 * 60 * 60 * 1000), // 75 days ago
+		},
+		// December 2025
+		{
+			complaintNumber: `COMP-20251210-008`,
+			title: "Jembatan Rusak Ringan",
+			description: "Pagar jembatan di Banjar Penenjoan rusak.",
+			category: ComplaintCategory.INFRASTRUKTUR,
+			status: ComplaintStatus.SELESAI,
+			priority: Priority.SEDANG,
+			location: "Banjar Penenjoan",
+			assignedTo: adminId,
+			resolvedBy: adminId,
+			createdAt: new Date(now.getTime() - 110 * 24 * 60 * 60 * 1000), // 110 days ago
+		},
+		{
+			complaintNumber: `COMP-20251205-009`,
+			title: "Suara Bising Kegiatan Malam",
+			description: "Kegiatan karaoke malam hari mengganggu ketenangan.",
+			category: ComplaintCategory.KETERTIBAN_UMUM,
+			status: ComplaintStatus.SELESAI,
+			priority: Priority.RENDAH,
+			location: "Banjar Baler Pasar",
+			assignedTo: adminId,
+			resolvedBy: adminId,
+			createdAt: new Date(now.getTime() - 115 * 24 * 60 * 60 * 1000), // 115 days ago
+		},
+		// November 2025
+		{
+			complaintNumber: `COMP-20251115-010`,
+			title: "Genangan Air Saat Hujan",
+			description: "Jalan utama tergenang air saat hujan deras.",
+			category: ComplaintCategory.INFRASTRUKTUR,
+			status: ComplaintStatus.SELESAI,
+			priority: Priority.TINGGI,
+			location: "Jl. Raya Cabe",
+			assignedTo: adminId,
+			resolvedBy: adminId,
+			createdAt: new Date(now.getTime() - 135 * 24 * 60 * 60 * 1000), // 135 days ago
+		},
+		// October 2025
+		{
+			complaintNumber: `COMP-20251020-011`,
+			title: "Pungli Pelayanan KTP",
+			description: "Ada oknum yang meminta biaya tambahan untuk KTP.",
+			category: ComplaintCategory.ADMINISTRASI,
+			status: ComplaintStatus.SELESAI,
+			priority: Priority.DARURAT,
+			location: "Kantor Desa",
+			assignedTo: adminId,
+			resolvedBy: adminId,
+			createdAt: new Date(now.getTime() - 160 * 24 * 60 * 60 * 1000), // 160 days ago
+		},
+		// September 2025
+		{
+			complaintNumber: `COMP-20250915-012`,
+			title: "Tanah Longsor",
+			description: "Tanah longsor di tepi jalan Banjar Bucu.",
+			category: ComplaintCategory.INFRASTRUKTUR,
+			status: ComplaintStatus.SELESAI,
+			priority: Priority.DARURAT,
+			location: "Banjar Bucu",
+			assignedTo: adminId,
+			resolvedBy: adminId,
+			createdAt: new Date(now.getTime() - 195 * 24 * 60 * 60 * 1000), // 195 days ago
 		},
 	];
 
@@ -68,7 +187,7 @@ export async function seedComplaints(adminId: string) {
 		});
 	}
 
-	console.log("✅ Complaints seeded successfully");
+	console.log("✅ Complaints seeded successfully (12 complaints across 7 months)");
 }
 
 /**
