@@ -1,4 +1,4 @@
-import { Grid, Image, Stack } from "@mantine/core";
+import { Grid, Image, Loader, Stack, Center } from "@mantine/core";
 import { CheckCircle, FileText, MessageCircle, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/utils/api-client";
@@ -10,29 +10,6 @@ import { SatisfactionChart } from "./dashboard/satisfaction-chart";
 import { SDGSCard } from "./dashboard/sdgs-card";
 import { StatCard } from "./dashboard/stat-card";
 
-const sdgsData = [
-	{
-		title: "Desa Berenergi Bersih dan Terbarukan",
-		score: 99.64,
-		image: "SDGS-7.png",
-	},
-	{
-		title: "Desa Damai Berkeadilan",
-		score: 78.65,
-		image: "SDGS-16.png",
-	},
-	{
-		title: "Desa Sehat dan Sejahtera",
-		score: 77.37,
-		image: "SDGS-3.png",
-	},
-	{
-		title: "Desa Tanpa Kemiskinan",
-		score: 52.62,
-		image: "SDGS-1.png",
-	},
-];
-
 export function DashboardContent() {
 	const [stats, setStats] = useState({
 		complaints: { total: 0, baru: 0, proses: 0, selesai: 0 },
@@ -41,14 +18,18 @@ export function DashboardContent() {
 		loading: true,
 	});
 
+	const [sdgsData, setSdgsData] = useState<{ title: string; score: number; image: string | null }[]>([]);
+	const [sdgsLoading, setSdgsLoading] = useState(true);
+
 	useEffect(() => {
 		async function fetchStats() {
 			try {
-				const [complaintRes, residentRes, weeklyServiceRes] = await Promise.all(
+				const [complaintRes, residentRes, weeklyServiceRes, sdgsRes] = await Promise.all(
 					[
 						apiClient.GET("/api/complaint/stats"),
 						apiClient.GET("/api/resident/stats"),
 						apiClient.GET("/api/complaint/service-weekly"),
+						apiClient.GET("/api/dashboard/sdgs"),
 					],
 				);
 
@@ -71,9 +52,15 @@ export function DashboardContent() {
 							?.count || 0,
 					loading: false,
 				});
+
+				if (sdgsRes.data?.data) {
+					setSdgsData(sdgsRes.data.data);
+				}
+				setSdgsLoading(false);
 			} catch (error) {
-				console.error("Failed to fetch stats", error);
+				console.error("Failed to fetch dashboard content", error);
 				setStats((prev) => ({ ...prev, loading: false }));
+				setSdgsLoading(false);
 			}
 		}
 
@@ -146,17 +133,23 @@ export function DashboardContent() {
 			<ChartAPBDes />
 
 			{/* Section 6: SDGs Desa Cards */}
-			<Grid gutter="md">
-				{sdgsData.map((sdg) => (
-					<Grid.Col key={sdg.title} span={{ base: 9, md: 3 }}>
-						<SDGSCard
-							image={<Image src={sdg.image} alt={sdg.title} />}
-							title={sdg.title}
-							score={sdg.score}
-						/>
-					</Grid.Col>
-				))}
-			</Grid>
+			{sdgsLoading ? (
+				<Center py="xl">
+					<Loader />
+				</Center>
+			) : (
+				<Grid gutter="md">
+					{sdgsData.map((sdg) => (
+						<Grid.Col key={sdg.title} span={{ base: 9, md: 3 }}>
+							<SDGSCard
+								image={sdg.image ? <Image src={sdg.image} alt={sdg.title} /> : null}
+								title={sdg.title}
+								score={sdg.score}
+							/>
+						</Grid.Col>
+					))}
+				</Grid>
+			)}
 		</Stack>
 	);
 }

@@ -358,6 +358,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/dashboard/budget": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDashboardBudget"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/dashboard/sdgs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDashboardSdgs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/dashboard/satisfaction": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDashboardSatisfaction"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1546,6 +1594,126 @@ export interface operations {
                     };
                     "text/plain": {
                         error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDashboardBudget: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            category: string;
+                            amount: number;
+                            percentage: number;
+                            color: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            category: string;
+                            amount: number;
+                            percentage: number;
+                            color: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            category: string;
+                            amount: number;
+                            percentage: number;
+                            color: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    getApiDashboardSdgs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            title: string;
+                            score: number;
+                            image: (string | null) | null;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            title: string;
+                            score: number;
+                            image: (string | null) | null;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            title: string;
+                            score: number;
+                            image: (string | null) | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    getApiDashboardSatisfaction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            category: string;
+                            value: number;
+                            color: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            category: string;
+                            value: number;
+                            color: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            category: string;
+                            value: number;
+                            color: string;
+                        }[];
                     };
                 };
             };

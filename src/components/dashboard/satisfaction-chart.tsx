@@ -2,22 +2,50 @@ import {
 	Box,
 	Card,
 	Group,
+	Loader,
 	Text,
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { useEffect, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { apiClient } from "@/utils/api-client";
 
-const satisfactionData = [
-	{ name: "Sangat Puas", value: 25, color: "#4E5BA6" },
-	{ name: "Puas", value: 25, color: "#F4C542" },
-	{ name: "Cukup", value: 25, color: "#8CC63F" },
-	{ name: "Kurang", value: 25, color: "#E57373" },
-];
+interface SatisfactionData {
+	name: string;
+	value: number;
+	color: string;
+}
 
 export function SatisfactionChart() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+
+	const [data, setData] = useState<SatisfactionData[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		async function fetchSatisfaction() {
+			try {
+				const res = await apiClient.GET("/api/dashboard/satisfaction");
+				if (res.data?.data) {
+					setData(
+						res.data.data.map((d) => ({
+							name: d.category,
+							value: d.value,
+							color: d.color,
+						})),
+					);
+				}
+			} catch (error) {
+				console.error("Failed to fetch satisfaction data", error);
+			} finally {
+				setLoading(false);
+			}
+		}
+
+		fetchSatisfaction();
+	}, []);
 
 	return (
 		<Card
@@ -40,31 +68,37 @@ export function SatisfactionChart() {
 				Tingkat kepuasan layanan
 			</Text>
 			<ResponsiveContainer width="100%" height={300}>
-				<PieChart>
-					<Pie
-						data={satisfactionData}
-						cx="50%"
-						cy="50%"
-						innerRadius={80}
-						outerRadius={120}
-						paddingAngle={2}
-						dataKey="value"
-					>
-						{satisfactionData.map((entry) => (
-							<Cell key={`cell-${entry.name}`} fill={entry.color} />
-						))}
-					</Pie>
-					<Tooltip
-						contentStyle={{
-							backgroundColor: dark ? "#1E293B" : "white",
-							borderColor: dark ? "#334155" : "#e5e7eb",
-							borderRadius: "8px",
-						}}
-					/>
-				</PieChart>
+				{loading ? (
+					<Group justify="center" align="center" h="100%">
+						<Loader />
+					</Group>
+				) : (
+					<PieChart>
+						<Pie
+							data={data}
+							cx="50%"
+							cy="50%"
+							innerRadius={80}
+							outerRadius={120}
+							paddingAngle={2}
+							dataKey="value"
+						>
+							{data.map((entry) => (
+								<Cell key={`cell-${entry.name}`} fill={entry.color} />
+							))}
+						</Pie>
+						<Tooltip
+							contentStyle={{
+								backgroundColor: dark ? "#1E293B" : "white",
+								borderColor: dark ? "#334155" : "#e5e7eb",
+								borderRadius: "8px",
+							}}
+						/>
+					</PieChart>
+				)}
 			</ResponsiveContainer>
 			<Group justify="center" gap="md" mt="md">
-				{satisfactionData.map((item) => (
+				{data.map((item) => (
 					<Group key={item.name} gap="xs">
 						<Box
 							w={12}

@@ -5,6 +5,7 @@ import { apiMiddleware } from "../middleware/apiMiddleware";
 import { auth } from "../utils/auth";
 import { apikey } from "./apikey";
 import { complaint } from "./complaint";
+import { dashboard } from "./dashboard";
 import { division } from "./division";
 import { event } from "./event";
 import { profile } from "./profile";
@@ -40,7 +41,8 @@ const api = new Elysia({
 	.use(division)
 	.use(complaint)
 	.use(resident)
-	.use(event);
+	.use(event)
+	.use(dashboard);
 
 if (!isProduction) {
 	api.use(

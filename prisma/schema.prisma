@@ -31,7 +31,6 @@ model User {
   innovationIdeas   InnovationIdea[]    @relation("IdeaReviewer")
   healthRecords     HealthRecord[]
   populationDynamics PopulationDynamic[]
-  budgets           Budget[]
   budgetTransactions BudgetTransaction[]
   posyandus         Posyandu[]
   securityReports   SecurityReport[]
@@ -315,6 +314,46 @@ model Banjar {
   @@map("banjar")
 }
 
+// --- KATEGORI 4: KEUANGAN & ANGGARAN ---
+
+model Budget {
+  id          String   @id @default(cuid())
+  category    String   // "Belanja", "Pangan", "Pembiayaan", "Pendapatan"
+  amount      Float    @default(0)
+  percentage  Float    @default(0)
+  color       String   @default("#3B82F6")
+  fiscalYear  Int      @default(2025)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([category, fiscalYear])
+  @@map("budget")
+}
+
+// --- KATEGORI 5: METRIK DASHBOARD & SDGS ---
+
+model SdgsScore {
+  id        String   @id @default(cuid())
+  title     String   @unique
+  score     Float    @default(0)
+  image     String?  // filename in public folder
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sdgs_score")
+}
+
+model SatisfactionRating {
+  id        String   @id @default(cuid())
+  category  String   @unique // "Sangat Puas", "Puas", "Cukup", "Kurang"
+  value     Int      @default(0)
+  color     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("satisfaction_rating")
+}
+
 // --- STUBS FOR PHASE 2+ (To maintain relations) ---
 
 model HealthRecord {
@@ -335,12 +374,6 @@ model PopulationDynamic {
   id           String @id @default(cuid())
   documentedBy String
   documentor   User @relation(fields: [documentedBy], references: [id])
-}
-
-model Budget {
-  id         String @id @default(cuid())
-  approvedBy String?
-  approver   User? @relation(fields: [approvedBy], references: [id])
 }
 
 model BudgetTransaction {

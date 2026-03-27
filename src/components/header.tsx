@@ -165,7 +165,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 						<IconUserShield
 							color="white"
 							style={{ width: "70%", height: "70%" }}
-							onClick={() => navigate({ to: "/signin" })}
+							onClick={() => navigate({ to: "/admin" })}
 						/>
 					</ActionIcon>
 				</Group>
