@@ -1,8 +1,18 @@
 import { describe, expect, it } from "bun:test";
 import api from "@/api";
+import { prisma } from "@/utils/db";
 
 describe("NOC API Module", () => {
 	const idDesa = "darmasaba";
+
+	it("should return last sync timestamp", async () => {
+		const response = await api.handle(
+			new Request(`http://localhost/api/noc/last-sync?idDesa=${idDesa}`),
+		);
+		expect(response.status).toBe(200);
+		const data = await response.json();
+		expect(data).toHaveProperty("lastSyncedAt");
+	});
 
 	it("should return active divisions", async () => {
 		const response = await api.handle(
@@ -70,5 +80,14 @@ describe("NOC API Module", () => {
 		);
 		// Elysia returns 400 or 422 for validation errors
 		expect([400, 422]).toContain(response.status);
+	});
+
+	it("should return 401 for sync without admin auth", async () => {
+		const response = await api.handle(
+			new Request("http://localhost/api/noc/sync", {
+				method: "POST",
+			}),
+		);
+		expect(response.status).toBe(401);
 	});
 });
