@@ -36,8 +36,8 @@ const api = new Elysia({
 			},
 		},
 	)
-	.use(noc)
 	.use(apiMiddleware)
+	.use(noc)
 	.use(apikey)
 	.use(profile)
 	.use(division)

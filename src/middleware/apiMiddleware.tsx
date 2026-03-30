@@ -91,6 +91,11 @@ export function apiMiddleware(app: Elysia) {
 				return;
 			}
 
+			// Allow public GET access to NOC monitoring endpoints
+			if (url.pathname.startsWith("/api/noc/") && request.method === "GET") {
+				return;
+			}
+
 			if (!user) {
 				logger.warn(`[AUTH] Unauthorized: ${request.method} ${request.url}`);
 				set.status = 401;
