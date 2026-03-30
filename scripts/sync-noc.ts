@@ -2,7 +2,7 @@ import { prisma } from "../src/utils/db";
 import { nocExternalClient } from "../src/utils/noc-external-client";
 import logger from "../src/utils/logger";
 
-const ID_DESA = "darmasaba";
+const ID_DESA = "desa1";
 
 /**
  * Helper untuk mendapatkan system user ID untuk relasi
@@ -15,7 +15,7 @@ async function getSystemUserId() {
 		// Buat system user jika tidak ada
 		const newUser = await prisma.user.create({
 			data: {
-				email: "system@darmasaba.id",
+				email: "system@desa1.id",
 				name: "System Sync",
 				role: "admin",
 			},
@@ -40,19 +40,29 @@ async function syncActiveDivisions() {
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: External API response is untyped
-	const divisions = (data as any).data;
+	const resData = (data as any).data;
+	const divisions = Array.isArray(resData) ? resData : (resData?.divisi || []);
+	
+	if (!Array.isArray(divisions)) {
+		logger.warn({ data }, "Divisions data from NOC is not an array");
+		return;
+	}
+
 	for (const div of divisions) {
+		const name = div.name || div.division;
+		const extId = div.id || div.externalId || `div-${name.toLowerCase().replace(/\s+/g, "-")}`;
+		
 		await prisma.division.upsert({
-			where: { externalId: div.id },
+			where: { name: name },
 			update: {
-				name: div.name,
-				color: div.color,
+				externalId: extId,
+				color: div.color || "#1E3A5F",
 				villageId: ID_DESA,
 			},
 			create: {
-				externalId: div.id,
-				name: div.name,
-				color: div.color,
+				externalId: extId,
+				name: name,
+				color: div.color || "#1E3A5F",
 				villageId: ID_DESA,
 			},
 		});
@@ -75,30 +85,39 @@ async function syncLatestProjects() {
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: External API response
-	const projects = (data as any).data;
+	const resData = (data as any).data;
+	const projects = Array.isArray(resData) ? resData : (resData?.projects || []);
+
+	if (!Array.isArray(projects)) {
+		logger.warn({ data }, "Projects data from NOC is not an array");
+		return;
+	}
+
 	for (const proj of projects) {
-		// Temukan divisi lokal berdasarkan nama atau externalId (asumsi externalId divisi sinkron)
-		// Karena kita sinkron divisi dulu, kita cari berdasarkan nama jika externalId belum pasti
+		const extId = proj.id || proj.externalId || `proj-${proj.title.toLowerCase().replace(/\s+/g, "-")}`;
+		
+		// Temukan divisi lokal berdasarkan nama atau externalId
+		const divisionName = proj.divisionName || proj.group;
 		const division = await prisma.division.findFirst({
-			where: { name: proj.divisionName },
+			where: { name: divisionName },
 		});
 
 		if (!division) continue;
 
 		await prisma.activity.upsert({
-			where: { externalId: proj.id },
+			where: { externalId: extId },
 			update: {
 				title: proj.title,
-				status: proj.status as any,
-				progress: proj.progress,
+				status: (typeof proj.status === 'number' ? (proj.status === 2 ? 'Completed' : 'OnProgress') : proj.status) as any,
+				progress: proj.progress || (proj.status === 2 ? 100 : 50),
 				divisionId: division.id,
 				villageId: ID_DESA,
 			},
 			create: {
-				externalId: proj.id,
+				externalId: extId,
 				title: proj.title,
-				status: proj.status as any,
-				progress: proj.progress,
+				status: (typeof proj.status === 'number' ? (proj.status === 2 ? 'Completed' : 'OnProgress') : proj.status) as any,
+				progress: proj.progress || (proj.status === 2 ? 100 : 50),
 				divisionId: division.id,
 				villageId: ID_DESA,
 			},
@@ -123,23 +142,31 @@ async function syncUpcomingEvents() {
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: External API response
-	const events = (data as any).data;
+	const resData = (data as any).data;
+	let events: any[] = [];
+	if (Array.isArray(resData)) {
+		events = resData;
+	} else if (resData?.today || resData?.upcoming) {
+		events = [...(resData.today || []), ...(resData.upcoming || [])];
+	}
+
 	for (const event of events) {
+		const extId = event.id || event.externalId || `event-${event.title.toLowerCase().replace(/\s+/g, "-")}`;
 		await prisma.event.upsert({
-			where: { externalId: event.id },
+			where: { externalId: extId },
 			update: {
 				title: event.title,
-				startDate: new Date(event.startDate),
-				location: event.location,
-				eventType: event.eventType as any,
+				startDate: new Date(event.startDate || event.date),
+				location: event.location || "N/A",
+				eventType: (event.eventType || "Meeting") as any,
 				villageId: ID_DESA,
 			},
 			create: {
-				externalId: event.id,
+				externalId: extId,
 				title: event.title,
-				startDate: new Date(event.startDate),
-				location: event.location,
-				eventType: event.eventType as any,
+				startDate: new Date(event.startDate || event.date),
+				location: event.location || "N/A",
+				eventType: (event.eventType || "Meeting") as any,
 				createdBy: systemUserId,
 				villageId: ID_DESA,
 			},
@@ -164,22 +191,29 @@ async function syncLatestDiscussion() {
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: External API response
-	const discussions = (data as any).data;
+	const resData = (data as any).data;
+	const discussions = Array.isArray(resData) ? resData : (resData?.discussions || resData?.data || []);
+
+	if (!Array.isArray(discussions)) {
+		logger.warn({ data }, "Discussions data from NOC is not an array");
+		return;
+	}
+
 	for (const disc of discussions) {
 		const division = await prisma.division.findFirst({
-			where: { name: disc.divisionName },
+			where: { name: disc.divisionName || disc.group },
 		});
 
 		await prisma.discussion.upsert({
 			where: { externalId: disc.id },
 			update: {
-				message: disc.message,
+				message: disc.message || disc.desc || disc.title,
 				divisionId: division?.id,
 				villageId: ID_DESA,
 			},
 			create: {
 				externalId: disc.id,
-				message: disc.message,
+				message: disc.message || disc.desc || disc.title,
 				senderId: systemUserId,
 				divisionId: division?.id,
 				villageId: ID_DESA,

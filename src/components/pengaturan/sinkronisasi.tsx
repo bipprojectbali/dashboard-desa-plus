@@ -31,7 +31,7 @@ const SinkronisasiSettings = () => {
 
 	const fetchLastSync = async () => {
 		const { data } = await apiClient.GET("/api/noc/last-sync", {
-			params: { query: { idDesa: "darmasaba" } },
+			params: { query: { idDesa: "desa1" } },
 		});
 		if (data?.lastSyncedAt) {
 			setLastSync(data.lastSyncedAt);
@@ -158,7 +158,7 @@ const SinkronisasiSettings = () => {
 					</Group>
 					<Group>
 						<Text fw={600} size="sm" w={100}>ID Desa:</Text>
-						<Text size="sm">darmasaba</Text>
+						<Text size="sm">desa1</Text>
 					</Group>
 					<Group>
 						<Text fw={600} size="sm" w={100}>Model Data:</Text>

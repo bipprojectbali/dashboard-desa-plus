@@ -3,7 +3,7 @@ import api from "@/api";
 import { prisma } from "@/utils/db";
 
 describe("NOC API Module", () => {
-	const idDesa = "darmasaba";
+	const idDesa = "desa1";
 
 	it("should return last sync timestamp", async () => {
 		const response = await api.handle(

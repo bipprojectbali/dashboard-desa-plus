@@ -43,7 +43,7 @@ model User {
 model Division {
   id          String   @id @default(cuid())
   externalId  String?  @unique // ID asli dari server NOC
-  villageId   String?  @default("darmasaba") // ID Desa dari sistem NOC
+  villageId   String?  @default("desa1") // ID Desa dari sistem NOC
   name        String   @unique
   description String?
   color       String   @default("#1E3A5F")
@@ -63,7 +63,7 @@ model Division {
 model Activity {
   id          String         @id @default(cuid())
   externalId  String?        @unique // ID asli dari server NOC
-  villageId   String?        @default("darmasaba")
+  villageId   String?        @default("desa1")
   title       String
   description String?
   divisionId  String
@@ -88,7 +88,7 @@ model Activity {
 model Document {
   id         String           @id @default(cuid())
   externalId String?          @unique // ID asli dari server NOC
-  villageId  String?          @default("darmasaba")
+  villageId  String?          @default("desa1")
   title      String
   category   DocumentCategory
   type       String // "Gambar", "Dokumen", "PDF", etc
@@ -109,7 +109,7 @@ model Document {
 model Discussion {
   id         String   @id @default(cuid())
   externalId String?  @unique // ID asli dari server NOC
-  villageId  String?  @default("darmasaba")
+  villageId  String?  @default("desa1")
   message    String
   senderId   String
   parentId   String? // For threaded discussions
@@ -131,7 +131,7 @@ model Discussion {
 model Event {
   id          String    @id @default(cuid())
   externalId  String?   @unique // ID asli dari server NOC
-  villageId   String?   @default("darmasaba")
+  villageId   String?   @default("desa1")
   title       String
   description String?
   eventType   EventType
