@@ -45,6 +45,7 @@ export function ActivityCard({
 				backgroundColor: dark ? "#334155" : "white",
 				overflow: "hidden",
 			}}
+			h={"100%"}
 		>
 			{/* 🔵 HEADER */}
 			<Box

@@ -10,6 +10,7 @@ import { division } from "./division";
 import { event } from "./event";
 import { profile } from "./profile";
 import { resident } from "./resident";
+import { noc } from "./noc";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -35,6 +36,7 @@ const api = new Elysia({
 			},
 		},
 	)
+	.use(noc)
 	.use(apiMiddleware)
 	.use(apikey)
 	.use(profile)
