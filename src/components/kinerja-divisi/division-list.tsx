@@ -15,6 +15,14 @@ interface DivisionItem {
 	count: number;
 }
 
+interface DivisionApiResponse {
+	name: string;
+	activityCount: number;
+	_count?: {
+		activities: number;
+	};
+}
+
 export function DivisionList() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
@@ -27,11 +35,9 @@ export function DivisionList() {
 			try {
 				const { data } = await apiClient.GET("/api/division/");
 				if (data?.data) {
-					const mapped = (
-						data.data as { name: string; _count?: { activities: number } }[]
-					).map((div) => ({
+					const mapped = (data.data as DivisionApiResponse[]).map((div) => ({
 						name: div.name,
-						count: div._count?.activities || 0,
+						count: div.activityCount || 0,
 					}));
 					setDivisions(mapped);
 				}
