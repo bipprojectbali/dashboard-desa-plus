@@ -16,7 +16,12 @@ export const division = new Elysia({
 						},
 					},
 				});
-				return { data: divisions };
+				return { 
+					data: divisions.map(d => ({
+						...d,
+						activityCount: d.externalActivityCount || d._count.activities
+					})) 
+				};
 			} catch (error) {
 				logger.error({ error }, "Failed to fetch divisions");
 				set.status = 500;

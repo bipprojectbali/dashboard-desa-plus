@@ -58,12 +58,14 @@ async function syncActiveDivisions() {
 				externalId: extId,
 				color: div.color || "#1E3A5F",
 				villageId: ID_DESA,
+				externalActivityCount: div.totalKegiatan || 0,
 			},
 			create: {
 				externalId: extId,
 				name: name,
 				color: div.color || "#1E3A5F",
 				villageId: ID_DESA,
+				externalActivityCount: div.totalKegiatan || 0,
 			},
 		});
 	}

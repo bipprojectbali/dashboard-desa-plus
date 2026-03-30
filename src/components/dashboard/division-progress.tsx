@@ -20,6 +20,7 @@ interface DivisionData {
 interface DivisionApiResponse {
 	id: string;
 	name: string;
+	activityCount: number;
 	_count?: {
 		activities: number;
 	};
@@ -40,7 +41,7 @@ export function DivisionProgress() {
 					setData(
 						(res.data.data as DivisionApiResponse[]).map((d) => ({
 							name: d.name,
-							value: d._count?.activities || 0,
+							value: d.activityCount || 0,
 						})),
 					);
 				}

@@ -46,9 +46,10 @@ model Division {
   villageId   String?  @default("desa1") // ID Desa dari sistem NOC
   name        String   @unique
   description String?
-  color       String   @default("#1E3A5F")
-  isActive    Boolean  @default(true)
-  lastSyncedAt DateTime? // Terakhir kali sinkronisasi dilakukan
+  color         String   @default("#1E3A5F")
+  isActive      Boolean  @default(true)
+  externalActivityCount Int @default(0) // Total kegiatan dari sistem NOC (misal: 47)
+  lastSyncedAt  DateTime? // Terakhir kali sinkronisasi dilakukan
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
