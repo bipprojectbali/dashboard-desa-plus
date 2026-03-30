@@ -25,13 +25,14 @@ export async function seedComplaints(adminId: string) {
 	console.log("Seeding Complaints...");
 
 	const now = new Date();
-	
+
 	const complaints = [
 		// Recent complaints (this month)
 		{
 			complaintNumber: `COMP-20260327-001`,
 			title: "Lampu Jalan Mati",
-			description: "Lampu jalan di depan Balai Banjar Manesa mati sejak 3 hari lalu.",
+			description:
+				"Lampu jalan di depan Balai Banjar Manesa mati sejak 3 hari lalu.",
 			category: ComplaintCategory.INFRASTRUKTUR,
 			status: ComplaintStatus.BARU,
 			priority: Priority.SEDANG,
@@ -187,7 +188,9 @@ export async function seedComplaints(adminId: string) {
 		});
 	}
 
-	console.log("✅ Complaints seeded successfully (12 complaints across 7 months)");
+	console.log(
+		"✅ Complaints seeded successfully (12 complaints across 7 months)",
+	);
 }
 
 /**
@@ -354,7 +357,10 @@ export async function seedInnovationIdeas(adminId: string) {
  * Seed Complaint Updates
  * Creates status update history for complaints
  */
-export async function seedComplaintUpdates(complaintIds: string[], userId: string) {
+export async function seedComplaintUpdates(
+	complaintIds: string[],
+	userId: string,
+) {
 	console.log("Seeding Complaint Updates...");
 
 	if (complaintIds.length === 0) {

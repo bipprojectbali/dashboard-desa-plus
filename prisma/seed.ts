@@ -2,20 +2,32 @@ import "dotenv/config";
 import { PrismaClient } from "../generated/prisma";
 
 // Import all seeders
-import { seedAdminUser, seedDemoUsers, seedApiKeys } from "./seeders/seed-auth";
-import { seedBanjars, seedResidents, getBanjarIds } from "./seeders/seed-demographics";
-import { seedDivisions, seedActivities, getDivisionIds } from "./seeders/seed-division-performance";
+import { seedAdminUser, seedApiKeys, seedDemoUsers } from "./seeders/seed-auth";
+import { seedDashboardMetrics } from "./seeders/seed-dashboard-metrics";
 import {
+	getBanjarIds,
+	seedBanjars,
+	seedResidents,
+} from "./seeders/seed-demographics";
+import {
+	seedDiscussions,
+	seedDivisionMetrics,
+	seedDocuments,
+} from "./seeders/seed-discussions";
+import {
+	getDivisionIds,
+	seedActivities,
+	seedDivisions,
+} from "./seeders/seed-division-performance";
+import { seedPhase2 } from "./seeders/seed-phase2";
+import {
+	getComplaintIds,
 	seedComplaints,
-	seedServiceLetters,
+	seedComplaintUpdates,
 	seedEvents,
 	seedInnovationIdeas,
-	seedComplaintUpdates,
-	getComplaintIds,
+	seedServiceLetters,
 } from "./seeders/seed-public-services";
-import { seedDocuments, seedDiscussions, seedDivisionMetrics } from "./seeders/seed-discussions";
-import { seedDashboardMetrics } from "./seeders/seed-dashboard-metrics";
-import { seedPhase2 } from "./seeders/seed-phase2";
 
 const prisma = new PrismaClient();
 
@@ -45,7 +57,9 @@ export async function runSeed() {
 	// Check if data already exists
 	const existingData = await hasExistingData();
 	if (existingData) {
-		console.log("⏭️  Existing data detected. Skipping seed to prevent duplicates.\n");
+		console.log(
+			"⏭️  Existing data detected. Skipping seed to prevent duplicates.\n",
+		);
 		console.log("💡 To re-seed, either:");
 		console.log("   1. Run: bun x prisma migrate reset (resets database)");
 		console.log("   2. Manually delete data from tables\n");
@@ -114,7 +128,9 @@ export async function runSpecificSeeder(name: string) {
 	// Check if data already exists for specific seeder
 	const existingData = await hasExistingData();
 	if (existingData && name !== "auth") {
-		console.log("⚠️  Warning: Existing data detected for this seeder category.\n");
+		console.log(
+			"⚠️  Warning: Existing data detected for this seeder category.\n",
+		);
 		console.log("💡 To re-seed, either:");
 		console.log("   1. Run: bun x prisma migrate reset (resets database)");
 		console.log("   2. Manually delete data from tables\n");
@@ -124,33 +140,36 @@ export async function runSpecificSeeder(name: string) {
 
 	switch (name) {
 		case "auth":
-		case "users":
+		case "users": {
 			console.log("📁 Authentication & Users");
 			const adminId = await seedAdminUser();
 			await seedDemoUsers();
 			await seedApiKeys(adminId);
 			break;
+		}
 
 		case "demographics":
-		case "population":
+		case "population": {
 			console.log("📁 Demographics & Population");
 			await seedBanjars();
 			const banjarIds = await getBanjarIds();
 			await seedResidents(banjarIds);
 			break;
+		}
 
 		case "divisions":
-		case "performance":
+		case "performance": {
 			console.log("📁 Division Performance");
 			const divisions = await seedDivisions();
 			const divisionIds = divisions.map((d) => d.id);
 			await seedActivities(divisionIds);
 			await seedDivisionMetrics(divisionIds);
 			break;
+		}
 
 		case "complaints":
 		case "services":
-		case "public":
+		case "public": {
 			console.log("📁 Public Services");
 			const pubAdminId = await seedAdminUser();
 			await seedComplaints(pubAdminId);
@@ -160,9 +179,10 @@ export async function runSpecificSeeder(name: string) {
 			const compIds = await getComplaintIds();
 			await seedComplaintUpdates(compIds, pubAdminId);
 			break;
+		}
 
 		case "documents":
-		case "discussions":
+		case "discussions": {
 			console.log("📁 Documents & Discussions");
 			const docAdminId = await seedAdminUser();
 			const divs = await seedDivisions();
@@ -170,6 +190,7 @@ export async function runSpecificSeeder(name: string) {
 			await seedDocuments(divIds, docAdminId);
 			await seedDiscussions(divIds, docAdminId);
 			break;
+		}
 
 		case "dashboard":
 		case "metrics":
@@ -178,17 +199,20 @@ export async function runSpecificSeeder(name: string) {
 			break;
 
 		case "phase2":
-		case "features":
+		case "features": {
 			console.log("📁 Phase 2+ Features");
 			const p2AdminId = await seedAdminUser();
 			await seedBanjars();
 			const p2BanjarIds = await getBanjarIds();
 			await seedPhase2(p2BanjarIds, p2AdminId);
 			break;
+		}
 
 		default:
 			console.error(`❌ Unknown seeder: ${name}`);
-			console.log("Available seeders: auth, demographics, divisions, complaints, documents, dashboard, phase2");
+			console.log(
+				"Available seeders: auth, demographics, divisions, complaints, documents, dashboard, phase2",
+			);
 			process.exit(1);
 	}
 

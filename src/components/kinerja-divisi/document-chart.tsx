@@ -1,4 +1,10 @@
-import { Card, Group, Loader, Text, useMantineColorScheme } from "@mantine/core";
+import {
+	Card,
+	Group,
+	Loader,
+	Text,
+	useMantineColorScheme,
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 import {
 	Bar,

@@ -1,9 +1,16 @@
-import { Card, Group, Loader, Stack, Text, useMantineColorScheme } from "@mantine/core";
+import {
+	Card,
+	Group,
+	Loader,
+	Stack,
+	Text,
+	useMantineColorScheme,
+} from "@mantine/core";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
 import { MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/utils/api-client";
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
 
 interface DiscussionItem {
 	id: string;

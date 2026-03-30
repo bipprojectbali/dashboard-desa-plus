@@ -47,10 +47,26 @@ export function ProgressChart() {
 				if (res.data?.data) {
 					const stats = res.data.data as ActivityStats;
 					const chartData: ProgressData[] = [
-						{ name: "Selesai", value: stats.percentages.selesai, color: "#22C55E" },
-						{ name: "Dikerjakan", value: stats.percentages.berjalan, color: "#F59E0B" },
-						{ name: "Segera Dikerjakan", value: stats.percentages.tertunda, color: "#3B82F6" },
-						{ name: "Dibatalkan", value: stats.percentages.dibatalkan, color: "#EF4444" },
+						{
+							name: "Selesai",
+							value: stats.percentages.selesai,
+							color: "#22C55E",
+						},
+						{
+							name: "Dikerjakan",
+							value: stats.percentages.berjalan,
+							color: "#F59E0B",
+						},
+						{
+							name: "Segera Dikerjakan",
+							value: stats.percentages.tertunda,
+							color: "#3B82F6",
+						},
+						{
+							name: "Dibatalkan",
+							value: stats.percentages.dibatalkan,
+							color: "#EF4444",
+						},
 					];
 					setData(chartData);
 				}

@@ -51,8 +51,14 @@ export function ChartSurat() {
 				console.log("📊 Service trends response:", res);
 
 				// Check if response has data
-				if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
-					const chartData = (res.data.data as { month: string; count: number }[]).map((d) => ({
+				if (
+					res.data?.data &&
+					Array.isArray(res.data.data) &&
+					res.data.data.length > 0
+				) {
+					const chartData = (
+						res.data.data as { month: string; count: number }[]
+					).map((d) => ({
 						month: d.month,
 						value: Number(d.count),
 					}));

@@ -1,8 +1,4 @@
-import {
-	ActivityStatus,
-	Priority,
-	PrismaClient,
-} from "../../generated/prisma";
+import { ActivityStatus, Priority, PrismaClient } from "../../generated/prisma";
 
 const prisma = new PrismaClient();
 

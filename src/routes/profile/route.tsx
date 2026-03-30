@@ -38,25 +38,24 @@ function ProfileLayout() {
 					paddingRight: "1rem",
 				}}
 			>
-				
-					<Group h="100%" justify="space-between">
-						<Group>
-							<Button
-								variant="subtle"
-								color="gray"
-								leftSection={<IconChevronLeft size={16} />}
-								onClick={() => navigate({ to: "/" })}
-							>
-								Kembali ke Dashboard
-							</Button>
-						</Group>
-
-						<Text fw={700} size="lg" c="orange.6">
-							PENGATURAN AKUN
-						</Text>
-
-						<Box w={150} />
+				<Group h="100%" justify="space-between">
+					<Group>
+						<Button
+							variant="subtle"
+							color="gray"
+							leftSection={<IconChevronLeft size={16} />}
+							onClick={() => navigate({ to: "/" })}
+						>
+							Kembali ke Dashboard
+						</Button>
 					</Group>
+
+					<Text fw={700} size="lg" c="orange.6">
+						PENGATURAN AKUN
+					</Text>
+
+					<Box w={150} />
+				</Group>
 			</AppShell.Header>
 
 			<AppShell.Main>

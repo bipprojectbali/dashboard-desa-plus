@@ -36,6 +36,134 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/noc/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiNocSync"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/last-sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocLast-sync"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/active-divisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocActive-divisions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/latest-projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocLatest-projects"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/upcoming-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocUpcoming-events"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/diagram-jumlah-document": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocDiagram-jumlah-document"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/diagram-progres-kegiatan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocDiagram-progres-kegiatan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/latest-discussion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocLatest-discussion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/apikey/": {
         parameters: {
             query?: never;
@@ -457,102 +585,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/noc/active-divisions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getApiNocActive-divisions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/noc/latest-projects": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getApiNocLatest-projects"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/noc/upcoming-events": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getApiNocUpcoming-events"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/noc/diagram-jumlah-document": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getApiNocDiagram-jumlah-document"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/noc/diagram-progres-kegiatan": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getApiNocDiagram-progres-kegiatan"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/noc/latest-discussion": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getApiNocLatest-discussion"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -614,6 +646,362 @@ export interface operations {
                     };
                     "text/plain": {
                         data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    postApiNocSync: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message?: string;
+                        error?: string;
+                        lastSyncedAt?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        message?: string;
+                        error?: string;
+                        lastSyncedAt?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        message?: string;
+                        error?: string;
+                        lastSyncedAt?: string;
+                    };
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocLast-sync": {
+        parameters: {
+            query: {
+                idDesa: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        lastSyncedAt: (string | null) | null;
+                    };
+                    "multipart/form-data": {
+                        lastSyncedAt: (string | null) | null;
+                    };
+                    "text/plain": {
+                        lastSyncedAt: (string | null) | null;
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocActive-divisions": {
+        parameters: {
+            query: {
+                idDesa: string;
+                limit?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            activityCount: number;
+                            color: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            id: string;
+                            name: string;
+                            activityCount: number;
+                            color: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            id: string;
+                            name: string;
+                            activityCount: number;
+                            color: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocLatest-projects": {
+        parameters: {
+            query: {
+                idDesa: string;
+                limit?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            status: string;
+                            progress: number;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            id: string;
+                            title: string;
+                            status: string;
+                            progress: number;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            id: string;
+                            title: string;
+                            status: string;
+                            progress: number;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocUpcoming-events": {
+        parameters: {
+            query: {
+                idDesa: string;
+                limit?: string;
+                filter?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            startDate: string;
+                            location: (string | null) | null;
+                            eventType: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            id: string;
+                            title: string;
+                            startDate: string;
+                            location: (string | null) | null;
+                            eventType: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            id: string;
+                            title: string;
+                            startDate: string;
+                            location: (string | null) | null;
+                            eventType: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocDiagram-jumlah-document": {
+        parameters: {
+            query: {
+                idDesa: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            category: string;
+                            count: number;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            category: string;
+                            count: number;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            category: string;
+                            count: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocDiagram-progres-kegiatan": {
+        parameters: {
+            query: {
+                idDesa: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            status: string;
+                            avgProgress: number;
+                            count: number;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            status: string;
+                            avgProgress: number;
+                            count: number;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            status: string;
+                            avgProgress: number;
+                            count: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocLatest-discussion": {
+        parameters: {
+            query: {
+                idDesa: string;
+                limit?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            message: string;
+                            senderName: string;
+                            senderImage: (string | null) | null;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            id: string;
+                            message: string;
+                            senderName: string;
+                            senderImage: (string | null) | null;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            id: string;
+                            message: string;
+                            senderName: string;
+                            senderImage: (string | null) | null;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
                     };
                 };
             };
@@ -2064,281 +2452,6 @@ export interface operations {
                             category: string;
                             value: number;
                             color: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    "getApiNocActive-divisions": {
-        parameters: {
-            query: {
-                idDesa: string;
-                limit?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            id: string;
-                            name: string;
-                            activityCount: number;
-                            color: string;
-                        }[];
-                    };
-                    "multipart/form-data": {
-                        data: {
-                            id: string;
-                            name: string;
-                            activityCount: number;
-                            color: string;
-                        }[];
-                    };
-                    "text/plain": {
-                        data: {
-                            id: string;
-                            name: string;
-                            activityCount: number;
-                            color: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    "getApiNocLatest-projects": {
-        parameters: {
-            query: {
-                idDesa: string;
-                limit?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            id: string;
-                            title: string;
-                            status: string;
-                            progress: number;
-                            divisionName: string;
-                            createdAt: string;
-                        }[];
-                    };
-                    "multipart/form-data": {
-                        data: {
-                            id: string;
-                            title: string;
-                            status: string;
-                            progress: number;
-                            divisionName: string;
-                            createdAt: string;
-                        }[];
-                    };
-                    "text/plain": {
-                        data: {
-                            id: string;
-                            title: string;
-                            status: string;
-                            progress: number;
-                            divisionName: string;
-                            createdAt: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    "getApiNocUpcoming-events": {
-        parameters: {
-            query: {
-                idDesa: string;
-                limit?: string;
-                filter?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            id: string;
-                            title: string;
-                            startDate: string;
-                            location: (string | null) | null;
-                            eventType: string;
-                        }[];
-                    };
-                    "multipart/form-data": {
-                        data: {
-                            id: string;
-                            title: string;
-                            startDate: string;
-                            location: (string | null) | null;
-                            eventType: string;
-                        }[];
-                    };
-                    "text/plain": {
-                        data: {
-                            id: string;
-                            title: string;
-                            startDate: string;
-                            location: (string | null) | null;
-                            eventType: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    "getApiNocDiagram-jumlah-document": {
-        parameters: {
-            query: {
-                idDesa: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            category: string;
-                            count: number;
-                        }[];
-                    };
-                    "multipart/form-data": {
-                        data: {
-                            category: string;
-                            count: number;
-                        }[];
-                    };
-                    "text/plain": {
-                        data: {
-                            category: string;
-                            count: number;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    "getApiNocDiagram-progres-kegiatan": {
-        parameters: {
-            query: {
-                idDesa: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            status: string;
-                            avgProgress: number;
-                            count: number;
-                        }[];
-                    };
-                    "multipart/form-data": {
-                        data: {
-                            status: string;
-                            avgProgress: number;
-                            count: number;
-                        }[];
-                    };
-                    "text/plain": {
-                        data: {
-                            status: string;
-                            avgProgress: number;
-                            count: number;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    "getApiNocLatest-discussion": {
-        parameters: {
-            query: {
-                idDesa: string;
-                limit?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            id: string;
-                            message: string;
-                            senderName: string;
-                            senderImage: (string | null) | null;
-                            divisionName: string;
-                            createdAt: string;
-                        }[];
-                    };
-                    "multipart/form-data": {
-                        data: {
-                            id: string;
-                            message: string;
-                            senderName: string;
-                            senderImage: (string | null) | null;
-                            divisionName: string;
-                            createdAt: string;
-                        }[];
-                    };
-                    "text/plain": {
-                        data: {
-                            id: string;
-                            message: string;
-                            senderName: string;
-                            senderImage: (string | null) | null;
-                            divisionName: string;
-                            createdAt: string;
                         }[];
                     };
                 };

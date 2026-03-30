@@ -33,7 +33,9 @@ describe("NOC API Module", () => {
 
 	it("should return diagram jumlah document", async () => {
 		const response = await api.handle(
-			new Request(`http://localhost/api/noc/diagram-jumlah-document?idDesa=${idDesa}`),
+			new Request(
+				`http://localhost/api/noc/diagram-jumlah-document?idDesa=${idDesa}`,
+			),
 		);
 		expect(response.status).toBe(200);
 		const data = await response.json();
@@ -42,7 +44,9 @@ describe("NOC API Module", () => {
 
 	it("should return diagram progres kegiatan", async () => {
 		const response = await api.handle(
-			new Request(`http://localhost/api/noc/diagram-progres-kegiatan?idDesa=${idDesa}`),
+			new Request(
+				`http://localhost/api/noc/diagram-progres-kegiatan?idDesa=${idDesa}`,
+			),
 		);
 		expect(response.status).toBe(200);
 		const data = await response.json();
@@ -51,7 +55,9 @@ describe("NOC API Module", () => {
 
 	it("should return latest discussion", async () => {
 		const response = await api.handle(
-			new Request(`http://localhost/api/noc/latest-discussion?idDesa=${idDesa}`),
+			new Request(
+				`http://localhost/api/noc/latest-discussion?idDesa=${idDesa}`,
+			),
 		);
 		expect(response.status).toBe(200);
 		const data = await response.json();

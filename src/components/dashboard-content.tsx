@@ -1,4 +1,4 @@
-import { Grid, Image, Loader, Stack, Center } from "@mantine/core";
+import { Center, Grid, Image, Loader, Stack } from "@mantine/core";
 import { CheckCircle, FileText, MessageCircle, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/utils/api-client";
@@ -18,20 +18,21 @@ export function DashboardContent() {
 		loading: true,
 	});
 
-	const [sdgsData, setSdgsData] = useState<{ title: string; score: number; image: string | null }[]>([]);
+	const [sdgsData, setSdgsData] = useState<
+		{ title: string; score: number; image: string | null }[]
+	>([]);
 	const [sdgsLoading, setSdgsLoading] = useState(true);
 
 	useEffect(() => {
 		async function fetchStats() {
 			try {
-				const [complaintRes, residentRes, weeklyServiceRes, sdgsRes] = await Promise.all(
-					[
+				const [complaintRes, residentRes, weeklyServiceRes, sdgsRes] =
+					await Promise.all([
 						apiClient.GET("/api/complaint/stats"),
 						apiClient.GET("/api/resident/stats"),
 						apiClient.GET("/api/complaint/service-weekly"),
 						apiClient.GET("/api/dashboard/sdgs"),
-					],
-				);
+					]);
 
 				setStats({
 					complaints: (complaintRes.data as { data: typeof stats.complaints })
@@ -138,7 +139,9 @@ export function DashboardContent() {
 					{sdgsData.map((sdg) => (
 						<Grid.Col key={sdg.title} span={{ base: 9, md: 3 }}>
 							<SDGSCard
-								image={sdg.image ? <Image src={sdg.image} alt={sdg.title} /> : null}
+								image={
+									sdg.image ? <Image src={sdg.image} alt={sdg.title} /> : null
+								}
 								title={sdg.title}
 								score={sdg.score}
 							/>

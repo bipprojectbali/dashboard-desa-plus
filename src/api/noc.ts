@@ -1,13 +1,67 @@
 import { Elysia, t } from "elysia";
 import { prisma } from "../utils/db";
+import { $ } from "bun";
 
 export const noc = new Elysia({ prefix: "/noc" })
+	.post(
+		"/sync",
+		async ({ set, user }) => {
+			if (!user || user.role !== "admin") {
+				set.status = 401;
+				return { error: "Unauthorized" };
+			}
+
+			try {
+				// Jalankan script sinkronisasi
+				await $`bun run sync:noc`.quiet();
+				return {
+					success: true,
+					message: "Sinkronisasi berhasil diselesaikan",
+					lastSyncedAt: new Date().toISOString(),
+				};
+			} catch (error) {
+				return { success: false, error: "Sinkronisasi gagal dijalankan" };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					message: t.Optional(t.String()),
+					error: t.Optional(t.String()),
+					lastSyncedAt: t.Optional(t.String()),
+				}),
+				401: t.Object({ error: t.String() }),
+			},
+		},
+	)
+	.get(
+		"/last-sync",
+		async ({ query }) => {
+			const { idDesa } = query;
+			const latest = await prisma.division.findFirst({
+				where: { villageId: idDesa },
+				select: { lastSyncedAt: true },
+				orderBy: { lastSyncedAt: "desc" },
+			});
+
+			return { lastSyncedAt: latest?.lastSyncedAt?.toISOString() || null };
+		},
+		{
+			query: t.Object({ idDesa: t.String() }),
+			response: {
+				200: t.Object({
+					lastSyncedAt: t.Nullable(t.String()),
+				}),
+			},
+		},
+	)
 	.get(
 		"/active-divisions",
 		async ({ query }) => {
 			const { idDesa, limit } = query;
-			// TODO: Filter by idDesa once schema supports it
 			const data = await prisma.division.findMany({
+				where: { villageId: idDesa },
 				include: {
 					_count: {
 						select: { activities: true },
@@ -53,8 +107,8 @@ export const noc = new Elysia({ prefix: "/noc" })
 		"/latest-projects",
 		async ({ query }) => {
 			const { idDesa, limit } = query;
-			// TODO: Filter by idDesa once schema supports it
 			const data = await prisma.activity.findMany({
+				where: { villageId: idDesa },
 				orderBy: { createdAt: "desc" },
 				take: limit ? Number.parseInt(limit) : 5,
 				include: { division: true },
@@ -96,9 +150,8 @@ export const noc = new Elysia({ prefix: "/noc" })
 		"/upcoming-events",
 		async ({ query }) => {
 			const { idDesa, limit, filter } = query;
-			// TODO: Filter by idDesa once schema supports it
 			const now = new Date();
-			const where: any = {};
+			const where: any = { villageId: idDesa };
 
 			if (filter === "today") {
 				const startOfDay = new Date(now.setHours(0, 0, 0, 0));
@@ -154,8 +207,8 @@ export const noc = new Elysia({ prefix: "/noc" })
 		"/diagram-jumlah-document",
 		async ({ query }) => {
 			const { idDesa } = query;
-			// TODO: Filter by idDesa once schema supports it
 			const data = await prisma.document.groupBy({
+				where: { villageId: idDesa },
 				by: ["category"],
 				_count: {
 					_all: true,
@@ -189,8 +242,8 @@ export const noc = new Elysia({ prefix: "/noc" })
 		"/diagram-progres-kegiatan",
 		async ({ query }) => {
 			const { idDesa } = query;
-			// TODO: Filter by idDesa once schema supports it
 			const data = await prisma.activity.groupBy({
+				where: { villageId: idDesa },
 				by: ["status"],
 				_avg: {
 					progress: true,
@@ -229,8 +282,8 @@ export const noc = new Elysia({ prefix: "/noc" })
 		"/latest-discussion",
 		async ({ query }) => {
 			const { idDesa, limit } = query;
-			// TODO: Filter by idDesa once schema supports it
 			const data = await prisma.discussion.findMany({
+				where: { villageId: idDesa },
 				orderBy: { createdAt: "desc" },
 				take: limit ? Number.parseInt(limit) : 5,
 				include: {
@@ -273,4 +326,5 @@ export const noc = new Elysia({ prefix: "/noc" })
 					),
 				}),
 			},
-		});
+		},
+	);

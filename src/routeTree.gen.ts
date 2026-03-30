@@ -30,6 +30,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UsersIdRouteImport } from './routes/users/$id'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
 import { Route as PengaturanUmumRouteImport } from './routes/pengaturan/umum'
+import { Route as PengaturanSinkronisasiRouteImport } from './routes/pengaturan/sinkronisasi'
 import { Route as PengaturanNotifikasiRouteImport } from './routes/pengaturan/notifikasi'
 import { Route as PengaturanKeamananRouteImport } from './routes/pengaturan/keamanan'
 import { Route as PengaturanAksesDanTimRouteImport } from './routes/pengaturan/akses-dan-tim'
@@ -142,6 +143,11 @@ const PengaturanUmumRoute = PengaturanUmumRouteImport.update({
   path: '/umum',
   getParentRoute: () => PengaturanRouteRoute,
 } as any)
+const PengaturanSinkronisasiRoute = PengaturanSinkronisasiRouteImport.update({
+  id: '/sinkronisasi',
+  path: '/sinkronisasi',
+  getParentRoute: () => PengaturanRouteRoute,
+} as any)
 const PengaturanNotifikasiRoute = PengaturanNotifikasiRouteImport.update({
   id: '/notifikasi',
   path: '/notifikasi',
@@ -195,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
   '/pengaturan/keamanan': typeof PengaturanKeamananRoute
   '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
+  '/pengaturan/sinkronisasi': typeof PengaturanSinkronisasiRoute
   '/pengaturan/umum': typeof PengaturanUmumRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
@@ -222,6 +229,7 @@ export interface FileRoutesByTo {
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
   '/pengaturan/keamanan': typeof PengaturanKeamananRoute
   '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
+  '/pengaturan/sinkronisasi': typeof PengaturanSinkronisasiRoute
   '/pengaturan/umum': typeof PengaturanUmumRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
@@ -252,6 +260,7 @@ export interface FileRoutesById {
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
   '/pengaturan/keamanan': typeof PengaturanKeamananRoute
   '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
+  '/pengaturan/sinkronisasi': typeof PengaturanSinkronisasiRoute
   '/pengaturan/umum': typeof PengaturanUmumRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
@@ -283,6 +292,7 @@ export interface FileRouteTypes {
     | '/pengaturan/akses-dan-tim'
     | '/pengaturan/keamanan'
     | '/pengaturan/notifikasi'
+    | '/pengaturan/sinkronisasi'
     | '/pengaturan/umum'
     | '/profile/edit'
     | '/users/$id'
@@ -310,6 +320,7 @@ export interface FileRouteTypes {
     | '/pengaturan/akses-dan-tim'
     | '/pengaturan/keamanan'
     | '/pengaturan/notifikasi'
+    | '/pengaturan/sinkronisasi'
     | '/pengaturan/umum'
     | '/profile/edit'
     | '/users/$id'
@@ -339,6 +350,7 @@ export interface FileRouteTypes {
     | '/pengaturan/akses-dan-tim'
     | '/pengaturan/keamanan'
     | '/pengaturan/notifikasi'
+    | '/pengaturan/sinkronisasi'
     | '/pengaturan/umum'
     | '/profile/edit'
     | '/users/$id'
@@ -516,6 +528,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PengaturanUmumRouteImport
       parentRoute: typeof PengaturanRouteRoute
     }
+    '/pengaturan/sinkronisasi': {
+      id: '/pengaturan/sinkronisasi'
+      path: '/sinkronisasi'
+      fullPath: '/pengaturan/sinkronisasi'
+      preLoaderRoute: typeof PengaturanSinkronisasiRouteImport
+      parentRoute: typeof PengaturanRouteRoute
+    }
     '/pengaturan/notifikasi': {
       id: '/pengaturan/notifikasi'
       path: '/notifikasi'
@@ -583,6 +602,7 @@ interface PengaturanRouteRouteChildren {
   PengaturanAksesDanTimRoute: typeof PengaturanAksesDanTimRoute
   PengaturanKeamananRoute: typeof PengaturanKeamananRoute
   PengaturanNotifikasiRoute: typeof PengaturanNotifikasiRoute
+  PengaturanSinkronisasiRoute: typeof PengaturanSinkronisasiRoute
   PengaturanUmumRoute: typeof PengaturanUmumRoute
 }
 
@@ -590,6 +610,7 @@ const PengaturanRouteRouteChildren: PengaturanRouteRouteChildren = {
   PengaturanAksesDanTimRoute: PengaturanAksesDanTimRoute,
   PengaturanKeamananRoute: PengaturanKeamananRoute,
   PengaturanNotifikasiRoute: PengaturanNotifikasiRoute,
+  PengaturanSinkronisasiRoute: PengaturanSinkronisasiRoute,
   PengaturanUmumRoute: PengaturanUmumRoute,
 }
 

@@ -96,7 +96,13 @@ export function ChartAPBDes() {
 									</Bar>
 								</BarChart>
 							</ResponsiveContainer>
-							<Text size="sm" fw={600} w={40} ta="right" c={dark ? "white" : "gray.9"}>
+							<Text
+								size="sm"
+								fw={600}
+								w={40}
+								ta="right"
+								c={dark ? "white" : "gray.9"}
+							>
 								{item.value}%
 							</Text>
 						</Group>

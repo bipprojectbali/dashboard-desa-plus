@@ -8,9 +8,9 @@ import { complaint } from "./complaint";
 import { dashboard } from "./dashboard";
 import { division } from "./division";
 import { event } from "./event";
+import { noc } from "./noc";
 import { profile } from "./profile";
 import { resident } from "./resident";
-import { noc } from "./noc";
 
 const isProduction = process.env.NODE_ENV === "production";
 

@@ -48,6 +48,7 @@ export function Sidebar({ className }: SidebarProps) {
 		{ name: "Notifikasi", path: "/pengaturan/notifikasi" },
 		{ name: "Keamanan", path: "/pengaturan/keamanan" },
 		{ name: "Akses & Tim", path: "/pengaturan/akses-dan-tim" },
+		{ name: "Sinkronisasi NOC", path: "/pengaturan/sinkronisasi" },
 	];
 
 	// Check if any settings submenu is active
