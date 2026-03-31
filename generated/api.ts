@@ -894,21 +894,30 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        success: boolean;
+                        message: string;
                         data: {
-                            category: string;
-                            count: number;
+                            label: string;
+                            value: number;
+                            color: string;
                         }[];
                     };
                     "multipart/form-data": {
+                        success: boolean;
+                        message: string;
                         data: {
-                            category: string;
-                            count: number;
+                            label: string;
+                            value: number;
+                            color: string;
                         }[];
                     };
                     "text/plain": {
+                        success: boolean;
+                        message: string;
                         data: {
-                            category: string;
-                            count: number;
+                            label: string;
+                            value: number;
+                            color: string;
                         }[];
                     };
                 };

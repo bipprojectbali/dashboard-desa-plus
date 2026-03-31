@@ -71,6 +71,44 @@ export async function seedDocuments(divisionIds: string[], userId: string) {
 }
 
 /**
+ * Seed Document Stats
+ * Creates aggregate document counts matching user request
+ */
+export async function seedDocumentStats() {
+	console.log("Seeding Document Stats...");
+
+	const stats = [
+		{
+			villageId: "desa1",
+			label: "Gambar",
+			value: 389,
+			color: "#fac858",
+		},
+		{
+			villageId: "desa1",
+			label: "Dokumen",
+			value: 147,
+			color: "#92cc76",
+		},
+	];
+
+	for (const stat of stats) {
+		await prisma.documentStat.upsert({
+			where: {
+				villageId_label: {
+					villageId: stat.villageId,
+					label: stat.label,
+				},
+			},
+			update: stat,
+			create: stat,
+		});
+	}
+
+	console.log("✅ Document Stats seeded successfully");
+}
+
+/**
  * Seed Discussions
  * Creates sample discussions for divisions and activities
  */
@@ -115,12 +153,15 @@ export async function seedDiscussions(divisionIds: string[], userId: string) {
 	// Create parent discussions first
 	const parentDiscussions = [];
 	for (let i = 0; i < discussions.length; i += 2) {
+		const current = discussions[i];
+		if (!current) continue;
+
 		const discussion = await prisma.discussion.create({
 			data: {
-				message: discussions[i].message,
-				senderId: discussions[i].senderId,
-				divisionId: discussions[i].divisionId,
-				isResolved: discussions[i].isResolved,
+				message: current.message,
+				senderId: current.senderId,
+				divisionId: current.divisionId,
+				isResolved: current.isResolved,
 			},
 		});
 		parentDiscussions.push(discussion);
@@ -128,16 +169,20 @@ export async function seedDiscussions(divisionIds: string[], userId: string) {
 
 	// Create replies
 	for (let i = 1; i < discussions.length; i += 2) {
+		const current = discussions[i];
+		if (!current) continue;
+
 		const parentIndex = Math.floor((i - 1) / 2);
-		if (parentIndex < parentDiscussions.length) {
+		const parent = parentDiscussions[parentIndex];
+		if (parent) {
 			await prisma.discussion.update({
-				where: { id: parentDiscussions[parentIndex].id },
+				where: { id: parent.id },
 				data: {
 					replies: {
 						create: {
-							message: discussions[i].message,
-							senderId: discussions[i].senderId,
-							isResolved: discussions[i].isResolved,
+							message: current.message,
+							senderId: current.senderId,
+							isResolved: current.isResolved,
 						},
 					},
 				},

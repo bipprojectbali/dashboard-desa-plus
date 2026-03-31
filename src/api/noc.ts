@@ -1,6 +1,7 @@
 import { Elysia, t } from "elysia";
 import { prisma } from "../utils/db";
 import { $ } from "bun";
+import { nocExternalClient } from "../utils/noc-external-client";
 
 export const noc = new Elysia({ prefix: "/noc" })
 	.post(
@@ -207,18 +208,63 @@ export const noc = new Elysia({ prefix: "/noc" })
 		"/diagram-jumlah-document",
 		async ({ query }) => {
 			const { idDesa } = query;
+
+			try {
+				// Coba tarik data dari NOC External API (sesuai permintaan user)
+				const { data: extData, error } = await nocExternalClient.GET(
+					"/api/noc/diagram-jumlah-document",
+					{
+						params: { query: { idDesa } },
+					},
+				);
+
+				if (!error && extData && (extData as any).success) {
+					return extData as any;
+				}
+			} catch (err) {
+				console.error("Failed to fetch document stats from NOC External", err);
+			}
+
+			// Fallback ke local database (tabel DocumentStat yang baru)
+			const stats = await prisma.documentStat.findMany({
+				where: { villageId: idDesa },
+			});
+
+			if (stats.length > 0) {
+				return {
+					success: true,
+					message: "Berhasil mendapatkan jumlah document dari database",
+					data: stats.map((s) => ({
+						label: s.label,
+						value: s.value,
+						color: s.color,
+					})),
+				};
+			}
+
+			// Fallback terakhir: groupBy Document (model lama)
 			const data = await prisma.document.groupBy({
 				where: { villageId: idDesa },
-				by: ["category"],
+				by: ["type"],
 				_count: {
 					_all: true,
 				},
 			});
 
+			const colorMap: Record<string, string> = {
+				Gambar: "#fac858",
+				Dokumen: "#92cc76",
+				PDF: "#3B82F6",
+				Excel: "#10B981",
+			};
+
 			return {
+				success: true,
+				message: "Berhasil mendapatkan jumlah document",
 				data: data.map((d) => ({
-					category: d.category,
-					count: d._count._all,
+					label: d.type,
+					value: d._count._all,
+					color: colorMap[d.type] || "#6B7280",
 				})),
 			};
 		},
@@ -228,10 +274,13 @@ export const noc = new Elysia({ prefix: "/noc" })
 			}),
 			response: {
 				200: t.Object({
+					success: t.Boolean(),
+					message: t.String(),
 					data: t.Array(
 						t.Object({
-							category: t.String(),
-							count: t.Number(),
+							label: t.String(),
+							value: t.Number(),
+							color: t.String(),
 						}),
 					),
 				}),

@@ -802,26 +802,38 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
                     "data": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "required": [
-                          "category",
-                          "count"
+                          "label",
+                          "value",
+                          "color"
                         ],
                         "properties": {
-                          "category": {
+                          "label": {
                             "type": "string"
                           },
-                          "count": {
+                          "value": {
                             "type": "number"
+                          },
+                          "color": {
+                            "type": "string"
                           }
                         }
                       }
                     }
                   },
                   "required": [
+                    "success",
+                    "message",
                     "data"
                   ]
                 }
@@ -830,26 +842,38 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
                     "data": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "required": [
-                          "category",
-                          "count"
+                          "label",
+                          "value",
+                          "color"
                         ],
                         "properties": {
-                          "category": {
+                          "label": {
                             "type": "string"
                           },
-                          "count": {
+                          "value": {
                             "type": "number"
+                          },
+                          "color": {
+                            "type": "string"
                           }
                         }
                       }
                     }
                   },
                   "required": [
+                    "success",
+                    "message",
                     "data"
                   ]
                 }
@@ -858,26 +882,38 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
                     "data": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "required": [
-                          "category",
-                          "count"
+                          "label",
+                          "value",
+                          "color"
                         ],
                         "properties": {
-                          "category": {
+                          "label": {
                             "type": "string"
                           },
-                          "count": {
+                          "value": {
                             "type": "number"
+                          },
+                          "color": {
+                            "type": "string"
                           }
                         }
                       }
                     }
                   },
                   "required": [
+                    "success",
+                    "message",
                     "data"
                   ]
                 }

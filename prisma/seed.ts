@@ -13,6 +13,7 @@ import {
 	seedDiscussions,
 	seedDivisionMetrics,
 	seedDocuments,
+	seedDocumentStats,
 } from "./seeders/seed-discussions";
 import {
 	getDivisionIds,
@@ -102,6 +103,7 @@ export async function runSeed() {
 	// 5. Seed Documents & Discussions
 	console.log("📁 [5/7] Documents & Discussions");
 	await seedDocuments(divisionIds, adminId);
+	await seedDocumentStats();
 	await seedDiscussions(divisionIds, adminId);
 	console.log();
 
@@ -188,6 +190,7 @@ export async function runSpecificSeeder(name: string) {
 			const divs = await seedDivisions();
 			const divIds = divs.map((d) => d.id);
 			await seedDocuments(divIds, docAdminId);
+			await seedDocumentStats();
 			await seedDiscussions(divIds, docAdminId);
 			break;
 		}

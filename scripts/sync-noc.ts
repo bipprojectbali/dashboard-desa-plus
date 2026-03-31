@@ -226,7 +226,51 @@ async function syncLatestDiscussion() {
 }
 
 /**
- * 5. Update lastSyncedAt timestamp
+ * 5. Sync Document Stats (New)
+ */
+async function syncDocumentStats() {
+	logger.info("Syncing Document Stats...");
+	const { data, error } = await nocExternalClient.GET("/api/noc/diagram-jumlah-document", {
+		params: { query: { idDesa: ID_DESA } },
+	});
+
+	if (error || !data) {
+		logger.error({ error }, "Failed to fetch document stats from NOC");
+		return;
+	}
+
+	// biome-ignore lint/suspicious/noExplicitAny: External API response
+	const resData = (data as any).data;
+	if (!Array.isArray(resData)) {
+		logger.warn({ data }, "Document stats data from NOC is not an array");
+		return;
+	}
+
+	for (const stat of resData) {
+		await prisma.documentStat.upsert({
+			where: {
+				villageId_label: {
+					villageId: ID_DESA,
+					label: stat.label,
+				},
+			},
+			update: {
+				value: stat.value,
+				color: stat.color,
+			},
+			create: {
+				villageId: ID_DESA,
+				label: stat.label,
+				value: stat.value,
+				color: stat.color,
+			},
+		});
+	}
+	logger.info(`Synced ${resData.length} document stats`);
+}
+
+/**
+ * 6. Update lastSyncedAt timestamp
  */
 async function syncLastTimestamp() {
 	logger.info("Updating sync timestamp...");
@@ -247,6 +291,7 @@ async function main() {
 		await syncLatestProjects();
 		await syncUpcomingEvents();
 		await syncLatestDiscussion();
+		await syncDocumentStats();
 		await syncLastTimestamp();
 		
 		logger.info("NOC Data Synchronization Completed Successfully");

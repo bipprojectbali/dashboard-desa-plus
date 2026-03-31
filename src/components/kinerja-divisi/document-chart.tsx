@@ -19,8 +19,8 @@ import {
 import { apiClient } from "@/utils/api-client";
 
 interface DocumentData {
-	name: string;
-	jumlah: number;
+	label: string;
+	value: number;
 	color: string;
 }
 
@@ -34,7 +34,13 @@ export function DocumentChart() {
 	useEffect(() => {
 		async function fetchDocumentStats() {
 			try {
-				const res = await apiClient.GET("/api/division/documents/stats");
+				const res = await apiClient.GET("/api/noc/diagram-jumlah-document", {
+					params: {
+						query: {
+							idDesa: "desa1",
+						},
+					},
+				});
 				if (res.data?.data) {
 					setData(res.data.data);
 				}
@@ -78,7 +84,7 @@ export function DocumentChart() {
 							stroke={dark ? "#334155" : "#e5e7eb"}
 						/>
 						<XAxis
-							dataKey="name"
+							dataKey="label"
 							axisLine={false}
 							tickLine={false}
 							tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
@@ -97,9 +103,9 @@ export function DocumentChart() {
 							}}
 							labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 						/>
-						<Bar dataKey="jumlah" radius={[4, 4, 0, 0]}>
+						<Bar dataKey="value" radius={[4, 4, 0, 0]}>
 							{data.map((entry) => (
-								<Cell key={`cell-${entry.name}`} fill={entry.color} />
+								<Cell key={`cell-${entry.label}`} fill={entry.color} />
 							))}
 						</Bar>
 					</BarChart>
