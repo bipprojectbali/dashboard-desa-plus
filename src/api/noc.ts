@@ -14,14 +14,19 @@ export const noc = new Elysia({ prefix: "/noc" })
 
 			try {
 				// Jalankan script sinkronisasi
-				await $`bun run sync:noc`.quiet();
+				// Hapus .quiet() agar kita bisa melihat log jika terjadi error di console server
+				await $`bun run sync:noc`;
 				return {
 					success: true,
 					message: "Sinkronisasi berhasil diselesaikan",
 					lastSyncedAt: new Date().toISOString(),
 				};
 			} catch (error) {
-				return { success: false, error: "Sinkronisasi gagal dijalankan" };
+				console.error("Sync Script Error:", error);
+				return { 
+					success: false, 
+					error: "Sinkronisasi gagal dijalankan. Silakan periksa koneksi ke server NOC." 
+				};
 			}
 		},
 		{

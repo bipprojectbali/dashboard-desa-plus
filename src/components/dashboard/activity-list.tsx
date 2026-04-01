@@ -28,7 +28,9 @@ export function ActivityList() {
 	useEffect(() => {
 		async function fetchEvents() {
 			try {
-				const res = await apiClient.GET("/api/event/");
+				const res = await apiClient.GET("/api/noc/upcoming-events", {
+					params: { query: { idDesa: "desa1", limit: "10" } },
+				});
 				if (res.data?.data) {
 					setData(
 						(res.data.data as { startDate: string; title: string }[]).map(
@@ -40,7 +42,7 @@ export function ActivityList() {
 					);
 				}
 			} catch (error) {
-				console.error("Failed to fetch events", error);
+				console.error("Failed to fetch events from NOC", error);
 			} finally {
 				setLoading(false);
 			}

@@ -36,7 +36,7 @@ async function syncActiveDivisions() {
 
 	if (error || !data) {
 		logger.error({ error }, "Failed to fetch divisions from NOC");
-		return;
+		throw new Error("Failed to fetch divisions from NOC");
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: External API response is untyped
@@ -51,6 +51,7 @@ async function syncActiveDivisions() {
 	for (const div of divisions) {
 		const name = div.name || div.division;
 		const extId = div.id || div.externalId || `div-${name.toLowerCase().replace(/\s+/g, "-")}`;
+		const activityCount = div.activityCount || div.totalKegiatan || 0;
 		
 		await prisma.division.upsert({
 			where: { name: name },
@@ -58,14 +59,14 @@ async function syncActiveDivisions() {
 				externalId: extId,
 				color: div.color || "#1E3A5F",
 				villageId: ID_DESA,
-				externalActivityCount: div.totalKegiatan || 0,
+				externalActivityCount: activityCount,
 			},
 			create: {
 				externalId: extId,
 				name: name,
 				color: div.color || "#1E3A5F",
 				villageId: ID_DESA,
-				externalActivityCount: div.totalKegiatan || 0,
+				externalActivityCount: activityCount,
 			},
 		});
 	}
@@ -83,7 +84,7 @@ async function syncLatestProjects() {
 
 	if (error || !data) {
 		logger.error({ error }, "Failed to fetch projects from NOC");
-		return;
+		throw new Error("Failed to fetch projects from NOC");
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: External API response
@@ -106,20 +107,30 @@ async function syncLatestProjects() {
 
 		if (!division) continue;
 
+		// Map status safely to Prisma Enum
+		let mappedStatus: any = "BERJALAN";
+		const rawStatus = proj.status?.toString().toUpperCase();
+		
+		if (rawStatus === "2" || rawStatus === "COMPLETED" || rawStatus === "SELESAI") {
+			mappedStatus = "SELESAI";
+		} else if (rawStatus === "1" || rawStatus === "ONPROGRESS" || rawStatus === "BERJALAN") {
+			mappedStatus = "BERJALAN";
+		}
+
 		await prisma.activity.upsert({
 			where: { externalId: extId },
 			update: {
 				title: proj.title,
-				status: (typeof proj.status === 'number' ? (proj.status === 2 ? 'Completed' : 'OnProgress') : proj.status) as any,
-				progress: proj.progress || (proj.status === 2 ? 100 : 50),
+				status: mappedStatus,
+				progress: proj.progress || (mappedStatus === "SELESAI" ? 100 : 50),
 				divisionId: division.id,
 				villageId: ID_DESA,
 			},
 			create: {
 				externalId: extId,
 				title: proj.title,
-				status: (typeof proj.status === 'number' ? (proj.status === 2 ? 'Completed' : 'OnProgress') : proj.status) as any,
-				progress: proj.progress || (proj.status === 2 ? 100 : 50),
+				status: mappedStatus,
+				progress: proj.progress || (mappedStatus === "SELESAI" ? 100 : 50),
 				divisionId: division.id,
 				villageId: ID_DESA,
 			},
@@ -140,7 +151,7 @@ async function syncUpcomingEvents() {
 
 	if (error || !data) {
 		logger.error({ error }, "Failed to fetch events from NOC");
-		return;
+		throw new Error("Failed to fetch events from NOC");
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: External API response
@@ -154,13 +165,25 @@ async function syncUpcomingEvents() {
 
 	for (const event of events) {
 		const extId = event.id || event.externalId || `event-${event.title.toLowerCase().replace(/\s+/g, "-")}`;
+		
+		// Map event type safely to Prisma Enum
+		let mappedType: any = "KEGIATAN";
+		const rawType = event.eventType?.toString().toUpperCase();
+		const validTypes = ["RAPAT", "KEGIATAN", "UPACARA", "SOSIAL", "BUDAYA", "LAINNYA"];
+		
+		if (rawType === "MEETING") {
+			mappedType = "RAPAT";
+		} else if (validTypes.includes(rawType)) {
+			mappedType = rawType;
+		}
+
 		await prisma.event.upsert({
 			where: { externalId: extId },
 			update: {
 				title: event.title,
 				startDate: new Date(event.startDate || event.date),
 				location: event.location || "N/A",
-				eventType: (event.eventType || "Meeting") as any,
+				eventType: mappedType,
 				villageId: ID_DESA,
 			},
 			create: {
@@ -168,7 +191,7 @@ async function syncUpcomingEvents() {
 				title: event.title,
 				startDate: new Date(event.startDate || event.date),
 				location: event.location || "N/A",
-				eventType: (event.eventType || "Meeting") as any,
+				eventType: mappedType,
 				createdBy: systemUserId,
 				villageId: ID_DESA,
 			},
@@ -189,7 +212,7 @@ async function syncLatestDiscussion() {
 
 	if (error || !data) {
 		logger.error({ error }, "Failed to fetch discussions from NOC");
-		return;
+		throw new Error("Failed to fetch discussions from NOC");
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: External API response
@@ -236,7 +259,7 @@ async function syncDocumentStats() {
 
 	if (error || !data) {
 		logger.error({ error }, "Failed to fetch document stats from NOC");
-		return;
+		throw new Error("Failed to fetch document stats from NOC");
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: External API response
