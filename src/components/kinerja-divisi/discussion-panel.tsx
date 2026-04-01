@@ -31,12 +31,31 @@ export function DiscussionPanel() {
 	useEffect(() => {
 		async function fetchDiscussions() {
 			try {
-				const res = await apiClient.GET("/api/division/discussions");
+				const res = await apiClient.GET("/api/noc/latest-discussion", {
+					params: { query: { idDesa: "desa1", limit: "6" } },
+				});
 				if (res.data?.data) {
-					setDiscussions(res.data.data);
+					const rawData = res.data.data as {
+						id: string;
+						message: string;
+						senderName: string;
+						divisionName: string;
+						createdAt: string;
+					}[];
+
+					setDiscussions(
+						rawData.map((d) => ({
+							id: d.id,
+							message: d.message,
+							sender: d.senderName,
+							date: d.createdAt,
+							division: d.divisionName,
+							isResolved: false, // Default for NOC discussions
+						})),
+					);
 				}
 			} catch (error) {
-				console.error("Failed to fetch discussions", error);
+				console.error("Failed to fetch discussions from NOC", error);
 			} finally {
 				setLoading(false);
 			}
