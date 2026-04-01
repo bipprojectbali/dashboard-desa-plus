@@ -296,6 +296,24 @@ export const noc = new Elysia({ prefix: "/noc" })
 		"/diagram-progres-kegiatan",
 		async ({ query }) => {
 			const { idDesa } = query;
+
+			try {
+				// 1. Coba tarik data live dari NOC External API
+				const { data: extData, error } = await nocExternalClient.GET(
+					"/api/noc/diagram-progres-kegiatan",
+					{
+						params: { query: { idDesa } },
+					},
+				);
+
+				if (!error && extData && (extData as any).success) {
+					return extData as any;
+				}
+			} catch (err) {
+				console.error("Failed to fetch activity progress from NOC External", err);
+			}
+
+			// 2. Fallback ke database lokal jika external gagal
 			const data = await prisma.activity.groupBy({
 				where: { villageId: idDesa },
 				by: ["status"],
@@ -307,12 +325,30 @@ export const noc = new Elysia({ prefix: "/noc" })
 				},
 			});
 
+			const total = data.reduce((acc, curr) => acc + curr._count._all, 0);
+			const statusMap: Record<string, { label: string; color: string; order: number }> = {
+				TERTUNDA: { label: "Segera Dikerjakan", color: "#177AD5", order: 0 },
+				BERJALAN: { label: "Dikerjakan", color: "#fac858", order: 1 },
+				SELESAI: { label: "Selesai", color: "#92cc76", order: 2 },
+				DIBATALKAN: { label: "Dibatalkan", color: "#ED6665", order: 3 },
+			};
+
+			const result = Object.keys(statusMap).map((status) => {
+				const found = data.find((d) => d.status === status);
+				const count = found?._count._all || 0;
+				const percentage = total > 0 ? (count / total) * 100 : 0;
+				return {
+					text: `${percentage.toFixed(0)}%`,
+					value: percentage,
+					color: statusMap[status].color,
+					label: statusMap[status].label, // Extra field for UI mapping
+				};
+			});
+
 			return {
-				data: data.map((d) => ({
-					status: d.status,
-					avgProgress: d._avg.progress || 0,
-					count: d._count._all,
-				})),
+				success: true,
+				message: "Berhasil mendapatkan progres kegiatan dari database lokal",
+				data: result,
 			};
 		},
 		{
@@ -321,11 +357,14 @@ export const noc = new Elysia({ prefix: "/noc" })
 			}),
 			response: {
 				200: t.Object({
+					success: t.Boolean(),
+					message: t.String(),
 					data: t.Array(
 						t.Object({
-							status: t.String(),
-							avgProgress: t.Number(),
-							count: t.Number(),
+							text: t.String(),
+							value: t.Any(), // Bisa string "100" atau number 0
+							color: t.String(),
+							label: t.Optional(t.String()),
 						}),
 					),
 				}),

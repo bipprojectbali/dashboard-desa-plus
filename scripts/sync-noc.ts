@@ -293,7 +293,31 @@ async function syncDocumentStats() {
 }
 
 /**
- * 6. Update lastSyncedAt timestamp
+ * 6. Sync Activity Progress Stats
+ */
+async function syncProgressStats() {
+	logger.info("Syncing Activity Progress...");
+	const { data, error } = await nocExternalClient.GET("/api/noc/diagram-progres-kegiatan", {
+		params: { query: { idDesa: ID_DESA } },
+	});
+
+	if (error || !data) {
+		logger.error({ error }, "Failed to fetch activity progress from NOC");
+		throw new Error("Failed to fetch activity progress from NOC");
+	}
+
+	// biome-ignore lint/suspicious/noExplicitAny: External API response
+	const resData = (data as any).data;
+	if (!Array.isArray(resData)) {
+		logger.warn({ data }, "Activity progress data from NOC is not an array");
+		return;
+	}
+
+	logger.info(`Synced ${resData.length} activity progress statuses`);
+}
+
+/**
+ * 7. Update lastSyncedAt timestamp
  */
 async function syncLastTimestamp() {
 	logger.info("Updating sync timestamp...");
@@ -315,6 +339,7 @@ async function main() {
 		await syncUpcomingEvents();
 		await syncLatestDiscussion();
 		await syncDocumentStats();
+		await syncProgressStats();
 		await syncLastTimestamp();
 		
 		logger.info("NOC Data Synchronization Completed Successfully");

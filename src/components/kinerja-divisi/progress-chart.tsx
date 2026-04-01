@@ -43,35 +43,23 @@ export function ProgressChart() {
 	useEffect(() => {
 		async function fetchActivityStats() {
 			try {
-				const res = await apiClient.GET("/api/division/activities/stats");
+				const res = await apiClient.GET("/api/noc/diagram-progres-kegiatan", {
+					params: { query: { idDesa: "desa1" } },
+				});
 				if (res.data?.data) {
-					const stats = res.data.data as ActivityStats;
-					const chartData: ProgressData[] = [
-						{
-							name: "Selesai",
-							value: stats.percentages.selesai,
-							color: "#22C55E",
-						},
-						{
-							name: "Dikerjakan",
-							value: stats.percentages.berjalan,
-							color: "#F59E0B",
-						},
-						{
-							name: "Segera Dikerjakan",
-							value: stats.percentages.tertunda,
-							color: "#3B82F6",
-						},
-						{
-							name: "Dibatalkan",
-							value: stats.percentages.dibatalkan,
-							color: "#EF4444",
-						},
-					];
+					const rawData = res.data.data;
+					const labels = ["Segera Dikerjakan", "Dikerjakan", "Selesai", "Dibatalkan"];
+
+					const chartData: ProgressData[] = rawData.map((d: any, index: number) => ({
+						name: d.label || labels[index] || "Lainnya",
+						value: Number(d.value) || 0,
+						color: d.color,
+					}));
+					
 					setData(chartData);
 				}
 			} catch (error) {
-				console.error("Failed to fetch activity stats", error);
+				console.error("Failed to fetch activity progress from NOC", error);
 			} finally {
 				setLoading(false);
 			}
