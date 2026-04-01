@@ -943,30 +943,39 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
                     "data": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "required": [
-                          "status",
-                          "avgProgress",
-                          "count"
+                          "text",
+                          "value",
+                          "color"
                         ],
                         "properties": {
-                          "status": {
+                          "text": {
                             "type": "string"
                           },
-                          "avgProgress": {
-                            "type": "number"
+                          "value": {},
+                          "color": {
+                            "type": "string"
                           },
-                          "count": {
-                            "type": "number"
+                          "label": {
+                            "type": "string"
                           }
                         }
                       }
                     }
                   },
                   "required": [
+                    "success",
+                    "message",
                     "data"
                   ]
                 }
@@ -975,30 +984,39 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
                     "data": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "required": [
-                          "status",
-                          "avgProgress",
-                          "count"
+                          "text",
+                          "value",
+                          "color"
                         ],
                         "properties": {
-                          "status": {
+                          "text": {
                             "type": "string"
                           },
-                          "avgProgress": {
-                            "type": "number"
+                          "value": {},
+                          "color": {
+                            "type": "string"
                           },
-                          "count": {
-                            "type": "number"
+                          "label": {
+                            "type": "string"
                           }
                         }
                       }
                     }
                   },
                   "required": [
+                    "success",
+                    "message",
                     "data"
                   ]
                 }
@@ -1007,30 +1025,39 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
                     "data": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "required": [
-                          "status",
-                          "avgProgress",
-                          "count"
+                          "text",
+                          "value",
+                          "color"
                         ],
                         "properties": {
-                          "status": {
+                          "text": {
                             "type": "string"
                           },
-                          "avgProgress": {
-                            "type": "number"
+                          "value": {},
+                          "color": {
+                            "type": "string"
                           },
-                          "count": {
-                            "type": "number"
+                          "label": {
+                            "type": "string"
                           }
                         }
                       }
                     }
                   },
                   "required": [
+                    "success",
+                    "message",
                     "data"
                   ]
                 }

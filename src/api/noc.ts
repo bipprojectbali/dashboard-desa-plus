@@ -113,6 +113,37 @@ export const noc = new Elysia({ prefix: "/noc" })
 		"/latest-projects",
 		async ({ query }) => {
 			const { idDesa, limit } = query;
+
+			try {
+				// 1. Coba tarik data live dari NOC External API
+				const { data: extData, error } = await nocExternalClient.GET(
+					"/api/noc/latest-projects",
+					{
+						params: { query: { idDesa, limit } },
+					},
+				);
+
+				if (!error && extData && (extData as any).success) {
+					const res = extData as any;
+					const projects = res.data?.projects || [];
+					
+					return {
+						success: true,
+						data: projects.map((p: any) => ({
+							id: p.id,
+							title: p.title,
+							status: p.status === 2 || p.status === "2" ? "SELESAI" : "BERJALAN",
+							progress: p.progress || (p.status === 2 ? 100 : 50),
+							divisionName: p.group || "Umum",
+							createdAt: p.updatedAt || p.createdAt || new Date().toISOString(),
+						})),
+					};
+				}
+			} catch (err) {
+				console.error("Failed to fetch latest projects from NOC External", err);
+			}
+
+			// 2. Fallback ke database lokal jika external gagal
 			const data = await prisma.activity.findMany({
 				where: { villageId: idDesa },
 				orderBy: { createdAt: "desc" },
@@ -121,6 +152,7 @@ export const noc = new Elysia({ prefix: "/noc" })
 			});
 
 			return {
+				success: true,
 				data: data.map((a) => ({
 					id: a.id,
 					title: a.title,
@@ -138,6 +170,7 @@ export const noc = new Elysia({ prefix: "/noc" })
 			}),
 			response: {
 				200: t.Object({
+					success: t.Optional(t.Boolean()),
 					data: t.Array(
 						t.Object({
 							id: t.String(),

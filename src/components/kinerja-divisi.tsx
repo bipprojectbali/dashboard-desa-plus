@@ -41,7 +41,9 @@ const KinerjaDivisi = () => {
 		async function fetchData() {
 			try {
 				const [activityRes, eventRes] = await Promise.all([
-					apiClient.GET("/api/division/activities"),
+					apiClient.GET("/api/noc/latest-projects", {
+						params: { query: { idDesa: "desa1", limit: "10" } },
+					}),
 					apiClient.GET("/api/event/today"),
 				]);
 
@@ -52,7 +54,7 @@ const KinerjaDivisi = () => {
 					setTodayEvents(eventRes.data.data as EventData[]);
 				}
 			} catch (error) {
-				console.error("Failed to fetch kinerja divisi data", error);
+				console.error("Failed to fetch performance data from NOC", error);
 			} finally {
 				setLoading(false);
 			}

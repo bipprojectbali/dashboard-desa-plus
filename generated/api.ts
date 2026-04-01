@@ -941,24 +941,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        success: boolean;
+                        message: string;
                         data: {
-                            status: string;
-                            avgProgress: number;
-                            count: number;
+                            text: string;
+                            value: unknown;
+                            color: string;
+                            label?: string;
                         }[];
                     };
                     "multipart/form-data": {
+                        success: boolean;
+                        message: string;
                         data: {
-                            status: string;
-                            avgProgress: number;
-                            count: number;
+                            text: string;
+                            value: unknown;
+                            color: string;
+                            label?: string;
                         }[];
                     };
                     "text/plain": {
+                        success: boolean;
+                        message: string;
                         data: {
-                            status: string;
-                            avgProgress: number;
-                            count: number;
+                            text: string;
+                            value: unknown;
+                            color: string;
+                            label?: string;
                         }[];
                     };
                 };
