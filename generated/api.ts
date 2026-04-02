@@ -795,6 +795,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        success?: boolean;
                         data: {
                             id: string;
                             title: string;
@@ -805,6 +806,7 @@ export interface operations {
                         }[];
                     };
                     "multipart/form-data": {
+                        success?: boolean;
                         data: {
                             id: string;
                             title: string;
@@ -815,6 +817,7 @@ export interface operations {
                         }[];
                     };
                     "text/plain": {
+                        success?: boolean;
                         data: {
                             id: string;
                             title: string;
