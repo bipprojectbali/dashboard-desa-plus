@@ -165,23 +165,38 @@ async function syncUpcomingEvents() {
 
 	for (const event of events) {
 		const extId = event.id || event.externalId || `event-${event.title.toLowerCase().replace(/\s+/g, "-")}`;
-		
+
 		// Map event type safely to Prisma Enum
 		let mappedType: any = "KEGIATAN";
 		const rawType = event.eventType?.toString().toUpperCase();
 		const validTypes = ["RAPAT", "KEGIATAN", "UPACARA", "SOSIAL", "BUDAYA", "LAINNYA"];
-		
+
 		if (rawType === "MEETING") {
 			mappedType = "RAPAT";
 		} else if (validTypes.includes(rawType)) {
 			mappedType = rawType;
 		}
 
+		// Parse and validate date - fallback to current date if invalid
+		let startDate: Date;
+		const rawDate = event.startDate || event.date;
+		if (rawDate) {
+			startDate = new Date(rawDate);
+			// Check if date is valid
+			if (isNaN(startDate.getTime())) {
+				logger.warn({ eventTitle: event.title, rawDate }, "Invalid date found, using current date");
+				startDate = new Date(); // Fallback to current date
+			}
+		} else {
+			logger.warn({ eventTitle: event.title }, "No date found for event, using current date");
+			startDate = new Date(); // Fallback to current date
+		}
+
 		await prisma.event.upsert({
 			where: { externalId: extId },
 			update: {
 				title: event.title,
-				startDate: new Date(event.startDate || event.date),
+				startDate: startDate,
 				location: event.location || "N/A",
 				eventType: mappedType,
 				villageId: ID_DESA,
@@ -189,7 +204,7 @@ async function syncUpcomingEvents() {
 			create: {
 				externalId: extId,
 				title: event.title,
-				startDate: new Date(event.startDate || event.date),
+				startDate: startDate,
 				location: event.location || "N/A",
 				eventType: mappedType,
 				createdBy: systemUserId,

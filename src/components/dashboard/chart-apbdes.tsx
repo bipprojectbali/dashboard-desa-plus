@@ -1,28 +1,157 @@
 import {
+	Box,
 	Card,
 	Group,
 	Loader,
+	Progress,
 	Stack,
 	Text,
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { IconArrowDownRight, IconArrowUpRight } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import {
-	Bar,
-	BarChart,
-	Cell,
-	ResponsiveContainer,
-	Tooltip,
-	XAxis,
-	YAxis,
-} from "recharts";
 import { apiClient } from "@/utils/api-client";
 
 interface ApbdesData {
 	name: string;
-	value: number;
+	anggaran: number;
+	realisasi: number;
+	percentage: number;
 	color: string;
+}
+
+// Helper to format currency
+function formatCurrency(value: number): string {
+	return new Intl.NumberFormat("id-ID", {
+		style: "currency",
+		currency: "IDR",
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
+	}).format(value);
+}
+
+// Get progress color based on realization percentage
+function getProgressColor(persen: number): string {
+	if (persen >= 100) return "teal";
+	if (persen >= 80) return "blue";
+	if (persen >= 60) return "yellow";
+	return "red";
+}
+
+// Get status message based on realization percentage
+function getStatusMessage(persen: number): { text: string; color: string } {
+	if (persen >= 100) {
+		return { text: "Realisasi mencapai 100% dari anggaran", color: "teal" };
+	}
+	if (persen >= 80) {
+		return { text: "Realisasi baik, mendekati target", color: "blue" };
+	}
+	if (persen >= 60) {
+		return { text: "Realisasi cukup, perlu ditingkatkan", color: "yellow" };
+	}
+	return { text: "Realisasi rendah, perlu perhatian khusus", color: "red" };
+}
+
+interface ApbdesSummaryProps {
+	title: string;
+	data: ApbdesData;
+	icon: string;
+}
+
+function ApbdesSummary({ title, data, icon }: ApbdesSummaryProps) {
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
+	const progressColor = getProgressColor(data.percentage);
+	const statusMessage = getStatusMessage(data.percentage);
+
+	return (
+		<Box>
+			<Group justify="space-between" mb="xs">
+				<Group gap="xs">
+					<Box
+						w={32}
+						h={32}
+						style={{
+							borderRadius: 8,
+							backgroundColor: dark
+								? "rgba(72, 187, 120, 0.1)"
+								: "var(--mantine-color-green-0)",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+						}}
+					>
+						<Text fz="lg">{icon}</Text>
+					</Box>
+					<Text fw={700} fz="md" c={dark ? "white" : "gray.8"}>
+						{title}
+					</Text>
+				</Group>
+				<Group gap="xs">
+					{data.percentage >= 100 ? (
+						<IconArrowUpRight
+							size={18}
+							color="var(--mantine-color-teal-7)"
+							stroke={2.5}
+						/>
+					) : data.percentage < 60 ? (
+						<IconArrowDownRight
+							size={18}
+							color="var(--mantine-color-red-7)"
+							stroke={2.5}
+						/>
+					) : null}
+					<Text
+						fw={700}
+						fz="lg"
+						c={progressColor}
+						style={{ minWidth: 60, textAlign: "right" }}
+					>
+						{data.percentage.toFixed(1)}%
+					</Text>
+				</Group>
+			</Group>
+
+			<Text fz="xs" c={dark ? "gray.5" : "gray.6"} mb="sm" lh={1.5}>
+				Realisasi:{" "}
+				<Text component="span" fw={700} c={dark ? "blue.3" : "blue.9"}>
+					{formatCurrency(data.realisasi)}
+				</Text>{" "}
+				/ Anggaran:{" "}
+				<Text component="span" fw={700} c={dark ? "gray.4" : "gray.7"}>
+					{formatCurrency(data.anggaran)}
+				</Text>
+			</Text>
+
+			<Progress
+				value={data.percentage}
+				size="xl"
+				radius="xl"
+				color={progressColor}
+				striped={data.percentage < 100}
+				animated={data.percentage < 100}
+				mb="xs"
+			/>
+
+			<Text
+				fz="xs"
+				c={statusMessage.color}
+				fw={600}
+				style={{
+					backgroundColor: dark
+						? "rgba(72, 187, 120, 0.1)"
+						: `var(--mantine-color-${statusMessage.color}-0)`,
+					padding: "6px 10px",
+					borderRadius: 6,
+					display: "inline-block",
+				}}
+			>
+				{data.percentage >= 100 && "✓ "}
+				{statusMessage.text}
+			</Text>
+		</Box>
+	);
 }
 
 export function ChartAPBDes() {
@@ -31,19 +160,32 @@ export function ChartAPBDes() {
 
 	const [data, setData] = useState<ApbdesData[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [apbdesTitle, setApbdesTitle] = useState("Grafik Realisasi APBDes");
 
 	useEffect(() => {
 		async function fetchApbdes() {
 			try {
-				const res = await apiClient.GET("/api/dashboard/budget");
+				// Fetch from new NOC endpoint that integrates with external Desa API
+				// Using specific ID for APBDes: cmmedyvex0004nv09ags7j0d6
+				const res = await apiClient.GET("/api/noc/apbdes-data", {
+					params: { query: { idDesa: "cmmedyvex0004nv09ags7j0d6" } },
+				});
+
 				if (res.data?.data) {
 					setData(
 						res.data.data.map((d) => ({
 							name: d.category,
-							value: d.percentage,
+							anggaran: d.anggaran,
+							realisasi: d.realisasi,
+							percentage: d.percentage,
 							color: d.color,
 						})),
 					);
+				}
+
+				// Update title with APBDes info from message
+				if (res.data?.message) {
+					setApbdesTitle(res.data.message.replace("data", "Realisasi"));
 				}
 			} catch (error) {
 				console.error("Failed to fetch APBDes data", error);
@@ -57,7 +199,7 @@ export function ChartAPBDes() {
 
 	return (
 		<Card
-			p="md"
+			p="lg"
 			radius="xl"
 			withBorder
 			bg={dark ? "#1E293B" : "white"}
@@ -69,44 +211,36 @@ export function ChartAPBDes() {
 			}}
 			h="100%"
 		>
-			<Title order={4} c={dark ? "white" : "gray.9"} mb="lg">
-				Grafik APBDes
+			<Title
+				order={5}
+				c={dark ? "blue.3" : "blue.9"}
+				fz={{ base: "1rem", md: "1.1rem" }}
+				fw={700}
+				mb="lg"
+			>
+				{apbdesTitle}
 			</Title>
-			<Stack gap="xs">
+			<Stack gap="xl">
 				{loading ? (
 					<Group justify="center" py="xl">
 						<Loader />
 					</Group>
 				) : data.length > 0 ? (
-					data.map((item) => (
-						<Group key={item.name} align="center" gap="md">
-							<Text size="sm" fw={500} w={100} c={dark ? "white" : "gray.7"}>
-								{item.name}
-							</Text>
-							<ResponsiveContainer width="100%" height={12} style={{ flex: 1 }}>
-								<BarChart
-									layout="vertical"
-									data={[item]}
-									margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-								>
-									<XAxis type="number" hide domain={[0, 100]} />
-									<YAxis type="category" hide dataKey="name" />
-									<Bar dataKey="value" radius={[10, 10, 10, 10]} barSize={12}>
-										<Cell fill={item.color} />
-									</Bar>
-								</BarChart>
-							</ResponsiveContainer>
-							<Text
-								size="sm"
-								fw={600}
-								w={40}
-								ta="right"
-								c={dark ? "white" : "gray.9"}
-							>
-								{item.value}%
-							</Text>
-						</Group>
-					))
+					data.map((item) => {
+						const icons: Record<string, string> = {
+							Pendapatan: "💰",
+							Belanja: "💸",
+							Pembiayaan: "📊",
+						};
+						return (
+							<ApbdesSummary
+								key={item.name}
+								title={item.name}
+								data={item}
+								icon={icons[item.name] || "📈"}
+							/>
+						);
+					})
 				) : (
 					<Text size="sm" c="dimmed" ta="center">
 						Tidak ada data APBDes

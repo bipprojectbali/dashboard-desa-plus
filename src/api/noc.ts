@@ -1,31 +1,50 @@
-import { Elysia, t } from "elysia";
-import { prisma } from "../utils/db";
 import { $ } from "bun";
+import { Elysia, t } from "elysia";
+import { apiMiddleware } from "../middleware/apiMiddleware";
+import { prisma } from "../utils/db";
+import { desaExternalClient } from "../utils/desa-external-client";
 import { nocExternalClient } from "../utils/noc-external-client";
 
 export const noc = new Elysia({ prefix: "/noc" })
+	.use(apiMiddleware)
 	.post(
 		"/sync",
 		async ({ set, user }) => {
+			console.log(
+				"[NOC Sync] Sync request received. User:",
+				user?.email || "Unknown",
+			);
+
 			if (!user || user.role !== "admin") {
+				console.log(
+					"[NOC Sync] Unauthorized - User role:",
+					user?.role || "No user",
+				);
 				set.status = 401;
 				return { error: "Unauthorized" };
 			}
 
 			try {
+				console.log("[NOC Sync] Starting sync script...");
 				// Jalankan script sinkronisasi
 				// Hapus .quiet() agar kita bisa melihat log jika terjadi error di console server
-				await $`bun run sync:noc`;
+				const result = await $`bun run sync:noc`;
+				console.log(
+					"[NOC Sync] Sync script completed. Output:",
+					result.stdout?.toString(),
+				);
+
 				return {
 					success: true,
 					message: "Sinkronisasi berhasil diselesaikan",
 					lastSyncedAt: new Date().toISOString(),
 				};
 			} catch (error) {
-				console.error("Sync Script Error:", error);
-				return { 
-					success: false, 
-					error: "Sinkronisasi gagal dijalankan. Silakan periksa koneksi ke server NOC." 
+				console.error("[NOC Sync] Script Error:", error);
+				return {
+					success: false,
+					error:
+						"Sinkronisasi gagal dijalankan. Silakan periksa koneksi ke server NOC.",
 				};
 			}
 		},
@@ -126,13 +145,14 @@ export const noc = new Elysia({ prefix: "/noc" })
 				if (!error && extData && (extData as any).success) {
 					const res = extData as any;
 					const projects = res.data?.projects || [];
-					
+
 					return {
 						success: true,
 						data: projects.map((p: any) => ({
 							id: p.id,
 							title: p.title,
-							status: p.status === 2 || p.status === "2" ? "SELESAI" : "BERJALAN",
+							status:
+								p.status === 2 || p.status === "2" ? "SELESAI" : "BERJALAN",
 							progress: p.progress || (p.status === 2 ? 100 : 50),
 							divisionName: p.group || "Umum",
 							createdAt: p.updatedAt || p.createdAt || new Date().toISOString(),
@@ -343,7 +363,10 @@ export const noc = new Elysia({ prefix: "/noc" })
 					return extData as any;
 				}
 			} catch (err) {
-				console.error("Failed to fetch activity progress from NOC External", err);
+				console.error(
+					"Failed to fetch activity progress from NOC External",
+					err,
+				);
 			}
 
 			// 2. Fallback ke database lokal jika external gagal
@@ -359,7 +382,10 @@ export const noc = new Elysia({ prefix: "/noc" })
 			});
 
 			const total = data.reduce((acc, curr) => acc + curr._count._all, 0);
-			const statusMap: Record<string, { label: string; color: string; order: number }> = {
+			const statusMap: Record<
+				string,
+				{ label: string; color: string; order: number }
+			> = {
 				TERTUNDA: { label: "Segera Dikerjakan", color: "#177AD5", order: 0 },
 				BERJALAN: { label: "Dikerjakan", color: "#fac858", order: 1 },
 				SELESAI: { label: "Selesai", color: "#92cc76", order: 2 },
@@ -370,11 +396,12 @@ export const noc = new Elysia({ prefix: "/noc" })
 				const found = data.find((d) => d.status === status);
 				const count = found?._count._all || 0;
 				const percentage = total > 0 ? (count / total) * 100 : 0;
+				const statusInfo = statusMap[status]!; // Non-null assertion since we're iterating Object.keys(statusMap)
 				return {
 					text: `${percentage.toFixed(0)}%`,
 					value: percentage,
-					color: statusMap[status].color,
-					label: statusMap[status].label, // Extra field for UI mapping
+					color: statusInfo.color,
+					label: statusInfo.label, // Extra field for UI mapping
 				};
 			});
 
@@ -398,6 +425,166 @@ export const noc = new Elysia({ prefix: "/noc" })
 							value: t.Any(), // Bisa string "100" atau number 0
 							color: t.String(),
 							label: t.Optional(t.String()),
+						}),
+					),
+				}),
+			},
+		},
+	)
+	.get(
+		"/apbdes-data",
+		async ({ query }) => {
+			const { idDesa } = query;
+
+			try {
+				// 1. Coba tarik data dari External Desa Website API
+				const client = desaExternalClient as any;
+				const { data: extData, error } = await client.GET(
+					"/api/landingpage/apbdes/" + idDesa,
+				);
+
+				if (!error && extData) {
+					console.log(
+						"[APBDes] Raw data from external API:",
+						JSON.stringify(extData, null, 2),
+					);
+
+					const externalData = extData as any;
+					const apbdesData = externalData.data || externalData;
+
+					// Check if data has items array (new structure)
+					if (apbdesData.items && Array.isArray(apbdesData.items)) {
+						console.log(
+							"[APBDes] Processing items array:",
+							apbdesData.items.length,
+							"items",
+						);
+
+						// Group by tipe (pendapatan, belanja, pembiayaan)
+						const groupedByType: Record<
+							string,
+							{ totalAnggaran: number; totalRealisasi: number; count: number }
+						> = {};
+
+						for (const item of apbdesData.items) {
+							const tipe = item.tipe?.toLowerCase() || "lainnya";
+							const anggaran = item.anggaran || 0;
+							const realisasi = item.totalRealisasi || 0;
+
+							if (!groupedByType[tipe]) {
+								groupedByType[tipe] = {
+									totalAnggaran: 0,
+									totalRealisasi: 0,
+									count: 0,
+								};
+							}
+							groupedByType[tipe].totalAnggaran += anggaran;
+							groupedByType[tipe].totalRealisasi += realisasi;
+							groupedByType[tipe].count += 1;
+						}
+
+						// Color mapping for APBDes types
+						const colorMap: Record<string, string> = {
+							pendapatan: "#10B981", // Green
+							belanja: "#3B82F6", // Blue
+							pembiayaan: "#F59E0B", // Amber
+							lainnya: "#6B7280", // Gray
+						};
+
+						// Transform to chart format with realisasi data
+						const chartData = Object.entries(groupedByType).map(
+							([tipe, stats]) => {
+								const persentaseRealisasi =
+									stats.totalAnggaran > 0
+										? (stats.totalRealisasi / stats.totalAnggaran) * 100
+										: 0;
+
+								return {
+									category: tipe.charAt(0).toUpperCase() + tipe.slice(1),
+									anggaran: stats.totalAnggaran,
+									realisasi: stats.totalRealisasi,
+									percentage: persentaseRealisasi,
+									color: colorMap[tipe] || "#6B7280",
+								};
+							},
+						);
+
+						console.log("[APBDes] Transformed chart data:", chartData);
+
+						return {
+							success: true,
+							message: `Berhasil mendapatkan data APBDes ${apbdesData.name || ""} (${apbdesData.tahun || ""})`,
+							data: chartData,
+						};
+					}
+
+					// Fallback: If it's already an array, use it directly
+					if (Array.isArray(apbdesData)) {
+						return {
+							success: true,
+							message: "Berhasil mendapatkan data APBDes dari website desa",
+							data: apbdesData.map((item: any) => ({
+								category: item.category || item.name || item.label || "Unknown",
+								anggaran:
+									item.anggaran || item.amount || item.value || item.total || 0,
+								realisasi: item.realisasi || 0,
+								percentage: item.percentage || item.percent || 0,
+								color: item.color || "#3B82F6",
+							})),
+						};
+					}
+
+					// Fallback: If it's an object with specific fields
+					const colorMapFallback: Record<string, string> = {
+						pendapatan: "#10B981",
+						belanja: "#3B82F6",
+						pembiayaan: "#F59E0B",
+						surplus: "#92cc76",
+						defisit: "#ED6665",
+					};
+
+					const transformedData = Object.entries(apbdesData).map(
+						([key, value]) => ({
+							category: key.charAt(0).toUpperCase() + key.slice(1),
+							anggaran: typeof value === "number" ? value : 0,
+							realisasi: 0,
+							percentage: typeof value === "number" ? value : 0,
+							color: colorMapFallback[key.toLowerCase()] || "#3B82F6",
+						}),
+					);
+
+					return {
+						success: true,
+						message: "Berhasil mendapatkan data APBDes dari website desa",
+						data: transformedData,
+					};
+				}
+			} catch (err) {
+				console.error("Failed to fetch APBDes from external Desa API:", err);
+			}
+
+			// Return empty array if external API fails
+			return {
+				success: false,
+				message: "Gagal mengambil data APBDes dari website desa",
+				data: [],
+			};
+		},
+		{
+			query: t.Object({
+				idDesa: t.String(),
+			}),
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					message: t.String(),
+					data: t.Array(
+						t.Object({
+							category: t.String(),
+							anggaran: t.Number(),
+							realisasi: t.Number(),
+							percentage: t.Number(),
+							color: t.String(),
 						}),
 					),
 				}),

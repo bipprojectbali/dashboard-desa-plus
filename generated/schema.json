@@ -1077,6 +1077,171 @@
         "operationId": "getApiNocDiagram-progres-kegiatan"
       }
     },
+    "/api/noc/apbdes-data": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "idDesa",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "category",
+                          "anggaran",
+                          "realisasi",
+                          "percentage",
+                          "color"
+                        ],
+                        "properties": {
+                          "category": {
+                            "type": "string"
+                          },
+                          "anggaran": {
+                            "type": "number"
+                          },
+                          "realisasi": {
+                            "type": "number"
+                          },
+                          "percentage": {
+                            "type": "number"
+                          },
+                          "color": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "category",
+                          "anggaran",
+                          "realisasi",
+                          "percentage",
+                          "color"
+                        ],
+                        "properties": {
+                          "category": {
+                            "type": "string"
+                          },
+                          "anggaran": {
+                            "type": "number"
+                          },
+                          "realisasi": {
+                            "type": "number"
+                          },
+                          "percentage": {
+                            "type": "number"
+                          },
+                          "color": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "category",
+                          "anggaran",
+                          "realisasi",
+                          "percentage",
+                          "color"
+                        ],
+                        "properties": {
+                          "category": {
+                            "type": "string"
+                          },
+                          "anggaran": {
+                            "type": "number"
+                          },
+                          "realisasi": {
+                            "type": "number"
+                          },
+                          "percentage": {
+                            "type": "number"
+                          },
+                          "color": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiNocApbdes-data"
+      }
+    },
     "/api/noc/latest-discussion": {
       "get": {
         "parameters": [

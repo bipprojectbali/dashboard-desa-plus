@@ -1,20 +1,25 @@
 import {
+	Alert,
+	Badge,
 	Box,
 	Button,
 	Card,
+	Divider,
 	Group,
+	Loader,
 	Stack,
 	Text,
 	Title,
-	Alert,
-	Loader,
-	Badge,
-	Divider,
 } from "@mantine/core";
-import { IconRefresh, IconCheck, IconAlertCircle, IconClock } from "@tabler/icons-react";
-import { useState, useEffect } from "react";
-import { apiClient } from "@/utils/api-client";
+import {
+	IconAlertCircle,
+	IconCheck,
+	IconClock,
+	IconRefresh,
+} from "@tabler/icons-react";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { apiClient } from "@/utils/api-client";
 import "dayjs/locale/id";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -47,14 +52,39 @@ const SinkronisasiSettings = () => {
 		setStatus({ type: null, message: "" });
 
 		try {
-			const { data, error } = await apiClient.POST("/api/noc/sync");
+			console.log("[Sync] Starting synchronization...");
 
-			if (error) {
+			const { data, error, response } = await apiClient.POST("/api/noc/sync");
+
+			console.log("[Sync] Response:", {
+				data,
+				error,
+				status: response?.status,
+			});
+
+			// Check HTTP status first
+			if (response?.status === 401) {
 				setStatus({
 					type: "error",
-					message: (error as any).error || "Gagal melakukan sinkronisasi",
+					message:
+						"Anda tidak memiliki akses. Pastikan Anda login sebagai admin.",
 				});
-			} else if (data?.success) {
+				return;
+			}
+
+			if (error) {
+				console.error("[Sync] API Error:", error);
+				setStatus({
+					type: "error",
+					message:
+						(error as any)?.error ||
+						(error as any)?.message ||
+						"Gagal melakukan sinkronisasi. Periksa console untuk detail.",
+				});
+				return;
+			}
+
+			if (data?.success) {
 				setStatus({
 					type: "success",
 					message: data.message || "Sinkronisasi berhasil dilakukan",
@@ -62,11 +92,23 @@ const SinkronisasiSettings = () => {
 				if (data.lastSyncedAt) {
 					setLastSync(data.lastSyncedAt);
 				}
+			} else if (data?.error) {
+				setStatus({
+					type: "error",
+					message: data.error,
+				});
+			} else {
+				setStatus({
+					type: "error",
+					message: "Response tidak dikenali dari server",
+				});
 			}
 		} catch (err) {
+			console.error("[Sync] Exception:", err);
 			setStatus({
 				type: "error",
-				message: "Terjadi kesalahan sistem saat sinkronisasi",
+				message:
+					"Terjadi kesalahan sistem saat sinkronisasi. Periksa console untuk detail.",
 			});
 		} finally {
 			setLoading(false);
@@ -80,8 +122,8 @@ const SinkronisasiSettings = () => {
 			</Title>
 
 			<Text c="dimmed" mb="xl">
-				Gunakan fitur ini untuk memperbarui data dashboard dengan data terbaru dari
-				server Network Operation Center (NOC) darmasaba.muku.id.
+				Gunakan fitur ini untuk memperbarui data dashboard dengan data terbaru
+				dari server Network Operation Center (NOC) darmasaba.muku.id.
 			</Text>
 
 			<Card withBorder padding="lg" radius="md" mb="xl">
@@ -134,7 +176,11 @@ const SinkronisasiSettings = () => {
 
 					<Button
 						leftSection={
-							loading ? <Loader size={16} color="white" /> : <IconRefresh size={16} />
+							loading ? (
+								<Loader size={16} color="white" />
+							) : (
+								<IconRefresh size={16} />
+							)
 						}
 						onClick={handleSync}
 						loading={loading}
@@ -149,23 +195,39 @@ const SinkronisasiSettings = () => {
 			<Title order={2} mb="lg">
 				Informasi API
 			</Title>
-			
+
 			<Card withBorder padding="md" radius="md" bg="gray.0">
 				<Stack gap="xs">
 					<Group>
-						<Text fw={600} size="sm" w={100}>URL Sumber:</Text>
-						<Text size="sm" style={{ wordBreak: 'break-all' }}>https://darmasaba.muku.id/api/noc/</Text>
+						<Text fw={600} size="sm" w={100}>
+							URL Sumber:
+						</Text>
+						<Text size="sm" style={{ wordBreak: "break-all" }}>
+							https://darmasaba.muku.id/api/noc/
+						</Text>
 					</Group>
 					<Group>
-						<Text fw={600} size="sm" w={100}>ID Desa:</Text>
+						<Text fw={600} size="sm" w={100}>
+							ID Desa:
+						</Text>
 						<Text size="sm">desa1</Text>
 					</Group>
 					<Group>
-						<Text fw={600} size="sm" w={100}>Model Data:</Text>
-						<Badge size="xs" variant="outline">Divisi</Badge>
-						<Badge size="xs" variant="outline">Kegiatan</Badge>
-						<Badge size="xs" variant="outline">Event</Badge>
-						<Badge size="xs" variant="outline">Diskusi</Badge>
+						<Text fw={600} size="sm" w={100}>
+							Model Data:
+						</Text>
+						<Badge size="xs" variant="outline">
+							Divisi
+						</Badge>
+						<Badge size="xs" variant="outline">
+							Kegiatan
+						</Badge>
+						<Badge size="xs" variant="outline">
+							Event
+						</Badge>
+						<Badge size="xs" variant="outline">
+							Diskusi
+						</Badge>
 					</Group>
 				</Stack>
 			</Card>

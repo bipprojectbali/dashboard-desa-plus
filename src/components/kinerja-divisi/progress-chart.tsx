@@ -48,14 +48,21 @@ export function ProgressChart() {
 				});
 				if (res.data?.data) {
 					const rawData = res.data.data;
-					const labels = ["Segera Dikerjakan", "Dikerjakan", "Selesai", "Dibatalkan"];
+					const labels = [
+						"Segera Dikerjakan",
+						"Dikerjakan",
+						"Selesai",
+						"Dibatalkan",
+					];
 
-					const chartData: ProgressData[] = rawData.map((d: any, index: number) => ({
-						name: d.label || labels[index] || "Lainnya",
-						value: Number(d.value) || 0,
-						color: d.color,
-					}));
-					
+					const chartData: ProgressData[] = rawData.map(
+						(d: any, index: number) => ({
+							name: d.label || labels[index] || "Lainnya",
+							value: Number(d.value) || 0,
+							color: d.color,
+						}),
+					);
+
 					setData(chartData);
 				}
 			} catch (error) {

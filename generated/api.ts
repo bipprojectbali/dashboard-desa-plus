@@ -148,6 +148,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/noc/apbdes-data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocApbdes-data"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/noc/latest-discussion": {
         parameters: {
             query?: never;
@@ -971,6 +987,59 @@ export interface operations {
                             value: unknown;
                             color: string;
                             label?: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocApbdes-data": {
+        parameters: {
+            query: {
+                idDesa: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            category: string;
+                            anggaran: number;
+                            realisasi: number;
+                            percentage: number;
+                            color: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            category: string;
+                            anggaran: number;
+                            realisasi: number;
+                            percentage: number;
+                            color: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            category: string;
+                            anggaran: number;
+                            realisasi: number;
+                            percentage: number;
+                            color: string;
                         }[];
                     };
                 };
