@@ -180,6 +180,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/noc/satisfaction-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocSatisfaction-categories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/apikey/": {
         parameters: {
             query?: never;
@@ -1091,6 +1107,54 @@ export interface operations {
                             senderImage: (string | null) | null;
                             divisionName: string;
                             createdAt: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocSatisfaction-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        fallback?: boolean;
+                        data: {
+                            id: string;
+                            name: string;
+                            isActive: boolean;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        message: string;
+                        fallback?: boolean;
+                        data: {
+                            id: string;
+                            name: string;
+                            isActive: boolean;
+                        }[];
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        message: string;
+                        fallback?: boolean;
+                        data: {
+                            id: string;
+                            name: string;
+                            isActive: boolean;
                         }[];
                     };
                 };

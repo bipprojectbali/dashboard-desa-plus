@@ -640,4 +640,73 @@ export const noc = new Elysia({ prefix: "/noc" })
 				}),
 			},
 		},
+	)
+	.get(
+		"/satisfaction-categories",
+		async () => {
+			try {
+				// Fetch rating categories dari external NOC API
+				const externalBaseUrl =
+					process.env.DESA_API_URL || "https://desa-darmasaba-stg.wibudev.com";
+				const response = await fetch(
+					`${externalBaseUrl}/api/landingpage/pilihanratingresponden/findMany`,
+				);
+
+				if (!response.ok) {
+					throw new Error(`External API responded with ${response.status}`);
+				}
+
+				const externalData = await response.json();
+
+				if (externalData.success && externalData.data) {
+					return {
+						success: true,
+						message: "Berhasil mendapatkan kategori rating dari NOC",
+						data: externalData.data
+							.filter((cat: any) => cat.isActive)
+							.map((cat: any) => ({
+								id: cat.id,
+								name: cat.name,
+								isActive: cat.isActive,
+							})),
+					};
+				}
+
+				throw new Error("Invalid response from external API");
+			} catch (error) {
+				console.error(
+					"Failed to fetch satisfaction categories from NOC:",
+					error,
+				);
+
+				// Fallback: return hardcoded categories jika external API gagal
+				return {
+					success: true,
+					message: "Menggunakan kategori rating default (fallback)",
+					fallback: true,
+					data: [
+						{ id: "fallback-1", name: "Sangat Baik", isActive: true },
+						{ id: "fallback-2", name: "Baik", isActive: true },
+						{ id: "fallback-3", name: "Kurang Baik", isActive: true },
+						{ id: "fallback-4", name: "Sangat Kurang Baik", isActive: true },
+					],
+				};
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					message: t.String(),
+					fallback: t.Optional(t.Boolean()),
+					data: t.Array(
+						t.Object({
+							id: t.String(),
+							name: t.String(),
+							isActive: t.Boolean(),
+						}),
+					),
+				}),
+			},
+		},
 	);

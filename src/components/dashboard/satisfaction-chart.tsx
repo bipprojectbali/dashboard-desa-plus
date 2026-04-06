@@ -17,6 +17,17 @@ interface SatisfactionData {
 	color: string;
 }
 
+// Mapping dari NOC API name ke label chart dan warna
+const RATING_NAME_MAP: Record<
+	string,
+	{ label: string; color: string; order: number }
+> = {
+	"Sangat Baik": { label: "Sangat Puas", color: "#10B981", order: 0 },
+	"Baik": { label: "Puas", color: "#3B82F6", order: 1 },
+	"Kurang Baik": { label: "Cukup", color: "#F59E0B", order: 2 },
+	"Sangat Kurang Baik": { label: "Kurang", color: "#EF4444", order: 3 },
+};
+
 export function SatisfactionChart() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
@@ -27,18 +38,84 @@ export function SatisfactionChart() {
 	useEffect(() => {
 		async function fetchSatisfaction() {
 			try {
-				const res = await apiClient.GET("/api/dashboard/satisfaction");
-				if (res.data?.data) {
-					setData(
-						res.data.data.map((d) => ({
-							name: d.category,
-							value: d.value,
-							color: d.color,
-						})),
+				// Fetch data responden LANGSUNG dari external API
+				const externalApiUrl =
+					import.meta.env.VITE_DESA_API_URL ||
+					"https://desa-darmasaba-stg.wibudev.com";
+
+				const respondentsResponse = await fetch(
+					`${externalApiUrl}/api/landingpage/responden/findMany`,
+				);
+
+				if (!respondentsResponse.ok) {
+					throw new Error(
+						`External API error: ${respondentsResponse.status}`,
 					);
 				}
+
+				const respondentsJson = await respondentsResponse.json();
+
+				if (
+					!respondentsJson.success ||
+					!respondentsJson.data ||
+					respondentsJson.data.length === 0
+				) {
+					throw new Error("No respondents data from external API");
+				}
+
+				// Aggregate: hitung jumlah setiap rating
+				const ratingCounts: Record<string, number> = {};
+
+				respondentsJson.data.forEach(
+					(responden: {
+						rating: { name: string };
+					}) => {
+						const ratingName = responden.rating?.name;
+						if (ratingName) {
+							ratingCounts[ratingName] =
+								(ratingCounts[ratingName] || 0) + 1;
+						}
+					},
+				);
+
+				// Map ke format chart
+				const chartData: SatisfactionData[] = Object.entries(
+					RATING_NAME_MAP,
+				)
+					.filter(([apiName]) => ratingCounts[apiName])
+					.map(([apiName, mapping]) => ({
+						name: mapping.label,
+						value: ratingCounts[apiName] ?? 0,
+						color: mapping.color,
+					}))
+					.sort((a, b) => a.value - b.value);
+
+				if (chartData.length === 0) {
+					throw new Error("No valid rating data found");
+				}
+
+				setData(chartData);
 			} catch (error) {
 				console.error("Failed to fetch satisfaction data", error);
+
+				// Error fallback: pakai data dari local DB
+				try {
+					const countsRes = await apiClient.GET(
+						"/api/dashboard/satisfaction",
+						{},
+					);
+					if (countsRes.data?.data) {
+						setData(
+							countsRes.data.data.map((d) => ({
+								name: d.category,
+								value: d.value,
+								color: d.color,
+							})),
+						);
+					}
+				} catch (fallbackError) {
+					console.error("Fallback fetch also failed", fallbackError);
+				}
 			} finally {
 				setLoading(false);
 			}
