@@ -55,7 +55,9 @@ test.describe("NOC Synchronization UI", () => {
 		await page.goto("/pengaturan/sinkronisasi");
 
 		// Initial state check
-		await expect(page.locator("text=Waktu Sinkronisasi Terakhir:")).toBeVisible();
+		await expect(
+			page.locator("text=Waktu Sinkronisasi Terakhir:"),
+		).toBeVisible();
 
 		// Mock the sync API
 		const now = new Date().toISOString();
@@ -77,7 +79,9 @@ test.describe("NOC Synchronization UI", () => {
 		await page.click('button:has-text("Sinkronkan Sekarang")');
 
 		// Verify success message
-		await expect(page.locator("text=Sinkronisasi berhasil dilakukan")).toBeVisible();
+		await expect(
+			page.locator("text=Sinkronisasi berhasil dilakukan"),
+		).toBeVisible();
 
 		// Verify timestamp updated (it should show "beberapa detik yang lalu" or similar because of dayjs fromNow)
 		// We can just check if the new time format is there or the relative time updated
@@ -105,6 +109,8 @@ test.describe("NOC Synchronization UI", () => {
 		await page.click('button:has-text("Sinkronkan Sekarang")');
 
 		// Verify error message
-		await expect(page.locator("text=Sinkronisasi gagal dijalankan")).toBeVisible();
+		await expect(
+			page.locator("text=Sinkronisasi gagal dijalankan"),
+		).toBeVisible();
 	});
 });

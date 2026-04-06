@@ -43,7 +43,7 @@ export const complaint = new Elysia({
 			try {
 				const recent = await prisma.complaint.findMany({
 					orderBy: { createdAt: "desc" },
-					take: 10,
+					take: 5,
 				});
 				return { data: recent };
 			} catch (error) {

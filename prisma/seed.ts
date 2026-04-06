@@ -12,8 +12,8 @@ import {
 import {
 	seedDiscussions,
 	seedDivisionMetrics,
-	seedDocuments,
 	seedDocumentStats,
+	seedDocuments,
 } from "./seeders/seed-discussions";
 import {
 	getDivisionIds,
