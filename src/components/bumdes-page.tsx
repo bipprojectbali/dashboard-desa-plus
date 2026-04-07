@@ -13,7 +13,7 @@ const BumdesPage = () => {
 	};
 
 	return (
-		<Stack gap={{ base: "md", md: "lg" }}>
+		<Stack gap={"md"}>
 			{/* KPI Summary Cards */}
 			<SummaryCards />
 
