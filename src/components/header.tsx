@@ -91,43 +91,45 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 	];
 
 	return (
-		<Group justify="space-between" w="100%">
+		<Group justify="space-between" w="100%" wrap="nowrap">
 			{/* Title & Breadcrumbs */}
-			<Group gap="md" style={{ flex: 1, minWidth: 0 }}>
-				<ActionIcon
-					onClick={onSidebarToggle}
-					variant="subtle"
-					size="lg"
-					radius="xl"
-					visibleFrom="sm"
-					aria-label="Toggle sidebar"
-				>
-					<IconLayoutSidebarLeftCollapse
-						color="white"
-						style={{ width: "70%", height: "70%" }}
-					/>
-				</ActionIcon>
-				<Box style={{ minWidth: 0, overflow: "hidden" }}>
-					<Breadcrumbs
-						separator={
-							<Text c="white" size="xs">
-								/
-							</Text>
-						}
-						styles={{
-							separator: { color: "white" },
-						}}
+			<Box style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
+				<Group gap="md" wrap="nowrap">
+					<ActionIcon
+						onClick={onSidebarToggle}
+						variant="subtle"
+						size="lg"
+						radius="xl"
+						visibleFrom="sm"
+						aria-label="Toggle sidebar"
 					>
-						{breadcrumbItems}
-					</Breadcrumbs>
-				</Box>
-			</Group>
+						<IconLayoutSidebarLeftCollapse
+							color="white"
+							style={{ width: "70%", height: "70%" }}
+						/>
+					</ActionIcon>
+					<Box style={{ minWidth: 0, overflow: "hidden" }}>
+						<Breadcrumbs
+							separator={
+								<Text c="white" size="xs">
+									/
+								</Text>
+							}
+							styles={{
+								separator: { color: "white" },
+							}}
+						>
+							{breadcrumbItems}
+						</Breadcrumbs>
+					</Box>
+				</Group>
+			</Box>
 
 			{/* Right Section */}
-			<Group gap={{ base: "xs", sm: "md" }}>
+			<Group gap="xs" wrap="nowrap" style={{ flexShrink: 0 }}>
 				{/* User Info - Hidden on mobile */}
-				<Group gap="sm" visibleFrom="sm">
-					<Box ta="right">
+				<Group gap="sm" visibleFrom="sm" wrap="nowrap">
+					<Box ta="right" visibleFrom="md">
 						<Text c={"white"} size="sm" fw={500}>
 							I. B. Surya Prabhawa M...
 						</Text>
@@ -144,7 +146,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 				<Avatar
 					color="blue"
 					radius="xl"
-					size="sm"
+					size="md"
 					hiddenFrom="sm"
 				>
 					<UserIcon color="white" style={{ width: "70%", height: "70%" }} />
@@ -154,7 +156,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 				<Divider orientation="vertical" h={30} visibleFrom="sm" />
 
 				{/* Icons */}
-				<Group gap={{ base: "xs", sm: "sm" }}>
+				<Group gap={{ base: "4", sm: "xs" }} wrap="nowrap">
 					<ActionIcon
 						onClick={() => toggleColorScheme()}
 						variant="subtle"
@@ -189,7 +191,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 						variant="subtle"
 						size="lg"
 						radius="xl"
-						visibleFrom="sm"
+						visibleFrom="md"
 					>
 						<IconUserShield
 							color="white"

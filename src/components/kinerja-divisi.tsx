@@ -70,11 +70,11 @@ const KinerjaDivisi = () => {
 	}));
 
 	return (
-		<Stack gap="lg">
+		<Stack gap={{ base: "md", md: "lg" }}>
 			{/* SECTION 1 — PROGRAM KEGIATAN */}
-			<Grid gutter="md">
+			<Grid gutter={{ base: "xs", md: "md" }}>
 				{activities.slice(0, 4).map((kegiatan) => (
-					<Grid.Col key={kegiatan.id} span={{ base: 12, md: 6, lg: 3 }}>
+					<Grid.Col key={kegiatan.id} span={{ base: 12, sm: 6, lg: 3 }}>
 						<ActivityCard
 							title={kegiatan.title}
 							date={dayjs(kegiatan.createdAt).format("D MMMM YYYY")}
@@ -99,19 +99,19 @@ const KinerjaDivisi = () => {
 			</Grid>
 
 			{/* SECTION 2 — GRID DASHBOARD (3 Columns) */}
-			<Grid gutter="lg">
+			<Grid gutter={{ base: "xs", md: "lg" }}>
 				{/* Left Column - Division List */}
-				<Grid.Col span={{ base: 12, lg: 3 }}>
+				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<DivisionList />
 				</Grid.Col>
 
 				{/* Middle Column - Document Chart */}
-				<Grid.Col span={{ base: 12, lg: 5 }}>
+				<Grid.Col span={{ base: 12, md: 6, lg: 5 }}>
 					<DocumentChart />
 				</Grid.Col>
 
 				{/* Right Column - Progress Chart */}
-				<Grid.Col span={{ base: 12, lg: 4 }}>
+				<Grid.Col span={{ base: 12, md: 12, lg: 4 }}>
 					<ProgressChart />
 				</Grid.Col>
 			</Grid>
@@ -123,9 +123,9 @@ const KinerjaDivisi = () => {
 			<EventCard agendas={formattedEvents} />
 
 			{/* SECTION 5 — ARSIP DIGITAL PERANGKAT DESA */}
-			<Grid gutter="md">
+			<Grid gutter={{ base: "xs", md: "md" }}>
 				{archiveData.map((item) => (
-					<Grid.Col key={item.name} span={{ base: 12, md: 6 }}>
+					<Grid.Col key={item.name} span={{ base: 12, sm: 6 }}>
 						<ArchiveCard item={item} />
 					</Grid.Col>
 				))}
