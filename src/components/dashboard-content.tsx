@@ -2,6 +2,7 @@ import { Center, Grid, Image, Loader, Stack } from "@mantine/core";
 import { CheckCircle, FileText, MessageCircle, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/utils/api-client";
+import { getComplaintCount, getWeeklyServiceCount } from "@/utils/jenna-mcp-client";
 import { ActivityList } from "./dashboard/activity-list";
 import { ChartAPBDes } from "./dashboard/chart-apbdes";
 import { ChartSurat } from "./dashboard/chart-surat";
@@ -26,31 +27,42 @@ export function DashboardContent() {
 	useEffect(() => {
 		async function fetchStats() {
 			try {
-				const [complaintRes, residentRes, weeklyServiceRes, sdgsRes] =
-					await Promise.all([
-						apiClient.GET("/api/complaint/stats"),
-						apiClient.GET("/api/resident/stats"),
-						apiClient.GET("/api/complaint/service-weekly"),
-						apiClient.GET("/api/dashboard/sdgs"),
-					]);
+				// Fetch from external Jenna MCP APIs
+				const [weeklyServiceCount, complaintData] = await Promise.all([
+					getWeeklyServiceCount(),
+					getComplaintCount(),
+				]);
+
+				console.log("[Dashboard] Complaint Data from API:", complaintData);
+				console.log("[Dashboard] Weekly Service Count:", weeklyServiceCount);
+
+				// Fetch from internal APIs
+				const [residentRes, sdgsRes] = await Promise.all([
+					apiClient.GET("/api/resident/stats"),
+					apiClient.GET("/api/dashboard/sdgs"),
+				]);
+
+				// Map API data to stat card format
+				const complaints = {
+					total: complaintData.total ?? 0,
+					baru: complaintData.antrian ?? 0,
+					proses: (complaintData.diterima ?? 0) + (complaintData.dikerjakan ?? 0),
+					selesai: complaintData.selesai ?? 0,
+				};
+
+				console.log("[Dashboard] Mapped Complaints:", complaints);
+
+				const residents = (residentRes.data as { data: typeof stats.residents })
+					?.data || {
+					total: 0,
+					heads: 0,
+					poor: 0,
+				};
 
 				setStats({
-					complaints: (complaintRes.data as { data: typeof stats.complaints })
-						?.data || {
-						total: 0,
-						baru: 0,
-						proses: 0,
-						selesai: 0,
-					},
-					residents: (residentRes.data as { data: typeof stats.residents })
-						?.data || {
-						total: 0,
-						heads: 0,
-						poor: 0,
-					},
-					weeklyService:
-						(weeklyServiceRes.data as { data: { count: number } })?.data
-							?.count || 0,
+					complaints,
+					residents,
+					weeklyService: weeklyServiceCount,
 					loading: false,
 				});
 
@@ -59,7 +71,7 @@ export function DashboardContent() {
 				}
 				setSdgsLoading(false);
 			} catch (error) {
-				console.error("Failed to fetch dashboard content", error);
+				console.error("[Dashboard] Failed to fetch dashboard content:", error);
 				setStats((prev) => ({ ...prev, loading: false }));
 				setSdgsLoading(false);
 			}

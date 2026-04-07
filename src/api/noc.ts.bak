@@ -41,14 +41,10 @@ export const noc = new Elysia({ prefix: "/noc" })
 				};
 			} catch (error) {
 				console.error("[NOC Sync] Script Error:", error);
-				const errorMessage =
-					(error as any)?.stderr ||
-					(error as any)?.message ||
-					JSON.stringify(error);
-				console.error("[NOC Sync] Error Details:", errorMessage);
 				return {
 					success: false,
-					error: `Sinkronisasi gagal: ${errorMessage.substring(0, 200)}`,
+					error:
+						"Sinkronisasi gagal dijalankan. Silakan periksa koneksi ke server NOC.",
 				};
 			}
 		},
@@ -529,9 +525,7 @@ export const noc = new Elysia({ prefix: "/noc" })
 							message: "Berhasil mendapatkan data APBDes dari website desa",
 							data: apbdesData.map((item: any) => ({
 								category: item.category || item.name || item.label || "Unknown",
-								anggaran:
-									item.anggaran || item.amount || item.value || item.total || 0,
-								realisasi: item.realisasi || 0,
+								amount: item.amount || item.value || item.total || 0,
 								percentage: item.percentage || item.percent || 0,
 								color: item.color || "#3B82F6",
 							})),
@@ -550,8 +544,7 @@ export const noc = new Elysia({ prefix: "/noc" })
 					const transformedData = Object.entries(apbdesData).map(
 						([key, value]) => ({
 							category: key.charAt(0).toUpperCase() + key.slice(1),
-							anggaran: typeof value === "number" ? value : 0,
-							realisasi: 0,
+							amount: typeof value === "number" ? value : 0,
 							percentage: typeof value === "number" ? value : 0,
 							color: colorMapFallback[key.toLowerCase()] || "#3B82F6",
 						}),
@@ -567,11 +560,22 @@ export const noc = new Elysia({ prefix: "/noc" })
 				console.error("Failed to fetch APBDes from external Desa API:", err);
 			}
 
-			// Return empty array if external API fails
+			// 2. Fallback ke database lokal jika external gagal
+			const data = await prisma.budget.findMany({
+				where: { fiscalYear: 2025 },
+				orderBy: { category: "asc" },
+			});
+
 			return {
-				success: false,
-				message: "Gagal mengambil data APBDes dari website desa",
-				data: [],
+				success: true,
+				message: "Berhasil mendapatkan data APBDes dari database lokal",
+				data: data.map((d) => ({
+					category: d.category,
+					anggaran: d.amount,
+					realisasi: 0, // Local DB doesn't have realisasi data, default to 0
+					percentage: d.percentage,
+					color: d.color,
+				})),
 			};
 		},
 		{
@@ -641,177 +645,6 @@ export const noc = new Elysia({ prefix: "/noc" })
 							createdAt: t.String(),
 						}),
 					),
-				}),
-			},
-		},
-	)
-	.get(
-		"/satisfaction-categories",
-		async () => {
-			try {
-				// Fetch rating categories dari external NOC API
-				const externalBaseUrl =
-					process.env.DESA_API_URL || "https://desa-darmasaba-stg.wibudev.com";
-				const response = await fetch(
-					`${externalBaseUrl}/api/landingpage/pilihanratingresponden/findMany`,
-				);
-
-				if (!response.ok) {
-					throw new Error(`External API responded with ${response.status}`);
-				}
-
-				const externalData = await response.json();
-
-				if (externalData.success && externalData.data) {
-					return {
-						success: true,
-						message: "Berhasil mendapatkan kategori rating dari NOC",
-						data: externalData.data
-							.filter((cat: any) => cat.isActive)
-							.map((cat: any) => ({
-								id: cat.id,
-								name: cat.name,
-								isActive: cat.isActive,
-							})),
-					};
-				}
-
-				throw new Error("Invalid response from external API");
-			} catch (error) {
-				console.error(
-					"Failed to fetch satisfaction categories from NOC:",
-					error,
-				);
-
-				// Fallback: return hardcoded categories jika external API gagal
-				return {
-					success: true,
-					message: "Menggunakan kategori rating default (fallback)",
-					fallback: true,
-					data: [
-						{ id: "fallback-1", name: "Sangat Baik", isActive: true },
-						{ id: "fallback-2", name: "Baik", isActive: true },
-						{ id: "fallback-3", name: "Kurang Baik", isActive: true },
-						{ id: "fallback-4", name: "Sangat Kurang Baik", isActive: true },
-					],
-				};
-			}
-		},
-		{
-			response: {
-				200: t.Object({
-					success: t.Boolean(),
-					message: t.String(),
-					fallback: t.Optional(t.Boolean()),
-					data: t.Array(
-						t.Object({
-							id: t.String(),
-							name: t.String(),
-							isActive: t.Boolean(),
-						}),
-					),
-				}),
-			},
-		},
-	)
-	// Jenna MCP External API Proxy (to avoid CORS issues)
-	.get(
-		"/jenna/surat-perminggu",
-		async () => {
-			try {
-				const response = await fetch(
-					"https://cld-dkr-prod-jenna-mcp.wibudev.com/api/noc/surat-perminggu",
-					{
-						headers: {
-							Authorization:
-								"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJob3N0Iiwic3ViIjoiYmlwIiwicGF5bG9hZCI6IntcIm5hbWVcIjpcIm5vYyBkZXNhK1wiLFwiZGVzY3JpcHRpb25cIjpcInVudHVrIGRhc2hib2FyZCBub2MgZGVzYStcIixcImV4cGlyZWRBdFwiOlwiMjAzMC0xMi0zMVwifSIsImV4cCI6MTkyNDkwNTYwMCwiaWF0IjoxNzc1NTMzMDc0fQ.Ta3pxlwF3oM6Ve0KWhfvL6zbQiXE6D6I09dXMdogJXs",
-						},
-					},
-				);
-
-				if (!response.ok) {
-					throw new Error(`External API error: ${response.status}`);
-				}
-
-				const data = await response.json();
-				return {
-					success: true,
-					data,
-				};
-			} catch (error) {
-				console.error("[Jenna MCP] Failed to fetch surat perminggu:", error);
-				return {
-					success: false,
-					error: "Failed to fetch surat perminggu",
-					jumlah: 0,
-				};
-			}
-		},
-		{
-			response: {
-				200: t.Object({
-					success: t.Boolean(),
-					data: t.Optional(t.Any()),
-					error: t.Optional(t.String()),
-					jumlah: t.Optional(t.Number()),
-				}),
-			},
-		},
-	)
-	.get(
-		"/jenna/pengaduan-count",
-		async () => {
-			try {
-				const response = await fetch(
-					"https://cld-dkr-prod-jenna-mcp.wibudev.com/api/noc/pengaduan-count",
-					{
-						headers: {
-							Authorization:
-								"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJob3N0Iiwic3ViIjoiYmlwIiwicGF5bG9hZCI6IntcIm5hbWVcIjpcIm5vYyBkZXNhK1wiLFwiZGVzY3JpcHRpb25cIjpcInVudHVrIGRhc2hib2FyZCBub2MgZGVzYStcIixcImV4cGlyZWRBdFwiOlwiMjAzMC0xMi0zMVwifSIsImV4cCI6MTkyNDkwNTYwMCwiaWF0IjoxNzc1NTMzMDc0fQ.Ta3pxlwF3oM6Ve0KWhfvL6zbQiXE6D6I09dXMdogJXs",
-						},
-					},
-				);
-
-				if (!response.ok) {
-					throw new Error(`External API error: ${response.status}`);
-				}
-
-				const data = await response.json();
-				return {
-					success: true,
-					data,
-				};
-			} catch (error) {
-				console.error(
-					"[Jenna MCP] Failed to fetch pengaduan count:",
-					error,
-				);
-				return {
-					success: false,
-					error: "Failed to fetch pengaduan count",
-					antrian: 0,
-					diterima: 0,
-					dikerjakan: 0,
-					ditolak: 0,
-					selesai: 0,
-					aktif: 0,
-					total: 0,
-				};
-			}
-		},
-		{
-			response: {
-				200: t.Object({
-					success: t.Boolean(),
-					data: t.Optional(t.Any()),
-					error: t.Optional(t.String()),
-					antrian: t.Optional(t.Number()),
-					diterima: t.Optional(t.Number()),
-					dikerjakan: t.Optional(t.Number()),
-					ditolak: t.Optional(t.Number()),
-					selesai: t.Optional(t.Number()),
-					aktif: t.Optional(t.Number()),
-					total: t.Optional(t.Number()),
 				}),
 			},
 		},

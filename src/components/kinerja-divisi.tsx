@@ -70,7 +70,7 @@ const KinerjaDivisi = () => {
 	}));
 
 	return (
-		<Stack gap={{ base: "md", md: "lg" }}>
+		<Stack gap={"md"}>
 			{/* SECTION 1 — PROGRAM KEGIATAN */}
 			<Grid gutter={{ base: "xs", md: "md" }}>
 				{activities.slice(0, 4).map((kegiatan) => (

@@ -174,7 +174,7 @@ const PengaduanLayananPublik = () => {
 	];
 
 	return (
-		<Stack gap={{ base: "md", md: "lg" }}>
+		<Stack gap={"md"}>
 			{/* TOP SECTION - 4 STAT CARDS */}
 			<Grid gutter={{ base: "xs", md: "md" }}>
 				{summaryData.map((item) => (
