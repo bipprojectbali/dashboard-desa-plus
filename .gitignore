@@ -16,12 +16,13 @@ _.log
 report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # dotenv environment variable files
-# Only .env.example is allowed to be committed
+# Only .env.example and .env.staging templates are allowed
 .env
 .env.development.local
 .env.test.local
 .env.production.local
 .env.local
+!.env.staging
 
 # caches
 .eslintcache
@@ -34,11 +35,14 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # Finder (MacOS) folder config
 .DS_Store
 
-# Dashboard-MD
-Dashboard-MD
-
-# md
-*.md
+# md (ignore Dashboard-MD folder but keep root documentation)
+Dashboard-MD/
+!README.md
+!CHANGELOG.md
+!DEPLOYMENT.md
+!STAGING-README.md
+!TROUBLESHOOTING.md
+!PROJECT-STRUCTURE.md
 
 # Playwright artifacts
 test-results/
