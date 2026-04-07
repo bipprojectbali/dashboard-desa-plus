@@ -38,8 +38,8 @@ COPY . .
 # Generate Prisma client (hanya butuh schema.prisma, tidak butuh DATABASE_URL aktif)
 RUN bun x prisma generate
 
-# Generate API types
-RUN bun run gen:api
+# Generate API types (opsional)
+RUN bun run gen:api || echo "tidak ada gen api"
 
 # Build frontend
 RUN bun run build
