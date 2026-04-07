@@ -40,7 +40,8 @@ export function SatisfactionChart() {
 			try {
 				// Fetch data responden LANGSUNG dari external API
 				const externalApiUrl =
-					import.meta.env.VITE_DESA_API_URL ||
+					(typeof import.meta.env !== "undefined" &&
+						import.meta.env?.VITE_DESA_API_URL) ||
 					"https://desa-darmasaba-stg.wibudev.com";
 
 				const respondentsResponse = await fetch(

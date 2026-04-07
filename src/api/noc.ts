@@ -41,10 +41,14 @@ export const noc = new Elysia({ prefix: "/noc" })
 				};
 			} catch (error) {
 				console.error("[NOC Sync] Script Error:", error);
+				const errorMessage =
+					(error as any)?.stderr ||
+					(error as any)?.message ||
+					JSON.stringify(error);
+				console.error("[NOC Sync] Error Details:", errorMessage);
 				return {
 					success: false,
-					error:
-						"Sinkronisasi gagal dijalankan. Silakan periksa koneksi ke server NOC.",
+					error: `Sinkronisasi gagal: ${errorMessage.substring(0, 200)}`,
 				};
 			}
 		},
