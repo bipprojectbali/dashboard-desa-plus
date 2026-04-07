@@ -14,6 +14,11 @@ ENV VITE_DESA_API_URL=$VITE_DESA_API_URL
 ENV VITE_PUBLIC_URL=$VITE_PUBLIC_URL
 ENV NODE_ENV=production
 
+# Dummy DATABASE_URL khusus untuk prisma generate
+# prisma.config.ts memvalidasi env var ini saat load,
+# tapi tidak ada koneksi aktif yang dibuat saat generate
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy?schema=public"
+
 # Install build dependencies untuk native modules
 RUN apt-get update && apt-get install -y \
     python3 \
