@@ -94,9 +94,9 @@ const JennaAnalytic = () => {
 	const dark = colorScheme === "dark";
 
 	return (
-		<Stack gap="lg">
+		<Stack gap={{ base: "md", md: "lg" }}>
 			{/* TOP SECTION - 4 STAT CARDS */}
-			<Grid gutter="md">
+			<Grid gutter={{ base: "xs", md: "md" }}>
 				{kpiData.map((item) => (
 					<Grid.Col key={item.id} span={{ base: 12, sm: 6, lg: 3 }}>
 						<Card
@@ -205,7 +205,7 @@ const JennaAnalytic = () => {
 			</Card>
 
 			{/* BOTTOM SECTION - 2 COLUMNS */}
-			<Grid gutter="lg">
+			<Grid gutter={{ base: "xs", md: "lg" }}>
 				{/* LEFT: TOPIK PERTANYAAN TERBANYAK */}
 				<Grid.Col span={{ base: 12, lg: 6 }}>
 					<Card

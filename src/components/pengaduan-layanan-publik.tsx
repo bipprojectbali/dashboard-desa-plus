@@ -174,9 +174,9 @@ const PengaduanLayananPublik = () => {
 	];
 
 	return (
-		<Stack gap="lg">
+		<Stack gap={{ base: "md", md: "lg" }}>
 			{/* TOP SECTION - 4 STAT CARDS */}
-			<Grid gutter="md">
+			<Grid gutter={{ base: "xs", md: "md" }}>
 				{summaryData.map((item) => (
 					<Grid.Col key={item.title} span={{ base: 12, sm: 6, lg: 3 }}>
 						<Card
@@ -289,7 +289,7 @@ const PengaduanLayananPublik = () => {
 			</Card>
 
 			{/* BOTTOM SECTION - 3 COLUMNS */}
-			<Grid gutter="md">
+			<Grid gutter={{ base: "xs", md: "md" }}>
 				{/* LEFT: SURAT TERBANYAK */}
 				<Grid.Col span={{ base: 12, lg: 4 }}>
 					<Card

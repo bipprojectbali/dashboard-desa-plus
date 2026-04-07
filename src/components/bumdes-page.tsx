@@ -13,7 +13,7 @@ const BumdesPage = () => {
 	};
 
 	return (
-		<Stack gap="lg">
+		<Stack gap={{ base: "md", md: "lg" }}>
 			{/* KPI Summary Cards */}
 			<SummaryCards />
 
@@ -21,7 +21,7 @@ const BumdesPage = () => {
 			<HeaderToggle />
 
 			{/* Main Content - 2 Column Layout */}
-			<Grid gutter="md">
+			<Grid gutter={{ base: "xs", md: "md" }}>
 				{/* Left Panel - Produk Unggulan */}
 				<GridCol span={{ base: 12, lg: 4 }}>
 					<Stack gap="md">

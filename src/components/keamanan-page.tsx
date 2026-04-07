@@ -113,8 +113,8 @@ const KeamananPage = () => {
 	];
 
 	return (
-		<Stack gap="lg">
-			<Grid gutter="md">
+		<Stack gap={{ base: "md", md: "lg" }}>
+			<Grid gutter={{ base: "xs", md: "md" }}>
 				{/* Peta Keamanan CCTV */}
 				<GridCol span={{ base: 12, lg: 6 }}>
 					<Stack gap={"xs"}>
@@ -189,7 +189,7 @@ const KeamananPage = () => {
 								style={{
 									backgroundColor: dark ? "#2d3748" : "#e2e8f0",
 									borderRadius: "8px",
-									height: "400px",
+									height: "300px",
 									display: "flex",
 									alignItems: "center",
 									justifyContent: "center",

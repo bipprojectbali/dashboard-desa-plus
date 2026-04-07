@@ -8,12 +8,12 @@ import { SummaryCards } from "./sosial/summary-cards";
 
 const SosialPage = () => {
 	return (
-		<Stack gap="lg">
+		<Stack gap={{ base: "md", md: "lg" }}>
 			{/* Top Summary Cards - 4 Grid */}
 			<SummaryCards />
 
 			{/* Second Row - 2 Column Grid */}
-			<Grid gutter="md">
+			<Grid gutter={{ base: "xs", md: "md" }}>
 				{/* Left - Statistik Kesehatan */}
 				<GridCol span={{ base: 12, lg: 6 }}>
 					<HealthStats />
@@ -26,7 +26,7 @@ const SosialPage = () => {
 			</Grid>
 
 			{/* Third Row - 2 Column Grid */}
-			<Grid gutter="md">
+			<Grid gutter={{ base: "xs", md: "md" }}>
 				{/* Left - Pendidikan */}
 				<GridCol span={{ base: 12, lg: 6 }}>
 					<Pendidikan />

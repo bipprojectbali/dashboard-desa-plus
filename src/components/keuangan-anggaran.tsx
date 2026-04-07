@@ -117,9 +117,9 @@ const KeuanganAnggaran = () => {
 	const dark = colorScheme === "dark";
 
 	return (
-		<Stack gap="lg">
+		<Stack gap={{ base: "md", md: "lg" }}>
 			{/* TOP SECTION - 4 STAT CARDS */}
-			<Grid gutter="md">
+			<Grid gutter={{ base: "xs", md: "md" }}>
 				{kpiData.map((item) => (
 					<Grid.Col key={item.id} span={{ base: 12, sm: 6, lg: 3 }}>
 						<Card
@@ -167,7 +167,7 @@ const KeuanganAnggaran = () => {
 			</Grid>
 
 			{/* MAIN CHART SECTION */}
-			<Grid gutter="lg">
+			<Grid gutter={{ base: "xs", md: "lg" }}>
 				{/* LEFT: PEMASUKAN DAN PENGELUARAN (70%) */}
 				<Grid.Col span={{ base: 12, lg: 8 }}>
 					<Card
@@ -322,7 +322,7 @@ const KeuanganAnggaran = () => {
 			</Grid>
 
 			{/* BOTTOM SECTION */}
-			<Grid gutter="lg">
+			<Grid gutter={{ base: "xs", md: "lg" }}>
 				{/* LEFT: LAPORAN APBDES */}
 				<Grid.Col span={{ base: 12, lg: 6 }}>
 					<Card

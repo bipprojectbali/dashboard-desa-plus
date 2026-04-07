@@ -219,9 +219,9 @@ const DemografiPekerjaan = () => {
 	];
 
 	return (
-		<Stack gap="lg">
+		<Stack gap={{ base: "md", md: "lg" }}>
 			{/* TOP SECTION - 4 STAT CARDS */}
-			<Grid gutter="md">
+			<Grid gutter={{ base: "xs", md: "md" }}>
 				{kpiData.map((item) => (
 					<Grid.Col key={item.id} span={{ base: 12, sm: 6, lg: 3 }}>
 						<Card
@@ -277,7 +277,7 @@ const DemografiPekerjaan = () => {
 			</Grid>
 
 			{/* ROW 2 - 3 COLUMNS */}
-			<Grid gutter="lg">
+			<Grid gutter={{ base: "xs", md: "lg" }}>
 				{/* LEFT: PENGELOMPOKAN UMUR */}
 				<Grid.Col span={{ base: 12, lg: 4 }}>
 					<Card
@@ -483,7 +483,7 @@ const DemografiPekerjaan = () => {
 			</Grid>
 
 			{/* ROW 3 - 3 COLUMNS */}
-			<Grid gutter="lg">
+			<Grid gutter={{ base: "xs", md: "lg" }}>
 				{/* LEFT: DISTRIBUSI AGAMA */}
 				<Grid.Col span={{ base: 12, lg: 4 }}>
 					<Card
