@@ -2,27 +2,54 @@ import {
 	Box,
 	Card,
 	Group,
+	Loader,
 	Stack,
 	Text,
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import dayjs from "dayjs";
 import { Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
+import { apiClient } from "@/utils/api-client";
 
 interface EventData {
 	date: string;
 	title: string;
 }
 
-const events: EventData[] = [
-	{ date: "1 Oktober 2025", title: "Hari Kesaktian Pancasila" },
-	{ date: "15 Oktober 2025", title: "Davest" },
-	{ date: "19 Oktober 2025", title: "Rapat Koordinasi" },
-];
-
 export function ActivityList() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+
+	const [data, setData] = useState<EventData[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		async function fetchEvents() {
+			try {
+				const res = await apiClient.GET("/api/noc/upcoming-events", {
+					params: { query: { idDesa: "desa1", limit: "10" } },
+				});
+				if (res.data?.data) {
+					setData(
+						(res.data.data as { startDate: string; title: string }[]).map(
+							(e) => ({
+								date: dayjs(e.startDate).format("D MMMM YYYY"),
+								title: e.title,
+							}),
+						),
+					);
+				}
+			} catch (error) {
+				console.error("Failed to fetch events from NOC", error);
+			} finally {
+				setLoading(false);
+			}
+		}
+
+		fetchEvents();
+	}, []);
 
 	return (
 		<Card
@@ -48,22 +75,32 @@ export function ActivityList() {
 				</Title>
 			</Group>
 			<Stack gap="md">
-				{events.map((event, index) => (
-					<Box
-						key={index}
-						style={{
-							borderLeft: "4px solid var(--mantine-color-blue-filled)",
-							paddingLeft: 12,
-						}}
-					>
-						<Text size="sm" c="dimmed">
-							{event.date}
-						</Text>
-						<Text fw={500} c={dark ? "white" : "gray.9"}>
-							{event.title}
-						</Text>
-					</Box>
-				))}
+				{loading ? (
+					<Group justify="center" py="xl">
+						<Loader />
+					</Group>
+				) : data.length > 0 ? (
+					data.map((event) => (
+						<Box
+							key={`${event.title}-${event.date}`}
+							style={{
+								borderLeft: "4px solid var(--mantine-color-blue-filled)",
+								paddingLeft: 12,
+							}}
+						>
+							<Text size="sm" c="dimmed">
+								{event.date}
+							</Text>
+							<Text fw={500} c={dark ? "white" : "gray.9"}>
+								{event.title}
+							</Text>
+						</Box>
+					))
+				) : (
+					<Text size="sm" c="dimmed" ta="center">
+						Tidak ada kegiatan mendatang
+					</Text>
+				)}
 			</Stack>
 		</Card>
 	);

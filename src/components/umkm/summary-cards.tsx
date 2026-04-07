@@ -9,7 +9,6 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import {
-	IconCategory,
 	IconCurrencyDollar,
 	IconTrendingUp,
 	IconUsers,
@@ -55,7 +54,11 @@ const KpiCard = ({
 			withBorder
 			shadow="sm"
 			bg={dark ? "#1E293B" : "white"}
-			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
+			style={{
+				borderColor: dark ? "#334155" : "white",
+				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				transition: "transform 0.15s ease, box-shadow 0.15s ease",
+			}}
 		>
 			<Group justify="space-between" align="center">
 				<Stack gap={2}>
@@ -145,8 +148,8 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 
 	return (
 		<Grid gutter="md">
-			{kpiData.map((kpi, index) => (
-				<GridCol key={index} span={{ base: 12, sm: 6, lg: 3 }}>
+			{kpiData.map((kpi) => (
+				<GridCol key={kpi.title} span={{ base: 12, sm: 6, lg: 3 }}>
 					<KpiCard {...kpi} />
 				</GridCol>
 			))}

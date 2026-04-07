@@ -9,13 +9,13 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme
+	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconAlertTriangle,
 	IconCamera,
 	IconClock,
-	IconMapPin
+	IconMapPin,
 } from "@tabler/icons-react";
 
 const KeamananPage = () => {
@@ -120,14 +120,18 @@ const KeamananPage = () => {
 					<Stack gap={"xs"}>
 						{/* KPI Cards */}
 						<Grid gutter="md">
-							{kpiData.map((kpi, index) => (
-								<GridCol key={index} span={{ base: 12, sm: 6, md: 6 }}>
+							{kpiData.map((kpi) => (
+								<GridCol key={kpi.title} span={{ base: 12, sm: 6, md: 6 }}>
 									<Card
 										p="md"
 										radius="md"
 										withBorder
 										bg={dark ? "#1E293B" : "white"}
-										style={{ borderColor: dark ? "#141D34" : "white" }}
+										style={{
+											borderColor: dark ? "#334155" : "white",
+											boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+											transition: "transform 0.15s ease, box-shadow 0.15s ease",
+										}}
 										h="100%"
 									>
 										<Group justify="space-between" align="center">
@@ -166,7 +170,11 @@ const KeamananPage = () => {
 							radius="md"
 							withBorder
 							bg={dark ? "#1E293B" : "white"}
-							style={{ borderColor: dark ? "#141D34" : "white" }}
+							style={{
+								borderColor: dark ? "#334155" : "white",
+								boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+								transition: "transform 0.15s ease, box-shadow 0.15s ease",
+							}}
 							h="100%"
 						>
 							<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
@@ -206,9 +214,9 @@ const KeamananPage = () => {
 								<Title order={4} c={dark ? "dark.0" : "black"}>
 									Daftar CCTV
 								</Title>
-								{cctvLocations.map((cctv, index) => (
+								{cctvLocations.map((cctv) => (
 									<Card
-										key={index}
+										key={cctv.id}
 										p="md"
 										radius="md"
 										withBorder
@@ -253,13 +261,17 @@ const KeamananPage = () => {
 						radius="md"
 						withBorder
 						bg={dark ? "#1E293B" : "white"}
-						style={{ borderColor: dark ? "#141D34" : "white" }}
+						style={{
+							borderColor: dark ? "#334155" : "white",
+							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+							transition: "transform 0.15s ease, box-shadow 0.15s ease",
+						}}
 						h="100%"
 					>
 						<Stack gap="sm">
-							{securityReports.map((report, index) => (
+							{securityReports.map((report) => (
 								<Card
-									key={index}
+									key={report.id}
 									p="md"
 									radius="md"
 									withBorder

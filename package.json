@@ -9,12 +9,20 @@
 		"check": "biome check --write .",
 		"format": "biome format --write .",
 		"gen:api": "bun scripts/generate-schema.ts && bun x openapi-typescript generated/schema.json -o generated/api.ts",
+		"sync:noc": "bun scripts/sync-noc.ts",
 		"test": "bun test __tests__/api",
 		"test:ui": "bun test --ui __tests__/api",
 		"test:e2e": "bun run build && playwright test",
 		"build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='VITE_*' && cp -r public/* dist/ 2>/dev/null || true",
 		"start": "NODE_ENV=production bun src/index.ts",
-		"seed": "bun prisma/seed.ts"
+		"seed": "bun prisma/seed.ts",
+		"seed:auth": "bun prisma/seed.ts auth",
+		"seed:demographics": "bun prisma/seed.ts demographics",
+		"seed:divisions": "bun prisma/seed.ts divisions",
+		"seed:services": "bun prisma/seed.ts services",
+		"seed:documents": "bun prisma/seed.ts documents",
+		"seed:dashboard": "bun prisma/seed.ts dashboard",
+		"seed:phase2": "bun prisma/seed.ts phase2"
 	},
 	"dependencies": {
 		"@better-auth/cli": "^1.4.18",
@@ -104,7 +112,6 @@
 		"postcss-preset-mantine": "^1.18.0",
 		"postcss-simple-vars": "^7.0.1",
 		"prisma": "^6.19.2",
-		"react-dev-inspector": "^2.0.1",
 		"vite": "^7.3.1"
 	}
 }

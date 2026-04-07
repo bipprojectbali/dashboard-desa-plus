@@ -1,24 +1,18 @@
 import {
-	Alert,
-	Box,
 	Button,
-	Card,
-	Checkbox,
 	Grid,
 	GridCol,
 	Group,
-	Space,
 	Stack,
 	Switch,
 	Text,
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { IconInfoCircle } from "@tabler/icons-react";
 
 const NotifikasiSettings = () => {
 	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const _dark = colorScheme === "dark";
 	return (
 		<Stack pr={"20%"} gap={"xs"}>
 			<Grid gutter={{ base: 5, xs: "md", md: "xl", xl: 50 }}>

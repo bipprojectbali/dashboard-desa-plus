@@ -3,7 +3,6 @@ import {
 	Box,
 	Card,
 	Grid,
-	GridCol,
 	Group,
 	Stack,
 	Text,
@@ -312,7 +311,7 @@ const KeuanganAnggaran = () => {
 								/>
 								<Bar
 									dataKey="amount"
-									fill="#1E3A5F"
+									fill="#396aaaff"
 									radius={[0, 8, 8, 0]}
 									maxBarSize={30}
 								/>
@@ -354,8 +353,8 @@ const KeuanganAnggaran = () => {
 										Pendapatan
 									</Title>
 									<Stack gap="xs">
-										{apbdReport.income.map((item, index) => (
-											<Group key={index} justify="space-between">
+										{apbdReport.income.map((item) => (
+											<Group key={item.category} justify="space-between">
 												<Text size="sm" c={dark ? "gray.3" : "gray.7"}>
 													{item.category}
 												</Text>
@@ -390,8 +389,8 @@ const KeuanganAnggaran = () => {
 										Belanja
 									</Title>
 									<Stack gap="xs">
-										{apbdReport.expenses.map((item, index) => (
-											<Group key={index} justify="space-between">
+										{apbdReport.expenses.map((item) => (
+											<Group key={item.category} justify="space-between">
 												<Text size="sm" c={dark ? "gray.3" : "gray.7"}>
 													{item.category}
 												</Text>
@@ -473,9 +472,9 @@ const KeuanganAnggaran = () => {
 							</Title>
 						</Group>
 						<Stack gap="sm">
-							{assistanceFundData.map((fund, index) => (
+							{assistanceFundData.map((fund) => (
 								<Card
-									key={index}
+									key={fund.source}
 									p="sm"
 									radius="lg"
 									bg={dark ? "#334155" : "#F1F5F9"}

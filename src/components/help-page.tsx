@@ -152,14 +152,16 @@ const HelpPage = () => {
 
 			{/* Statistics Section */}
 			<SimpleGrid cols={3} spacing="lg" mb="xl">
-				{stats.map((stat, index) => (
+				{stats.map((stat) => (
 					<HelpCard
-						key={index}
+						key={stat.label}
 						bg={dark ? "#1E293B" : "white"}
 						p="lg"
 						style={{
 							textAlign: "center",
-							borderColor: dark ? "#141D34" : "white",
+							borderColor: dark ? "#334155" : "white",
+							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+							transition: "transform 0.15s ease, box-shadow 0.15s ease",
 						}}
 						h="100%"
 					>
@@ -179,16 +181,20 @@ const HelpPage = () => {
 						{/* Panduan Memulai */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconBook size={24} color="white" />}
 								title="Panduan Memulai"
 								h="100%"
 							>
 								<Box>
-									{guideItems.map((item, index) => (
+									{guideItems.map((item) => (
 										<Box
-											key={index}
+											key={item.title}
 											py="sm"
 											style={{
 												borderBottom: "1px solid #eee",
@@ -209,16 +215,20 @@ const HelpPage = () => {
 						{/* Video Tutorial */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconVideo size={24} color="white" />}
 								title="Video Tutorial"
 								h="100%"
 							>
 								<Box>
-									{videoItems.map((item, index) => (
+									{videoItems.map((item) => (
 										<Box
-											key={index}
+											key={item.title}
 											py="sm"
 											style={{
 												borderBottom: "1px solid #eee",
@@ -239,20 +249,24 @@ const HelpPage = () => {
 						{/* FAQ */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconHelpCircle size={24} color="white" />}
 								title="FAQ"
 								h="100%"
 							>
 								<Accordion variant="separated">
-									{faqItems.map((item, index) => (
+									{faqItems.map((item) => (
 										<Accordion.Item
 											style={{
 												backgroundColor: dark ? "#263852ff" : "#F1F5F9",
 											}}
-											key={index}
-											value={`faq-${index}`}
+											key={item.question}
+											value={item.question}
 										>
 											<Accordion.Control>{item.question}</Accordion.Control>
 											<Accordion.Panel>
@@ -271,7 +285,11 @@ const HelpPage = () => {
 						{/* Hubungi Support */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconHeadphones size={24} color="white" />}
 								title="Hubungi Support"
@@ -306,16 +324,20 @@ const HelpPage = () => {
 						{/* Dokumentasi */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconFileText size={24} color="white" />}
 								title="Dokumentasi"
 								h="100%"
 							>
 								<Box>
-									{documentationItems.map((item, index) => (
+									{documentationItems.map((item) => (
 										<Box
-											key={index}
+											key={item.title}
 											py="sm"
 											style={{
 												borderBottom: "1px solid #eee",
@@ -338,7 +360,11 @@ const HelpPage = () => {
 						{/* Jenna - Virtual Assistant */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{ borderColor: dark ? "#141D34" : "white" }}
+								style={{
+									borderColor: dark ? "#334155" : "white",
+									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									transition: "transform 0.15s ease, box-shadow 0.15s ease",
+								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconMessage size={24} color="white" />}
 								title="Jenna - Virtual Assistant"
@@ -408,6 +434,7 @@ const HelpPage = () => {
 											disabled={isLoading}
 										/>
 										<button
+											type="button"
 											onClick={handleSendMessage}
 											disabled={isLoading || inputValue.trim() === ""}
 											style={{

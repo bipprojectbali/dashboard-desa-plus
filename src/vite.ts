@@ -1,9 +1,9 @@
 import path from "node:path";
-import { inspectorServer } from "@react-dev-inspector/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-vite-plugin";
 import react from "@vitejs/plugin-react";
 import { createServer as createViteServer } from "vite";
+import { inspectorPlugin } from "./utils/dev-inspector-plugin";
 
 export async function createVite() {
 	return createViteServer({
@@ -14,23 +14,7 @@ export async function createVite() {
 				"@": path.resolve(process.cwd(), "./src"),
 			},
 		},
-		plugins: [
-			tailwindcss(),
-			react({
-				babel: {
-					plugins: [
-						[
-							"@react-dev-inspector/babel-plugin",
-							{
-								relativePath: true,
-							},
-						],
-					],
-				},
-			}),
-			inspectorServer(),
-			tanstackRouter(),
-		],
+		plugins: [tailwindcss(), inspectorPlugin(), react(), tanstackRouter()],
 		server: {
 			middlewareMode: true,
 			hmr: {

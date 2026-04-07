@@ -1,5 +1,7 @@
-import { Grid, Image, Stack, useMantineColorScheme } from "@mantine/core";
+import { Center, Grid, Image, Loader, Stack } from "@mantine/core";
 import { CheckCircle, FileText, MessageCircle, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { apiClient } from "@/utils/api-client";
 import { ActivityList } from "./dashboard/activity-list";
 import { ChartAPBDes } from "./dashboard/chart-apbdes";
 import { ChartSurat } from "./dashboard/chart-surat";
@@ -8,32 +10,63 @@ import { SatisfactionChart } from "./dashboard/satisfaction-chart";
 import { SDGSCard } from "./dashboard/sdgs-card";
 import { StatCard } from "./dashboard/stat-card";
 
-const sdgsData = [
-	{
-		title: "Desa Berenergi Bersih dan Terbarukan",
-		score: 99.64,
-		image: "SDGS-7.png",
-	},
-	{
-		title: "Desa Damai Berkeadilan",
-		score: 78.65,
-		image: "SDGS-16.png",
-	},
-	{
-		title: "Desa Sehat dan Sejahtera",
-		score: 77.37,
-		image: "SDGS-3.png",
-	},
-	{
-		title: "Desa Tanpa Kemiskinan",
-		score: 52.62,
-		image: "SDGS-1.png",
-	},
-];
-
 export function DashboardContent() {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const [stats, setStats] = useState({
+		complaints: { total: 0, baru: 0, proses: 0, selesai: 0 },
+		residents: { total: 0, heads: 0, poor: 0 },
+		weeklyService: 0,
+		loading: true,
+	});
+
+	const [sdgsData, setSdgsData] = useState<
+		{ title: string; score: number; image: string | null }[]
+	>([]);
+	const [sdgsLoading, setSdgsLoading] = useState(true);
+
+	useEffect(() => {
+		async function fetchStats() {
+			try {
+				const [complaintRes, residentRes, weeklyServiceRes, sdgsRes] =
+					await Promise.all([
+						apiClient.GET("/api/complaint/stats"),
+						apiClient.GET("/api/resident/stats"),
+						apiClient.GET("/api/complaint/service-weekly"),
+						apiClient.GET("/api/dashboard/sdgs"),
+					]);
+
+				setStats({
+					complaints: (complaintRes.data as { data: typeof stats.complaints })
+						?.data || {
+						total: 0,
+						baru: 0,
+						proses: 0,
+						selesai: 0,
+					},
+					residents: (residentRes.data as { data: typeof stats.residents })
+						?.data || {
+						total: 0,
+						heads: 0,
+						poor: 0,
+					},
+					weeklyService:
+						(weeklyServiceRes.data as { data: { count: number } })?.data
+							?.count || 0,
+					loading: false,
+				});
+
+				if (sdgsRes.data?.data) {
+					setSdgsData(sdgsRes.data.data);
+				}
+				setSdgsLoading(false);
+			} catch (error) {
+				console.error("Failed to fetch dashboard content", error);
+				setStats((prev) => ({ ...prev, loading: false }));
+				setSdgsLoading(false);
+			}
+		}
+
+		fetchStats();
+	}, []);
 
 	return (
 		<Stack gap="lg">
@@ -42,36 +75,32 @@ export function DashboardContent() {
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
 						title="Surat Minggu Ini"
-						value={99}
-						detail="14 baru, 14 diproses"
-						trend="12% dari minggu lalu ↗ +12%"
-						trendValue={12}
+						value={stats.weeklyService}
+						detail="Total surat diajukan"
 						icon={<FileText style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
 						title="Pengaduan Aktif"
-						value={28}
-						detail="14 baru, 14 diproses"
+						value={stats.complaints.baru + stats.complaints.proses}
+						detail={`${stats.complaints.baru} baru, ${stats.complaints.proses} diproses`}
 						icon={<MessageCircle style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
 						title="Layanan Selesai"
-						value={156}
-						detail="bulan ini"
-						trend="+8%"
-						trendValue={8}
+						value={stats.complaints.selesai}
+						detail="Total diselesaikan"
 						icon={<CheckCircle style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
-						title="Kepuasan Warga"
-						value="87.2%"
-						detail="dari 482 responden"
+						title="Total Penduduk"
+						value={stats.residents.total.toLocaleString()}
+						detail={`${stats.residents.heads} Kepala Keluarga`}
 						icon={<Users style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
@@ -101,17 +130,25 @@ export function DashboardContent() {
 			<ChartAPBDes />
 
 			{/* Section 6: SDGs Desa Cards */}
-			<Grid gutter="md">
-				{sdgsData.map((sdg, index) => (
-					<Grid.Col key={index} span={{ base: 9, md: 3 }}>
-						<SDGSCard
-							image={<Image src={sdg.image} alt={sdg.title} />}
-							title={sdg.title}
-							score={sdg.score}
-						/>
-					</Grid.Col>
-				))}
-			</Grid>
+			{sdgsLoading ? (
+				<Center py="xl">
+					<Loader />
+				</Center>
+			) : (
+				<Grid gutter="md">
+					{sdgsData.map((sdg) => (
+						<Grid.Col key={sdg.title} span={{ base: 9, md: 3 }}>
+							<SDGSCard
+								image={
+									sdg.image ? <Image src={sdg.image} alt={sdg.title} /> : null
+								}
+								title={sdg.title}
+								score={sdg.score}
+							/>
+						</Grid.Col>
+					))}
+				</Grid>
+			)}
 		</Stack>
 	);
 }

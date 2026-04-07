@@ -36,6 +36,166 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/noc/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiNocSync"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/last-sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocLast-sync"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/active-divisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocActive-divisions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/latest-projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocLatest-projects"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/upcoming-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocUpcoming-events"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/diagram-jumlah-document": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocDiagram-jumlah-document"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/diagram-progres-kegiatan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocDiagram-progres-kegiatan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/apbdes-data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocApbdes-data"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/latest-discussion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocLatest-discussion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/satisfaction-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocSatisfaction-categories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/apikey/": {
         parameters: {
             query?: never;
@@ -120,6 +280,343 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/division/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all divisions */
+        get: operations["getApiDivision"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/division/activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get recent activities */
+        get: operations["getApiDivisionActivities"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/division/activities/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get activity statistics by status */
+        get: operations["getApiDivisionActivitiesStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/division/documents/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get document statistics by type */
+        get: operations["getApiDivisionDocumentsStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/division/discussions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get recent discussions */
+        get: operations["getApiDivisionDiscussions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/complaint/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get complaint statistics */
+        get: operations["getApiComplaintStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/complaint/recent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get recent complaints */
+        get: operations["getApiComplaintRecent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/complaint/trends": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get complaint trends for last 7 months */
+        get: operations["getApiComplaintTrends"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/complaint/service-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get service letter statistics by type */
+        get: operations["getApiComplaintService-stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/complaint/innovation-ideas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get recent innovation ideas */
+        get: operations["getApiComplaintInnovation-ideas"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/complaint/service-trends": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get service letter trends for last 6 months */
+        get: operations["getApiComplaintService-trends"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/complaint/service-weekly": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get service letter count for current week */
+        get: operations["getApiComplaintService-weekly"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/resident/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get resident statistics */
+        get: operations["getApiResidentStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/resident/banjar-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get population data per banjar */
+        get: operations["getApiResidentBanjar-stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/resident/demographics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get demographics including religion, gender, occupation and age */
+        get: operations["getApiResidentDemographics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/event/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get upcoming events */
+        get: operations["getApiEvent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/event/today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get events for today */
+        get: operations["getApiEventToday"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/dashboard/budget": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDashboardBudget"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/dashboard/sdgs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDashboardSdgs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/dashboard/satisfaction": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDashboardSatisfaction"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -145,7 +642,17 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                    "multipart/form-data": {
+                        ok: boolean;
+                    };
+                    "text/plain": {
+                        ok: boolean;
+                    };
+                };
             };
         };
     };
@@ -162,7 +669,495 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    postApiNocSync: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message?: string;
+                        error?: string;
+                        lastSyncedAt?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        message?: string;
+                        error?: string;
+                        lastSyncedAt?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        message?: string;
+                        error?: string;
+                        lastSyncedAt?: string;
+                    };
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocLast-sync": {
+        parameters: {
+            query: {
+                idDesa: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        lastSyncedAt: (string | null) | null;
+                    };
+                    "multipart/form-data": {
+                        lastSyncedAt: (string | null) | null;
+                    };
+                    "text/plain": {
+                        lastSyncedAt: (string | null) | null;
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocActive-divisions": {
+        parameters: {
+            query: {
+                idDesa: string;
+                limit?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            activityCount: number;
+                            color: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            id: string;
+                            name: string;
+                            activityCount: number;
+                            color: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            id: string;
+                            name: string;
+                            activityCount: number;
+                            color: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocLatest-projects": {
+        parameters: {
+            query: {
+                idDesa: string;
+                limit?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success?: boolean;
+                        data: {
+                            id: string;
+                            title: string;
+                            status: string;
+                            progress: number;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        success?: boolean;
+                        data: {
+                            id: string;
+                            title: string;
+                            status: string;
+                            progress: number;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        success?: boolean;
+                        data: {
+                            id: string;
+                            title: string;
+                            status: string;
+                            progress: number;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocUpcoming-events": {
+        parameters: {
+            query: {
+                idDesa: string;
+                limit?: string;
+                filter?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            startDate: string;
+                            location: (string | null) | null;
+                            eventType: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            id: string;
+                            title: string;
+                            startDate: string;
+                            location: (string | null) | null;
+                            eventType: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            id: string;
+                            title: string;
+                            startDate: string;
+                            location: (string | null) | null;
+                            eventType: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocDiagram-jumlah-document": {
+        parameters: {
+            query: {
+                idDesa: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            label: string;
+                            value: number;
+                            color: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            label: string;
+                            value: number;
+                            color: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            label: string;
+                            value: number;
+                            color: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocDiagram-progres-kegiatan": {
+        parameters: {
+            query: {
+                idDesa: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            text: string;
+                            value: unknown;
+                            color: string;
+                            label?: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            text: string;
+                            value: unknown;
+                            color: string;
+                            label?: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            text: string;
+                            value: unknown;
+                            color: string;
+                            label?: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocApbdes-data": {
+        parameters: {
+            query: {
+                idDesa: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            category: string;
+                            anggaran: number;
+                            realisasi: number;
+                            percentage: number;
+                            color: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            category: string;
+                            anggaran: number;
+                            realisasi: number;
+                            percentage: number;
+                            color: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        message: string;
+                        data: {
+                            category: string;
+                            anggaran: number;
+                            realisasi: number;
+                            percentage: number;
+                            color: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocLatest-discussion": {
+        parameters: {
+            query: {
+                idDesa: string;
+                limit?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            message: string;
+                            senderName: string;
+                            senderImage: (string | null) | null;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            id: string;
+                            message: string;
+                            senderName: string;
+                            senderImage: (string | null) | null;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            id: string;
+                            message: string;
+                            senderName: string;
+                            senderImage: (string | null) | null;
+                            divisionName: string;
+                            createdAt: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocSatisfaction-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        fallback?: boolean;
+                        data: {
+                            id: string;
+                            name: string;
+                            isActive: boolean;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        message: string;
+                        fallback?: boolean;
+                        data: {
+                            id: string;
+                            name: string;
+                            isActive: boolean;
+                        }[];
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        message: string;
+                        fallback?: boolean;
+                        data: {
+                            id: string;
+                            name: string;
+                            isActive: boolean;
+                        }[];
+                    };
+                };
             };
         };
     };
@@ -638,6 +1633,980 @@ export interface operations {
                     };
                     "text/plain": {
                         error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDivision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDivisionActivities: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDivisionActivitiesStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            total: number;
+                            counts: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                            percentages: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            total: number;
+                            counts: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                            percentages: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            total: number;
+                            counts: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                            percentages: {
+                                selesai: number;
+                                berjalan: number;
+                                tertunda: number;
+                                dibatalkan: number;
+                            };
+                        };
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDivisionDocumentsStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            name: string;
+                            jumlah: number;
+                            color: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            name: string;
+                            jumlah: number;
+                            color: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            name: string;
+                            jumlah: number;
+                            color: string;
+                        }[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDivisionDiscussions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            message: string;
+                            sender: string;
+                            date: string;
+                            division: (string | null) | null;
+                            isResolved: boolean;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            id: string;
+                            message: string;
+                            sender: string;
+                            date: string;
+                            division: (string | null) | null;
+                            isResolved: boolean;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            id: string;
+                            message: string;
+                            sender: string;
+                            date: string;
+                            division: (string | null) | null;
+                            isResolved: boolean;
+                        }[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiComplaintStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            total: number;
+                            baru: number;
+                            proses: number;
+                            selesai: number;
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            total: number;
+                            baru: number;
+                            proses: number;
+                            selesai: number;
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            total: number;
+                            baru: number;
+                            proses: number;
+                            selesai: number;
+                        };
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiComplaintRecent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiComplaintTrends: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiComplaintService-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiComplaintInnovation-ideas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiComplaintService-trends": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiComplaintService-weekly": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            count: number;
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            count: number;
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiResidentStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            total: number;
+                            heads: number;
+                            poor: number;
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            total: number;
+                            heads: number;
+                            poor: number;
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            total: number;
+                            heads: number;
+                            poor: number;
+                        };
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiResidentBanjar-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiResidentDemographics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            religion: unknown[];
+                            gender: unknown[];
+                            occupation: unknown[];
+                            ageGroups: unknown[];
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            religion: unknown[];
+                            gender: unknown[];
+                            occupation: unknown[];
+                            ageGroups: unknown[];
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            religion: unknown[];
+                            gender: unknown[];
+                            occupation: unknown[];
+                            ageGroups: unknown[];
+                        };
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiEvent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiEventToday: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDashboardBudget: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            category: string;
+                            amount: number;
+                            percentage: number;
+                            color: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            category: string;
+                            amount: number;
+                            percentage: number;
+                            color: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            category: string;
+                            amount: number;
+                            percentage: number;
+                            color: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    getApiDashboardSdgs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            title: string;
+                            score: number;
+                            image: (string | null) | null;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            title: string;
+                            score: number;
+                            image: (string | null) | null;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            title: string;
+                            score: number;
+                            image: (string | null) | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    getApiDashboardSatisfaction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            category: string;
+                            value: number;
+                            color: string;
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            category: string;
+                            value: number;
+                            color: string;
+                        }[];
+                    };
+                    "text/plain": {
+                        data: {
+                            category: string;
+                            value: number;
+                            color: string;
+                        }[];
                     };
                 };
             };

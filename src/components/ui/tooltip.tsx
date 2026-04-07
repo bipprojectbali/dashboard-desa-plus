@@ -1,7 +1,6 @@
 "use client";
 
 import { Tooltip as MantineTooltip, type TooltipProps } from "@mantine/core";
-import React from "react";
 import { cn } from "./utils";
 
 interface CustomTooltipProps extends TooltipProps {

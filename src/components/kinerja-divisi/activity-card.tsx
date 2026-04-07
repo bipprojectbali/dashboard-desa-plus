@@ -1,4 +1,11 @@
-import { Box, Card, Group, Progress, Text, useMantineColorScheme } from "@mantine/core";
+import {
+	Box,
+	Card,
+	Group,
+	Progress,
+	Text,
+	useMantineColorScheme,
+} from "@mantine/core";
 
 interface ActivityCardProps {
 	title: string;
@@ -38,6 +45,7 @@ export function ActivityCard({
 				backgroundColor: dark ? "#334155" : "white",
 				overflow: "hidden",
 			}}
+			h={"100%"}
 		>
 			{/* 🔵 HEADER */}
 			<Box

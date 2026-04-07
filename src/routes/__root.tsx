@@ -3,7 +3,12 @@ import { protectedRouteMiddleware } from "@/middleware/authMiddleware";
 import { authStore } from "@/store/auth";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import {
+	createRootRoute,
+	Outlet,
+	useRouterState,
+} from "@tanstack/react-router";
+import { MainLayout } from "@/components/layout/main-layout";
 
 export const Route = createRootRoute({
 	component: RootComponent,
@@ -11,7 +16,7 @@ export const Route = createRootRoute({
 		// Apply protected route middleware for all routes
 		// The middleware will determine which routes are public vs protected
 		const context = await protectedRouteMiddleware({ location });
-		
+
 		// Only set auth store if we have user data (for protected routes)
 		if (context?.user) {
 			authStore.user = context?.user as any;
@@ -21,5 +26,18 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-	return <Outlet />;
+	const routerState = useRouterState();
+	const isPublicRoute = ["/signin", "/signup", "/admin", "/profile"].some(
+		(path) => routerState.location.pathname.startsWith(path),
+	);
+
+	if (isPublicRoute) {
+		return <Outlet />;
+	}
+
+	return (
+		<MainLayout>
+			<Outlet />
+		</MainLayout>
+	);
 }
