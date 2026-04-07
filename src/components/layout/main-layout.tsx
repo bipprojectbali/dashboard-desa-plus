@@ -26,14 +26,14 @@ export function MainLayout({ children }: MainLayoutProps) {
 		<AppShell
 			header={{ height: 60 }}
 			navbar={{
-				width: 300,
+				width: 280,
 				breakpoint: "sm",
 				collapsed: { mobile: !opened, desktop: sidebarCollapsed },
 			}}
-			padding="md"
+			padding={{ base: "xs", sm: "md" }}
 		>
 			<AppShell.Header bg={headerBgColor}>
-				<Group h="100%" px="md">
+				<Group h="100%" px={{ base: "xs", sm: "md" }}>
 					<Burger
 						opened={opened}
 						onClick={toggleMobile}
@@ -45,9 +45,10 @@ export function MainLayout({ children }: MainLayoutProps) {
 			</AppShell.Header>
 
 			<AppShell.Navbar
-				p="md"
+				p={{ base: "xs", sm: "md" }}
 				bg={navbarBgColor}
 				style={{ display: "flex", flexDirection: "column" }}
+				withBorder
 			>
 				<div style={{ flex: 1, overflowY: "auto" }}>
 					<Sidebar />

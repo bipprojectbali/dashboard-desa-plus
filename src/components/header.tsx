@@ -16,6 +16,7 @@ import {
 } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Bell, Moon, Sun, User as UserIcon } from "lucide-react";
+import { useMobile } from "@/hooks/use-mobile";
 
 interface HeaderProps {
 	onSidebarToggle?: () => void;
@@ -26,31 +27,36 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 	const navigate = useNavigate();
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const isMobile = useMobile();
 
 	const pathnames = location.pathname.split("/").filter((x) => x);
+
+	// Limit breadcrumbs on mobile
+	const maxBreadcrumbs = isMobile ? 2 : 10;
+	const displayPathnames = pathnames.slice(0, maxBreadcrumbs);
 
 	const breadcrumbItems = [
 		<Anchor
 			key="home"
 			onClick={() => navigate({ to: "/" })}
 			c="white"
-			size="sm"
+			size={isMobile ? "xs" : "sm"}
 			underline="hover"
 		>
-			Desa Darmasaba
+			{isMobile ? "Home" : "Desa Darmasaba"}
 		</Anchor>,
-		...pathnames.map((value, index) => {
+		...displayPathnames.map((value, index) => {
 			const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-			const isLast = index === pathnames.length - 1;
+			const isLast = index === displayPathnames.length - 1;
 
 			// Map route path to human-readable label
 			const labelMap: Record<string, string> = {
 				"kinerja-divisi": "Kinerja Divisi",
-				"pengaduan-layanan-publik": "Pengaduan & Layanan Publik",
+				"pengaduan-layanan-publik": "Pengaduan",
 				"jenna-analytic": "Jenna Analytic",
-				"demografi-pekerjaan": "Demografi & Kependudukan",
-				"keuangan-anggaran": "Keuangan & Anggaran",
-				bumdes: "Bumdes & UMKM",
+				"demografi-pekerjaan": "Demografi",
+				"keuangan-anggaran": "Keuangan",
+				bumdes: "Bumdes",
 				sosial: "Sosial",
 				keamanan: "Keamanan",
 				bantuan: "Bantuan",
@@ -58,6 +64,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 				umum: "Umum",
 				notifikasi: "Notifikasi",
 				"akses-dan-tim": "Akses & Tim",
+				sinkronisasi: "Sinkronisasi",
 				profile: "Profil",
 				edit: "Edit",
 			};
@@ -66,7 +73,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 				labelMap[value] || value.charAt(0).toUpperCase() + value.slice(1);
 
 			return isLast ? (
-				<Text key={to} c="white" size="sm" fw={600}>
+				<Text key={to} c="white" size={isMobile ? "xs" : "sm"} fw={600}>
 					{label}
 				</Text>
 			) : (
@@ -74,7 +81,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 					key={to}
 					onClick={() => navigate({ to })}
 					c="white"
-					size="sm"
+					size={isMobile ? "xs" : "sm"}
 					underline="hover"
 				>
 					{label}
@@ -86,7 +93,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 	return (
 		<Group justify="space-between" w="100%">
 			{/* Title & Breadcrumbs */}
-			<Group gap="md">
+			<Group gap="md" style={{ flex: 1, minWidth: 0 }}>
 				<ActionIcon
 					onClick={onSidebarToggle}
 					variant="subtle"
@@ -100,24 +107,26 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 						style={{ width: "70%", height: "70%" }}
 					/>
 				</ActionIcon>
-				<Breadcrumbs
-					separator={
-						<Text c="white" size="xs">
-							/
-						</Text>
-					}
-					styles={{
-						separator: { color: "white" },
-					}}
-				>
-					{breadcrumbItems}
-				</Breadcrumbs>
+				<Box style={{ minWidth: 0, overflow: "hidden" }}>
+					<Breadcrumbs
+						separator={
+							<Text c="white" size="xs">
+								/
+							</Text>
+						}
+						styles={{
+							separator: { color: "white" },
+						}}
+					>
+						{breadcrumbItems}
+					</Breadcrumbs>
+				</Box>
 			</Group>
 
 			{/* Right Section */}
-			<Group gap="md">
-				{/* User Info */}
-				<Group gap="sm">
+			<Group gap={{ base: "xs", sm: "md" }}>
+				{/* User Info - Hidden on mobile */}
+				<Group gap="sm" visibleFrom="sm">
 					<Box ta="right">
 						<Text c={"white"} size="sm" fw={500}>
 							I. B. Surya Prabhawa M...
@@ -126,16 +135,26 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 							Kepala Desa
 						</Text>
 					</Box>
-					<Avatar color="blue" radius="xl">
+					<Avatar color="blue" radius="xl" size="md">
 						<UserIcon color="white" style={{ width: "70%", height: "70%" }} />
 					</Avatar>
 				</Group>
 
-				{/* Divider */}
-				<Divider orientation="vertical" h={30} />
+				{/* User Avatar Only on Mobile */}
+				<Avatar
+					color="blue"
+					radius="xl"
+					size="sm"
+					hiddenFrom="sm"
+				>
+					<UserIcon color="white" style={{ width: "70%", height: "70%" }} />
+				</Avatar>
+
+				{/* Divider - Hidden on mobile */}
+				<Divider orientation="vertical" h={30} visibleFrom="sm" />
 
 				{/* Icons */}
-				<Group gap="sm">
+				<Group gap={{ base: "xs", sm: "sm" }}>
 					<ActionIcon
 						onClick={() => toggleColorScheme()}
 						variant="subtle"
@@ -149,7 +168,12 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 							<Moon color="white" style={{ width: "70%", height: "70%" }} />
 						)}
 					</ActionIcon>
-					<ActionIcon variant="subtle" size="lg" radius="xl" pos="relative">
+					<ActionIcon
+						variant="subtle"
+						size="lg"
+						radius="xl"
+						pos="relative"
+					>
 						<Bell color="white" style={{ width: "70%", height: "70%" }} />
 						<Badge
 							size="xs"
@@ -161,7 +185,12 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 							10
 						</Badge>
 					</ActionIcon>
-					<ActionIcon variant="subtle" size="lg" radius="xl">
+					<ActionIcon
+						variant="subtle"
+						size="lg"
+						radius="xl"
+						visibleFrom="sm"
+					>
 						<IconUserShield
 							color="white"
 							style={{ width: "70%", height: "70%" }}

@@ -69,10 +69,10 @@ export function DashboardContent() {
 	}, []);
 
 	return (
-		<Stack gap="lg">
+		<Stack gap={{ base: "md", md: "lg" }}>
 			{/* Header Metrics - 4 Stat Cards */}
-			<Grid gutter="md">
-				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+			<Grid gutter={{ base: "xs", md: "md" }}>
+				<Grid.Col span={{ base: 12, sm: 6, lg: 3 }}>
 					<StatCard
 						title="Surat Minggu Ini"
 						value={stats.weeklyService}
@@ -80,7 +80,7 @@ export function DashboardContent() {
 						icon={<FileText style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
-				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+				<Grid.Col span={{ base: 12, sm: 6, lg: 3 }}>
 					<StatCard
 						title="Pengaduan Aktif"
 						value={stats.complaints.baru + stats.complaints.proses}
@@ -88,7 +88,7 @@ export function DashboardContent() {
 						icon={<MessageCircle style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
-				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+				<Grid.Col span={{ base: 12, sm: 6, lg: 3 }}>
 					<StatCard
 						title="Layanan Selesai"
 						value={stats.complaints.selesai}
@@ -96,7 +96,7 @@ export function DashboardContent() {
 						icon={<CheckCircle style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
-				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+				<Grid.Col span={{ base: 12, sm: 6, lg: 3 }}>
 					<StatCard
 						title="Total Penduduk"
 						value={stats.residents.total.toLocaleString()}
@@ -107,7 +107,7 @@ export function DashboardContent() {
 			</Grid>
 
 			{/* Section 2: Chart & Division Progress */}
-			<Grid gutter="lg">
+			<Grid gutter={{ base: "xs", md: "lg" }}>
 				<Grid.Col span={{ base: 12, lg: 7 }}>
 					<ChartSurat />
 				</Grid.Col>
@@ -117,7 +117,7 @@ export function DashboardContent() {
 			</Grid>
 
 			{/* Section 3: APBDes Chart */}
-			<Grid gutter="lg">
+			<Grid gutter={{ base: "xs", md: "lg" }}>
 				<Grid.Col span={{ base: 12, lg: 7 }}>
 					<DivisionProgress />
 				</Grid.Col>
@@ -135,9 +135,9 @@ export function DashboardContent() {
 					<Loader />
 				</Center>
 			) : (
-				<Grid gutter="md">
+				<Grid gutter={{ base: "xs", md: "md" }}>
 					{sdgsData.map((sdg) => (
-						<Grid.Col key={sdg.title} span={{ base: 9, md: 3 }}>
+						<Grid.Col key={sdg.title} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
 							<SDGSCard
 								image={
 									sdg.image ? <Image src={sdg.image} alt={sdg.title} /> : null
