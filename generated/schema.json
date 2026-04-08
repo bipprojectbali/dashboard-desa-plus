@@ -1849,6 +1849,214 @@
         "operationId": "getApiNocPengajuan-history"
       }
     },
+    "/api/noc/pengaduan-count": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "antrian": {
+                      "type": "number"
+                    },
+                    "diterima": {
+                      "type": "number"
+                    },
+                    "dikerjakan": {
+                      "type": "number"
+                    },
+                    "ditolak": {
+                      "type": "number"
+                    },
+                    "selesai": {
+                      "type": "number"
+                    },
+                    "aktif": {
+                      "type": "number"
+                    },
+                    "total": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "antrian",
+                    "diterima",
+                    "dikerjakan",
+                    "ditolak",
+                    "selesai",
+                    "aktif",
+                    "total"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "antrian": {
+                      "type": "number"
+                    },
+                    "diterima": {
+                      "type": "number"
+                    },
+                    "dikerjakan": {
+                      "type": "number"
+                    },
+                    "ditolak": {
+                      "type": "number"
+                    },
+                    "selesai": {
+                      "type": "number"
+                    },
+                    "aktif": {
+                      "type": "number"
+                    },
+                    "total": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "antrian",
+                    "diterima",
+                    "dikerjakan",
+                    "ditolak",
+                    "selesai",
+                    "aktif",
+                    "total"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "antrian": {
+                      "type": "number"
+                    },
+                    "diterima": {
+                      "type": "number"
+                    },
+                    "dikerjakan": {
+                      "type": "number"
+                    },
+                    "ditolak": {
+                      "type": "number"
+                    },
+                    "selesai": {
+                      "type": "number"
+                    },
+                    "aktif": {
+                      "type": "number"
+                    },
+                    "total": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "antrian",
+                    "diterima",
+                    "dikerjakan",
+                    "ditolak",
+                    "selesai",
+                    "aktif",
+                    "total"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiNocPengaduan-count"
+      }
+    },
+    "/api/noc/pelayanan-perjenis": {
+      "get": {
+        "responses": {
+          "200": {
+            "items": {
+              "type": "object",
+              "required": [
+                "jenis",
+                "jumlah"
+              ],
+              "properties": {
+                "jenis": {
+                  "type": "string"
+                },
+                "jumlah": {
+                  "type": "number"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "jenis",
+                      "jumlah"
+                    ],
+                    "properties": {
+                      "jenis": {
+                        "type": "string"
+                      },
+                      "jumlah": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "jenis",
+                      "jumlah"
+                    ],
+                    "properties": {
+                      "jenis": {
+                        "type": "string"
+                      },
+                      "jumlah": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "jenis",
+                      "jumlah"
+                    ],
+                    "properties": {
+                      "jenis": {
+                        "type": "string"
+                      },
+                      "jumlah": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiNocPelayanan-perjenis"
+      }
+    },
     "/api/apikey/": {
       "get": {
         "responses": {

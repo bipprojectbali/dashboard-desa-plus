@@ -19,20 +19,30 @@ import {
 	Bar,
 	BarChart,
 	CartesianGrid,
-	Line,
-	LineChart,
 	ResponsiveContainer,
 	Tooltip,
 	XAxis,
 	YAxis,
 } from "recharts";
 import { apiClient } from "@/utils/api-client";
+import { getEnv } from "@/utils/env";
 
 dayjs.extend(relativeTime);
 
-interface TrendData {
-	bulan: string;
-	jumlah: number;
+interface PengaduanCountData {
+	antrian: number;
+	diterima: number;
+	dikerjakan: number;
+	ditolak: number;
+	selesai: number;
+	aktif: number;
+	total: number;
+}
+
+interface ChartData {
+	name: string;
+	value: number;
+	color: string;
 }
 
 interface InnovationIdea {
@@ -46,16 +56,9 @@ interface InnovationIdea {
 	createdAt: string;
 }
 
-interface ServiceStat {
+interface PelayananPerJenisData {
 	jenis: string;
 	jumlah: number;
-}
-
-interface ServiceApiResponse {
-	letterType: string;
-	_count: {
-		_all: number;
-	};
 }
 
 interface Complaint {
@@ -80,6 +83,12 @@ const getStatusColor = (status: string) => {
 	}
 };
 
+// Helper function to truncate long text
+const truncateText = (text: string, maxLength: number) => {
+	if (text.length <= maxLength) return text;
+	return `${text.substring(0, maxLength)}...`;
+};
+
 const PengaduanLayananPublik = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
@@ -91,43 +100,107 @@ const PengaduanLayananPublik = () => {
 		selesai: 0,
 	});
 	const [recentComplaints, setRecentComplaints] = useState<Complaint[]>([]);
-	const [serviceStats, setServiceStats] = useState<ServiceStat[]>([]);
-	const [trendData, setTrendData] = useState<TrendData[]>([]);
+	const [chartData, setChartData] = useState<ChartData[]>([]);
+	const [suratData, setSuratData] = useState<PelayananPerJenisData[]>([]);
 	const [innovationIdeas, setInnovationIdeas] = useState<InnovationIdea[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		async function fetchData() {
 			try {
-				const [statsRes, recentRes, serviceRes, trendsRes, ideasRes] =
-					await Promise.all([
-						apiClient.GET("/api/complaint/stats"),
-						apiClient.GET("/api/complaint/recent"),
-						apiClient.GET("/api/complaint/service-stats"),
-						apiClient.GET("/api/complaint/trends"),
-						apiClient.GET("/api/complaint/innovation-ideas"),
-					]);
+				const nocApiToken = getEnv("NOC_API_TOKEN", "");
 
-				if (statsRes.data?.data) setStats(statsRes.data.data);
-				if (recentRes.data?.data)
-					setRecentComplaints(recentRes.data.data as Complaint[]);
-				if (serviceRes.data?.data) {
-					const mappedService = (
-						serviceRes.data.data as ServiceApiResponse[]
-					).map((item) => ({
-						jenis: item.letterType,
-						jumlah: item._count?._all || 0,
-					}));
-					setServiceStats(mappedService);
+				// Fetch pengaduan count and pelayanan per jenis in parallel
+				const [pengaduanResponse, pelayananResponse] = await Promise.all([
+					fetch("/api/noc/pengaduan-count", {
+						method: "GET",
+						headers: {
+							Authorization: `Bearer ${nocApiToken}`,
+							"Content-Type": "application/json",
+						},
+					}),
+					fetch("/api/noc/pelayanan-perjenis", {
+						method: "GET",
+						headers: {
+							Authorization: `Bearer ${nocApiToken}`,
+							"Content-Type": "application/json",
+						},
+					}),
+				]);
+
+				let pengaduanData: PengaduanCountData | null = null;
+				let pelayananData: PelayananPerJenisData[] = [];
+
+				if (pengaduanResponse.ok) {
+					pengaduanData = await pengaduanResponse.json();
+					console.log("📊 Pengaduan count response:", pengaduanData);
 				}
-				if (trendsRes.data?.data) {
-					const mappedTrends = (
-						trendsRes.data.data as { month: string; count: number }[]
-					).map((item) => ({
-						bulan: item.month,
-						jumlah: item.count,
-					}));
-					setTrendData(mappedTrends);
+
+				if (pelayananResponse.ok) {
+					pelayananData = await pelayananResponse.json();
+					console.log("📊 Pelayanan per jenis response:", pelayananData);
+
+					// Only take top 5 with highest count for better chart display
+					const sortedData = [...pelayananData]
+						.sort((a, b) => b.jumlah - a.jumlah)
+						.slice(0, 5);
+
+					setSuratData(sortedData);
+				}
+
+				// Fetch recent complaints and innovation ideas
+				const [recentRes, ideasRes] = await Promise.all([
+					apiClient.GET("/api/complaint/recent"),
+					apiClient.GET("/api/complaint/innovation-ideas"),
+				]);
+
+				// Map NOC API data to stats
+				if (pengaduanData) {
+					const mappedStats = {
+						total: pengaduanData.total ?? 0,
+						baru: pengaduanData.antrian ?? 0,
+						proses:
+							(pengaduanData.diterima ?? 0) + (pengaduanData.dikerjakan ?? 0),
+						selesai: pengaduanData.selesai ?? 0,
+						ditolak: pengaduanData.ditolak ?? 0,
+						aktif: pengaduanData.aktif ?? 0,
+					};
+					setStats(mappedStats);
+
+					// Create chart data from status counts
+					const chartItems: ChartData[] = [
+						{
+							name: "Antrian",
+							value: pengaduanData.antrian ?? 0,
+							color: "#EF4444",
+						},
+						{
+							name: "Diterima",
+							value: pengaduanData.diterima ?? 0,
+							color: "#3B82F6",
+						},
+						{
+							name: "Dikerjakan",
+							value: pengaduanData.dikerjakan ?? 0,
+							color: "#F59E0B",
+						},
+						{
+							name: "Ditolak",
+							value: pengaduanData.ditolak ?? 0,
+							color: "#6B7280",
+						},
+						{
+							name: "Selesai",
+							value: pengaduanData.selesai ?? 0,
+							color: "#10B981",
+						},
+					].filter((item) => item.value > 0); // Only show items with data
+
+					setChartData(chartItems);
+				}
+
+				if (recentRes.data?.data) {
+					setRecentComplaints(recentRes.data.data as Complaint[]);
 				}
 				if (ideasRes.data?.data) {
 					setInnovationIdeas(ideasRes.data.data as InnovationIdea[]);
@@ -217,7 +290,7 @@ const PengaduanLayananPublik = () => {
 				))}
 			</Grid>
 
-			{/* MAIN CHART - TREN PENGADUAN */}
+			{/* MAIN CHART - STATUS PENGAJUAN */}
 			<Card
 				p="md"
 				radius="xl"
@@ -230,7 +303,7 @@ const PengaduanLayananPublik = () => {
 			>
 				<Group justify="space-between" mb="md">
 					<Title order={4} c={dark ? "white" : "gray.9"}>
-						Tren Pengaduan
+						Status Pengaduan
 					</Title>
 				</Group>
 				<ResponsiveContainer width="100%" height={300}>
@@ -238,15 +311,15 @@ const PengaduanLayananPublik = () => {
 						<Group justify="center" align="center" h="100%">
 							<Loader />
 						</Group>
-					) : trendData.length > 0 ? (
-						<LineChart data={trendData}>
+					) : chartData.length > 0 ? (
+						<BarChart data={chartData}>
 							<CartesianGrid
 								strokeDasharray="3 3"
 								vertical={false}
 								stroke={dark ? "#334155" : "#e5e7eb"}
 							/>
 							<XAxis
-								dataKey="bulan"
+								dataKey="name"
 								axisLine={false}
 								tickLine={false}
 								tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
@@ -264,94 +337,99 @@ const PengaduanLayananPublik = () => {
 									borderRadius: "8px",
 								}}
 								labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+								formatter={(value: number | undefined) => [
+									`${value ?? 0} pengaduan`,
+									"Jumlah",
+								]}
 							/>
-							<Line
-								type="monotone"
-								dataKey="jumlah"
-								stroke="#396aaaff"
-								strokeWidth={2}
-								dot={{
-									fill: "#1E3A5F",
-									strokeWidth: 2,
-									r: 4,
-								}}
-								activeDot={{ r: 6 }}
-							/>
-						</LineChart>
+							<Bar dataKey="value" fill="#1E3A5F" radius={[4, 4, 0, 0]} />
+						</BarChart>
 					) : (
 						<Group justify="center" align="center" h="100%">
 							<Text size="sm" c="dimmed">
-								Tidak ada data pengaduan 7 bulan terakhir
+								Tidak ada data pengaduan
 							</Text>
 						</Group>
 					)}
 				</ResponsiveContainer>
 			</Card>
 
-			{/* BOTTOM SECTION - 3 COLUMNS */}
-			<Grid gutter={{ base: "xs", md: "md" }}>
-				{/* LEFT: SURAT TERBANYAK */}
-				<Grid.Col span={{ base: 12, lg: 4 }}>
-					<Card
-						p="md"
-						radius="xl"
-						withBorder
-						bg={dark ? "#1E293B" : "white"}
-						style={{
-							borderColor: dark ? "#334155" : "white",
-							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
-						}}
-						h="100%"
-					>
-						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
-							Surat Terbanyak
-						</Title>
-						<ResponsiveContainer width="100%" height={250}>
-							{loading ? (
-								<Group justify="center" align="center" h="100%">
-									<Loader />
-								</Group>
-							) : (
-								<BarChart data={serviceStats} layout="vertical">
-									<CartesianGrid
-										strokeDasharray="3 3"
-										horizontal={false}
-										stroke={dark ? "#334155" : "#e5e7eb"}
-									/>
-									<XAxis
-										type="number"
-										axisLine={false}
-										tickLine={false}
-										tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
-									/>
-									<YAxis
-										type="category"
-										dataKey="jenis"
-										axisLine={false}
-										tickLine={false}
-										tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
-										width={80}
-									/>
-									<Tooltip
-										contentStyle={{
-											backgroundColor: dark ? "#1E293B" : "white",
-											borderColor: dark ? "#334155" : "#e5e7eb",
-											borderRadius: "8px",
-										}}
-									/>
-									<Bar
-										dataKey="jumlah"
-										fill="#396aaaff"
-										radius={[0, 4, 4, 0]}
-									/>
-								</BarChart>
-							)}
-						</ResponsiveContainer>
-					</Card>
-				</Grid.Col>
+			<Card
+				p="md"
+				radius="xl"
+				withBorder
+				bg={dark ? "#1E293B" : "white"}
+				style={{
+					borderColor: dark ? "#334155" : "white",
+					boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				}}
+				h="100%"
+			>
+				<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
+					Surat Terbanyak
+				</Title>
+				<ResponsiveContainer width="100%" height={250}>
+					{loading ? (
+						<Group justify="center" align="center" h="100%">
+							<Loader />
+						</Group>
+					) : suratData.length > 0 ? (
+						<BarChart data={suratData} layout="vertical">
+							<CartesianGrid
+								strokeDasharray="3 3"
+								horizontal={false}
+								stroke={dark ? "#334155" : "#e5e7eb"}
+							/>
+							<XAxis
+								type="number"
+								axisLine={false}
+								tickLine={false}
+								tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
+							/>
+							<YAxis
+								type="category"
+								dataKey="jenis"
+								axisLine={false}
+								tickLine={false}
+								width={140}
+								tick={{
+									fill: dark ? "#E2E8F0" : "#374151",
+									fontSize: 11,
+								}}
+								tickFormatter={(value) => truncateText(value, 25)}
+							/>
+							<Tooltip
+								contentStyle={{
+									backgroundColor: dark ? "#1E293B" : "white",
+									borderColor: dark ? "#334155" : "#e5e7eb",
+									borderRadius: "8px",
+									maxWidth: 300,
+								}}
+								labelStyle={{
+									color: dark ? "#E2E8F0" : "#374151",
+									fontSize: 12,
+									fontWeight: 600,
+								}}
+								formatter={(value: any): [string, string] => [
+									`${value ?? 0} surat`,
+									"Jumlah",
+								]}
+							/>
+							<Bar dataKey="jumlah" fill="#1E3A5F" radius={[0, 4, 4, 0]} />
+						</BarChart>
+					) : (
+						<Group justify="center" align="center" h="100%">
+							<Text size="sm" c="dimmed">
+								Tidak ada data surat
+							</Text>
+						</Group>
+					)}
+				</ResponsiveContainer>
+			</Card>
 
-				{/* CENTER: PENGAJUAN TERBARU */}
-				<Grid.Col span={{ base: 12, lg: 4 }}>
+			{/* BOTTOM SECTION - 2 COLUMNS */}
+			<Grid gutter={{ base: "xs", md: "md" }}>
+				<Grid.Col span={{ base: 12, lg: 6 }}>
 					<Card
 						p="md"
 						radius="xl"
@@ -364,7 +442,7 @@ const PengaduanLayananPublik = () => {
 						h="100%"
 					>
 						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
-							Pengajuan Terbaru
+							Pengajuan Surat Terbaru
 						</Title>
 						<Stack gap="sm">
 							{loading ? (
@@ -418,7 +496,7 @@ const PengaduanLayananPublik = () => {
 				</Grid.Col>
 
 				{/* RIGHT: AJUAN IDE INOVATIF */}
-				<Grid.Col span={{ base: 12, lg: 4 }}>
+				<Grid.Col span={{ base: 12, lg: 6 }}>
 					<Card
 						p="md"
 						radius="xl"

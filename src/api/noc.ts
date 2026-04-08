@@ -857,4 +857,124 @@ export const noc = new Elysia({ prefix: "/noc" })
 				),
 			},
 		},
+	)
+	.get(
+		"/pengaduan-count",
+		async () => {
+			try {
+				const response = await fetch(
+					"https://cld-dkr-prod-jenna-mcp.wibudev.com/api/noc/pengaduan-count",
+					{
+						headers: {
+							Authorization:
+								"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJob3N0Iiwic3ViIjoiYmlwIiwicGF5bG9hZCI6IntcIm5hbWVcIjpcIm5vYyBkZXNhK1wiLFwiZGVzY3JpcHRpb25cIjpcInVudHVrIGRhc2hib2FyZCBub2MgZGVzYStcIixcImV4cGlyZWRBdFwiOlwiMjAzMC0xMi0zMVwifSIsImV4cCI6MTkyNDkwNTYwMCwiaWF0IjoxNzc1NTMzMDc0fQ.Ta3pxlwF3oM6Ve0KWhfvL6zbQiXE6D6I09dXMdogJXs",
+						},
+					},
+				);
+
+				if (!response.ok) {
+					throw new Error(`External API error: ${response.status}`);
+				}
+
+				const externalData = await response.json();
+				console.log("[NOC] Pengaduan count from external API:", externalData);
+
+				// External API returns data directly: { antrian, diterima, dikerjakan, ditolak, selesai, aktif, total }
+				if (externalData && typeof externalData === "object") {
+					return {
+						antrian: externalData.antrian ?? 0,
+						diterima: externalData.diterima ?? 0,
+						dikerjakan: externalData.dikerjakan ?? 0,
+						ditolak: externalData.ditolak ?? 0,
+						selesai: externalData.selesai ?? 0,
+						aktif: externalData.aktif ?? 0,
+						total: externalData.total ?? 0,
+					};
+				}
+
+				// Fallback
+				return {
+					antrian: 0,
+					diterima: 0,
+					dikerjakan: 0,
+					ditolak: 0,
+					selesai: 0,
+					aktif: 0,
+					total: 0,
+				};
+			} catch (error) {
+				console.error("[NOC] Failed to fetch pengaduan count:", error);
+				// Return zero counts on error
+				return {
+					antrian: 0,
+					diterima: 0,
+					dikerjakan: 0,
+					ditolak: 0,
+					selesai: 0,
+					aktif: 0,
+					total: 0,
+				};
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					antrian: t.Number(),
+					diterima: t.Number(),
+					dikerjakan: t.Number(),
+					ditolak: t.Number(),
+					selesai: t.Number(),
+					aktif: t.Number(),
+					total: t.Number(),
+				}),
+			},
+		},
+	)
+	.get(
+		"/pelayanan-perjenis",
+		async () => {
+			try {
+				const response = await fetch(
+					"https://cld-dkr-prod-jenna-mcp.wibudev.com/api/noc/pelayanan-perjenis",
+					{
+						headers: {
+							Authorization:
+								"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJob3N0Iiwic3ViIjoiYmlwIiwicGF5bG9hZCI6IntcIm5hbWVcIjpcIm5vYyBkZXNhK1wiLFwiZGVzY3JpcHRpb25cIjpcInVudHVrIGRhc2hib2FyZCBub2MgZGVzYStcIixcImV4cGlyZWRBdFwiOlwiMjAzMC0xMi0zMVwifSIsImV4cCI6MTkyNDkwNTYwMCwiaWF0IjoxNzc1NTMzMDc0fQ.Ta3pxlwF3oM6Ve0KWhfvL6zbQiXE6D6I09dXMdogJXs",
+						},
+					},
+				);
+
+				if (!response.ok) {
+					throw new Error(`External API error: ${response.status}`);
+				}
+
+				const externalData = await response.json();
+				console.log(
+					"[NOC] Pelayanan per jenis from external API:",
+					externalData,
+				);
+
+				// External API returns array directly: [{ jenis: "...", jumlah: 0 }, ...]
+				if (Array.isArray(externalData)) {
+					return externalData;
+				}
+
+				// Fallback
+				return [];
+			} catch (error) {
+				console.error("[NOC] Failed to fetch pelayanan per jenis:", error);
+				// Return empty array on error
+				return [];
+			}
+		},
+		{
+			response: {
+				200: t.Array(
+					t.Object({
+						jenis: t.String(),
+						jumlah: t.Number(),
+					}),
+				),
+			},
+		},
 	);
