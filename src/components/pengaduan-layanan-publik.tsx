@@ -54,13 +54,15 @@ interface TrendData {
 
 interface InnovationIdea {
 	id: string;
-	title: string;
-	description: string;
-	category: string;
-	submitterName: string;
-	submitterContact?: string;
-	status: string;
+	name: string;
+	alamat: string;
+	namaIde: string;
+	deskripsi: string;
+	masalah: string;
+	benefit: string;
 	createdAt: string;
+	updatedAt: string;
+	isActive: boolean;
 }
 
 interface PelayananPerJenisData {
@@ -216,10 +218,23 @@ const PengaduanLayananPublik = () => {
 					setStats(mappedStats);
 				}
 
-				// Fetch innovation ideas from internal API
-				const ideasRes = await apiClient.GET("/api/complaint/innovation-ideas");
-				if (ideasRes.data?.data) {
-					setInnovationIdeas(ideasRes.data.data as InnovationIdea[]);
+				// Fetch innovation ideas from external Desa API
+				const desaApiUrl = getEnv(
+					"VITE_DESA_API_URL",
+					"https://desa-darmasaba-stg.wibudev.com",
+				);
+				const innovationResponse = await fetch(
+					`${desaApiUrl}/api/inovasi/ajukanideinovatif/find-many`,
+				);
+
+				if (innovationResponse.ok) {
+					const innovationData = await innovationResponse.json();
+					console.log("💡 Innovation ideas response:", innovationData);
+
+					if (innovationData.success && innovationData.data) {
+						// Take only first 3 for display
+						setInnovationIdeas(innovationData.data.slice(0, 3));
+					}
 				}
 			} catch (error) {
 				console.error("Failed to fetch complaint data", error);
@@ -523,7 +538,7 @@ const PengaduanLayananPublik = () => {
 					</Card>
 				</Grid.Col>
 
-				{/* RIGHT: AJUAN IDE INOVATIF */}
+				{/* RIGHT: AJUKAN IDE INOVATIF */}
 				<Grid.Col span={{ base: 12, lg: 6 }}>
 					<Card
 						p="md"
@@ -537,7 +552,7 @@ const PengaduanLayananPublik = () => {
 						h="100%"
 					>
 						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
-							Ajuan Ide Inovatif
+							Ajukan Ide Inovatif
 						</Title>
 						<Stack gap="sm">
 							{loading ? (
@@ -557,27 +572,35 @@ const PengaduanLayananPublik = () => {
 											transition: "background-color 0.15s ease",
 										}}
 									>
-										<Group justify="space-between">
-											<Stack gap={0}>
-												<Text fw={600} c={dark ? "white" : "gray.9"}>
-													{item.title}
-												</Text>
-												<Text size="sm" c="dimmed">
-													{item.submitterName}
-												</Text>
-												<Text size="xs" c="dimmed">
-													{dayjs(item.createdAt).fromNow()}
-												</Text>
-											</Stack>
-											<Button
+										<Stack gap={0}>
+											<Text fw={600} c={dark ? "white" : "gray.9"}>
+												{item.namaIde}
+											</Text>
+											<Text size="sm" c="dimmed">
+												{item.name}
+											</Text>
+											<Text
 												size="xs"
-												variant="light"
-												color="darmasaba-blue"
-												radius="md"
-											>
-												Detail
-											</Button>
-										</Group>
+												c="dimmed"
+												mt={2}
+												style={{
+													overflow: "hidden",
+													textOverflow: "ellipsis",
+													display: "-webkit-box",
+													WebkitLineClamp: 2,
+													WebkitBoxOrient: "vertical",
+												}}
+												dangerouslySetInnerHTML={{
+													__html:
+														item.deskripsi.length > 100
+															? `${item.deskripsi.substring(0, 100)}...`
+															: item.deskripsi,
+												}}
+											/>
+											<Text size="xs" c="dimmed" mt={4}>
+												{dayjs(item.createdAt).fromNow()}
+											</Text>
+										</Stack>
 									</Card>
 								))
 							) : (
