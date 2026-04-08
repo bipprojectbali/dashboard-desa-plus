@@ -141,12 +141,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 				</Group>
 
 				{/* User Avatar Only on Mobile */}
-				<Avatar
-					color="blue"
-					radius="xl"
-					size="sm"
-					hiddenFrom="sm"
-				>
+				<Avatar color="blue" radius="xl" size="sm" hiddenFrom="sm">
 					<UserIcon color="white" style={{ width: "70%", height: "70%" }} />
 				</Avatar>
 
@@ -168,12 +163,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 							<Moon color="white" style={{ width: "70%", height: "70%" }} />
 						)}
 					</ActionIcon>
-					<ActionIcon
-						variant="subtle"
-						size="lg"
-						radius="xl"
-						pos="relative"
-					>
+					<ActionIcon variant="subtle" size="lg" radius="xl" pos="relative">
 						<Bell color="white" style={{ width: "70%", height: "70%" }} />
 						<Badge
 							size="xs"
@@ -185,12 +175,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 							10
 						</Badge>
 					</ActionIcon>
-					<ActionIcon
-						variant="subtle"
-						size="lg"
-						radius="xl"
-						visibleFrom="sm"
-					>
+					<ActionIcon variant="subtle" size="lg" radius="xl" visibleFrom="sm">
 						<IconUserShield
 							color="white"
 							style={{ width: "70%", height: "70%" }}

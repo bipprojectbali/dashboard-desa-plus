@@ -61,13 +61,7 @@ export async function getWeeklyServiceCount(): Promise<number> {
 		const data = result.data;
 
 		// Try different response structures
-		return (
-			data?.jumlah ??
-			data?.count ??
-			data?.total ??
-			result.jumlah ??
-			0
-		);
+		return data?.jumlah ?? data?.count ?? data?.total ?? result.jumlah ?? 0;
 	} catch (error) {
 		console.error("Failed to fetch weekly service count:", error);
 		return 0; // Fallback to 0

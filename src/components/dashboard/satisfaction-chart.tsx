@@ -23,7 +23,7 @@ const RATING_NAME_MAP: Record<
 	{ label: string; color: string; order: number }
 > = {
 	"Sangat Baik": { label: "Sangat Puas", color: "#10B981", order: 0 },
-	"Baik": { label: "Puas", color: "#3B82F6", order: 1 },
+	Baik: { label: "Puas", color: "#3B82F6", order: 1 },
 	"Kurang Baik": { label: "Cukup", color: "#F59E0B", order: 2 },
 	"Sangat Kurang Baik": { label: "Kurang", color: "#EF4444", order: 3 },
 };
@@ -49,9 +49,7 @@ export function SatisfactionChart() {
 				);
 
 				if (!respondentsResponse.ok) {
-					throw new Error(
-						`External API error: ${respondentsResponse.status}`,
-					);
+					throw new Error(`External API error: ${respondentsResponse.status}`);
 				}
 
 				const respondentsJson = await respondentsResponse.json();
@@ -68,21 +66,16 @@ export function SatisfactionChart() {
 				const ratingCounts: Record<string, number> = {};
 
 				respondentsJson.data.forEach(
-					(responden: {
-						rating: { name: string };
-					}) => {
+					(responden: { rating: { name: string } }) => {
 						const ratingName = responden.rating?.name;
 						if (ratingName) {
-							ratingCounts[ratingName] =
-								(ratingCounts[ratingName] || 0) + 1;
+							ratingCounts[ratingName] = (ratingCounts[ratingName] || 0) + 1;
 						}
 					},
 				);
 
 				// Map ke format chart
-				const chartData: SatisfactionData[] = Object.entries(
-					RATING_NAME_MAP,
-				)
+				const chartData: SatisfactionData[] = Object.entries(RATING_NAME_MAP)
 					.filter(([apiName]) => ratingCounts[apiName])
 					.map(([apiName, mapping]) => ({
 						name: mapping.label,

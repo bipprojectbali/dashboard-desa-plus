@@ -113,7 +113,7 @@ export const SalesTable = ({ data, onDetailClick }: SalesTableProps) => {
 				borderColor: dark ? "#334155" : "white",
 				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
 				transition: "transform 0.15s ease, box-shadow 0.15s ease",
-				overflowY: "auto"
+				overflowY: "auto",
 			}}
 		>
 			<Group justify="space-between" mb="md">

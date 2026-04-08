@@ -2,7 +2,10 @@ import { Center, Grid, Image, Loader, Stack } from "@mantine/core";
 import { CheckCircle, FileText, MessageCircle, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/utils/api-client";
-import { getComplaintCount, getWeeklyServiceCount } from "@/utils/jenna-mcp-client";
+import {
+	getComplaintCount,
+	getWeeklyServiceCount,
+} from "@/utils/jenna-mcp-client";
 import { ActivityList } from "./dashboard/activity-list";
 import { ChartAPBDes } from "./dashboard/chart-apbdes";
 import { ChartSurat } from "./dashboard/chart-surat";
@@ -46,7 +49,8 @@ export function DashboardContent() {
 				const complaints = {
 					total: complaintData.total ?? 0,
 					baru: complaintData.antrian ?? 0,
-					proses: (complaintData.diterima ?? 0) + (complaintData.dikerjakan ?? 0),
+					proses:
+						(complaintData.diterima ?? 0) + (complaintData.dikerjakan ?? 0),
 					selesai: complaintData.selesai ?? 0,
 				};
 
