@@ -334,7 +334,7 @@ const PengaduanLayananPublik = () => {
 			>
 				<Group justify="space-between" mb="md">
 					<Title order={4} c={dark ? "white" : "gray.9"}>
-						Tren Pengajuan
+						Tren Pengaduan
 					</Title>
 				</Group>
 				<ResponsiveContainer width="100%" height={300}>
@@ -389,7 +389,7 @@ const PengaduanLayananPublik = () => {
 					) : (
 						<Group justify="center" align="center" h="100%">
 							<Text size="sm" c="dimmed">
-								Tidak ada data tren pengajuan
+								Tidak ada data tren pengaduan
 							</Text>
 						</Group>
 					)}
