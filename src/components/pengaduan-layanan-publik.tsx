@@ -19,6 +19,8 @@ import {
 	Bar,
 	BarChart,
 	CartesianGrid,
+	Line,
+	LineChart,
 	ResponsiveContainer,
 	Tooltip,
 	XAxis,
@@ -43,6 +45,11 @@ interface ChartData {
 	name: string;
 	value: number;
 	color: string;
+}
+
+interface TrendData {
+	label: string;
+	total: number;
 }
 
 interface InnovationIdea {
@@ -114,7 +121,7 @@ const PengaduanLayananPublik = () => {
 	const [pengajuanTerbaru, setPengajuanTerbaru] = useState<
 		PengajuanTerbaruData[]
 	>([]);
-	const [chartData, setChartData] = useState<ChartData[]>([]);
+	const [trendData, setTrendData] = useState<TrendData[]>([]);
 	const [suratData, setSuratData] = useState<PelayananPerJenisData[]>([]);
 	const [innovationIdeas, setInnovationIdeas] = useState<InnovationIdea[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -125,34 +132,46 @@ const PengaduanLayananPublik = () => {
 				const nocApiToken = getEnv("NOC_API_TOKEN", "");
 
 				// Fetch all NOC APIs in parallel
-				const [pengaduanResponse, pelayananResponse, pengajuanTerbaruResponse] =
-					await Promise.all([
-						fetch("/api/noc/pengaduan-count", {
-							method: "GET",
-							headers: {
-								Authorization: `Bearer ${nocApiToken}`,
-								"Content-Type": "application/json",
-							},
-						}),
-						fetch("/api/noc/pelayanan-perjenis", {
-							method: "GET",
-							headers: {
-								Authorization: `Bearer ${nocApiToken}`,
-								"Content-Type": "application/json",
-							},
-						}),
-						fetch("/api/noc/pengajuan-terbaru", {
-							method: "GET",
-							headers: {
-								Authorization: `Bearer ${nocApiToken}`,
-								"Content-Type": "application/json",
-							},
-						}),
-					]);
+				const [
+					pengaduanResponse,
+					pelayananResponse,
+					pengajuanTerbaruResponse,
+					pengajuanHistoryResponse,
+				] = await Promise.all([
+					fetch("/api/noc/pengaduan-count", {
+						method: "GET",
+						headers: {
+							Authorization: `Bearer ${nocApiToken}`,
+							"Content-Type": "application/json",
+						},
+					}),
+					fetch("/api/noc/pelayanan-perjenis", {
+						method: "GET",
+						headers: {
+							Authorization: `Bearer ${nocApiToken}`,
+							"Content-Type": "application/json",
+						},
+					}),
+					fetch("/api/noc/pengajuan-terbaru", {
+						method: "GET",
+						headers: {
+							Authorization: `Bearer ${nocApiToken}`,
+							"Content-Type": "application/json",
+						},
+					}),
+					fetch("/api/noc/pengaduan-history", {
+						method: "GET",
+						headers: {
+							Authorization: `Bearer ${nocApiToken}`,
+							"Content-Type": "application/json",
+						},
+					}),
+				]);
 
 				let pengaduanData: PengaduanCountData | null = null;
 				let pelayananData: PelayananPerJenisData[] = [];
 				let pengajuanTerbaruData: PengajuanTerbaruData[] = [];
+				let pengajuanHistoryData: TrendData[] = [];
 
 				if (pengaduanResponse.ok) {
 					pengaduanData = await pengaduanResponse.json();
@@ -177,6 +196,12 @@ const PengaduanLayananPublik = () => {
 					setPengajuanTerbaru(pengajuanTerbaruData);
 				}
 
+				if (pengajuanHistoryResponse.ok) {
+					pengajuanHistoryData = await pengajuanHistoryResponse.json();
+					console.log("📊 Pengajuan history response:", pengajuanHistoryData);
+					setTrendData(pengajuanHistoryData);
+				}
+
 				// Map NOC API data to stats
 				if (pengaduanData) {
 					const mappedStats = {
@@ -189,37 +214,6 @@ const PengaduanLayananPublik = () => {
 						aktif: pengaduanData.aktif ?? 0,
 					};
 					setStats(mappedStats);
-
-					// Create chart data from status counts
-					const chartItems: ChartData[] = [
-						{
-							name: "Antrian",
-							value: pengaduanData.antrian ?? 0,
-							color: "#EF4444",
-						},
-						{
-							name: "Diterima",
-							value: pengaduanData.diterima ?? 0,
-							color: "#3B82F6",
-						},
-						{
-							name: "Dikerjakan",
-							value: pengaduanData.dikerjakan ?? 0,
-							color: "#F59E0B",
-						},
-						{
-							name: "Ditolak",
-							value: pengaduanData.ditolak ?? 0,
-							color: "#6B7280",
-						},
-						{
-							name: "Selesai",
-							value: pengaduanData.selesai ?? 0,
-							color: "#10B981",
-						},
-					].filter((item) => item.value > 0); // Only show items with data
-
-					setChartData(chartItems);
 				}
 
 				// Fetch innovation ideas from internal API
@@ -312,7 +306,7 @@ const PengaduanLayananPublik = () => {
 				))}
 			</Grid>
 
-			{/* MAIN CHART - STATUS PENGAJUAN */}
+			{/* MAIN CHART - TREN PENGAJUAN */}
 			<Card
 				p="md"
 				radius="xl"
@@ -325,7 +319,7 @@ const PengaduanLayananPublik = () => {
 			>
 				<Group justify="space-between" mb="md">
 					<Title order={4} c={dark ? "white" : "gray.9"}>
-						Status Pengaduan
+						Tren Pengajuan
 					</Title>
 				</Group>
 				<ResponsiveContainer width="100%" height={300}>
@@ -333,15 +327,15 @@ const PengaduanLayananPublik = () => {
 						<Group justify="center" align="center" h="100%">
 							<Loader />
 						</Group>
-					) : chartData.length > 0 ? (
-						<BarChart data={chartData}>
+					) : trendData.length > 0 ? (
+						<LineChart data={trendData}>
 							<CartesianGrid
 								strokeDasharray="3 3"
 								vertical={false}
 								stroke={dark ? "#334155" : "#e5e7eb"}
 							/>
 							<XAxis
-								dataKey="name"
+								dataKey="label"
 								axisLine={false}
 								tickLine={false}
 								tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
@@ -360,16 +354,27 @@ const PengaduanLayananPublik = () => {
 								}}
 								labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 								formatter={(value: number | undefined) => [
-									`${value ?? 0} pengaduan`,
+									`${value ?? 0} pengajuan`,
 									"Jumlah",
 								]}
 							/>
-							<Bar dataKey="value" fill="#1E3A5F" radius={[4, 4, 0, 0]} />
-						</BarChart>
+							<Line
+								type="monotone"
+								dataKey="total"
+								stroke="#396aaaff"
+								strokeWidth={2}
+								dot={{
+									fill: "#1E3A5F",
+									strokeWidth: 2,
+									r: 4,
+								}}
+								activeDot={{ r: 6 }}
+							/>
+						</LineChart>
 					) : (
 						<Group justify="center" align="center" h="100%">
 							<Text size="sm" c="dimmed">
-								Tidak ada data pengaduan
+								Tidak ada data tren pengajuan
 							</Text>
 						</Group>
 					)}

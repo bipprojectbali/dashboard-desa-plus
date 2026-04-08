@@ -1024,4 +1024,49 @@ export const noc = new Elysia({ prefix: "/noc" })
 				),
 			},
 		},
+	)
+	.get(
+		"/pengaduan-history",
+		async () => {
+			try {
+				const response = await fetch(
+					"https://cld-dkr-prod-jenna-mcp.wibudev.com/api/noc/pengaduan-history",
+					{
+						headers: {
+							Authorization:
+								"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJob3N0Iiwic3ViIjoiYmlwIiwicGF5bG9hZCI6IntcIm5hbWVcIjpcIm5vYyBkZXNhK1wiLFwiZGVzY3JpcHRpb25cIjpcInVudHVrIGRhc2hib2FyZCBub2MgZGVzYStcIixcImV4cGlyZWRBdFwiOlwiMjAzMC0xMi0zMVwifSIsImV4cCI6MTkyNDkwNTYwMCwiaWF0IjoxNzc1NTMzMDc0fQ.Ta3pxlwF3oM6Ve0KWhfvL6zbQiXE6D6I09dXMdogJXs",
+						},
+					},
+				);
+
+				if (!response.ok) {
+					throw new Error(`External API error: ${response.status}`);
+				}
+
+				const externalData = await response.json();
+				console.log("[NOC] Pengaduan history from external API:", externalData);
+
+				// External API returns array directly: [{ label: "November", total: 25 }, ...]
+				if (Array.isArray(externalData)) {
+					return externalData;
+				}
+
+				// Fallback
+				return [];
+			} catch (error) {
+				console.error("[NOC] Failed to fetch pengaduan history:", error);
+				// Return empty array on error
+				return [];
+			}
+		},
+		{
+			response: {
+				200: t.Array(
+					t.Object({
+						label: t.String(),
+						total: t.Number(),
+					}),
+				),
+			},
+		},
 	);
