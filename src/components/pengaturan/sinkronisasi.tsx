@@ -92,6 +92,10 @@ const SinkronisasiSettings = () => {
 				if (data.lastSyncedAt) {
 					setLastSync(data.lastSyncedAt);
 				}
+
+				// Dispatch event to notify other components
+				console.log("🔄 Dispatching sync complete event...");
+				window.dispatchEvent(new CustomEvent("noc-sync-completed"));
 			} else if (data?.error) {
 				setStatus({
 					type: "error",

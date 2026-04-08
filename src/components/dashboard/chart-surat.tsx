@@ -18,12 +18,14 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { apiClient } from "@/utils/api-client";
+import { getEnv } from "@/utils/env";
 
 interface ChartData {
 	month: string;
 	value: number;
 }
+
+const REFRESH_EVENT_NAME = "noc-sync-completed";
 
 export function ChartSurat() {
 	const { colorScheme } = useMantineColorScheme();
@@ -32,53 +34,60 @@ export function ChartSurat() {
 	const [data, setData] = useState<ChartData[]>([]);
 	const [loading, setLoading] = useState(true);
 
-	// DEBUG: Uncomment to test chart rendering with sample data
-	// useEffect(() => {
-	// 	setData([
-	// 		{ month: "Oct", value: 1 },
-	// 		{ month: "Nov", value: 1 },
-	// 		{ month: "Dec", value: 1 },
-	// 		{ month: "Feb", value: 1 },
-	// 		{ month: "Mar", value: 1 },
-	// 	]);
-	// 	setLoading(false);
-	// }, []);
+	async function fetchPengajuanHistory() {
+		try {
+			const response = await fetch("/api/noc/pengajuan-history", {
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${getEnv("NOC_API_TOKEN", "")}`,
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const res = await response.json();
+			console.log("📊 Pengajuan history response:", res);
+
+			// API returns array directly: [{ label: "November", total: 0 }, ...]
+			if (Array.isArray(res) && res.length > 0) {
+				const chartData = res.map((item: { label: string; total: number }) => ({
+					month: item.label,
+					value: Number(item.total),
+				}));
+				console.log("📈 Mapped chart data:", chartData);
+				console.log("✅ Chart data count:", chartData.length);
+				setData(chartData);
+			} else {
+				console.warn("⚠️ No data in response or empty array");
+				console.log("Response structure:", JSON.stringify(res, null, 2));
+				setData([]);
+			}
+		} catch (error) {
+			console.error("❌ Failed to fetch pengajuan history", error);
+			console.log("Error details:", error);
+		} finally {
+			setLoading(false);
+		}
+	}
 
 	useEffect(() => {
-		async function fetchTrends() {
-			try {
-				const res = await apiClient.GET("/api/complaint/service-trends");
-				console.log("📊 Service trends response:", res);
+		fetchPengajuanHistory();
 
-				// Check if response has data
-				if (
-					res.data?.data &&
-					Array.isArray(res.data.data) &&
-					res.data.data.length > 0
-				) {
-					const chartData = (
-						res.data.data as { month: string; count: number }[]
-					).map((d) => ({
-						month: d.month,
-						value: Number(d.count),
-					}));
-					console.log("📈 Mapped chart data:", chartData);
-					console.log("✅ Chart data count:", chartData.length);
-					setData(chartData);
-				} else {
-					console.warn("⚠️ No data in response or empty array");
-					console.log("Response structure:", JSON.stringify(res, null, 2));
-					setData([]);
-				}
-			} catch (error) {
-				console.error("❌ Failed to fetch service trends", error);
-				console.log("Error details:", error);
-			} finally {
-				setLoading(false);
-			}
-		}
+		// Listen for sync completion event
+		const handleSyncComplete = () => {
+			console.log("🔄 Sync complete event received, refreshing chart data...");
+			setLoading(true);
+			fetchPengajuanHistory();
+		};
 
-		fetchTrends();
+		window.addEventListener(REFRESH_EVENT_NAME, handleSyncComplete);
+
+		return () => {
+			window.removeEventListener(REFRESH_EVENT_NAME, handleSyncComplete);
+		};
 	}, []);
 
 	return (

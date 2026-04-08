@@ -1567,6 +1567,288 @@
         "operationId": "getApiNocSatisfaction-categories"
       }
     },
+    "/api/noc/jenna/surat-perminggu": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "error": {
+                      "type": "string"
+                    },
+                    "jumlah": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "error": {
+                      "type": "string"
+                    },
+                    "jumlah": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "error": {
+                      "type": "string"
+                    },
+                    "jumlah": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiNocJennaSurat-perminggu"
+      }
+    },
+    "/api/noc/jenna/pengaduan-count": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "error": {
+                      "type": "string"
+                    },
+                    "antrian": {
+                      "type": "number"
+                    },
+                    "diterima": {
+                      "type": "number"
+                    },
+                    "dikerjakan": {
+                      "type": "number"
+                    },
+                    "ditolak": {
+                      "type": "number"
+                    },
+                    "selesai": {
+                      "type": "number"
+                    },
+                    "aktif": {
+                      "type": "number"
+                    },
+                    "total": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "error": {
+                      "type": "string"
+                    },
+                    "antrian": {
+                      "type": "number"
+                    },
+                    "diterima": {
+                      "type": "number"
+                    },
+                    "dikerjakan": {
+                      "type": "number"
+                    },
+                    "ditolak": {
+                      "type": "number"
+                    },
+                    "selesai": {
+                      "type": "number"
+                    },
+                    "aktif": {
+                      "type": "number"
+                    },
+                    "total": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "error": {
+                      "type": "string"
+                    },
+                    "antrian": {
+                      "type": "number"
+                    },
+                    "diterima": {
+                      "type": "number"
+                    },
+                    "dikerjakan": {
+                      "type": "number"
+                    },
+                    "ditolak": {
+                      "type": "number"
+                    },
+                    "selesai": {
+                      "type": "number"
+                    },
+                    "aktif": {
+                      "type": "number"
+                    },
+                    "total": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiNocJennaPengaduan-count"
+      }
+    },
+    "/api/noc/pengajuan-history": {
+      "get": {
+        "responses": {
+          "200": {
+            "items": {
+              "type": "object",
+              "required": [
+                "label",
+                "total"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "total": {
+                  "type": "number"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "label",
+                      "total"
+                    ],
+                    "properties": {
+                      "label": {
+                        "type": "string"
+                      },
+                      "total": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "label",
+                      "total"
+                    ],
+                    "properties": {
+                      "label": {
+                        "type": "string"
+                      },
+                      "total": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "label",
+                      "total"
+                    ],
+                    "properties": {
+                      "label": {
+                        "type": "string"
+                      },
+                      "total": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiNocPengajuan-history"
+      }
+    },
     "/api/apikey/": {
       "get": {
         "responses": {

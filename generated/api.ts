@@ -196,6 +196,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/noc/jenna/surat-perminggu": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocJennaSurat-perminggu"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/jenna/pengaduan-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocJennaPengaduan-count"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/noc/pengajuan-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocPengajuan-history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/apikey/": {
         parameters: {
             query?: never;
@@ -1157,6 +1205,126 @@ export interface operations {
                             isActive: boolean;
                         }[];
                     };
+                };
+            };
+        };
+    };
+    "getApiNocJennaSurat-perminggu": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data?: unknown;
+                        error?: string;
+                        jumlah?: number;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data?: unknown;
+                        error?: string;
+                        jumlah?: number;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data?: unknown;
+                        error?: string;
+                        jumlah?: number;
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocJennaPengaduan-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data?: unknown;
+                        error?: string;
+                        antrian?: number;
+                        diterima?: number;
+                        dikerjakan?: number;
+                        ditolak?: number;
+                        selesai?: number;
+                        aktif?: number;
+                        total?: number;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data?: unknown;
+                        error?: string;
+                        antrian?: number;
+                        diterima?: number;
+                        dikerjakan?: number;
+                        ditolak?: number;
+                        selesai?: number;
+                        aktif?: number;
+                        total?: number;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data?: unknown;
+                        error?: string;
+                        antrian?: number;
+                        diterima?: number;
+                        dikerjakan?: number;
+                        ditolak?: number;
+                        selesai?: number;
+                        aktif?: number;
+                        total?: number;
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocPengajuan-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        label: string;
+                        total: number;
+                    }[];
+                    "multipart/form-data": {
+                        label: string;
+                        total: number;
+                    }[];
+                    "text/plain": {
+                        label: string;
+                        total: number;
+                    }[];
                 };
             };
         };
