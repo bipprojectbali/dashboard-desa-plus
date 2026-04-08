@@ -276,6 +276,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/noc/pengajuan-terbaru": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiNocPengajuan-terbaru"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/apikey/": {
         parameters: {
             query?: never;
@@ -1431,6 +1447,42 @@ export interface operations {
                     "text/plain": {
                         jenis: string;
                         jumlah: number;
+                    }[];
+                };
+            };
+        };
+    };
+    "getApiNocPengajuan-terbaru": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        jenis: string;
+                        status: string;
+                        namaWarga: string;
+                        durasi: string;
+                    }[];
+                    "multipart/form-data": {
+                        jenis: string;
+                        status: string;
+                        namaWarga: string;
+                        durasi: string;
+                    }[];
+                    "text/plain": {
+                        jenis: string;
+                        status: string;
+                        namaWarga: string;
+                        durasi: string;
                     }[];
                 };
             };

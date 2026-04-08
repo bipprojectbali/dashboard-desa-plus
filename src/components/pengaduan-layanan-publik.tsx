@@ -61,6 +61,13 @@ interface PelayananPerJenisData {
 	jumlah: number;
 }
 
+interface PengajuanTerbaruData {
+	jenis: string;
+	status: string;
+	namaWarga: string;
+	durasi: string;
+}
+
 interface Complaint {
 	id: string;
 	title: string;
@@ -74,6 +81,11 @@ const getStatusColor = (status: string) => {
 		case "baru":
 			return "red";
 		case "diproses":
+			return "orange";
+		case "antrian":
+			return "orange";
+		case "diterima":
+			return "blue";
 		case "proses":
 			return "blue";
 		case "selesai":
@@ -99,7 +111,9 @@ const PengaduanLayananPublik = () => {
 		proses: 0,
 		selesai: 0,
 	});
-	const [recentComplaints, setRecentComplaints] = useState<Complaint[]>([]);
+	const [pengajuanTerbaru, setPengajuanTerbaru] = useState<
+		PengajuanTerbaruData[]
+	>([]);
 	const [chartData, setChartData] = useState<ChartData[]>([]);
 	const [suratData, setSuratData] = useState<PelayananPerJenisData[]>([]);
 	const [innovationIdeas, setInnovationIdeas] = useState<InnovationIdea[]>([]);
@@ -110,26 +124,35 @@ const PengaduanLayananPublik = () => {
 			try {
 				const nocApiToken = getEnv("NOC_API_TOKEN", "");
 
-				// Fetch pengaduan count and pelayanan per jenis in parallel
-				const [pengaduanResponse, pelayananResponse] = await Promise.all([
-					fetch("/api/noc/pengaduan-count", {
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${nocApiToken}`,
-							"Content-Type": "application/json",
-						},
-					}),
-					fetch("/api/noc/pelayanan-perjenis", {
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${nocApiToken}`,
-							"Content-Type": "application/json",
-						},
-					}),
-				]);
+				// Fetch all NOC APIs in parallel
+				const [pengaduanResponse, pelayananResponse, pengajuanTerbaruResponse] =
+					await Promise.all([
+						fetch("/api/noc/pengaduan-count", {
+							method: "GET",
+							headers: {
+								Authorization: `Bearer ${nocApiToken}`,
+								"Content-Type": "application/json",
+							},
+						}),
+						fetch("/api/noc/pelayanan-perjenis", {
+							method: "GET",
+							headers: {
+								Authorization: `Bearer ${nocApiToken}`,
+								"Content-Type": "application/json",
+							},
+						}),
+						fetch("/api/noc/pengajuan-terbaru", {
+							method: "GET",
+							headers: {
+								Authorization: `Bearer ${nocApiToken}`,
+								"Content-Type": "application/json",
+							},
+						}),
+					]);
 
 				let pengaduanData: PengaduanCountData | null = null;
 				let pelayananData: PelayananPerJenisData[] = [];
+				let pengajuanTerbaruData: PengajuanTerbaruData[] = [];
 
 				if (pengaduanResponse.ok) {
 					pengaduanData = await pengaduanResponse.json();
@@ -148,11 +171,11 @@ const PengaduanLayananPublik = () => {
 					setSuratData(sortedData);
 				}
 
-				// Fetch recent complaints and innovation ideas
-				const [recentRes, ideasRes] = await Promise.all([
-					apiClient.GET("/api/complaint/recent"),
-					apiClient.GET("/api/complaint/innovation-ideas"),
-				]);
+				if (pengajuanTerbaruResponse.ok) {
+					pengajuanTerbaruData = await pengajuanTerbaruResponse.json();
+					console.log("📊 Pengajuan terbaru response:", pengajuanTerbaruData);
+					setPengajuanTerbaru(pengajuanTerbaruData);
+				}
 
 				// Map NOC API data to stats
 				if (pengaduanData) {
@@ -199,9 +222,8 @@ const PengaduanLayananPublik = () => {
 					setChartData(chartItems);
 				}
 
-				if (recentRes.data?.data) {
-					setRecentComplaints(recentRes.data.data as Complaint[]);
-				}
+				// Fetch innovation ideas from internal API
+				const ideasRes = await apiClient.GET("/api/complaint/innovation-ideas");
 				if (ideasRes.data?.data) {
 					setInnovationIdeas(ideasRes.data.data as InnovationIdea[]);
 				}
@@ -384,6 +406,7 @@ const PengaduanLayananPublik = () => {
 								type="number"
 								axisLine={false}
 								tickLine={false}
+								allowDecimals={false}
 								tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
 							/>
 							<YAxis
@@ -411,7 +434,7 @@ const PengaduanLayananPublik = () => {
 									fontWeight: 600,
 								}}
 								formatter={(value: any): [string, string] => [
-									`${value ?? 0} surat`,
+									`${Math.round(value ?? 0)} surat`,
 									"Jumlah",
 								]}
 							/>
@@ -449,10 +472,10 @@ const PengaduanLayananPublik = () => {
 								<Group justify="center" py="xl">
 									<Loader />
 								</Group>
-							) : recentComplaints.length > 0 ? (
-								recentComplaints.map((item) => (
+							) : pengajuanTerbaru.length > 0 ? (
+								pengajuanTerbaru.map((item, index) => (
 									<Card
-										key={item.id}
+										key={index}
 										p="sm"
 										radius="md"
 										withBorder
@@ -465,10 +488,10 @@ const PengaduanLayananPublik = () => {
 										<Group justify="space-between">
 											<Stack gap={0}>
 												<Text fw={600} c={dark ? "white" : "gray.9"}>
-													{item.title}
+													{item.jenis}
 												</Text>
 												<Text size="sm" c="dimmed">
-													{item.category}
+													{item.namaWarga}
 												</Text>
 											</Stack>
 											<Stack gap={0} align="flex-end">
@@ -480,7 +503,7 @@ const PengaduanLayananPublik = () => {
 													{item.status}
 												</Badge>
 												<Text size="xs" c="dimmed">
-													{dayjs(item.createdAt).fromNow()}
+													{item.durasi}
 												</Text>
 											</Stack>
 										</Group>

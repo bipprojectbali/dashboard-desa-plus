@@ -977,4 +977,51 @@ export const noc = new Elysia({ prefix: "/noc" })
 				),
 			},
 		},
+	)
+	.get(
+		"/pengajuan-terbaru",
+		async () => {
+			try {
+				const response = await fetch(
+					"https://cld-dkr-prod-jenna-mcp.wibudev.com/api/noc/pengajuan-terbaru",
+					{
+						headers: {
+							Authorization:
+								"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJob3N0Iiwic3ViIjoiYmlwIiwicGF5bG9hZCI6IntcIm5hbWVcIjpcIm5vYyBkZXNhK1wiLFwiZGVzY3JpcHRpb25cIjpcInVudHVrIGRhc2hib2FyZCBub2MgZGVzYStcIixcImV4cGlyZWRBdFwiOlwiMjAzMC0xMi0zMVwifSIsImV4cCI6MTkyNDkwNTYwMCwiaWF0IjoxNzc1NTMzMDc0fQ.Ta3pxlwF3oM6Ve0KWhfvL6zbQiXE6D6I09dXMdogJXs",
+						},
+					},
+				);
+
+				if (!response.ok) {
+					throw new Error(`External API error: ${response.status}`);
+				}
+
+				const externalData = await response.json();
+				console.log("[NOC] Pengajuan terbaru from external API:", externalData);
+
+				// External API returns array directly: [{ jenis, status, namaWarga, durasi }, ...]
+				if (Array.isArray(externalData)) {
+					return externalData;
+				}
+
+				// Fallback
+				return [];
+			} catch (error) {
+				console.error("[NOC] Failed to fetch pengajuan terbaru:", error);
+				// Return empty array on error
+				return [];
+			}
+		},
+		{
+			response: {
+				200: t.Array(
+					t.Object({
+						jenis: t.String(),
+						status: t.String(),
+						namaWarga: t.String(),
+						durasi: t.String(),
+					}),
+				),
+			},
+		},
 	);

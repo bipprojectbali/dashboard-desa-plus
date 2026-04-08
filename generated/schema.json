@@ -2057,6 +2057,124 @@
         "operationId": "getApiNocPelayanan-perjenis"
       }
     },
+    "/api/noc/pengajuan-terbaru": {
+      "get": {
+        "responses": {
+          "200": {
+            "items": {
+              "type": "object",
+              "required": [
+                "jenis",
+                "status",
+                "namaWarga",
+                "durasi"
+              ],
+              "properties": {
+                "jenis": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "namaWarga": {
+                  "type": "string"
+                },
+                "durasi": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "jenis",
+                      "status",
+                      "namaWarga",
+                      "durasi"
+                    ],
+                    "properties": {
+                      "jenis": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "namaWarga": {
+                        "type": "string"
+                      },
+                      "durasi": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "jenis",
+                      "status",
+                      "namaWarga",
+                      "durasi"
+                    ],
+                    "properties": {
+                      "jenis": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "namaWarga": {
+                        "type": "string"
+                      },
+                      "durasi": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "jenis",
+                      "status",
+                      "namaWarga",
+                      "durasi"
+                    ],
+                    "properties": {
+                      "jenis": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "namaWarga": {
+                        "type": "string"
+                      },
+                      "durasi": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiNocPengajuan-terbaru"
+      }
+    },
     "/api/apikey/": {
       "get": {
         "responses": {
