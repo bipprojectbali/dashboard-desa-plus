@@ -116,7 +116,27 @@ bun run dev
 ## Default Users (after running `bun run seed`)
 
 - **Admin**: `ADMIN_EMAIL` (from env) / `ADMIN_PASSWORD` (default: `admin123`)
-- **Demo Users**: 
+- **Demo Users**:
   - `demo1@example.com` / `demo123` (role: user)
   - `demo2@example.com` / `demo123` (role: user)
   - `moderator@example.com` / `demo123` (role: moderator)
+
+## Git & Deployment Workflow
+
+### Workflow for Code Changes
+1. **Commit** existing changes before starting new work
+2. **Create plan** at `MIND/PLAN/[plan-name].md`
+3. **Create task** at `MIND/PLAN/[task-name].md`
+4. **Execute the task** and update task progress
+5. **Create summary** at `MIND/SUMMARY/[summary-name].md` when done
+6. **Commit** all changes
+7. **Update version** in `package.json` for every change
+8. **Push** to new branch with format: `tasks/[task-name]/[what-is-being-done]/[date-time]`
+9. **Merge** to `stg` branch after completion
+
+### GitHub Workflows
+- **publish.yml**: Uses branch `main`, stack env and image tag matching version from `package.json`
+- **re-pull.yml**: Uses branch `main`, stack env and stack name `dashboard-desa-plus`
+
+### After Progress
+- Always give option to continue to GitHub workflows or not
