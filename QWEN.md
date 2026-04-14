@@ -129,10 +129,12 @@ bun run dev
 3. **Create task** at `MIND/PLAN/[task-name].md`
 4. **Execute the task** and update task progress
 5. **Create summary** at `MIND/SUMMARY/[summary-name].md` when done
-6. **Commit** all changes
-7. **Update version** in `package.json` for every change
-8. **Push** to new branch with format: `tasks/[task-name]/[what-is-being-done]/[date-time]`
-9. **Merge** to `stg` branch after completion
+6. **Run build** (`bun run build`) to ensure no compile errors
+7. **Fix any build errors** if they occur
+8. **Commit** all changes AFTER successful build
+9. **Update version** in `package.json` for every change
+10. **Push** to new branch with format: `tasks/[task-name]/[what-is-being-done]/[date-time]`
+11. **Merge** to `stg` branch after completion
 
 ### GitHub Workflows
 - **publish.yml**: Uses branch `main`, stack env and image tag matching version from `package.json`

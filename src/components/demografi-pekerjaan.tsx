@@ -226,20 +226,20 @@ const DemografiPekerjaan = () => {
 				// Parse Migration
 				const migrationList = await parseRes(migrationRes, "Migration Data");
 				if (migrationList && Array.isArray(migrationList)) {
-					const迁入 = migrationList.filter(
+					const moveInCount = migrationList.filter(
 						(m: any) =>
 							m.type === "in" ||
 							m.jenis === "masuk" ||
 							m.arah === "masuk",
 					).length;
-					const 迁出 = migrationList.filter(
+					const moveOutCount = migrationList.filter(
 						(m: any) =>
 							m.type === "out" ||
 							m.jenis === "keluar" ||
 							m.arah === "keluar",
 					).length;
-					setMoveIn(迁入);
-					setMoveOut(迁出);
+					setMoveIn(moveInCount);
+					setMoveOut(moveOutCount);
 				}
 
 				// Parse Sector Data
@@ -309,12 +309,12 @@ const DemografiPekerjaan = () => {
 					LAINNYA: "#94A3B8",
 				};
 				setReligionData([
-					{ name: "HINDU", value: 1850, color: religionColors.HINDU },
-					{ name: "ISLAM", value: 980, color: religionColors.ISLAM },
-					{ name: "KRISTEN", value: 245, color: religionColors.KRISTEN },
-					{ name: "KATOLIK", value: 120, color: religionColors.KATOLIK },
-					{ name: "BUDDHA", value: 45, color: religionColors.BUDDHA },
-					{ name: "LAINNYA", value: 5, color: religionColors.LAINNYA },
+					{ name: "HINDU", value: 1850, color: religionColors["HINDU"] || "#94A3B8" },
+					{ name: "ISLAM", value: 980, color: religionColors["ISLAM"] || "#94A3B8" },
+					{ name: "KRISTEN", value: 245, color: religionColors["KRISTEN"] || "#94A3B8" },
+					{ name: "KATOLIK", value: 120, color: religionColors["KATOLIK"] || "#94A3B8" },
+					{ name: "BUDDHA", value: 45, color: religionColors["BUDDHA"] || "#94A3B8" },
+					{ name: "LAINNYA", value: 5, color: religionColors["LAINNYA"] || "#94A3B8" },
 				]);
 				setBirths(12);
 				setDeaths(3);
