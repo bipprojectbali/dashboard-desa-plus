@@ -85,7 +85,7 @@ export function DashboardContent() {
 	}, []);
 
 	return (
-		<Stack gap={{ base: "md", md: "lg" }}>
+		<Stack gap={"md"}>
 			{/* Header Metrics - 4 Stat Cards */}
 			<Grid gutter={{ base: "xs", md: "md" }}>
 				<Grid.Col span={{ base: 12, sm: 6, lg: 3 }}>

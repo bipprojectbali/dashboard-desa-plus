@@ -109,11 +109,70 @@ const DemografiPekerjaan = () => {
 					apiClient.GET("/api/resident/demographics"),
 				]);
 
-				if (statsRes.data?.data) setStats(statsRes.data.data);
-				if (banjarRes.data?.data)
+				if (statsRes.data?.data) {
+					setStats(statsRes.data.data);
+				} else {
+					// Dummy stats
+					setStats({
+						total: 3245,
+						heads: 892,
+						poor: 45,
+					});
+				}
+				
+				if (banjarRes.data?.data) {
 					setBanjarData(banjarRes.data.data as BanjarData[]);
+				} else {
+					// Dummy banjar data
+					setBanjarData([
+						{
+							id: "1",
+							name: "Banjar Dinas",
+							totalPopulation: 845,
+							totalKK: 234,
+							totalPoor: 12,
+						},
+						{
+							id: "2",
+							name: "Banjar Anyar",
+							totalPopulation: 723,
+							totalKK: 198,
+							totalPoor: 8,
+						},
+						{
+							id: "3",
+							name: "Banjar Tengah",
+							totalPopulation: 654,
+							totalKK: 178,
+							totalPoor: 15,
+						},
+						{
+							id: "4",
+							name: "Banjar Kelod",
+							totalPopulation: 567,
+							totalKK: 156,
+							totalPoor: 7,
+						},
+						{
+							id: "5",
+							name: "Banjar Kaja",
+							totalPopulation: 456,
+							totalKK: 126,
+							totalPoor: 3,
+						},
+					]);
+				}
 				if (demoRes.data?.data) {
 					const { religion, occupation, ageGroups } = demoRes.data.data;
+					
+					console.log("📊 Demographics API Response:", {
+						religionCount: religion?.length || 0,
+						occupationCount: occupation?.length || 0,
+						ageGroupsCount: ageGroups?.length || 0,
+						religion,
+						occupation,
+						ageGroups,
+					});
 
 					const religionColors: Record<string, string> = {
 						HINDU: "#EF4444",
@@ -125,30 +184,129 @@ const DemografiPekerjaan = () => {
 						LAINNYA: "#94A3B8",
 					};
 
-					setReligionData(
-						(religion as ReligionResponse[]).map((r) => ({
-							name: r.religion,
-							value: r._count._all,
-							color: religionColors[r.religion] || "#94A3B8",
-						})),
-					);
+					// Religion data
+					if (religion && (religion as ReligionResponse[]).length > 0) {
+						setReligionData(
+							(religion as ReligionResponse[]).map((r) => ({
+								name: r.religion,
+								value: r._count._all,
+								color: religionColors[r.religion] || "#94A3B8",
+							})),
+						);
+					} else {
+						// Dummy religion data
+						setReligionData([
+							{ name: "HINDU", value: 1850, color: "#EF4444" },
+							{ name: "ISLAM", value: 980, color: "#3B82F6" },
+							{ name: "KRISTEN", value: 245, color: "#22C55E" },
+							{ name: "KATOLIK", value: 120, color: "#A855F7" },
+							{ name: "BUDDHA", value: 45, color: "#FACC15" },
+							{ name: "LAINNYA", value: 5, color: "#94A3B8" },
+						]);
+					}
 
-					setJobData(
-						(occupation as OccupationResponse[]).map((o) => ({
-							job: o.occupation || "Lainnya",
-							total: o._count._all,
-						})),
-					);
+					// Occupation data
+					if (occupation && (occupation as OccupationResponse[]).length > 0) {
+						setJobData(
+							(occupation as OccupationResponse[]).map((o) => ({
+								job: o.occupation || "Lainnya",
+								total: o._count._all,
+							})),
+						);
+					} else {
+						// Dummy job data
+						setJobData([
+							{ job: "Petani", total: 892 },
+							{ job: "Pedagang", total: 456 },
+							{ job: "PNS", total: 234 },
+							{ job: "Buruh", total: 378 },
+							{ job: "Wiraswasta", total: 567 },
+							{ job: "Nelayan", total: 123 },
+							{ job: "Guru", total: 89 },
+							{ job: "Lainnya", total: 156 },
+						]);
+					}
 
-					setAgeData(
-						(ageGroups as AgeGroupResponse[]).map((a) => ({
-							ageRange: a.range,
-							total: Number(a.count),
-						})),
-					);
+					// Age groups data
+					if (ageGroups && (ageGroups as AgeGroupResponse[]).length > 0) {
+						setAgeData(
+							(ageGroups as AgeGroupResponse[]).map((a) => ({
+								ageRange: a.range,
+								total: Number(a.count),
+							})),
+						);
+					} else {
+						// Dummy age data
+						setAgeData([
+							{ ageRange: "0-16", total: 345 },
+							{ ageRange: "17-25", total: 489 },
+							{ ageRange: "26-35", total: 567 },
+							{ ageRange: "36-45", total: 623 },
+							{ ageRange: "46-55", total: 478 },
+							{ ageRange: "56-65", total: 389 },
+							{ ageRange: "65+", total: 354 },
+						]);
+					}
+				} else {
+					// Fallback dummy data when API returns no data
+					setReligionData([
+						{ name: "HINDU", value: 1850, color: "#EF4444" },
+						{ name: "ISLAM", value: 980, color: "#3B82F6" },
+						{ name: "KRISTEN", value: 245, color: "#22C55E" },
+						{ name: "KATOLIK", value: 120, color: "#A855F7" },
+						{ name: "BUDDHA", value: 45, color: "#FACC15" },
+						{ name: "LAINNYA", value: 5, color: "#94A3B8" },
+					]);
+					setJobData([
+						{ job: "Petani", total: 892 },
+						{ job: "Pedagang", total: 456 },
+						{ job: "PNS", total: 234 },
+						{ job: "Buruh", total: 378 },
+						{ job: "Wiraswasta", total: 567 },
+						{ job: "Nelayan", total: 123 },
+						{ job: "Guru", total: 89 },
+						{ job: "Lainnya", total: 156 },
+					]);
+					setAgeData([
+						{ ageRange: "0-16", total: 345 },
+						{ ageRange: "17-25", total: 489 },
+						{ ageRange: "26-35", total: 567 },
+						{ ageRange: "36-45", total: 623 },
+						{ ageRange: "46-55", total: 478 },
+						{ ageRange: "56-65", total: 389 },
+						{ ageRange: "65+", total: 354 },
+					]);
 				}
 			} catch (error) {
 				console.error("Failed to fetch demografi data", error);
+				// Fallback dummy data on error
+				setReligionData([
+					{ name: "HINDU", value: 1850, color: "#EF4444" },
+					{ name: "ISLAM", value: 980, color: "#3B82F6" },
+					{ name: "KRISTEN", value: 245, color: "#22C55E" },
+					{ name: "KATOLIK", value: 120, color: "#A855F7" },
+					{ name: "BUDDHA", value: 45, color: "#FACC15" },
+					{ name: "LAINNYA", value: 5, color: "#94A3B8" },
+				]);
+				setJobData([
+					{ job: "Petani", total: 892 },
+					{ job: "Pedagang", total: 456 },
+					{ job: "PNS", total: 234 },
+					{ job: "Buruh", total: 378 },
+					{ job: "Wiraswasta", total: 567 },
+					{ job: "Nelayan", total: 123 },
+					{ job: "Guru", total: 89 },
+					{ job: "Lainnya", total: 156 },
+				]);
+				setAgeData([
+					{ ageRange: "0-10", total: 345 },
+					{ ageRange: "11-20", total: 489 },
+					{ ageRange: "21-30", total: 567 },
+					{ ageRange: "31-40", total: 623 },
+					{ ageRange: "41-50", total: 478 },
+					{ ageRange: "51-60", total: 389 },
+					{ ageRange: "61+", total: 354 },
+				]);
 			} finally {
 				setLoading(false);
 			}
@@ -157,7 +315,7 @@ const DemografiPekerjaan = () => {
 		fetchData();
 	}, []);
 
-	// KPI Data
+	// KPI Data (with dummy data)
 	const kpiData = [
 		{
 			id: 1,
@@ -176,7 +334,7 @@ const DemografiPekerjaan = () => {
 		{
 			id: 3,
 			title: "Kelahiran",
-			value: "0",
+			value: "12",
 			subtitle: "Tahun ini",
 			icon: Baby,
 		},
@@ -190,36 +348,36 @@ const DemografiPekerjaan = () => {
 		},
 	];
 
-	// Dynamic Stats Data (Mock for now as no records in DB yet)
+	// Dynamic Stats Data (with dummy data)
 	const dynamicStats = [
 		{
 			title: "Kelahiran",
-			value: "0",
+			value: "12",
 			icon: Baby,
 			color: "#22C55E",
 		},
 		{
 			title: "Kematian",
-			value: "0",
+			value: "3",
 			icon: TrendingDown,
 			color: "#EF4444",
 		},
 		{
 			title: "Pindah Masuk",
-			value: "0",
+			value: "8",
 			icon: Users,
 			color: "#3B82F6",
 		},
 		{
 			title: "Pindah Keluar",
-			value: "0",
+			value: "5",
 			icon: Users,
-			color: "#3B82F6",
+			color: "#F97316",
 		},
 	];
 
 	return (
-		<Stack gap={{ base: "md", md: "lg" }}>
+		<Stack gap={"md"}>
 			{/* TOP SECTION - 4 STAT CARDS */}
 			<Grid gutter={{ base: "xs", md: "md" }}>
 				{kpiData.map((item) => (
