@@ -19,7 +19,7 @@ import {
 	TrendingDown,
 	Users,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -32,6 +32,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { apiClient } from "@/utils/api-client";
 
 // External API base URL
 const externalApiUrl =
@@ -97,238 +98,218 @@ const DemografiPekerjaan = () => {
 	const [moveIn, setMoveIn] = useState(0);
 	const [moveOut, setMoveOut] = useState(0);
 
-	useEffect(() => {
-		async function fetchData() {
-			try {
-				console.log("📊 Fetching demografi data from external API...");
+	// Fetch data function (can be called externally after sync)
+	const fetchData = useCallback(async () => {
+		try {
+			console.log("📊 Fetching demografi data from internal API...");
 
-				// Fetch all data in parallel
-				const [
-					summaryRes,
-					banjarRes,
-					ageRes,
-					jobRes,
-					religionRes,
-					birthsRes,
-					deathsRes,
-					migrationRes,
-					sectorRes,
-				] = await Promise.all([
-					fetch(`${externalApiUrl}/api/kependudukan/dashboard/summary`),
-					fetch(`${externalApiUrl}/api/kependudukan/data-banjar`),
-					fetch(`${externalApiUrl}/api/kependudukan/distribusi-umur`),
-					fetch(`${externalApiUrl}/api/ekonomi/demografi-pekerjaan`),
-					fetch(`${externalApiUrl}/api/kependudukan/distribusi-agama`),
-					fetch(`${externalApiUrl}/api/kesehatan/kelahiran/findMany`),
-					fetch(`${externalApiUrl}/api/kesehatan/kematian/findMany`),
-					fetch(`${externalApiUrl}/api/kependudukan/migrasi-penduduk`),
-					fetch(`${externalApiUrl}/api/ekonomi/sektor-unggulan-desa`),
-				]);
+			// Fetch all data in parallel
+			const [
+				summaryRes,
+				banjarRes,
+				ageRes,
+				jobRes,
+				religionRes,
+				birthsRes,
+				deathsRes,
+				migrationRes,
+				sectorRes,
+			] = await Promise.all([
+				apiClient.GET("/api/demografi/summary", {}),
+				apiClient.GET("/api/demografi/banjar", {}),
+				apiClient.GET("/api/demografi/age", {}),
+				apiClient.GET("/api/demografi/occupation", {}),
+				apiClient.GET("/api/demografi/religion", {}),
+				apiClient.GET("/api/demografi/births", {}),
+				apiClient.GET("/api/demografi/deaths", {}),
+				apiClient.GET("/api/demografi/migration", {}),
+				apiClient.GET("/api/demografi/sectors", {}),
+			]);
 
-				// Helper to parse response
-				const parseRes = async (res: Response, name: string) => {
-					if (!res.ok) {
-						console.warn(`⚠️ Failed to fetch ${name}: ${res.status}`);
-						return null;
-					}
-					const json = await res.json();
-					if (!json.success || !json.data) {
-						console.warn(`⚠️ No data for ${name}`);
-						return null;
-					}
-					console.log(`✅ ${name} data:`, json.data);
-					return json.data;
-				};
-
-				// Parse Dashboard Summary
-				const summaryData = await parseRes(summaryRes, "Dashboard Summary");
-				if (summaryData) {
-					setStats({
-						total: summaryData.total || 0,
-						heads: summaryData.heads || 0,
-						poor: summaryData.poor || 0,
-					});
-				}
-
-				// Parse Banjar Data
-				const banjarList = await parseRes(banjarRes, "Banjar Data");
-				if (banjarList && Array.isArray(banjarList)) {
-					setBanjarData(
-						banjarList.map((b: any) => ({
-							id: b.id || b._id || String(Math.random()),
-							name: b.name || b.nama || "Unknown",
-							totalPopulation: b.totalPopulation || b.totalPenduduk || 0,
-							totalKK: b.totalKK || b.jumlahKK || 0,
-							totalPoor: b.totalPoor || b.jumlahMiskin || 0,
-						})),
+			// Helper to parse response
+			const parseRes = (res: any, name: string) => {
+				if (!res.data?.success) {
+					console.warn(
+						`⚠️ Failed to fetch ${name}:`,
+						res.data?.error || res.error,
 					);
+					return null;
 				}
+				if (!res.data?.data) {
+					console.warn(`⚠️ No data for ${name}`);
+					return null;
+				}
+				console.log(`✅ ${name} data:`, res.data.data);
+				return res.data.data;
+			};
 
-				// Parse Age Distribution
-				const ageList = await parseRes(ageRes, "Age Distribution");
-				if (ageList && Array.isArray(ageList)) {
-					setAgeData(
-						ageList.map((a: any) => ({
-							ageRange: a.range || a.ageRange || a.kelompokUmur || "Unknown",
-							total: Number(a.total || a.count || a.jumlah || 0),
-						})),
-					);
-				}
+			// Parse Dashboard Summary
+			const summaryData = parseRes(summaryRes, "Dashboard Summary");
+			if (summaryData) {
+				// Use mapping from API structure: { summary: { totalPenduduk, totalKK, totalKemiskinan } }
+				const s = summaryData.summary || {};
+				setStats({
+					total: s.totalPenduduk || summaryData.total || 0,
+					heads: s.totalKK || summaryData.heads || 0,
+					poor: s.totalKemiskinan || summaryData.poor || 0,
+				});
 
-				// Parse Occupation Data
-				const jobList = await parseRes(jobRes, "Occupation Data");
-				if (jobList && Array.isArray(jobList)) {
-					setJobData(
-						jobList.map((j: any) => ({
-							job: j.job || j.pekerjaan || j.namaPekerjaan || "Lainnya",
-							total: Number(j.total || j.count || j.jumlah || 0),
-						})),
-					);
+				// Update dynamic stats from dinamika if available
+				const d = summaryData.dinamika || {};
+				if (d.kelahiran !== undefined) setBirths(d.kelahiran);
+				if (d.kematian !== undefined) setDeaths(d.kematian);
+				if (d.pindahMasuk !== undefined) {
+					const inCount = Array.isArray(d.pindahMasuk)
+						? d.pindahMasuk.length
+						: d.pindahMasuk;
+					setMoveIn(Number(inCount) || 0);
 				}
-
-				// Parse Religion Distribution
-				const religionList = await parseRes(
-					religionRes,
-					"Religion Distribution",
-				);
-				if (religionList && Array.isArray(religionList)) {
-					const religionColors: Record<string, string> = {
-						HINDU: "#EF4444",
-						ISLAM: "#3B82F6",
-						KRISTEN: "#22C55E",
-						KATOLIK: "#A855F7",
-						BUDDHA: "#FACC15",
-						KONGHUCU: "#F97316",
-						LAINNYA: "#94A3B8",
-					};
-					setReligionData(
-						religionList.map((r: any) => ({
-							name: r.name || r.agama || r.religion || "Unknown",
-							value: Number(r.value || r.count || r.jumlah || 0),
-							color:
-								religionColors[r.name || r.agama || r.religion] || "#94A3B8",
-						})),
-					);
+				if (d.pindahKeluar !== undefined) {
+					const outCount = Array.isArray(d.pindahKeluar)
+						? d.pindahKeluar.length
+						: d.pindahKeluar;
+					setMoveOut(Number(outCount) || 0);
 				}
-
-				// Parse Births
-				const birthsList = await parseRes(birthsRes, "Births Data");
-				if (birthsList && Array.isArray(birthsList)) {
-					setBirths(birthsList.length);
-				}
-
-				// Parse Deaths
-				const deathsList = await parseRes(deathsRes, "Deaths Data");
-				if (deathsList && Array.isArray(deathsList)) {
-					setDeaths(deathsList.length);
-				}
-
-				// Parse Migration
-				const migrationList = await parseRes(migrationRes, "Migration Data");
-				if (migrationList && Array.isArray(migrationList)) {
-					const moveInCount = migrationList.filter(
-						(m: any) =>
-							m.type === "in" ||
-							m.jenis === "masuk" ||
-							m.arah === "masuk",
-					).length;
-					const moveOutCount = migrationList.filter(
-						(m: any) =>
-							m.type === "out" ||
-							m.jenis === "keluar" ||
-							m.arah === "keluar",
-					).length;
-					setMoveIn(moveInCount);
-					setMoveOut(moveOutCount);
-				}
-
-				// Parse Sector Data
-				const sectorList = await parseRes(sectorRes, "Sector Data");
-				if (sectorList && Array.isArray(sectorList)) {
-					setSektorData(
-						sectorList.map((s: any) => ({
-							sektor: s.sektor || s.sektorUnggulan || s.namaSektor || "Unknown",
-							value: Number(s.value || s.nilai || s.jumlah || 0),
-						})),
-					);
-				}
-			} catch (error) {
-				console.error("❌ Failed to fetch demografi data:", error);
-			} finally {
-				setLoading(false);
 			}
-		}
 
-		fetchData();
-	}, []);
+			// Parse Banjar Data
+			const banjarList = parseRes(banjarRes, "Banjar Data");
+			if (banjarList && Array.isArray(banjarList)) {
+				setBanjarData(
+					banjarList.map((b: any) => ({
+						id: b.id || b._id || String(Math.random()),
+						name: b.nama || b.name || "Unknown",
+						totalPopulation: b.penduduk || b.totalPopulation || 0,
+						totalKK: b.kk || b.totalKK || 0,
+						totalPoor: b.miskin || b.totalPoor || 0,
+					})),
+				);
+			}
 
-	// Mock data fallback
-	useEffect(() => {
-		if (!loading) {
-			let hasData = false;
-			if (stats.total > 0) hasData = true;
-			if (ageData.length > 0) hasData = true;
-			if (jobData.length > 0) hasData = true;
-			if (religionData.length > 0) hasData = true;
+			// Parse Age Distribution
+			const ageList = parseRes(ageRes, "Age Distribution");
+			if (ageList && Array.isArray(ageList)) {
+				setAgeData(
+					ageList.map((a: any) => ({
+						ageRange:
+							a.rentangUmur || a.range || a.ageRange || a.kelompokUmur || "Unknown",
+						total: Number(a.jumlah || a.total || a.count || 0),
+					})),
+				);
+			}
 
-			if (!hasData) {
-				console.log("⚠️ No data from API, using mock data fallback");
-				setStats({ total: 3245, heads: 892, poor: 45 });
-				setBanjarData([
-					{ id: "1", name: "Banjar Dinas", totalPopulation: 845, totalKK: 234, totalPoor: 12 },
-					{ id: "2", name: "Banjar Anyar", totalPopulation: 723, totalKK: 198, totalPoor: 8 },
-					{ id: "3", name: "Banjar Tengah", totalPopulation: 654, totalKK: 178, totalPoor: 15 },
-					{ id: "4", name: "Banjar Kelod", totalPopulation: 567, totalKK: 156, totalPoor: 7 },
-					{ id: "5", name: "Banjar Kaja", totalPopulation: 456, totalKK: 126, totalPoor: 3 },
-				]);
-				setAgeData([
-					{ ageRange: "0-16", total: 345 },
-					{ ageRange: "17-25", total: 489 },
-					{ ageRange: "26-35", total: 567 },
-					{ ageRange: "36-45", total: 623 },
-					{ ageRange: "46-55", total: 478 },
-					{ ageRange: "56-65", total: 389 },
-					{ ageRange: "65+", total: 354 },
-				]);
-				setJobData([
-					{ job: "Petani", total: 892 },
-					{ job: "Pedagang", total: 456 },
-					{ job: "PNS", total: 234 },
-					{ job: "Buruh", total: 378 },
-					{ job: "Wiraswasta", total: 567 },
-					{ job: "Nelayan", total: 123 },
-					{ job: "Guru", total: 89 },
-					{ job: "Lainnya", total: 156 },
-				]);
+			// Parse Occupation Data
+			const jobList = parseRes(jobRes, "Occupation Data");
+			if (jobList && Array.isArray(jobList)) {
+				setJobData(
+					jobList.map((j: any) => ({
+						job: j.pekerjaan || j.namaPekerjaan || j.job || "Lainnya",
+						total: Number(
+							j.jumlah ||
+								j.total ||
+								j.count ||
+								(Number(j.lakiLaki || 0) + Number(j.perempuan || 0)) ||
+								0,
+						),
+					})),
+				);
+			}
+
+			// Parse Religion Distribution
+			const religionList = parseRes(religionRes, "Religion Distribution");
+			if (religionList && Array.isArray(religionList)) {
 				const religionColors: Record<string, string> = {
 					HINDU: "#EF4444",
 					ISLAM: "#3B82F6",
 					KRISTEN: "#22C55E",
 					KATOLIK: "#A855F7",
 					BUDDHA: "#FACC15",
+					KONGHUCU: "#F97316",
 					LAINNYA: "#94A3B8",
 				};
-				setReligionData([
-					{ name: "HINDU", value: 1850, color: religionColors["HINDU"] || "#94A3B8" },
-					{ name: "ISLAM", value: 980, color: religionColors["ISLAM"] || "#94A3B8" },
-					{ name: "KRISTEN", value: 245, color: religionColors["KRISTEN"] || "#94A3B8" },
-					{ name: "KATOLIK", value: 120, color: religionColors["KATOLIK"] || "#94A3B8" },
-					{ name: "BUDDHA", value: 45, color: religionColors["BUDDHA"] || "#94A3B8" },
-					{ name: "LAINNYA", value: 5, color: religionColors["LAINNYA"] || "#94A3B8" },
-				]);
-				setBirths(12);
-				setDeaths(3);
-				setMoveIn(8);
-				setMoveOut(5);
-				setSektorData([
-					{ sektor: "Pertanian", value: 65 },
-					{ sektor: "Perdagangan", value: 45 },
-					{ sektor: "Industri", value: 38 },
-					{ sektor: "Jasa", value: 52 },
-				]);
+				setReligionData(
+					religionList.map((r: any) => ({
+						name: r.agama || r.religion || r.name || "Unknown",
+						value: Number(r.jumlah || r.value || r.count || 0),
+						color:
+							religionColors[r.agama || r.religion || r.name] || "#94A3B8",
+					})),
+				);
 			}
+
+			// Parse Births (Only if summary dinamika didn't provide it)
+			if (births === 0) {
+				const birthsList = parseRes(birthsRes, "Births Data");
+				if (birthsList && Array.isArray(birthsList)) {
+					setBirths(birthsList.length);
+				}
+			}
+
+			// Parse Deaths (Only if summary dinamika didn't provide it)
+			if (deaths === 0) {
+				const deathsList = parseRes(deathsRes, "Deaths Data");
+				if (deathsList && Array.isArray(deathsList)) {
+					setDeaths(deathsList.length);
+				}
+			}
+
+			// Parse Migration (Only if summary dinamika didn't provide it)
+			if (moveIn === 0 && moveOut === 0) {
+				const migrationList = parseRes(migrationRes, "Migration Data");
+				if (migrationList && Array.isArray(migrationList)) {
+					const moveInCount = migrationList.filter(
+						(m: any) =>
+							m.jenis === "MASUK" ||
+							m.jenis === "masuk" ||
+							m.type === "in" ||
+							m.arah === "masuk",
+					).length;
+					const moveOutCount = migrationList.filter(
+						(m: any) =>
+							m.jenis === "KELUAR" ||
+							m.jenis === "keluar" ||
+							m.type === "out" ||
+							m.arah === "keluar",
+					).length;
+					setMoveIn(moveInCount);
+					setMoveOut(moveOutCount);
+				}
+			}
+
+			// Parse Sector Data
+			const sectorList = parseRes(sectorRes, "Sector Data");
+			if (sectorList && Array.isArray(sectorList)) {
+				setSektorData(
+					sectorList.map((s: any) => ({
+						sektor: s.sektor || s.sektorUnggulan || s.namaSektor || "Unknown",
+						value: Number(s.value || s.nilai || s.jumlah || 0),
+					})),
+				);
+			}
+		} catch (error) {
+			console.error("❌ Failed to fetch demografi data:", error);
+		} finally {
+			setLoading(false);
 		}
-	}, [loading]);
+	}, []);
+
+	useEffect(() => {
+		fetchData();
+	}, [fetchData]);
+
+	// Listen for sync complete event to refresh data
+	useEffect(() => {
+		const handleSyncComplete = () => {
+			console.log("🔄 Sync complete event received, refreshing data...");
+			setLoading(true);
+			fetchData();
+		};
+
+		window.addEventListener("demografi-sync-complete", handleSyncComplete);
+		return () => {
+			window.removeEventListener("demografi-sync-complete", handleSyncComplete);
+		};
+	}, [fetchData]);
 
 	// KPI Data
 	const kpiData = [

@@ -6,6 +6,7 @@ import { auth } from "../utils/auth";
 import { apikey } from "./apikey";
 import { complaint } from "./complaint";
 import { dashboard } from "./dashboard";
+import { demografi } from "./demografi";
 import { division } from "./division";
 import { event } from "./event";
 import { noc } from "./noc";
@@ -44,7 +45,8 @@ const api = new Elysia({
 	.use(complaint)
 	.use(resident)
 	.use(event)
-	.use(dashboard);
+	.use(dashboard)
+	.use(demografi);
 
 if (!isProduction) {
 	api.use(

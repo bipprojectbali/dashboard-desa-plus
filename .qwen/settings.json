@@ -1,14 +1,14 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(bun *)",
-      "Bash(chmod *)",
-      "Bash(git checkout *)",
-      "Bash(git add *)",
-      "Bash(git reset *)",
-      "Bash(git commit *)",
-      "Bash(git push *)"
-    ]
-  },
-  "$version": 3
+	"permissions": {
+		"allow": [
+			"Bash(bun *)",
+			"Bash(chmod *)",
+			"Bash(git checkout *)",
+			"Bash(git add *)",
+			"Bash(git reset *)",
+			"Bash(git commit *)",
+			"Bash(git push *)"
+		]
+	},
+	"$version": 3
 }

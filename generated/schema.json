@@ -5489,6 +5489,1111 @@
         },
         "operationId": "getApiDashboardSatisfaction"
       }
+    },
+    "/api/demografi/summary": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDemografiSummary"
+      }
+    },
+    "/api/demografi/banjar": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDemografiBanjar"
+      }
+    },
+    "/api/demografi/age": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDemografiAge"
+      }
+    },
+    "/api/demografi/occupation": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDemografiOccupation"
+      }
+    },
+    "/api/demografi/religion": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDemografiReligion"
+      }
+    },
+    "/api/demografi/births": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDemografiBirths"
+      }
+    },
+    "/api/demografi/deaths": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDemografiDeaths"
+      }
+    },
+    "/api/demografi/migration": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDemografiMigration"
+      }
+    },
+    "/api/demografi/sectors": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data",
+                    "lastSyncedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDemografiSectors"
+      }
+    },
+    "/api/demografi/sync": {
+      "post": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "lastSyncedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postApiDemografiSync"
+      }
+    },
+    "/api/demografi/last-sync": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "lastSyncedAt"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "lastSyncedAt"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiDemografiLast-sync"
+      }
     }
   },
   "components": {

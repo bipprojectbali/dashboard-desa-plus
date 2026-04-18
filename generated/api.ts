@@ -617,6 +617,182 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/demografi/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDemografiSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demografi/banjar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDemografiBanjar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demografi/age": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDemografiAge"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demografi/occupation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDemografiOccupation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demografi/religion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDemografiReligion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demografi/births": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDemografiBirths"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demografi/deaths": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDemografiDeaths"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demografi/migration": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDemografiMigration"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demografi/sectors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDemografiSectors"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demografi/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiDemografiSync"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demografi/last-sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDemografiLast-sync"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2607,6 +2783,396 @@ export interface operations {
                             value: number;
                             color: string;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    getApiDemografiSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDemografiBanjar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDemografiAge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDemografiOccupation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDemografiReligion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDemografiBirths: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDemografiDeaths: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDemografiMigration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiDemografiSectors: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        lastSyncedAt: (string | null) | null;
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
+    postApiDemografiSync: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message?: string;
+                        lastSyncedAt: (string | null) | null;
+                        errors?: string[];
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        message?: string;
+                        lastSyncedAt: (string | null) | null;
+                        errors?: string[];
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        message?: string;
+                        lastSyncedAt: (string | null) | null;
+                        errors?: string[];
+                        error?: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiDemografiLast-sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        lastSyncedAt: (string | null) | null;
+                    };
+                    "multipart/form-data": {
+                        lastSyncedAt: (string | null) | null;
+                    };
+                    "text/plain": {
+                        lastSyncedAt: (string | null) | null;
                     };
                 };
             };

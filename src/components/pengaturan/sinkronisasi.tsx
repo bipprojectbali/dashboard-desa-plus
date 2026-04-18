@@ -8,6 +8,7 @@ import {
 	Group,
 	Loader,
 	Stack,
+	Tabs,
 	Text,
 	Title,
 } from "@mantine/core";
@@ -16,6 +17,8 @@ import {
 	IconCheck,
 	IconClock,
 	IconRefresh,
+	IconUsers,
+	IconDatabase,
 } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -28,8 +31,16 @@ dayjs.locale("id");
 
 const SinkronisasiSettings = () => {
 	const [loading, setLoading] = useState(false);
+	const [demografiLoading, setDemografiLoading] = useState(false);
 	const [lastSync, setLastSync] = useState<string | null>(null);
+	const [demografiLastSync, setDemografiLastSync] = useState<string | null>(
+		null,
+	);
 	const [status, setStatus] = useState<{
+		type: "success" | "error" | null;
+		message: string;
+	}>({ type: null, message: "" });
+	const [demografiStatus, setDemografiStatus] = useState<{
 		type: "success" | "error" | null;
 		message: string;
 	}>({ type: null, message: "" });
@@ -43,8 +54,20 @@ const SinkronisasiSettings = () => {
 		}
 	};
 
+	const fetchDemografiLastSync = async () => {
+		try {
+			const { data } = await apiClient.GET("/api/demografi/last-sync", {});
+			if (data?.lastSyncedAt) {
+				setDemografiLastSync(data.lastSyncedAt);
+			}
+		} catch (error) {
+			console.error("Failed to fetch demografi last sync:", error);
+		}
+	};
+
 	useEffect(() => {
 		fetchLastSync();
+		fetchDemografiLastSync();
 	}, []);
 
 	const handleSync = async () => {
@@ -52,9 +75,12 @@ const SinkronisasiSettings = () => {
 		setStatus({ type: null, message: "" });
 
 		try {
-			console.log("[Sync] Starting synchronization...");
+			console.log("[Sync] Starting NOC synchronization...");
 
-			const { data, error, response } = await apiClient.POST("/api/noc/sync");
+			const { data, error, response } = await apiClient.POST(
+				"/api/noc/sync",
+				{},
+			);
 
 			console.log("[Sync] Response:", {
 				data,
@@ -112,6 +138,68 @@ const SinkronisasiSettings = () => {
 			});
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const handleDemografiSync = async () => {
+		setDemografiLoading(true);
+		setDemografiStatus({ type: null, message: "" });
+
+		try {
+			console.log("[Demografi Sync] Starting demografi synchronization...");
+
+			const { data, error, response } = await apiClient.POST(
+				"/api/demografi/sync",
+				{},
+			);
+
+			console.log("[Demografi Sync] Response:", {
+				data,
+				error,
+				status: response?.status,
+			});
+
+			if (error) {
+				console.error("[Demografi Sync] API Error:", error);
+				setDemografiStatus({
+					type: "error",
+					message:
+						(error as any)?.error ||
+						(error as any)?.message ||
+						"Gagal melakukan sinkronisasi data demografi.",
+				});
+				return;
+			}
+
+			if (data?.success) {
+				setDemografiStatus({
+					type: "success",
+					message: data.message || "Sinkronisasi data demografi berhasil",
+				});
+				if (data.lastSyncedAt) {
+					setDemografiLastSync(data.lastSyncedAt);
+				}
+				// Trigger refresh in demografi component
+				window.dispatchEvent(new CustomEvent("demografi-sync-complete"));
+			} else if (data?.error) {
+				setDemografiStatus({
+					type: "error",
+					message: data.error,
+				});
+			} else {
+				setDemografiStatus({
+					type: "error",
+					message: "Response tidak dikenali dari server",
+				});
+			}
+		} catch (err) {
+			console.error("[Demografi Sync] Exception:", err);
+			setDemografiStatus({
+				type: "error",
+				message: "Terjadi kesalahan sistem saat sinkronisasi data demografi.",
+			});
+		} finally {
+			setDemografiLoading(false);
 		}
 	};
 

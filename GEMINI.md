@@ -87,3 +87,25 @@ The project uses two main categories for testing, consolidated in the `__tests__
 *   `__tests__/`: Centralized testing directory (`api/` and `e2e/`).
 *   `prisma/`: Database schema and migrations.
 *   `dist/`: Production build output.
+
+## Git & Deployment Workflow
+
+### Workflow for Code Changes
+1.  **Commit** existing changes before starting new work
+2.  **Create plan** at `MIND/PLAN/[plan-name].md`
+3.  **Create task** at `MIND/PLAN/[task-name].md`
+4.  **Execute the task** and update task progress
+5.  **Create summary** at `MIND/SUMMARY/[summary-name].md` when done
+6.  **Run build** (`bun run build`) to ensure no compile errors
+7.  **Fix any build errors** if they occur
+8.  **Commit** all changes AFTER successful build
+9.  **Update version** in `package.json` for every change
+10. **Push** to new branch with format: `tasks/[task-name]/[what-is-being-done]/[date-time]`
+11. **Merge** to `stg` branch after completion
+
+### GitHub Workflows
+1.  **publish.yml**: Uses branch `main`, stack env and image tag matching version from `package.json`.
+2.  **re-pull.yml**: **Wait for `publish.yml` to complete successfully before running.** Uses branch `main`, stack env and stack name `dashboard-desa-plus`.
+
+### After Progress
+-   Always give option to continue to GitHub workflows or not
