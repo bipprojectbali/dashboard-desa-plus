@@ -102,19 +102,11 @@ const DemografiPekerjaan = () => {
 	const fetchData = useCallback(async () => {
 		try {
 			console.log("📊 Fetching demografi data from internal API...");
+			setLoading(true);
 
-			// Fetch all data in parallel
-			const [
-				summaryRes,
-				banjarRes,
-				ageRes,
-				jobRes,
-				religionRes,
-				birthsRes,
-				deathsRes,
-				migrationRes,
-				sectorRes,
-			] = await Promise.all([
+			// Fetch all data using Promise.allSettled for better resilience
+			// If one endpoint fails, the others can still load
+			const results = await Promise.allSettled([
 				apiClient.GET("/api/demografi/summary", {}),
 				apiClient.GET("/api/demografi/banjar", {}),
 				apiClient.GET("/api/demografi/age", {}),
@@ -126,17 +118,45 @@ const DemografiPekerjaan = () => {
 				apiClient.GET("/api/demografi/sectors", {}),
 			]);
 
+			// Helper to get value from settled promise
+			const getVal = (index: number) => {
+				const res = results[index];
+				if (!res) return { data: null, error: "Result not found" };
+
+				if (res.status === "fulfilled") {
+					return res.value;
+				}
+				// Type narrowing: if not fulfilled, it must be rejected and have a reason
+				const reason = (res as PromiseRejectedResult).reason;
+				console.error(`❌ Request ${index} failed:`, reason);
+				return { data: null, error: reason };
+			};
+
+			const summaryRes = getVal(0);
+			const banjarRes = getVal(1);
+			const ageRes = getVal(2);
+			const jobRes = getVal(3);
+			const religionRes = getVal(4);
+			const birthsRes = getVal(5);
+			const deathsRes = getVal(6);
+			const migrationRes = getVal(7);
+			const sectorRes = getVal(8);
+
 			// Helper to parse response
 			const parseRes = (res: any, name: string) => {
-				if (!res.data?.success) {
+				if (!res || !res.data) {
+					console.warn(`⚠️ No response or data for ${name}`);
+					return null;
+				}
+				if (!res.data.success) {
 					console.warn(
 						`⚠️ Failed to fetch ${name}:`,
-						res.data?.error || res.error,
+						res.data.error || res.error,
 					);
 					return null;
 				}
-				if (!res.data?.data) {
-					console.warn(`⚠️ No data for ${name}`);
+				if (!res.data.data) {
+					console.warn(`⚠️ No data field for ${name}`);
 					return null;
 				}
 				console.log(`✅ ${name} data:`, res.data.data);
@@ -146,7 +166,6 @@ const DemografiPekerjaan = () => {
 			// Parse Dashboard Summary
 			const summaryData = parseRes(summaryRes, "Dashboard Summary");
 			if (summaryData) {
-				// Use mapping from API structure: { summary: { totalPenduduk, totalKK, totalKemiskinan } }
 				const s = summaryData.summary || {};
 				setStats({
 					total: s.totalPenduduk || summaryData.total || 0,
@@ -154,7 +173,6 @@ const DemografiPekerjaan = () => {
 					poor: s.totalKemiskinan || summaryData.poor || 0,
 				});
 
-				// Update dynamic stats from dinamika if available
 				const d = summaryData.dinamika || {};
 				if (d.kelahiran !== undefined) setBirths(d.kelahiran);
 				if (d.kematian !== undefined) setDeaths(d.kematian);
@@ -175,8 +193,9 @@ const DemografiPekerjaan = () => {
 			// Parse Banjar Data
 			const banjarList = parseRes(banjarRes, "Banjar Data");
 			if (banjarList && Array.isArray(banjarList)) {
+				// Sort by population or just take first 10 as "latest/top"
 				setBanjarData(
-					banjarList.map((b: any) => ({
+					banjarList.slice(0, 10).map((b: any) => ({
 						id: b.id || b._id || String(Math.random()),
 						name: b.nama || b.name || "Unknown",
 						totalPopulation: b.penduduk || b.totalPopulation || 0,
@@ -237,54 +256,71 @@ const DemografiPekerjaan = () => {
 				);
 			}
 
-			// Parse Births (Only if summary dinamika didn't provide it)
-			if (births === 0) {
-				const birthsList = parseRes(birthsRes, "Births Data");
-				if (birthsList && Array.isArray(birthsList)) {
-					setBirths(birthsList.length);
-				}
+			// Parse Births
+			const birthsList = parseRes(birthsRes, "Births Data");
+			if (birthsList && Array.isArray(birthsList)) {
+				setBirths(birthsList.length);
 			}
 
-			// Parse Deaths (Only if summary dinamika didn't provide it)
-			if (deaths === 0) {
-				const deathsList = parseRes(deathsRes, "Deaths Data");
-				if (deathsList && Array.isArray(deathsList)) {
-					setDeaths(deathsList.length);
-				}
+			// Parse Deaths
+			const deathsList = parseRes(deathsRes, "Deaths Data");
+			if (deathsList && Array.isArray(deathsList)) {
+				setDeaths(deathsList.length);
 			}
 
-			// Parse Migration (Only if summary dinamika didn't provide it)
-			if (moveIn === 0 && moveOut === 0) {
-				const migrationList = parseRes(migrationRes, "Migration Data");
-				if (migrationList && Array.isArray(migrationList)) {
-					const moveInCount = migrationList.filter(
-						(m: any) =>
-							m.jenis === "MASUK" ||
-							m.jenis === "masuk" ||
-							m.type === "in" ||
-							m.arah === "masuk",
-					).length;
-					const moveOutCount = migrationList.filter(
-						(m: any) =>
-							m.jenis === "KELUAR" ||
-							m.jenis === "keluar" ||
-							m.type === "out" ||
-							m.arah === "keluar",
-					).length;
-					setMoveIn(moveInCount);
-					setMoveOut(moveOutCount);
-				}
+			// Parse Migration
+			const migrationList = parseRes(migrationRes, "Migration Data");
+			if (migrationList && Array.isArray(migrationList)) {
+				const moveInCount = migrationList.filter(
+					(m: any) =>
+						m.jenis === "MASUK" ||
+						m.jenis === "masuk" ||
+						m.type === "in" ||
+						m.arah === "masuk",
+				).length;
+				const moveOutCount = migrationList.filter(
+					(m: any) =>
+						m.jenis === "KELUAR" ||
+						m.jenis === "keluar" ||
+						m.type === "out" ||
+						m.arah === "keluar",
+				).length;
+				setMoveIn(moveInCount);
+				setMoveOut(moveOutCount);
 			}
 
 			// Parse Sector Data
-			const sectorList = parseRes(sectorRes, "Sector Data");
-			if (sectorList && Array.isArray(sectorList)) {
-				setSektorData(
-					sectorList.map((s: any) => ({
-						sektor: s.sektor || s.sektorUnggulan || s.namaSektor || "Unknown",
-						value: Number(s.value || s.nilai || s.jumlah || 0),
-					})),
-				);
+			let sectorList = parseRes(sectorRes, "Sector Data");
+			if (sectorList) {
+				if (!Array.isArray(sectorList) && typeof sectorList === "object") {
+					const possibleArray =
+						sectorList.data ||
+						sectorList.list ||
+						sectorList.sectors ||
+						sectorList.items;
+					if (Array.isArray(possibleArray)) {
+						sectorList = possibleArray;
+					}
+				}
+
+				if (Array.isArray(sectorList)) {
+					console.log("📍 Mapping sector data:", sectorList);
+					setSektorData(
+						sectorList.map((s: any) => ({
+							sektor:
+								s.name ||
+								s.nama ||
+								s.sektor ||
+								s.sektorUnggulan ||
+								s.sektor_unggulan ||
+								s.namaSektor ||
+								"Unknown",
+							value: Number(
+								s.value ?? s.nilai ?? s.jumlah ?? s.total ?? s.count ?? 0,
+							),
+						})),
+					);
+				}
 			}
 		} catch (error) {
 			console.error("❌ Failed to fetch demografi data:", error);
@@ -881,50 +917,56 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>
-							<BarChart data={sektorData} layout="vertical">
-								<CartesianGrid
-									strokeDasharray="3 3"
-									horizontal={false}
-									stroke={dark ? "#334155" : "#e5e7eb"}
-								/>
-								<XAxis
-									type="number"
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-								/>
-								<YAxis
-									type="category"
-									dataKey="sektor"
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-									width={90}
-								/>
-								<Tooltip
-									contentStyle={{
-										backgroundColor: dark ? "#1E293B" : "white",
-										borderColor: dark ? "#334155" : "#e5e7eb",
-										borderRadius: "8px",
-									}}
-								/>
-								<Bar
-									dataKey="value"
-									fill="#396aaaff"
-									radius={[0, 8, 8, 0]}
-									maxBarSize={40}
-								>
-									{sektorData.map((entry) => (
-										<Cell key={`cell-${entry.sektor}`} fill="#396aaaff" />
-									))}
-								</Bar>
-							</BarChart>
+							{loading ? (
+								<Group justify="center" align="center" h="100%">
+									<Loader />
+								</Group>
+							) : (
+								<BarChart data={sektorData} layout="vertical">
+									<CartesianGrid
+										strokeDasharray="3 3"
+										horizontal={false}
+										stroke={dark ? "#334155" : "#e5e7eb"}
+									/>
+									<XAxis
+										type="number"
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 12,
+										}}
+									/>
+									<YAxis
+										type="category"
+										dataKey="sektor"
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 11,
+										}}
+										width={120}
+									/>
+									<Tooltip
+										contentStyle={{
+											backgroundColor: dark ? "#1E293B" : "white",
+											borderColor: dark ? "#334155" : "#e5e7eb",
+											borderRadius: "8px",
+										}}
+									/>
+									<Bar
+										dataKey="value"
+										fill="#396aaaff"
+										radius={[0, 8, 8, 0]}
+										maxBarSize={40}
+									>
+										{sektorData.map((entry) => (
+											<Cell key={`cell-${entry.sektor}`} fill="#396aaaff" />
+										))}
+									</Bar>
+								</BarChart>
+							)}
 						</ResponsiveContainer>
 					</Card>
 				</Grid.Col>

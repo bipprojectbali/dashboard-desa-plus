@@ -298,17 +298,23 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/sectors",
 		async () => {
 			try {
+				console.log("[Demografi API] Fetching sectors from external API...");
 				const response = await desaExternalClient.GET(
-					"/api/ekonomi/sektor-unggulan-desa",
+					"/api/ekonomi/sektourunggulandesa/find-many" as any,
 				);
 
 				if (response.error) {
+					console.error("[Demografi API] External sectors error:", response.error);
 					return { success: false, error: response.error };
 				}
 
+				// Log sample of data to help debugging
+				const data = response.data?.data || [];
+				console.log(`[Demografi API] Sectors fetched successfully: ${Array.isArray(data) ? data.length : 0} items`);
+
 				return {
 					success: true,
-					data: response.data?.data || null,
+					data: data,
 					lastSyncedAt: demografiCache.lastSyncedAt,
 				};
 			} catch (error) {
@@ -355,7 +361,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 					desaExternalClient.GET("/api/kesehatan/kelahiran/findMany"),
 					desaExternalClient.GET("/api/kesehatan/kematian/findMany"),
 					desaExternalClient.GET("/api/kependudukan/migrasipenduduk/find-many" as any),
-					desaExternalClient.GET("/api/ekonomi/sektor-unggulan-desa"),
+					desaExternalClient.GET("/api/ekonomi/sektourunggulandesa/find-many" as any),
 				]);
 
 				// Check for errors
@@ -433,6 +439,44 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 			response: {
 				200: t.Object({
 					lastSyncedAt: t.Nullable(t.String()),
+				}),
+			},
+		},
+	)
+
+	// Get detailed APBDes data by ID
+	.get(
+		"/apbdes/:id",
+		async ({ params: { id } }) => {
+			try {
+				console.log(`[Demografi API] Fetching APBDes detail for ID: ${id}`);
+				const response = await desaExternalClient.GET(
+					`/api/landingpage/apbdes/${id}` as any,
+				);
+
+				if (response.error) {
+					console.error("[Demografi API] APBDes detail error:", response.error);
+					return { success: false, error: response.error };
+				}
+
+				return {
+					success: true,
+					data: response.data || null,
+				};
+			} catch (error) {
+				console.error("[Demografi API] APBDes detail error:", error);
+				return { success: false, error: "Failed to fetch APBDes detail data" };
+			}
+		},
+		{
+			params: t.Object({
+				id: t.String(),
+			}),
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Any(),
+					error: t.Optional(t.String()),
 				}),
 			},
 		},

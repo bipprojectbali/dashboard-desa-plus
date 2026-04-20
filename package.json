@@ -1,7 +1,6 @@
 {
 	"name": "darmasaba-dashboard-noc",
-	"version": "0.1.0-pre.5",
-	"private": true,
+	"version": "0.1.0-pre.6",	"private": true,
 	"type": "module",
 	"scripts": {
 		"dev": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true; bun run gen:api && REACT_EDITOR=antigravity bun --hot src/index.ts",
