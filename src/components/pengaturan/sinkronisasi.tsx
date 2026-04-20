@@ -204,121 +204,230 @@ const SinkronisasiSettings = () => {
 	};
 
 	return (
-		<Box pr={"50%"}>
+		<Box pr={"20%"}>
 			<Title order={2} mb="lg">
-				Sinkronisasi Data NOC
+				Sinkronisasi Data
 			</Title>
 
 			<Text c="dimmed" mb="xl">
 				Gunakan fitur ini untuk memperbarui data dashboard dengan data terbaru
-				dari server Network Operation Center (NOC) darmasaba.muku.id.
+				dari server sumber.
 			</Text>
 
-			<Card withBorder padding="lg" radius="md" mb="xl">
-				<Stack gap="md">
-					<Group justify="space-between">
-						<Group>
-							<IconClock size={20} color="gray" />
-							<Text fw={500}>Status Terakhir</Text>
-						</Group>
-						<Badge color={lastSync ? "green" : "gray"} variant="light">
-							{lastSync ? "Terkoneksi" : "Belum Pernah Sinkron"}
-						</Badge>
-					</Group>
+			<Grid gutter="xl">
+				<Grid.Col span={{ base: 12, md: 6 }}>
+					<Title order={3} mb="md">
+						Data NOC (muku.id)
+					</Title>
+					<Card withBorder padding="lg" radius="md" mb="xl">
+						<Stack gap="md">
+							<Group justify="space-between">
+								<Group>
+									<IconDatabase size={20} color="gray" />
+									<Text fw={500}>Status Terakhir</Text>
+								</Group>
+								<Badge color={lastSync ? "green" : "gray"} variant="light">
+									{lastSync ? "Terkoneksi" : "Belum Pernah Sinkron"}
+								</Badge>
+							</Group>
 
-					<Divider />
+							<Divider />
 
-					<Box>
-						<Text size="sm" c="dimmed">
-							Waktu Sinkronisasi Terakhir:
-						</Text>
-						<Text fw={700} size="lg">
-							{lastSync
-								? dayjs(lastSync).format("DD MMMM YYYY, HH:mm:ss")
-								: "Belum pernah dilakukan"}
-						</Text>
-						{lastSync && (
-							<Text size="xs" c="dimmed" mt={4}>
-								({dayjs(lastSync).fromNow()})
-							</Text>
-						)}
-					</Box>
+							<Box>
+								<Text size="sm" c="dimmed">
+									Waktu Sinkronisasi Terakhir:
+								</Text>
+								<Text fw={700} size="lg">
+									{lastSync
+										? dayjs(lastSync).format("DD MMMM YYYY, HH:mm:ss")
+										: "Belum pernah dilakukan"}
+								</Text>
+								{lastSync && (
+									<Text size="xs" c="dimmed" mt={4}>
+										({dayjs(lastSync).fromNow()})
+									</Text>
+								)}
+							</Box>
 
-					{status.type && (
-						<Alert
-							icon={
-								status.type === "success" ? (
-									<IconCheck size={16} />
-								) : (
-									<IconAlertCircle size={16} />
-								)
-							}
-							title={status.type === "success" ? "Berhasil" : "Kesalahan"}
-							color={status.type === "success" ? "green" : "red"}
-							onClose={() => setStatus({ type: null, message: "" })}
-							withCloseButton
-						>
-							{status.message}
-						</Alert>
-					)}
+							{status.type && (
+								<Alert
+									icon={
+										status.type === "success" ? (
+											<IconCheck size={16} />
+										) : (
+											<IconAlertCircle size={16} />
+										)
+									}
+									title={status.type === "success" ? "Berhasil" : "Kesalahan"}
+									color={status.type === "success" ? "green" : "red"}
+									onClose={() => setStatus({ type: null, message: "" })}
+									withCloseButton
+								>
+									{status.message}
+								</Alert>
+							)}
 
-					<Button
-						leftSection={
-							loading ? (
-								<Loader size={16} color="white" />
-							) : (
-								<IconRefresh size={16} />
-							)
-						}
-						onClick={handleSync}
-						loading={loading}
-						fullWidth
-						mt="md"
-					>
-						Sinkronkan Sekarang
-					</Button>
-				</Stack>
-			</Card>
+							<Button
+								leftSection={
+									loading ? (
+										<Loader size={16} color="white" />
+									) : (
+										<IconRefresh size={16} />
+									)
+								}
+								onClick={handleSync}
+								loading={loading}
+								fullWidth
+								mt="md"
+							>
+								Sinkronkan NOC
+							</Button>
+						</Stack>
+					</Card>
+				</Grid.Col>
+
+				<Grid.Col span={{ base: 12, md: 6 }}>
+					<Title order={3} mb="md">
+						Website Desa (darmasaba.desa.id)
+					</Title>
+					<Card withBorder padding="lg" radius="md" mb="xl">
+						<Stack gap="md">
+							<Group justify="space-between">
+								<Group>
+									<IconUsers size={20} color="gray" />
+									<Text fw={500}>Status Terakhir</Text>
+								</Group>
+								<Badge
+									color={demografiLastSync ? "blue" : "gray"}
+									variant="light"
+								>
+									{demografiLastSync ? "Terkoneksi" : "Belum Pernah Sinkron"}
+								</Badge>
+							</Group>
+
+							<Divider />
+
+							<Box>
+								<Text size="sm" c="dimmed">
+									Waktu Sinkronisasi Terakhir:
+								</Text>
+								<Text fw={700} size="lg">
+									{demografiLastSync
+										? dayjs(demografiLastSync).format("DD MMMM YYYY, HH:mm:ss")
+										: "Belum pernah dilakukan"}
+								</Text>
+								{demografiLastSync && (
+									<Text size="xs" c="dimmed" mt={4}>
+										({dayjs(demografiLastSync).fromNow()})
+									</Text>
+								)}
+							</Box>
+
+							{demografiStatus.type && (
+								<Alert
+									icon={
+										demografiStatus.type === "success" ? (
+											<IconCheck size={16} />
+										) : (
+											<IconAlertCircle size={16} />
+										)
+									}
+									title={
+										demografiStatus.type === "success" ? "Berhasil" : "Kesalahan"
+									}
+									color={demografiStatus.type === "success" ? "blue" : "red"}
+									onClose={() => setDemografiStatus({ type: null, message: "" })}
+									withCloseButton
+								>
+									{demografiStatus.message}
+								</Alert>
+							)}
+
+							<Button
+								color="blue"
+								leftSection={
+									demografiLoading ? (
+										<Loader size={16} color="white" />
+									) : (
+										<IconRefresh size={16} />
+									)
+								}
+								onClick={handleDemografiSync}
+								loading={demografiLoading}
+								fullWidth
+								mt="md"
+							>
+								Sinkronkan Website Desa
+							</Button>
+						</Stack>
+					</Card>
+				</Grid.Col>
+			</Grid>
 
 			<Title order={2} mb="lg">
-				Informasi API
+				Informasi Sumber Data
 			</Title>
 
-			<Card withBorder padding="md" radius="md" bg="gray.0">
-				<Stack gap="xs">
-					<Group>
-						<Text fw={600} size="sm" w={100}>
-							URL Sumber:
-						</Text>
-						<Text size="sm" style={{ wordBreak: "break-all" }}>
-							https://darmasaba.muku.id/api/noc/
-						</Text>
-					</Group>
-					<Group>
-						<Text fw={600} size="sm" w={100}>
-							ID Desa:
-						</Text>
-						<Text size="sm">desa1</Text>
-					</Group>
-					<Group>
-						<Text fw={600} size="sm" w={100}>
-							Model Data:
-						</Text>
-						<Badge size="xs" variant="outline">
-							Divisi
-						</Badge>
-						<Badge size="xs" variant="outline">
-							Kegiatan
-						</Badge>
-						<Badge size="xs" variant="outline">
-							Event
-						</Badge>
-						<Badge size="xs" variant="outline">
-							Diskusi
-						</Badge>
-					</Group>
-				</Stack>
-			</Card>
+			<Grid>
+				<Grid.Col span={{ base: 12, md: 6 }}>
+					<Card withBorder padding="md" radius="md" bg="gray.0">
+						<Stack gap="xs">
+							<Text fw={700} size="sm">
+								Network Operation Center (NOC)
+							</Text>
+							<Group>
+								<Text fw={600} size="xs" w={80}>
+									URL:
+								</Text>
+								<Text size="xs">https://darmasaba.muku.id/api/noc/</Text>
+							</Group>
+							<Group>
+								<Text fw={600} size="xs" w={80}>
+									Model:
+								</Text>
+								<Badge size="xs" variant="outline">
+									Divisi
+								</Badge>
+								<Badge size="xs" variant="outline">
+									Kegiatan
+								</Badge>
+								<Badge size="xs" variant="outline">
+									Diskusi
+								</Badge>
+							</Group>
+						</Stack>
+					</Card>
+				</Grid.Col>
+				<Grid.Col span={{ base: 12, md: 6 }}>
+					<Card withBorder padding="md" radius="md" bg="gray.0">
+						<Stack gap="xs">
+							<Text fw={700} size="sm">
+								Website Desa Darmasaba
+							</Text>
+							<Group>
+								<Text fw={600} size="xs" w={80}>
+									URL:
+								</Text>
+								<Text size="xs">https://desa-darmasaba-stg.wibudev.com</Text>
+							</Group>
+							<Group>
+								<Text fw={600} size="xs" w={80}>
+									Model:
+								</Text>
+								<Badge size="xs" variant="outline" color="blue">
+									Demografi
+								</Badge>
+								<Badge size="xs" variant="outline" color="blue">
+									APBDes
+								</Badge>
+								<Badge size="xs" variant="outline" color="blue">
+									Sektor
+								</Badge>
+							</Stack>
+						</Stack>
+					</Card>
+				</Grid.Col>
+			</Grid>
 		</Box>
 	);
 };

@@ -352,6 +352,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 					deaths,
 					migration,
 					sectors,
+					apbdes,
 				] = await Promise.all([
 					desaExternalClient.GET("/api/kependudukan/dashboard/summary"),
 					desaExternalClient.GET("/api/kependudukan/databanjar/find-many" as any),
@@ -362,6 +363,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 					desaExternalClient.GET("/api/kesehatan/kematian/findMany"),
 					desaExternalClient.GET("/api/kependudukan/migrasipenduduk/find-many" as any),
 					desaExternalClient.GET("/api/ekonomi/sektourunggulandesa/find-many" as any),
+					desaExternalClient.GET("/api/landingpage/apbdes/cmk-apbdes-001" as any),
 				]);
 
 				// Check for errors
@@ -375,6 +377,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 				if (deaths.error) errors.push("deaths");
 				if (migration.error) errors.push("migration");
 				if (sectors.error) errors.push("sectors");
+				if (apbdes.error) errors.push("apbdes");
 
 				if (errors.length > 0) {
 					console.warn("[Demografi API] Some endpoints failed:", errors);
@@ -391,6 +394,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 					deaths: deaths.data?.data || null,
 					migration: migration.data?.data || null,
 					sectors: sectors.data?.data || null,
+					apbdes: apbdes.data?.data || apbdes.data || null,
 				};
 
 				demografiCache.lastSyncedAt = new Date().toISOString();
@@ -402,7 +406,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 
 				return {
 					success: true,
-					message: "Sinkronisasi data demografi berhasil",
+					message: "Sinkronisasi data desa berhasil",
 					lastSyncedAt: demografiCache.lastSyncedAt,
 					errors: errors.length > 0 ? errors : undefined,
 				};
@@ -410,7 +414,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 				console.error("[Demografi API] Sync error:", error);
 				return {
 					success: false,
-					error: "Gagal melakukan sinkronisasi data demografi",
+					error: "Gagal melakukan sinkronisasi data desa",
 				};
 			}
 		},
