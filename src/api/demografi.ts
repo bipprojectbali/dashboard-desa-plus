@@ -2,7 +2,7 @@ import { Elysia, t } from "elysia";
 import { desaExternalClient } from "@/utils/desa-external-client";
 
 // In-memory cache for demografi data
-const demografiCache = {
+export const demografiCache = {
 	data: {} as Record<string, any>,
 	lastSyncedAt: null as string | null,
 };
@@ -18,6 +18,14 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/summary",
 		async () => {
 			try {
+				if (demografiCache.data.summary) {
+					return {
+						success: true,
+						data: demografiCache.data.summary,
+						lastSyncedAt: demografiCache.lastSyncedAt,
+					};
+				}
+
 				const response = await desaExternalClient.GET(
 					"/api/kependudukan/dashboard/summary",
 				);
@@ -53,6 +61,14 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/banjar",
 		async () => {
 			try {
+				if (demografiCache.data.banjar) {
+					return {
+						success: true,
+						data: demografiCache.data.banjar,
+						lastSyncedAt: demografiCache.lastSyncedAt,
+					};
+				}
+
 				const response = await desaExternalClient.GET(
 					"/api/kependudukan/databanjar/find-many" as any,
 				);
@@ -88,6 +104,14 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/age",
 		async () => {
 			try {
+				if (demografiCache.data.age) {
+					return {
+						success: true,
+						data: demografiCache.data.age,
+						lastSyncedAt: demografiCache.lastSyncedAt,
+					};
+				}
+
 				const response = await desaExternalClient.GET(
 					"/api/kependudukan/distribusiumur/find-many" as any,
 				);
@@ -123,6 +147,14 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/occupation",
 		async () => {
 			try {
+				if (demografiCache.data.occupation) {
+					return {
+						success: true,
+						data: demografiCache.data.occupation,
+						lastSyncedAt: demografiCache.lastSyncedAt,
+					};
+				}
+
 				const response = await desaExternalClient.GET(
 					"/api/ekonomi/demografipekerjaan/find-many" as any,
 				);
@@ -158,6 +190,14 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/religion",
 		async () => {
 			try {
+				if (demografiCache.data.religion) {
+					return {
+						success: true,
+						data: demografiCache.data.religion,
+						lastSyncedAt: demografiCache.lastSyncedAt,
+					};
+				}
+
 				const response = await desaExternalClient.GET(
 					"/api/kependudukan/distribusiagama/find-many" as any,
 				);
@@ -193,6 +233,14 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/births",
 		async () => {
 			try {
+				if (demografiCache.data.births) {
+					return {
+						success: true,
+						data: demografiCache.data.births,
+						lastSyncedAt: demografiCache.lastSyncedAt,
+					};
+				}
+
 				const response = await desaExternalClient.GET(
 					"/api/kesehatan/kelahiran/findMany",
 				);
@@ -228,6 +276,14 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/deaths",
 		async () => {
 			try {
+				if (demografiCache.data.deaths) {
+					return {
+						success: true,
+						data: demografiCache.data.deaths,
+						lastSyncedAt: demografiCache.lastSyncedAt,
+					};
+				}
+
 				const response = await desaExternalClient.GET(
 					"/api/kesehatan/kematian/findMany",
 				);
@@ -263,6 +319,14 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/migration",
 		async () => {
 			try {
+				if (demografiCache.data.migration) {
+					return {
+						success: true,
+						data: demografiCache.data.migration,
+						lastSyncedAt: demografiCache.lastSyncedAt,
+					};
+				}
+
 				const response = await desaExternalClient.GET(
 					"/api/kependudukan/migrasipenduduk/find-many" as any,
 				);
@@ -298,6 +362,14 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/sectors",
 		async () => {
 			try {
+				if (demografiCache.data.sectors) {
+					return {
+						success: true,
+						data: demografiCache.data.sectors,
+						lastSyncedAt: demografiCache.lastSyncedAt,
+					};
+				}
+
 				console.log("[Demografi API] Fetching sectors from external API...");
 				const response = await desaExternalClient.GET(
 					"/api/ekonomi/sektourunggulandesa/find-many" as any,
@@ -453,6 +525,15 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/apbdes/:id",
 		async ({ params: { id } }) => {
 			try {
+				// Use cache if it matches the ID and exists
+				if (demografiCache.data.apbdes && (demografiCache.data.apbdes.id === id || id === "cmk-apbdes-001")) {
+					console.log("[Demografi API] Returning cached APBDes detail");
+					return {
+						success: true,
+						data: demografiCache.data.apbdes,
+					};
+				}
+
 				console.log(`[Demografi API] Fetching APBDes detail for ID: ${id}`);
 				const response = await desaExternalClient.GET(
 					`/api/landingpage/apbdes/${id}` as any,

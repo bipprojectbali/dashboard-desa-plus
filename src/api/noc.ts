@@ -4,6 +4,7 @@ import { apiMiddleware } from "../middleware/apiMiddleware";
 import { prisma } from "../utils/db";
 import { desaExternalClient } from "../utils/desa-external-client";
 import { nocExternalClient } from "../utils/noc-external-client";
+import { demografiCache } from "./demografi";
 
 export const noc = new Elysia({ prefix: "/noc" })
 	.use(apiMiddleware)
@@ -441,21 +442,35 @@ export const noc = new Elysia({ prefix: "/noc" })
 			const { idDesa } = query;
 
 			try {
-				// 1. Coba tarik data dari External Desa Website API
-				const client = desaExternalClient as any;
-				const { data: extData, error } = await client.GET(
-					"/api/landingpage/apbdes/" + idDesa,
-				);
+				let apbdesData: any = null;
 
-				if (!error && extData) {
-					console.log(
-						"[APBDes] Raw data from external API:",
-						JSON.stringify(extData, null, 2),
+				// 1. Check Cache first if ID matches
+				if (
+					idDesa === "cmk-apbdes-001" &&
+					demografiCache.data.apbdes
+				) {
+					console.log("[APBDes API] Returning cached APBDes data");
+					apbdesData = demografiCache.data.apbdes;
+				} else {
+					// 2. Coba tarik data dari External Desa Website API
+					console.log("[APBDes API] Fetching live data for ID:", idDesa);
+					const client = desaExternalClient as any;
+					const { data: extData, error } = await client.GET(
+						"/api/landingpage/apbdes/" + idDesa,
 					);
 
-					const externalData = extData as any;
-					const apbdesData = externalData.data || externalData;
+					if (error || !extData) {
+						return {
+							success: false,
+							message: "Gagal mengambil data APBDes dari website desa",
+							data: [],
+						};
+					}
+					
+					apbdesData = extData.data || extData;
+				}
 
+				if (apbdesData) {
 					// Check if data has items array (new structure)
 					if (apbdesData.items && Array.isArray(apbdesData.items)) {
 						console.log(
@@ -548,31 +563,6 @@ export const noc = new Elysia({ prefix: "/noc" })
 							})),
 						};
 					}
-
-					// Fallback: If it's an object with specific fields
-					const colorMapFallback: Record<string, string> = {
-						pendapatan: "#10B981",
-						belanja: "#3B82F6",
-						pembiayaan: "#F59E0B",
-						surplus: "#92cc76",
-						defisit: "#ED6665",
-					};
-
-					const transformedData = Object.entries(apbdesData).map(
-						([key, value]) => ({
-							category: key.charAt(0).toUpperCase() + key.slice(1),
-							anggaran: typeof value === "number" ? value : 0,
-							realisasi: 0,
-							percentage: typeof value === "number" ? value : 0,
-							color: colorMapFallback[key.toLowerCase()] || "#3B82F6",
-						}),
-					);
-
-					return {
-						success: true,
-						message: "Berhasil mendapatkan data APBDes dari website desa",
-						data: transformedData,
-					};
 				}
 			} catch (err) {
 				console.error("Failed to fetch APBDes from external Desa API:", err);
