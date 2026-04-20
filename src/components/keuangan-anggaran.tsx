@@ -97,37 +97,51 @@ const KeuanganAnggaran = () => {
 			const rawData = res.data.data.data || res.data.data;
 			const items = rawData.items || [];
 
-			// 1. KPI Data Mapping
-			// Total APBDes (Ambil dari data.jumlah atau level 1)
-			const totalBudget = rawData.jumlah || 0;
+			// Helper to parse amount (handles strings like "1.850.000.000" or numbers)
+			const parseAmount = (val: any) => {
+				if (typeof val === "number") return val;
+				if (typeof val === "string")
+					return Number(val.replace(/\./g, "").replace(/,/g, ""));
+				return 0;
+			};
 
-			// Filter items based on type
-			const incomeItems = items.filter(
-				(item: any) => item.tipe?.toLowerCase() === "pendapatan",
-			);
-			const expenseItems = items.filter(
-				(item: any) => item.tipe?.toLowerCase() === "belanja",
-			);
+			// 1. Calculate Real Totals by iterating through all realisasiItems
+			let calculatedTotalIncomeReal = 0;
+			let calculatedTotalExpenseReal = 0;
 
-			const totalIncomeRealisasi = incomeItems.reduce(
-				(acc: number, curr: any) => acc + (curr.totalRealisasi || 0),
-				0,
-			);
-			const totalExpenseRealisasi = expenseItems.reduce(
-				(acc: number, curr: any) => acc + (curr.totalRealisasi || 0),
-				0,
-			);
+			items.forEach((item: any) => {
+				const type = item.tipe?.toLowerCase();
+				if (item.realisasiItems && Array.isArray(item.realisasiItems)) {
+					const itemReal = item.realisasiItems.reduce(
+						(acc: number, curr: any) => acc + (curr.jumlah || 0),
+						0,
+					);
+					if (type === "pendapatan") calculatedTotalIncomeReal += itemReal;
+					else if (type === "belanja") calculatedTotalExpenseReal += itemReal;
+				}
+			});
+
+			// 2. KPI Data Mapping
+			// Use the "jumlah" field from rawData which represents Total Pendapatan + Pembiayaan
+			const totalBudget = parseAmount(rawData.jumlah);
 
 			const realisasiPercent =
 				totalBudget > 0
-					? Math.round((totalExpenseRealisasi / totalBudget) * 100)
+					? Math.round((calculatedTotalExpenseReal / totalBudget) * 100)
 					: 0;
+
+			// Helper to format currency in Millions
+			const formatM = (val: number) => {
+				const m = val / 1000000;
+				if (m >= 1000) return `${(m / 1000).toFixed(1)}M`;
+				return `${m.toFixed(1)}jt`;
+			};
 
 			setKpiData([
 				{
 					id: 1,
 					title: "Total APBDes",
-					value: `Rp ${(totalBudget / 1000000).toFixed(1)}jt`,
+					value: `Rp ${formatM(totalBudget)}`,
 					subtitle: `Tahun ${rawData.tahun || "2025"}`,
 					icon: Coins,
 				},
@@ -135,100 +149,79 @@ const KeuanganAnggaran = () => {
 					id: 2,
 					title: "Realisasi",
 					value: `${realisasiPercent}%`,
-					subtitle: `Rp ${(totalExpenseRealisasi / 1000000).toFixed(1)}jt dari ${(totalBudget / 1000000).toFixed(1)}jt`,
+					subtitle: `Rp ${formatM(calculatedTotalExpenseReal)} dari ${formatM(totalBudget)}`,
 					icon: CheckCircle,
 				},
 				{
 					id: 3,
 					title: "Pemasukan",
-					value: `Rp ${(totalIncomeRealisasi / 1000000).toFixed(1)}jt`,
+					value: `Rp ${formatM(calculatedTotalIncomeReal)}`,
 					subtitle: "Total Realisasi",
-					trend: "+0%", // Trend logic would need historical data
+					trend: "+0%",
 					icon: TrendingUp,
 				},
 				{
 					id: 4,
 					title: "Pengeluaran",
-					value: `Rp ${(totalExpenseRealisasi / 1000000).toFixed(1)}jt`,
+					value: `Rp ${formatM(calculatedTotalExpenseReal)}`,
 					subtitle: "Total Realisasi",
 					icon: TrendingDown,
 				},
 			]);
 
-			// 2. Line Chart Mapping (Time Series)
-			const monthlyData: Record<number, { income: number; expense: number }> =
-				{};
-			const months = [
-				"Jan",
-				"Feb",
-				"Mar",
-				"Apr",
-				"Mei",
-				"Jun",
-				"Jul",
-				"Agu",
-				"Sep",
-				"Okt",
-				"Nov",
-				"Des",
-			];
+			// 3. Line Chart Mapping (Time Series)
+			const monthlyData: Record<number, { income: number; expense: number }> = {};
+			for (let i = 0; i < 12; i++) monthlyData[i] = { income: 0, expense: 0 };
+
+			const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 
 			items.forEach((item: any) => {
-				const realisasiList = item.realisasiItems || [];
 				const type = item.tipe?.toLowerCase();
-
-				realisasiList.forEach((r: any) => {
-					const date = new Date(r.tanggal);
-					const monthIdx = date.getMonth();
-					if (!monthlyData[monthIdx]) {
-						monthlyData[monthIdx] = { income: 0, expense: 0 };
-					}
-					if (type === "pendapatan") {
-						monthlyData[monthIdx].income += r.jumlah || 0;
-					} else if (type === "belanja") {
-						monthlyData[monthIdx].expense += r.jumlah || 0;
-					}
-				});
+				if (item.realisasiItems && Array.isArray(item.realisasiItems)) {
+					item.realisasiItems.forEach((r: any) => {
+						const date = new Date(r.tanggal);
+						const mIdx = date.getMonth();
+						if (type === "pendapatan") monthlyData[mIdx].income += r.jumlah || 0;
+						else if (type === "belanja") monthlyData[mIdx].expense += r.jumlah || 0;
+					});
+				}
 			});
 
 			const chartData: ChartData[] = Object.entries(monthlyData)
 				.map(([mIdx, val]) => ({
-					month: months[Number(mIdx)] || "Unk",
+					month: months[Number(mIdx)],
 					income: val.income / 1000000,
 					expense: val.expense / 1000000,
 					sortKey: Number(mIdx),
 				}))
 				.sort((a, b) => a.sortKey - b.sortKey);
 
-			setIncomeExpenseData(
-				chartData.length > 0
-					? chartData
-					: [
-							{ month: "N/A", income: 0, expense: 0 },
-						],
-			);
+			setIncomeExpenseData(chartData);
 
-			// 3. Bar Chart Mapping (Sektor - level 2)
-			const sectorItems = items.filter((item: any) => item.level === 2);
+			// 4. Bar Chart Mapping (Bidang - level 2 Belanja)
+			const sectorItems = items.filter((item: any) => item.level === 2 && item.tipe === "belanja");
 			setAllocationData(
 				sectorItems.map((s: any) => ({
-					sector: s.uraian || "Lainnya",
+					sector: s.uraian?.length > 20 ? s.uraian.substring(0, 17) + "..." : s.uraian,
 					amount: (s.anggaran || 0) / 1000000,
 				})),
 			);
 
-			// 4. Report Table Mapping
+			// 5. Report Table Mapping
+			const incomeLevel2 = items.filter((item: any) => item.level === 2 && item.tipe === "pendapatan");
+			const expenseLevel2 = items.filter((item: any) => item.level === 2 && item.tipe === "belanja");
+
 			setReportData({
-				income: incomeItems.slice(0, 5).map((i: any) => ({
+				income: incomeLevel2.map((i: any) => ({
 					category: i.uraian,
 					amount: (i.anggaran || 0) / 1000000,
 				})),
-				expenses: expenseItems.slice(0, 5).map((e: any) => ({
+				expenses: expenseLevel2.map((e: any) => ({
 					category: e.uraian,
 					amount: (e.anggaran || 0) / 1000000,
 				})),
-				totalIncome: totalIncomeRealisasi / 1000000,
-				totalExpenses: totalExpenseRealisasi / 1000000,
+				totalIncome: calculatedTotalIncomeReal / 1000000,
+				totalExpenses: calculatedTotalExpenseReal / 1000000,
 			});
 
 			// 5. Aid & Grants Mapping
