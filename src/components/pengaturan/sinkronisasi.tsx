@@ -423,7 +423,7 @@ const SinkronisasiSettings = () => {
 								<Badge size="xs" variant="outline" color="blue">
 									Sektor
 								</Badge>
-							</Stack>
+							</Group>
 						</Stack>
 					</Card>
 				</Grid.Col>
