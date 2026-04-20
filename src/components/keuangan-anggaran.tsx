@@ -85,16 +85,16 @@ const KeuanganAnggaran = () => {
 		try {
 			setLoading(true);
 			const id = "cmk-apbdes-001";
-			const res = await apiClient.GET("/api/demografi/apbdes/{id}", {
+			const { data, error } = (await apiClient.GET("/api/demografi/apbdes/{id}", {
 				params: { path: { id } },
-			});
+			})) as any;
 
-			if (!res.data || !(res.data as any).success || !(res.data as any).data) {
-				console.error("Failed to fetch APBDes detail:", res.error);
+			if (!data || !data.success || !data.data) {
+				console.error("Failed to fetch APBDes detail:", error);
 				return;
 			}
 
-			const rawData = (res.data as any).data.data || (res.data as any).data;
+			const rawData = data.data.data || data.data;
 			const items = rawData.items || [];
 
 			// Helper to parse amount (handles strings like "1.850.000.000" or numbers)
@@ -181,8 +181,10 @@ const KeuanganAnggaran = () => {
 					item.realisasiItems.forEach((r: any) => {
 						const date = new Date(r.tanggal);
 						const mIdx = date.getMonth();
-						if (type === "pendapatan") monthlyData[mIdx].income += r.jumlah || 0;
-						else if (type === "belanja") monthlyData[mIdx].expense += r.jumlah || 0;
+						if (monthlyData[mIdx]) {
+							if (type === "pendapatan") monthlyData[mIdx].income += r.jumlah || 0;
+							else if (type === "belanja") monthlyData[mIdx].expense += r.jumlah || 0;
+						}
 					});
 				}
 			});
