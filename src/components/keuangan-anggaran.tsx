@@ -89,12 +89,12 @@ const KeuanganAnggaran = () => {
 				params: { path: { id } },
 			});
 
-			if (!res.data?.success || !res.data?.data) {
+			if (!res.data || !(res.data as any).success || !(res.data as any).data) {
 				console.error("Failed to fetch APBDes detail:", res.error);
 				return;
 			}
 
-			const rawData = res.data.data.data || res.data.data;
+			const rawData = (res.data as any).data.data || (res.data as any).data;
 			const items = rawData.items || [];
 
 			// Helper to parse amount (handles strings like "1.850.000.000" or numbers)
@@ -189,7 +189,7 @@ const KeuanganAnggaran = () => {
 
 			const chartData: ChartData[] = Object.entries(monthlyData)
 				.map(([mIdx, val]) => ({
-					month: months[Number(mIdx)],
+					month: months[Number(mIdx)] || "",
 					income: val.income / 1000000,
 					expense: val.expense / 1000000,
 					sortKey: Number(mIdx),

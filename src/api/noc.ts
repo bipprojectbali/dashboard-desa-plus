@@ -472,8 +472,19 @@ export const noc = new Elysia({ prefix: "/noc" })
 
 						for (const item of apbdesData.items) {
 							const tipe = item.tipe?.toLowerCase() || "lainnya";
-							const anggaran = item.anggaran || 0;
-							const realisasi = item.totalRealisasi || 0;
+							const level = item.level;
+							
+							// Only add to totalAnggaran if it's a top-level item to avoid double counting
+							const anggaran = level === 1 ? (item.anggaran || 0) : 0;
+							
+							// Calculate realisasi from realisasiItems
+							let itemRealisasi = 0;
+							if (item.realisasiItems && Array.isArray(item.realisasiItems)) {
+								itemRealisasi = item.realisasiItems.reduce(
+									(acc: number, r: any) => acc + (r.jumlah || 0),
+									0
+								);
+							}
 
 							if (!groupedByType[tipe]) {
 								groupedByType[tipe] = {
@@ -483,7 +494,7 @@ export const noc = new Elysia({ prefix: "/noc" })
 								};
 							}
 							groupedByType[tipe].totalAnggaran += anggaran;
-							groupedByType[tipe].totalRealisasi += realisasi;
+							groupedByType[tipe].totalRealisasi += itemRealisasi;
 							groupedByType[tipe].count += 1;
 						}
 
@@ -496,8 +507,9 @@ export const noc = new Elysia({ prefix: "/noc" })
 						};
 
 						// Transform to chart format with realisasi data
-						const chartData = Object.entries(groupedByType).map(
-							([tipe, stats]) => {
+						const chartData = Object.entries(groupedByType)
+							.filter(([tipe]) => tipe !== "lainnya") // Filter out unknowns
+							.map(([tipe, stats]) => {
 								const persentaseRealisasi =
 									stats.totalAnggaran > 0
 										? (stats.totalRealisasi / stats.totalAnggaran) * 100
@@ -510,8 +522,7 @@ export const noc = new Elysia({ prefix: "/noc" })
 									percentage: persentaseRealisasi,
 									color: colorMap[tipe] || "#6B7280",
 								};
-							},
-						);
+							});
 
 						console.log("[APBDes] Transformed chart data:", chartData);
 

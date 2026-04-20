@@ -166,9 +166,9 @@ export function ChartAPBDes() {
 		async function fetchApbdes() {
 			try {
 				// Fetch from new NOC endpoint that integrates with external Desa API
-				// Using specific ID for APBDes: cmmedyvex0004nv09ags7j0d6
+				// Using specific ID for APBDes: cmk-apbdes-001
 				const res = await apiClient.GET("/api/noc/apbdes-data", {
-					params: { query: { idDesa: "cmmedyvex0004nv09ags7j0d6" } },
+					params: { query: { idDesa: "cmk-apbdes-001" } },
 				});
 
 				if (res.data?.data) {
