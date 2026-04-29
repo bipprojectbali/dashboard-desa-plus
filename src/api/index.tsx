@@ -24,6 +24,18 @@ const api = new Elysia({
 			200: t.Object({ ok: t.Boolean() }),
 		},
 	})
+	.get(
+		"/version",
+		async () => {
+			const pkg = await Bun.file("package.json").json() as { version: string };
+			return { version: pkg.version };
+		},
+		{
+			response: {
+				200: t.Object({ version: t.String() }),
+			},
+		},
+	)
 	.all("/auth/*", ({ request }) => auth.handler(request))
 	.get(
 		"/session",
