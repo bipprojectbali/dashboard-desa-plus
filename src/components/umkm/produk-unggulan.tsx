@@ -49,17 +49,12 @@ export const ProdukUnggulan = ({ data }: ProdukUnggulanProps) => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const defaultData = {
-		totalPenjualan: 30900000,
-		produkAktif: 7,
-		totalTransaksi: 500,
-		trend: {
-			value: 18,
-			label: "vs bulan lalu",
-		},
+	const displayData = data ?? {
+		totalPenjualan: 0,
+		produkAktif: 0,
+		totalTransaksi: 0,
+		trend: undefined,
 	};
-
-	const displayData = data || defaultData;
 
 	const formatCurrency = (value: number) => {
 		if (value >= 1000000) {

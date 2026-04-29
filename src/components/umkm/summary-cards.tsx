@@ -102,14 +102,12 @@ interface SummaryCardsProps {
 }
 
 export const SummaryCards = ({ data }: SummaryCardsProps) => {
-	const defaultData = {
-		umkmAktif: 45,
-		umkmTerdaftar: 68,
-		omzet: 48000000,
-		kategoriTerbanyak: { count: 34, name: "Kuliner" },
+	const displayData = data ?? {
+		umkmAktif: 0,
+		umkmTerdaftar: 0,
+		omzet: 0,
+		kategoriTerbanyak: { count: 0, name: "-" },
 	};
-
-	const displayData = data || defaultData;
 
 	const kpiData: KpiCardProps[] = [
 		{

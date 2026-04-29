@@ -42,34 +42,7 @@ export const TopProducts = ({ products }: TopProductsProps) => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const defaultProducts: TopProduct[] = [
-		{
-			rank: 1,
-			name: "Beras Premium Organik",
-			umkmName: "Warung Pak Joko",
-			revenue: 8500000,
-			quantitySold: 650,
-			trend: 12,
-		},
-		{
-			rank: 2,
-			name: "Keripik Singkong",
-			umkmName: "Ibu Sari Snack",
-			revenue: 4200000,
-			quantitySold: 320,
-			trend: 8,
-		},
-		{
-			rank: 3,
-			name: "Madu Alami",
-			umkmName: "Peternakan Lebah",
-			revenue: 3750000,
-			quantitySold: 150,
-			trend: 5,
-		},
-	];
-
-	const displayProducts = products || defaultProducts;
+	const displayProducts = products ?? [];
 
 	const getRankColor = (rank: number) => {
 		if (rank === 1) return "yellow";
