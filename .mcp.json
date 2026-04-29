@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "deploy-stg": {
+      "command": "node",
+      "args": ["--env-file=.env", ".claude/mcp/github-actions.mjs"],
+      "env": {
+        "GH_TOKEN": "${GH_TOKEN}",
+        "BASE_URL": "${BASE_URL}",
+        "STACK_NAME": "${STACK_NAME}"
+      }
+    }
+  }
+}
