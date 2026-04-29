@@ -1,11 +1,9 @@
 import {
-	Badge,
 	Box,
 	Card,
 	Grid,
-	GridCol,
 	Group,
-	Progress,
+	Loader,
 	Stack,
 	Text,
 	ThemeIcon,
@@ -21,6 +19,7 @@ import {
 	TrendingDown,
 	Users,
 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -33,116 +32,381 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { apiClient } from "@/utils/api-client";
 
-// KPI Data
-const kpiData = [
-	{
-		id: 1,
-		title: "Total Penduduk",
-		value: "5.634",
-		subtitle: "Aktif terdaftar",
-		icon: Users,
-	},
-	{
-		id: 2,
-		title: "Kepala Keluarga",
-		value: "1.354",
-		subtitle: "Total KK",
-		icon: Home,
-	},
-	{
-		id: 3,
-		title: "Kelahiran",
-		value: "23",
-		subtitle: "Tahun ini",
-		icon: Baby,
-	},
-	{
-		id: 4,
-		title: "Kemiskinan",
-		value: "324",
-		subtitle: "-10% dari tahun lalu",
-		trend: "positive",
-		icon: TrendingDown,
-	},
-];
+// External API base URL
+const externalApiUrl =
+	(typeof import.meta.env !== "undefined" &&
+		import.meta.env?.VITE_DESA_API_URL) ||
+	"https://desa-darmasaba-stg.wibudev.com";
 
-// Age Distribution Data
-const ageDistributionData = [
-	{ ageRange: "17-25", total: 850 },
-	{ ageRange: "26-35", total: 1200 },
-	{ ageRange: "36-45", total: 1100 },
-	{ ageRange: "46-55", total: 950 },
-	{ ageRange: "56-65", total: 750 },
-	{ ageRange: "65+", total: 484 },
-];
+// Data Interfaces
+interface AgeData {
+	ageRange: string;
+	total: number;
+}
 
-// Job Distribution Data
-const jobDistributionData = [
-	{ job: "Sipil", total: 1200 },
-	{ job: "Guru", total: 850 },
-	{ job: "Petani", total: 950 },
-	{ job: "Pedagang", total: 750 },
-	{ job: "Wiraswasta", total: 984 },
-];
+interface JobData {
+	job: string;
+	total: number;
+}
 
-// Religion Data
-const religionData = [
-	{ name: "Hindu", value: 4234, color: "#EF4444" },
-	{ name: "Islam", value: 856, color: "#3B82F6" },
-	{ name: "Kristen", value: 412, color: "#22C55E" },
-	{ name: "Buddha", value: 202, color: "#FACC15" },
-];
+interface ReligionData {
+	name: string;
+	value: number;
+	color: string;
+}
 
-// Banjar Data
-const banjarData = [
-	{ banjar: "Darmasaba", population: 1200, kk: 300, poor: 45 },
-	{ banjar: "Manesa", population: 950, kk: 240, poor: 32 },
-	{ banjar: "Cabe", population: 800, kk: 200, poor: 28 },
-	{ banjar: "Penenjoan", population: 1100, kk: 280, poor: 38 },
-	{ banjar: "Baler Pasar", population: 984, kk: 250, poor: 42 },
-	{ banjar: "Bucu", population: 600, kk: 184, poor: 25 },
-];
+interface BanjarData {
+	id: string;
+	name: string;
+	totalPopulation: number;
+	totalKK: number;
+	totalPoor: number;
+}
 
-// Dynamic Stats Data
-const dynamicStats = [
-	{
-		title: "Kelahiran",
-		value: "23",
-		icon: Baby,
-		color: "#22C55E",
-	},
-	{
-		title: "Kematian",
-		value: "12",
-		icon: TrendingDown,
-		color: "#EF4444",
-	},
-	{
-		title: "Pindah Masuk",
-		value: "45",
-		icon: Users,
-		color: "#3B82F6",
-	},
-	{
-		title: "Pindah Keluar",
-		value: "32",
-		icon: Users,
-		color: "#3B82F6",
-	},
-];
+interface SectorData {
+	sektor: string;
+	value: number;
+}
 
-// Sektor Unggulan Data
-const sektorUnggulanData = [
-	{ sektor: "Pertanian", value: 65 },
-	{ sektor: "Perdagangan", value: 45 },
-	{ sektor: "Industri", value: 38 },
-	{ sektor: "Jasa", value: 52 },
-];
+interface DashboardSummary {
+	total: number;
+	heads: number;
+	poor: number;
+}
 
 const DemografiPekerjaan = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+
+	const [stats, setStats] = useState<DashboardSummary>({
+		total: 0,
+		heads: 0,
+		poor: 0,
+	});
+	const [ageData, setAgeData] = useState<AgeData[]>([]);
+	const [jobData, setJobData] = useState<JobData[]>([]);
+	const [religionData, setReligionData] = useState<ReligionData[]>([]);
+	const [banjarData, setBanjarData] = useState<BanjarData[]>([]);
+	const [sektorData, setSektorData] = useState<SectorData[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	// Dynamic stats
+	const [births, setBirths] = useState(0);
+	const [deaths, setDeaths] = useState(0);
+	const [moveIn, setMoveIn] = useState(0);
+	const [moveOut, setMoveOut] = useState(0);
+
+	// Fetch data function (can be called externally after sync)
+	const fetchData = useCallback(async () => {
+		try {
+			console.log("📊 Fetching demografi data from internal API...");
+			setLoading(true);
+
+			// Fetch all data using Promise.allSettled for better resilience
+			// If one endpoint fails, the others can still load
+			const results = await Promise.allSettled([
+				apiClient.GET("/api/demografi/summary", {}),
+				apiClient.GET("/api/demografi/banjar", {}),
+				apiClient.GET("/api/demografi/age", {}),
+				apiClient.GET("/api/demografi/occupation", {}),
+				apiClient.GET("/api/demografi/religion", {}),
+				apiClient.GET("/api/demografi/births", {}),
+				apiClient.GET("/api/demografi/deaths", {}),
+				apiClient.GET("/api/demografi/migration", {}),
+				apiClient.GET("/api/demografi/sectors", {}),
+			]);
+
+			// Helper to get value from settled promise
+			const getVal = (index: number) => {
+				const res = results[index];
+				if (!res) return { data: null, error: "Result not found" };
+
+				if (res.status === "fulfilled") {
+					return res.value;
+				}
+				// Type narrowing: if not fulfilled, it must be rejected and have a reason
+				const reason = (res as PromiseRejectedResult).reason;
+				console.error(`❌ Request ${index} failed:`, reason);
+				return { data: null, error: reason };
+			};
+
+			const summaryRes = getVal(0);
+			const banjarRes = getVal(1);
+			const ageRes = getVal(2);
+			const jobRes = getVal(3);
+			const religionRes = getVal(4);
+			const birthsRes = getVal(5);
+			const deathsRes = getVal(6);
+			const migrationRes = getVal(7);
+			const sectorRes = getVal(8);
+
+			// Helper to parse response
+			const parseRes = (res: any, name: string) => {
+				if (!res || !res.data) {
+					console.warn(`⚠️ No response or data for ${name}`);
+					return null;
+				}
+				if (!res.data.success) {
+					console.warn(
+						`⚠️ Failed to fetch ${name}:`,
+						res.data.error || res.error,
+					);
+					return null;
+				}
+				if (!res.data.data) {
+					console.warn(`⚠️ No data field for ${name}`);
+					return null;
+				}
+				console.log(`✅ ${name} data:`, res.data.data);
+				return res.data.data;
+			};
+
+			// Parse Dashboard Summary
+			const summaryData = parseRes(summaryRes, "Dashboard Summary");
+			if (summaryData) {
+				const s = summaryData.summary || {};
+				setStats({
+					total: s.totalPenduduk || summaryData.total || 0,
+					heads: s.totalKK || summaryData.heads || 0,
+					poor: s.totalKemiskinan || summaryData.poor || 0,
+				});
+
+				const d = summaryData.dinamika || {};
+				if (d.kelahiran !== undefined) setBirths(d.kelahiran);
+				if (d.kematian !== undefined) setDeaths(d.kematian);
+				if (d.pindahMasuk !== undefined) {
+					const inCount = Array.isArray(d.pindahMasuk)
+						? d.pindahMasuk.length
+						: d.pindahMasuk;
+					setMoveIn(Number(inCount) || 0);
+				}
+				if (d.pindahKeluar !== undefined) {
+					const outCount = Array.isArray(d.pindahKeluar)
+						? d.pindahKeluar.length
+						: d.pindahKeluar;
+					setMoveOut(Number(outCount) || 0);
+				}
+			}
+
+			// Parse Banjar Data
+			const banjarList = parseRes(banjarRes, "Banjar Data");
+			if (banjarList && Array.isArray(banjarList)) {
+				// Sort by population or just take first 10 as "latest/top"
+				setBanjarData(
+					banjarList.slice(0, 10).map((b: any) => ({
+						id: b.id || b._id || String(Math.random()),
+						name: b.nama || b.name || "Unknown",
+						totalPopulation: b.penduduk || b.totalPopulation || 0,
+						totalKK: b.kk || b.totalKK || 0,
+						totalPoor: b.miskin || b.totalPoor || 0,
+					})),
+				);
+			}
+
+			// Parse Age Distribution
+			const ageList = parseRes(ageRes, "Age Distribution");
+			if (ageList && Array.isArray(ageList)) {
+				setAgeData(
+					ageList.map((a: any) => ({
+						ageRange:
+							a.rentangUmur || a.range || a.ageRange || a.kelompokUmur || "Unknown",
+						total: Number(a.jumlah || a.total || a.count || 0),
+					})),
+				);
+			}
+
+			// Parse Occupation Data
+			const jobList = parseRes(jobRes, "Occupation Data");
+			if (jobList && Array.isArray(jobList)) {
+				setJobData(
+					jobList.map((j: any) => ({
+						job: j.pekerjaan || j.namaPekerjaan || j.job || "Lainnya",
+						total: Number(
+							j.jumlah ||
+								j.total ||
+								j.count ||
+								(Number(j.lakiLaki || 0) + Number(j.perempuan || 0)) ||
+								0,
+						),
+					})),
+				);
+			}
+
+			// Parse Religion Distribution
+			const religionList = parseRes(religionRes, "Religion Distribution");
+			if (religionList && Array.isArray(religionList)) {
+				const religionColors: Record<string, string> = {
+					HINDU: "#EF4444",
+					ISLAM: "#3B82F6",
+					KRISTEN: "#22C55E",
+					KATOLIK: "#A855F7",
+					BUDDHA: "#FACC15",
+					KONGHUCU: "#F97316",
+					LAINNYA: "#94A3B8",
+				};
+				setReligionData(
+					religionList.map((r: any) => ({
+						name: r.agama || r.religion || r.name || "Unknown",
+						value: Number(r.jumlah || r.value || r.count || 0),
+						color:
+							religionColors[r.agama || r.religion || r.name] || "#94A3B8",
+					})),
+				);
+			}
+
+			// Parse Births
+			const birthsList = parseRes(birthsRes, "Births Data");
+			if (birthsList && Array.isArray(birthsList)) {
+				setBirths(birthsList.length);
+			}
+
+			// Parse Deaths
+			const deathsList = parseRes(deathsRes, "Deaths Data");
+			if (deathsList && Array.isArray(deathsList)) {
+				setDeaths(deathsList.length);
+			}
+
+			// Parse Migration
+			const migrationList = parseRes(migrationRes, "Migration Data");
+			if (migrationList && Array.isArray(migrationList)) {
+				const moveInCount = migrationList.filter(
+					(m: any) =>
+						m.jenis === "MASUK" ||
+						m.jenis === "masuk" ||
+						m.type === "in" ||
+						m.arah === "masuk",
+				).length;
+				const moveOutCount = migrationList.filter(
+					(m: any) =>
+						m.jenis === "KELUAR" ||
+						m.jenis === "keluar" ||
+						m.type === "out" ||
+						m.arah === "keluar",
+				).length;
+				setMoveIn(moveInCount);
+				setMoveOut(moveOutCount);
+			}
+
+			// Parse Sector Data
+			let sectorList = parseRes(sectorRes, "Sector Data");
+			if (sectorList) {
+				if (!Array.isArray(sectorList) && typeof sectorList === "object") {
+					const possibleArray =
+						sectorList.data ||
+						sectorList.list ||
+						sectorList.sectors ||
+						sectorList.items;
+					if (Array.isArray(possibleArray)) {
+						sectorList = possibleArray;
+					}
+				}
+
+				if (Array.isArray(sectorList)) {
+					console.log("📍 Mapping sector data:", sectorList);
+					setSektorData(
+						sectorList.map((s: any) => ({
+							sektor:
+								s.name ||
+								s.nama ||
+								s.sektor ||
+								s.sektorUnggulan ||
+								s.sektor_unggulan ||
+								s.namaSektor ||
+								"Unknown",
+							value: Number(
+								s.value ?? s.nilai ?? s.jumlah ?? s.total ?? s.count ?? 0,
+							),
+						})),
+					);
+				}
+			}
+		} catch (error) {
+			console.error("❌ Failed to fetch demografi data:", error);
+		} finally {
+			setLoading(false);
+		}
+	}, []);
+
+	useEffect(() => {
+		fetchData();
+	}, [fetchData]);
+
+	// Listen for sync complete event to refresh data
+	useEffect(() => {
+		const handleSyncComplete = () => {
+			console.log("🔄 Sync complete event received, refreshing data...");
+			setLoading(true);
+			fetchData();
+		};
+
+		window.addEventListener("demografi-sync-complete", handleSyncComplete);
+		return () => {
+			window.removeEventListener("demografi-sync-complete", handleSyncComplete);
+		};
+	}, [fetchData]);
+
+	// KPI Data
+	const kpiData = [
+		{
+			id: 1,
+			title: "Total Penduduk",
+			value: stats.total.toLocaleString(),
+			subtitle: "Aktif terdaftar",
+			icon: Users,
+		},
+		{
+			id: 2,
+			title: "Kepala Keluarga",
+			value: stats.heads.toLocaleString(),
+			subtitle: "Total KK",
+			icon: Home,
+		},
+		{
+			id: 3,
+			title: "Kelahiran",
+			value: births.toString(),
+			subtitle: "Tahun ini",
+			icon: Baby,
+		},
+		{
+			id: 4,
+			title: "Kemiskinan",
+			value: stats.poor.toLocaleString(),
+			subtitle: "Keluarga Prasejahtera",
+			trend: "positive" as const,
+			icon: TrendingDown,
+		},
+	];
+
+	// Dynamic Stats Data
+	const dynamicStats = [
+		{
+			title: "Kelahiran",
+			value: births.toString(),
+			icon: Baby,
+			color: "#22C55E",
+		},
+		{
+			title: "Kematian",
+			value: deaths.toString(),
+			icon: TrendingDown,
+			color: "#EF4444",
+		},
+		{
+			title: "Pindah Masuk",
+			value: moveIn.toString(),
+			icon: Users,
+			color: "#3B82F6",
+		},
+		{
+			title: "Pindah Keluar",
+			value: moveOut.toString(),
+			icon: Users,
+			color: "#F97316",
+		},
+	];
 
 	return (
 		<Stack gap="lg">
@@ -226,44 +490,50 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>
-							<BarChart data={ageDistributionData}>
-								<CartesianGrid
-									strokeDasharray="3 3"
-									vertical={false}
-									stroke={dark ? "#334155" : "#e5e7eb"}
-								/>
-								<XAxis
-									dataKey="ageRange"
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-								/>
-								<YAxis
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-								/>
-								<Tooltip
-									contentStyle={{
-										backgroundColor: dark ? "#1E293B" : "white",
-										borderColor: dark ? "#334155" : "#e5e7eb",
-										borderRadius: "8px",
-									}}
-									labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
-								/>
-								<Bar
-									dataKey="total"
-									fill="#1E3A5F"
-									radius={[8, 8, 0, 0]}
-									maxBarSize={40}
-								/>
-							</BarChart>
+							{loading ? (
+								<Group justify="center" align="center" h="100%">
+									<Loader />
+								</Group>
+							) : (
+								<BarChart data={ageData}>
+									<CartesianGrid
+										strokeDasharray="3 3"
+										vertical={false}
+										stroke={dark ? "#334155" : "#e5e7eb"}
+									/>
+									<XAxis
+										dataKey="ageRange"
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 12,
+										}}
+									/>
+									<YAxis
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 12,
+										}}
+									/>
+									<Tooltip
+										contentStyle={{
+											backgroundColor: dark ? "#1E293B" : "white",
+											borderColor: dark ? "#334155" : "#e5e7eb",
+											borderRadius: "8px",
+										}}
+										labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+									/>
+									<Bar
+										dataKey="total"
+										fill="#396aaaff"
+										radius={[8, 8, 0, 0]}
+										maxBarSize={40}
+									/>
+								</BarChart>
+							)}
 						</ResponsiveContainer>
 					</Card>
 				</Grid.Col>
@@ -290,46 +560,52 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>
-							<BarChart data={jobDistributionData} layout="vertical">
-								<CartesianGrid
-									strokeDasharray="3 3"
-									horizontal={false}
-									stroke={dark ? "#334155" : "#e5e7eb"}
-								/>
-								<XAxis
-									type="number"
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-								/>
-								<YAxis
-									type="category"
-									dataKey="job"
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-									width={90}
-								/>
-								<Tooltip
-									contentStyle={{
-										backgroundColor: dark ? "#1E293B" : "white",
-										borderColor: dark ? "#334155" : "#e5e7eb",
-										borderRadius: "8px",
-									}}
-								/>
-								<Bar
-									dataKey="total"
-									fill="#1E3A5F"
-									radius={[0, 8, 8, 0]}
-									maxBarSize={30}
-								/>
-							</BarChart>
+							{loading ? (
+								<Group justify="center" align="center" h="100%">
+									<Loader />
+								</Group>
+							) : (
+								<BarChart data={jobData} layout="vertical">
+									<CartesianGrid
+										strokeDasharray="3 3"
+										horizontal={false}
+										stroke={dark ? "#334155" : "#e5e7eb"}
+									/>
+									<XAxis
+										type="number"
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 12,
+										}}
+									/>
+									<YAxis
+										type="category"
+										dataKey="job"
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 12,
+										}}
+										width={90}
+									/>
+									<Tooltip
+										contentStyle={{
+											backgroundColor: dark ? "#1E293B" : "white",
+											borderColor: dark ? "#334155" : "#e5e7eb",
+											borderRadius: "8px",
+										}}
+									/>
+									<Bar
+										dataKey="total"
+										fill="#396aaaff"
+										radius={[0, 8, 8, 0]}
+										maxBarSize={30}
+									/>
+								</BarChart>
+							)}
 						</ResponsiveContainer>
 					</Card>
 				</Grid.Col>
@@ -356,8 +632,8 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<Grid gutter="sm">
-							{dynamicStats.map((stat, index) => (
-								<Grid.Col key={index} span={6}>
+							{dynamicStats.map((stat) => (
+								<Grid.Col key={stat.title} span={6}>
 									<Card
 										p="sm"
 										radius="lg"
@@ -420,50 +696,57 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>
-							<PieChart>
-								<Pie
-									data={religionData}
-									cx="50%"
-									cy="50%"
-									innerRadius={60}
-									outerRadius={90}
-									paddingAngle={2}
-									dataKey="value"
-								>
-									{religionData.map((entry, index) => (
-										<Cell key={`cell-${index}`} fill={entry.color} />
-									))}
-								</Pie>
-								<Tooltip
-									contentStyle={{
-										backgroundColor: dark ? "#1E293B" : "white",
-										borderColor: dark ? "#334155" : "#e5e7eb",
-										borderRadius: "8px",
-									}}
-								/>
-							</PieChart>
+							{loading ? (
+								<Group justify="center" align="center" h="100%">
+									<Loader />
+								</Group>
+							) : (
+								<PieChart>
+									<Pie
+										data={religionData}
+										cx="50%"
+										cy="50%"
+										innerRadius={60}
+										outerRadius={90}
+										paddingAngle={2}
+										dataKey="value"
+									>
+										{religionData.map((entry) => (
+											<Cell key={`cell-${entry.name}`} fill={entry.color} />
+										))}
+									</Pie>
+									<Tooltip
+										contentStyle={{
+											backgroundColor: dark ? "#1E293B" : "white",
+											borderColor: dark ? "#334155" : "#e5e7eb",
+											borderRadius: "8px",
+										}}
+									/>
+								</PieChart>
+							)}
 						</ResponsiveContainer>
 						<Stack gap="xs" mt="md">
-							{religionData.map((item, index) => (
-								<Group key={index} justify="space-between">
-									<Group gap="xs">
-										<Box
-											w={10}
-											h={10}
-											style={{
-												backgroundColor: item.color,
-												borderRadius: 2,
-											}}
-										/>
-										<Text size="sm" c={dark ? "white" : "gray.7"}>
-											{item.name}
+							{!loading &&
+								religionData.map((item) => (
+									<Group key={item.name} justify="space-between">
+										<Group gap="xs">
+											<Box
+												w={10}
+												h={10}
+												style={{
+													backgroundColor: item.color,
+													borderRadius: 2,
+												}}
+											/>
+											<Text size="sm" c={dark ? "white" : "gray.7"}>
+												{item.name}
+											</Text>
+										</Group>
+										<Text size="sm" fw={600} c={dark ? "white" : "gray.9"}>
+											{item.value.toLocaleString()}
 										</Text>
 									</Group>
-									<Text size="sm" fw={600} c={dark ? "white" : "gray.9"}>
-										{item.value.toLocaleString()}
-									</Text>
-								</Group>
-							))}
+								))}
 						</Stack>
 					</Card>
 				</Grid.Col>
@@ -490,118 +773,124 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<Box style={{ overflowX: "auto" }}>
-							<table style={{ width: "100%", borderCollapse: "collapse" }}>
-								<thead>
-									<tr>
-										<th
-											style={{
-												textAlign: "left",
-												padding: "8px",
-												fontSize: "12px",
-												fontWeight: 600,
-												color: dark ? "#94A3B8" : "#64748B",
-												borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
-											}}
-										>
-											Banjar
-										</th>
-										<th
-											style={{
-												textAlign: "right",
-												padding: "8px",
-												fontSize: "12px",
-												fontWeight: 600,
-												color: dark ? "#94A3B8" : "#64748B",
-												borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
-											}}
-										>
-											Penduduk
-										</th>
-										<th
-											style={{
-												textAlign: "right",
-												padding: "8px",
-												fontSize: "12px",
-												fontWeight: 600,
-												color: dark ? "#94A3B8" : "#64748B",
-												borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
-											}}
-										>
-											KK
-										</th>
-										<th
-											style={{
-												textAlign: "right",
-												padding: "8px",
-												fontSize: "12px",
-												fontWeight: 600,
-												color: dark ? "#94A3B8" : "#64748B",
-												borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
-											}}
-										>
-											Miskin
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{banjarData.map((item, index) => (
-										<tr
-											key={index}
-											style={{
-												backgroundColor:
-													index % 2 === 0
-														? dark
-															? "#334155"
-															: "#F8FAFC"
-														: "transparent",
-												transition: "background-color 0.15s ease",
-											}}
-										>
-											<td
+							{loading ? (
+								<Group justify="center" py="xl">
+									<Loader />
+								</Group>
+							) : (
+								<table style={{ width: "100%", borderCollapse: "collapse" }}>
+									<thead>
+										<tr>
+											<th
 												style={{
-													padding: "10px 8px",
-													fontSize: "13px",
-													fontWeight: 500,
-													color: dark ? "#E2E8F0" : "#1E293B",
-												}}
-											>
-												{item.banjar}
-											</td>
-											<td
-												style={{
-													padding: "10px 8px",
-													textAlign: "right",
-													fontSize: "13px",
-													color: dark ? "#E2E8F0" : "#1E293B",
-												}}
-											>
-												{item.population.toLocaleString()}
-											</td>
-											<td
-												style={{
-													padding: "10px 8px",
-													textAlign: "right",
-													fontSize: "13px",
-													color: dark ? "#E2E8F0" : "#1E293B",
-												}}
-											>
-												{item.kk.toLocaleString()}
-											</td>
-											<td
-												style={{
-													padding: "10px 8px",
-													textAlign: "right",
-													fontSize: "13px",
-													color: "#EF4444",
+													textAlign: "left",
+													padding: "8px",
+													fontSize: "12px",
 													fontWeight: 600,
+													color: dark ? "#94A3B8" : "#64748B",
+													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
 												}}
 											>
-												{item.poor.toLocaleString()}
-											</td>
+												Banjar
+											</th>
+											<th
+												style={{
+													textAlign: "right",
+													padding: "8px",
+													fontSize: "12px",
+													fontWeight: 600,
+													color: dark ? "#94A3B8" : "#64748B",
+													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
+												}}
+											>
+												Penduduk
+											</th>
+											<th
+												style={{
+													textAlign: "right",
+													padding: "8px",
+													fontSize: "12px",
+													fontWeight: 600,
+													color: dark ? "#94A3B8" : "#64748B",
+													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
+												}}
+											>
+												KK
+											</th>
+											<th
+												style={{
+													textAlign: "right",
+													padding: "8px",
+													fontSize: "12px",
+													fontWeight: 600,
+													color: dark ? "#94A3B8" : "#64748B",
+													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
+												}}
+											>
+												Miskin
+											</th>
 										</tr>
-									))}
-								</tbody>
-							</table>
+									</thead>
+									<tbody>
+										{banjarData.map((item) => (
+											<tr
+												key={item.id}
+												style={{
+													backgroundColor:
+														banjarData.indexOf(item) % 2 === 0
+															? dark
+																? "#334155"
+																: "#F8FAFC"
+															: "transparent",
+													transition: "background-color 0.15s ease",
+												}}
+											>
+												<td
+													style={{
+														padding: "10px 8px",
+														fontSize: "13px",
+														fontWeight: 500,
+														color: dark ? "#E2E8F0" : "#1E293B",
+													}}
+												>
+													{item.name}
+												</td>
+												<td
+													style={{
+														padding: "10px 8px",
+														textAlign: "right",
+														fontSize: "13px",
+														color: dark ? "#E2E8F0" : "#1E293B",
+													}}
+												>
+													{(item.totalPopulation || 0).toLocaleString()}
+												</td>
+												<td
+													style={{
+														padding: "10px 8px",
+														textAlign: "right",
+														fontSize: "13px",
+														color: dark ? "#E2E8F0" : "#1E293B",
+													}}
+												>
+													{(item.totalKK || 0).toLocaleString()}
+												</td>
+												<td
+													style={{
+														padding: "10px 8px",
+														textAlign: "right",
+														fontSize: "13px",
+														color: "#EF4444",
+														fontWeight: 600,
+													}}
+												>
+													{(item.totalPoor || 0).toLocaleString()}
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							)}
 						</Box>
 					</Card>
 				</Grid.Col>
@@ -628,50 +917,56 @@ const DemografiPekerjaan = () => {
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>
-							<BarChart data={sektorUnggulanData} layout="vertical">
-								<CartesianGrid
-									strokeDasharray="3 3"
-									horizontal={false}
-									stroke={dark ? "#334155" : "#e5e7eb"}
-								/>
-								<XAxis
-									type="number"
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-								/>
-								<YAxis
-									type="category"
-									dataKey="sektor"
-									axisLine={false}
-									tickLine={false}
-									tick={{
-										fill: dark ? "#E2E8F0" : "#374151",
-										fontSize: 12,
-									}}
-									width={90}
-								/>
-								<Tooltip
-									contentStyle={{
-										backgroundColor: dark ? "#1E293B" : "white",
-										borderColor: dark ? "#334155" : "#e5e7eb",
-										borderRadius: "8px",
-									}}
-								/>
-								<Bar
-									dataKey="value"
-									fill="#1E3A5F"
-									radius={[0, 8, 8, 0]}
-									maxBarSize={40}
-								>
-									{sektorUnggulanData.map((entry, index) => (
-										<Cell key={`cell-${index}`} fill="#1E3A5F" />
-									))}
-								</Bar>
-							</BarChart>
+							{loading ? (
+								<Group justify="center" align="center" h="100%">
+									<Loader />
+								</Group>
+							) : (
+								<BarChart data={sektorData} layout="vertical">
+									<CartesianGrid
+										strokeDasharray="3 3"
+										horizontal={false}
+										stroke={dark ? "#334155" : "#e5e7eb"}
+									/>
+									<XAxis
+										type="number"
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 12,
+										}}
+									/>
+									<YAxis
+										type="category"
+										dataKey="sektor"
+										axisLine={false}
+										tickLine={false}
+										tick={{
+											fill: dark ? "#E2E8F0" : "#374151",
+											fontSize: 11,
+										}}
+										width={120}
+									/>
+									<Tooltip
+										contentStyle={{
+											backgroundColor: dark ? "#1E293B" : "white",
+											borderColor: dark ? "#334155" : "#e5e7eb",
+											borderRadius: "8px",
+										}}
+									/>
+									<Bar
+										dataKey="value"
+										fill="#396aaaff"
+										radius={[0, 8, 8, 0]}
+										maxBarSize={40}
+									>
+										{sektorData.map((entry) => (
+											<Cell key={`cell-${entry.sektor}`} fill="#396aaaff" />
+										))}
+									</Bar>
+								</BarChart>
+							)}
 						</ResponsiveContainer>
 					</Card>
 				</Grid.Col>

@@ -1,150 +1,251 @@
 import "dotenv/config";
-import { hash } from "bcryptjs";
-import { generateId } from "better-auth";
-import { prisma } from "@/utils/db";
+import { PrismaClient } from "../generated/prisma";
 
-async function seedAdminUser() {
-	// Load environment variables
-	const adminEmail = process.env.ADMIN_EMAIL;
-	const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+// Import all seeders
+import { seedAdminUser, seedApiKeys, seedDemoUsers } from "./seeders/seed-auth";
+import { seedDashboardMetrics } from "./seeders/seed-dashboard-metrics";
+import {
+	getBanjarIds,
+	seedBanjars,
+	seedResidents,
+} from "./seeders/seed-demographics";
+import {
+	seedDiscussions,
+	seedDivisionMetrics,
+	seedDocumentStats,
+	seedDocuments,
+} from "./seeders/seed-discussions";
+import {
+	getDivisionIds,
+	seedActivities,
+	seedDivisions,
+} from "./seeders/seed-division-performance";
+import { seedPhase2 } from "./seeders/seed-phase2";
+import {
+	getComplaintIds,
+	seedComplaints,
+	seedComplaintUpdates,
+	seedEvents,
+	seedInnovationIdeas,
+	seedServiceLetters,
+} from "./seeders/seed-public-services";
 
-	if (!adminEmail) {
+const prisma = new PrismaClient();
+
+/**
+ * Check if seed has already been run
+ * Returns true if core data already exists
+ */
+export async function hasExistingData(): Promise<boolean> {
+	// Check for core entities that should always exist after seeding
+	const [userCount, banjarCount, divisionCount] = await Promise.all([
+		prisma.user.count(),
+		prisma.banjar.count(),
+		prisma.division.count(),
+	]);
+
+	// If we have more than 1 user (admin), 6 banjars, and 4 divisions, assume seeded
+	return userCount > 1 && banjarCount >= 6 && divisionCount >= 4;
+}
+
+/**
+ * Run All Seeders
+ * Executes all seeder functions in the correct order
+ */
+export async function runSeed() {
+	console.log("🌱 Starting seed...\n");
+
+	// Check if data already exists
+	const existingData = await hasExistingData();
+	if (existingData) {
 		console.log(
-			"No ADMIN_EMAIL environment variable found. Skipping admin user creation.",
+			"⏭️  Existing data detected. Skipping seed to prevent duplicates.\n",
 		);
+		console.log("💡 To re-seed, either:");
+		console.log("   1. Run: bun x prisma migrate reset (resets database)");
+		console.log("   2. Manually delete data from tables\n");
+		console.log("✅ Seed skipped successfully!\n");
 		return;
 	}
 
-	try {
-		// Check if admin user already exists
-		const existingUser = await prisma.user.findUnique({
-			where: { email: adminEmail },
-		});
-
-		if (existingUser) {
-			// Update existing user to have admin role if they don't already
-			if (existingUser.role !== "admin") {
-				await prisma.user.update({
-					where: { email: adminEmail },
-					data: { role: "admin" },
-				});
-				console.log(`User with email ${adminEmail} updated to admin role.`);
-			} else {
-				console.log(`User with email ${adminEmail} already has admin role.`);
-			}
-		} else {
-			// Create new admin user
-			const hashedPassword = await hash(adminPassword, 12);
-			const userId = generateId();
-
-			await prisma.user.create({
-				data: {
-					id: userId,
-					email: adminEmail,
-					name: "Admin User",
-					role: "admin",
-					emailVerified: true,
-					createdAt: new Date(),
-					updatedAt: new Date(),
-				},
-			});
-
-			await prisma.account.create({
-				data: {
-					id: generateId(),
-					userId,
-					accountId: userId,
-					providerId: "credential",
-					password: hashedPassword,
-					createdAt: new Date(),
-					updatedAt: new Date(),
-				},
-			});
-
-			console.log(`Admin user created with email: ${adminEmail}`);
-		}
-	} catch (error) {
-		console.error("Error seeding admin user:", error);
-		throw error;
-	}
-}
-
-async function seedDemoUsers() {
-	const demoUsers = [
-		{ email: "demo1@example.com", name: "Demo User 1", role: "user" },
-		{ email: "demo2@example.com", name: "Demo User 2", role: "user" },
-		{
-			email: "moderator@example.com",
-			name: "Moderator User",
-			role: "moderator",
-		},
-	];
-
-	for (const userData of demoUsers) {
-		try {
-			const existingUser = await prisma.user.findUnique({
-				where: { email: userData.email },
-			});
-
-			if (!existingUser) {
-				const userId = generateId();
-				const hashedPassword = await hash("demo123", 12);
-
-				await prisma.user.create({
-					data: {
-						id: userId,
-						email: userData.email,
-						name: userData.name,
-						role: userData.role,
-						emailVerified: true,
-						createdAt: new Date(),
-						updatedAt: new Date(),
-					},
-				});
-
-				await prisma.account.create({
-					data: {
-						id: generateId(),
-						userId,
-						accountId: userId,
-						providerId: "credential",
-						password: hashedPassword,
-						createdAt: new Date(),
-						updatedAt: new Date(),
-					},
-				});
-
-				console.log(`Demo user created: ${userData.email}`);
-			} else {
-				console.log(`Demo user already exists: ${userData.email}`);
-			}
-		} catch (error) {
-			console.error(`Error seeding user ${userData.email}:`, error);
-		}
-	}
-}
-
-async function main() {
-	console.log("Seeding database...");
-
-	await seedAdminUser();
+	// 1. Seed Authentication (Admin & Demo Users)
+	console.log("📁 [1/7] Authentication & Users");
+	const adminId = await seedAdminUser();
 	await seedDemoUsers();
+	await seedApiKeys(adminId);
+	console.log();
 
-	console.log("Database seeding completed.");
+	// 2. Seed Demographics (Banjars & Residents)
+	console.log("📁 [2/7] Demographics & Population");
+	await seedBanjars();
+	const banjarIds = await getBanjarIds();
+	await seedResidents(banjarIds);
+	console.log();
+
+	// 3. Seed Division Performance (Divisions & Activities)
+	console.log("📁 [3/7] Division Performance");
+	const divisions = await seedDivisions();
+	const divisionIds = divisions.map((d) => d.id);
+	await seedActivities(divisionIds);
+	await seedDivisionMetrics(divisionIds);
+	console.log();
+
+	// 4. Seed Public Services (Complaints, Service Letters, Events, Innovation)
+	console.log("📁 [4/7] Public Services");
+	await seedComplaints(adminId);
+	await seedServiceLetters(adminId);
+	await seedEvents(adminId);
+	await seedInnovationIdeas(adminId);
+	const complaintIds = await getComplaintIds();
+	await seedComplaintUpdates(complaintIds, adminId);
+	console.log();
+
+	// 5. Seed Documents & Discussions
+	console.log("📁 [5/7] Documents & Discussions");
+	await seedDocuments(divisionIds, adminId);
+	await seedDocumentStats();
+	await seedDiscussions(divisionIds, adminId);
+	console.log();
+
+	// 6. Seed Dashboard Metrics (Budget, SDGs, Satisfaction)
+	console.log("📁 [6/7] Dashboard Metrics");
+	await seedDashboardMetrics();
+	console.log();
+
+	// 7. Seed Phase 2+ Features (UMKM, Posyandu, Security, etc.)
+	console.log("📁 [7/7] Phase 2+ Features");
+	await seedPhase2(banjarIds, adminId);
+	console.log();
+
+	console.log("✅ Seed finished successfully!\n");
 }
 
-// Only auto-execute when run directly (not when imported)
-const isMainModule =
-	typeof require !== "undefined"
-		? require.main === module
-		: import.meta.path.endsWith("seed.ts");
+/**
+ * Run Specific Seeder
+ * Allows running individual seeders by name
+ */
+export async function runSpecificSeeder(name: string) {
+	console.log(`🌱 Running specific seeder: ${name}\n`);
 
-if (isMainModule) {
-	main().catch((error) => {
-		console.error("Error during seeding:", error);
-		process.exit(1);
-	});
+	// Check if data already exists for specific seeder
+	const existingData = await hasExistingData();
+	if (existingData && name !== "auth") {
+		console.log(
+			"⚠️  Warning: Existing data detected for this seeder category.\n",
+		);
+		console.log("💡 To re-seed, either:");
+		console.log("   1. Run: bun x prisma migrate reset (resets database)");
+		console.log("   2. Manually delete data from tables\n");
+		console.log("✅ Seeder skipped to prevent duplicates!\n");
+		return;
+	}
+
+	switch (name) {
+		case "auth":
+		case "users": {
+			console.log("📁 Authentication & Users");
+			const adminId = await seedAdminUser();
+			await seedDemoUsers();
+			await seedApiKeys(adminId);
+			break;
+		}
+
+		case "demographics":
+		case "population": {
+			console.log("📁 Demographics & Population");
+			await seedBanjars();
+			const banjarIds = await getBanjarIds();
+			await seedResidents(banjarIds);
+			break;
+		}
+
+		case "divisions":
+		case "performance": {
+			console.log("📁 Division Performance");
+			const divisions = await seedDivisions();
+			const divisionIds = divisions.map((d) => d.id);
+			await seedActivities(divisionIds);
+			await seedDivisionMetrics(divisionIds);
+			break;
+		}
+
+		case "complaints":
+		case "services":
+		case "public": {
+			console.log("📁 Public Services");
+			const pubAdminId = await seedAdminUser();
+			await seedComplaints(pubAdminId);
+			await seedServiceLetters(pubAdminId);
+			await seedEvents(pubAdminId);
+			await seedInnovationIdeas(pubAdminId);
+			const compIds = await getComplaintIds();
+			await seedComplaintUpdates(compIds, pubAdminId);
+			break;
+		}
+
+		case "documents":
+		case "discussions": {
+			console.log("📁 Documents & Discussions");
+			const docAdminId = await seedAdminUser();
+			const divs = await seedDivisions();
+			const divIds = divs.map((d) => d.id);
+			await seedDocuments(divIds, docAdminId);
+			await seedDocumentStats();
+			await seedDiscussions(divIds, docAdminId);
+			break;
+		}
+
+		case "dashboard":
+		case "metrics":
+			console.log("📁 Dashboard Metrics");
+			await seedDashboardMetrics();
+			break;
+
+		case "phase2":
+		case "features": {
+			console.log("📁 Phase 2+ Features");
+			const p2AdminId = await seedAdminUser();
+			await seedBanjars();
+			const p2BanjarIds = await getBanjarIds();
+			await seedPhase2(p2BanjarIds, p2AdminId);
+			break;
+		}
+
+		default:
+			console.error(`❌ Unknown seeder: ${name}`);
+			console.log(
+				"Available seeders: auth, demographics, divisions, complaints, documents, dashboard, phase2",
+			);
+			process.exit(1);
+	}
+
+	console.log("\n✅ Seeder finished successfully!\n");
 }
 
-// Export for programmatic use
-export { seedAdminUser, seedDemoUsers, main as runSeed };
+// Main execution
+if (import.meta.main) {
+	const args = process.argv.slice(2);
+	const seederName = args[0];
+
+	if (seederName) {
+		// Run specific seeder
+		runSpecificSeeder(seederName)
+			.catch((e) => {
+				console.error("❌ Seeder error:", e);
+				process.exit(1);
+			})
+			.finally(async () => {
+				await prisma.$disconnect();
+			});
+	} else {
+		// Run all seeders
+		runSeed()
+			.catch((e) => {
+				console.error("❌ Seed error:", e);
+				process.exit(1);
+			})
+			.finally(async () => {
+				await prisma.$disconnect();
+			});
+	}
+}

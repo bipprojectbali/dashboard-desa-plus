@@ -46,7 +46,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				mantineVariant = "transparent";
 				mantineColor = "blue"; // Assuming primary maps to blue in Mantine for now
 				break;
-			case "default":
 			default:
 				mantineVariant = "filled";
 				mantineColor = "blue"; // Assuming primary maps to blue in Mantine for now

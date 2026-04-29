@@ -43,8 +43,12 @@ const SummaryCard = ({
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#141D34" : "white"}
-			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
+			bg={dark ? "#1E293B" : "white"}
+			style={{
+				borderColor: dark ? "#334155" : "white",
+				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				transition: "transform 0.15s ease, box-shadow 0.15s ease",
+			}}
 		>
 			<Group justify="space-between" align="center">
 				<Stack gap={2}>
@@ -54,12 +58,12 @@ const SummaryCard = ({
 					<Text
 						size="xl"
 						fw={700}
-						c={highlight ? "red" : dark ? "dark.0" : "#1e3a5f"}
+						c={highlight ? "red" : dark ? "white" : "#1e3a5f"}
 					>
 						{value}
 					</Text>
 					{subtitle && (
-						<Text size="xs" c={dark ? "dark.4" : "gray.6"}>
+						<Text size="xs" c={dark ? "white" : "gray.6"}>
 							{subtitle}
 						</Text>
 					)}

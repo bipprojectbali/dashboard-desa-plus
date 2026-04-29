@@ -1,40 +1,76 @@
 import {
-	Box,
 	Card,
 	Group,
+	Loader,
 	Stack,
 	Text,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
 import { MessageCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { apiClient } from "@/utils/api-client";
 
 interface DiscussionItem {
+	id: string;
 	message: string;
 	sender: string;
 	date: string;
+	division: string | null;
+	isResolved: boolean;
 }
-
-const discussions: DiscussionItem[] = [
-	{
-		message: "Kepada Pelayanan, mohon di cek...",
-		sender: "I.B Surya Prabhawa Manu",
-		date: "12 Apr 2025",
-	},
-	{
-		message: "Kepada staf perencanaan @suar...",
-		sender: "Ni Nyoman Yuliani",
-		date: "14 Jun 2025",
-	},
-	{
-		message: "ijin atau mohon kepada KBD sar...",
-		sender: "Ni Wayan Martini",
-		date: "12 Apr 2025",
-	},
-];
 
 export function DiscussionPanel() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+
+	const [discussions, setDiscussions] = useState<DiscussionItem[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		async function fetchDiscussions() {
+			try {
+				const res = await apiClient.GET("/api/noc/latest-discussion", {
+					params: { query: { idDesa: "desa1", limit: "6" } },
+				});
+				if (res.data?.data) {
+					const rawData = res.data.data as {
+						id: string;
+						message: string;
+						senderName: string;
+						divisionName: string;
+						createdAt: string;
+					}[];
+
+					setDiscussions(
+						rawData.map((d) => ({
+							id: d.id,
+							message: d.message,
+							sender: d.senderName,
+							date: d.createdAt,
+							division: d.divisionName,
+							isResolved: false, // Default for NOC discussions
+						})),
+					);
+				}
+			} catch (error) {
+				console.error("Failed to fetch discussions from NOC", error);
+			} finally {
+				setLoading(false);
+			}
+		}
+
+		fetchDiscussions();
+	}, []);
+
+	const formatDate = (dateString: string) => {
+		try {
+			return format(new Date(dateString), "dd MMM yyyy", { locale: id });
+		} catch {
+			return dateString;
+		}
+	};
 
 	return (
 		<Card
@@ -57,36 +93,51 @@ export function DiscussionPanel() {
 				</Text>
 			</Group>
 			<Stack gap="sm">
-				{discussions.map((discussion, index) => (
-					<Card
-						key={index}
-						p="sm"
-						radius="md"
-						withBorder
-						bg={dark ? "#334155" : "#F1F5F9"}
-						style={{
-							borderColor: dark ? "#334155" : "#F1F5F9",
-						}}
-					>
-						<Text
-							size="sm"
-							c={dark ? "white" : "#1E3A5F"}
-							fw={500}
-							mb="xs"
-							lineClamp={2}
+				{loading ? (
+					<Group justify="center" py="xl">
+						<Loader />
+					</Group>
+				) : discussions.length > 0 ? (
+					discussions.map((discussion) => (
+						<Card
+							key={discussion.id}
+							p="sm"
+							radius="md"
+							withBorder
+							bg={dark ? "#334155" : "#F1F5F9"}
+							style={{
+								borderColor: dark ? "#334155" : "#F1F5F9",
+							}}
 						>
-							{discussion.message}
-						</Text>
-						<Group justify="space-between">
-							<Text size="xs" c="dimmed">
-								{discussion.sender}
+							<Text
+								size="sm"
+								c={dark ? "white" : "#1E3A5F"}
+								fw={500}
+								mb="xs"
+								lineClamp={2}
+							>
+								{discussion.message}
 							</Text>
-							<Text size="xs" c="dimmed">
-								{discussion.date}
-							</Text>
-						</Group>
-					</Card>
-				))}
+							<Group justify="space-between">
+								<Text size="xs" c="dimmed">
+									{discussion.sender}
+									{discussion.division && (
+										<Text span size="xs" c="dimmed" ml="xs">
+											• {discussion.division}
+										</Text>
+									)}
+								</Text>
+								<Text size="xs" c="dimmed">
+									{formatDate(discussion.date)}
+								</Text>
+							</Group>
+						</Card>
+					))
+				) : (
+					<Text size="sm" c="dimmed" ta="center" py="xl">
+						Tidak ada diskusi
+					</Text>
+				)}
 			</Stack>
 		</Card>
 	);

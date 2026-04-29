@@ -9,13 +9,13 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme
+	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconAlertTriangle,
 	IconCamera,
 	IconClock,
-	IconMapPin
+	IconMapPin,
 } from "@tabler/icons-react";
 
 const KeamananPage = () => {
@@ -120,14 +120,18 @@ const KeamananPage = () => {
 					<Stack gap={"xs"}>
 						{/* KPI Cards */}
 						<Grid gutter="md">
-							{kpiData.map((kpi, index) => (
-								<GridCol key={index} span={{ base: 12, sm: 6, md: 6 }}>
+							{kpiData.map((kpi) => (
+								<GridCol key={kpi.title} span={{ base: 12, sm: 6, md: 6 }}>
 									<Card
 										p="md"
 										radius="md"
 										withBorder
-										bg={dark ? "#141D34" : "white"}
-										style={{ borderColor: dark ? "#141D34" : "white" }}
+										bg={dark ? "#1E293B" : "white"}
+										style={{
+											borderColor: dark ? "#334155" : "white",
+											boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+											transition: "transform 0.15s ease, box-shadow 0.15s ease",
+										}}
 										h="100%"
 									>
 										<Group justify="space-between" align="center">
@@ -143,7 +147,7 @@ const KeamananPage = () => {
 													>
 														{kpi.value}
 													</Text>
-													<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+													<Text size="sm" c={dark ? "white" : "dimmed"}>
 														{kpi.title}
 													</Text>
 												</Group>
@@ -165,14 +169,18 @@ const KeamananPage = () => {
 							p="md"
 							radius="md"
 							withBorder
-							bg={dark ? "#141D34" : "white"}
-							style={{ borderColor: dark ? "#141D34" : "white" }}
+							bg={dark ? "#1E293B" : "white"}
+							style={{
+								borderColor: dark ? "#334155" : "white",
+								boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+								transition: "transform 0.15s ease, box-shadow 0.15s ease",
+							}}
 							h="100%"
 						>
 							<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
 								Peta Keamanan CCTV
 							</Title>
-							<Text size="sm" c={dark ? "dark.3" : "dimmed"} mb="md">
+							<Text size="sm" c={dark ? "white" : "dimmed"} mb="md">
 								Titik Lokasi CCTV
 							</Text>
 
@@ -206,9 +214,9 @@ const KeamananPage = () => {
 								<Title order={4} c={dark ? "dark.0" : "black"}>
 									Daftar CCTV
 								</Title>
-								{cctvLocations.map((cctv, index) => (
+								{cctvLocations.map((cctv) => (
 									<Card
-										key={index}
+										key={cctv.id}
 										p="md"
 										radius="md"
 										withBorder
@@ -228,13 +236,13 @@ const KeamananPage = () => {
 														{cctv.status === "active" ? "Online" : "Offline"}
 													</Badge>
 												</Group>
-												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+												<Text size="sm" c={dark ? "white" : "dimmed"}>
 													{cctv.location}
 												</Text>
 											</Stack>
 											<Group gap="xs">
 												<IconClock size={16} stroke={1.5} />
-												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+												<Text size="sm" c={dark ? "white" : "dimmed"}>
 													{cctv.lastSeen}
 												</Text>
 											</Group>
@@ -252,14 +260,18 @@ const KeamananPage = () => {
 						p="md"
 						radius="md"
 						withBorder
-						bg={dark ? "#141D34" : "white"}
-						style={{ borderColor: dark ? "#141D34" : "white" }}
+						bg={dark ? "#1E293B" : "white"}
+						style={{
+							borderColor: dark ? "#334155" : "white",
+							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+							transition: "transform 0.15s ease, box-shadow 0.15s ease",
+						}}
 						h="100%"
 					>
 						<Stack gap="sm">
-							{securityReports.map((report, index) => (
+							{securityReports.map((report) => (
 								<Card
-									key={index}
+									key={report.id}
 									p="md"
 									radius="md"
 									withBorder
@@ -287,19 +299,19 @@ const KeamananPage = () => {
 									<Group justify="space-between">
 										<Group gap="xs">
 											<IconMapPin size={16} stroke={1.5} />
-											<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+											<Text size="sm" c={dark ? "white" : "dimmed"}>
 												{report.location}
 											</Text>
 										</Group>
 										<Group gap="xs">
 											<IconClock size={16} stroke={1.5} />
-											<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+											<Text size="sm" c={dark ? "white" : "dimmed"}>
 												{report.reportedAt}
 											</Text>
 										</Group>
 									</Group>
 
-									<Text size="sm" c={dark ? "dark.3" : "dimmed"} mt="sm">
+									<Text size="sm" c={dark ? "white" : "dimmed"} mt="sm">
 										{report.date}
 									</Text>
 								</Card>

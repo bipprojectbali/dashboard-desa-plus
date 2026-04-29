@@ -22,69 +22,32 @@ export interface SalesData {
 	unit: string;
 }
 
+interface SelectOption {
+	value: string;
+	label: string;
+}
+
 interface SalesTableProps {
 	data?: SalesData[];
 	onDetailClick?: (product: SalesData) => void;
+	kategoriOptions?: SelectOption[];
+	umkmOptions?: SelectOption[];
+	onKategoriChange?: (id: string | null) => void;
+	onUmkmChange?: (id: string | null) => void;
 }
 
-export const SalesTable = ({ data, onDetailClick }: SalesTableProps) => {
+export const SalesTable = ({
+	data,
+	onDetailClick,
+	kategoriOptions,
+	umkmOptions,
+	onKategoriChange,
+	onUmkmChange,
+}: SalesTableProps) => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const defaultData: SalesData[] = [
-		{
-			id: "1",
-			produk: "Beras Premium Organik",
-			penjualanBulanIni: 8500000,
-			bulanLalu: 7600000,
-			trend: 12,
-			volume: "650 Kg",
-			stok: 850,
-			unit: "Kg",
-		},
-		{
-			id: "2",
-			produk: "Keripik Singkong",
-			penjualanBulanIni: 4200000,
-			bulanLalu: 3800000,
-			trend: 11,
-			volume: "320 Kg",
-			stok: 120,
-			unit: "Kg",
-		},
-		{
-			id: "3",
-			produk: "Madu Alami",
-			penjualanBulanIni: 3750000,
-			bulanLalu: 4100000,
-			trend: -9,
-			volume: "150 Liter",
-			stok: 45,
-			unit: "Liter",
-		},
-		{
-			id: "4",
-			produk: "Kecap Tradisional",
-			penjualanBulanIni: 2800000,
-			bulanLalu: 2500000,
-			trend: 12,
-			volume: "280 Botol",
-			stok: 95,
-			unit: "Botol",
-		},
-		{
-			id: "5",
-			produk: "Sambal Bu Rudy",
-			penjualanBulanIni: 2100000,
-			bulanLalu: 2300000,
-			trend: -9,
-			volume: "180 Botol",
-			stok: 35,
-			unit: "Botol",
-		},
-	];
-
-	const displayData = data || defaultData;
+	const displayData = data ?? [];
 
 	const formatCurrency = (value: number) => {
 		if (value >= 1000000) {
@@ -108,8 +71,12 @@ export const SalesTable = ({ data, onDetailClick }: SalesTableProps) => {
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#141D34" : "white"}
-			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
+			bg={dark ? "#1E293B" : "white"}
+			style={{
+				borderColor: dark ? "#334155" : "white",
+				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				transition: "transform 0.15s ease, box-shadow 0.15s ease",
+			}}
 		>
 			<Group justify="space-between" mb="md">
 				<Title order={4} c={dark ? "dark.0" : "#1e3a5f"}>
@@ -117,27 +84,26 @@ export const SalesTable = ({ data, onDetailClick }: SalesTableProps) => {
 				</Title>
 				<Group gap="xs">
 					<Select
-						placeholder="Filter kategori"
+						placeholder="Semua Kategori"
 						data={[
-							{ value: "semua", label: "Semua Kategori" },
-							{ value: "makanan", label: "Makanan" },
-							{ value: "minuman", label: "Minuman" },
-							{ value: "kerajinan", label: "Kerajinan" },
+							{ value: "", label: "Semua Kategori" },
+							...(kategoriOptions ?? []),
 						]}
-						defaultValue="semua"
+						defaultValue=""
 						w={180}
 						size="sm"
+						onChange={(val) => onKategoriChange?.(val || null)}
 					/>
 					<Select
-						placeholder="Filter UMKM"
+						placeholder="Semua UMKM"
 						data={[
-							{ value: "semua", label: "Semua UMKM" },
-							{ value: "umkm1", label: "Warung Pak Joko" },
-							{ value: "umkm2", label: "Ibu Sari Snack" },
+							{ value: "", label: "Semua UMKM" },
+							...(umkmOptions ?? []),
 						]}
-						defaultValue="semua"
+						defaultValue=""
 						w={180}
 						size="sm"
+						onChange={(val) => onUmkmChange?.(val || null)}
 					/>
 				</Group>
 			</Group>
@@ -209,7 +175,7 @@ export const SalesTable = ({ data, onDetailClick }: SalesTableProps) => {
 									</Text>
 								</Table.Td>
 								<Table.Td>
-									<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+									<Text size="sm" c={dark ? "white" : "dimmed"}>
 										{formatCurrency(product.bulanLalu)}
 									</Text>
 								</Table.Td>

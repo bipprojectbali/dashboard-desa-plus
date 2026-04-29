@@ -6,7 +6,7 @@ import { Elysia } from "elysia";
 import api from "./api";
 import { openInEditor } from "./utils/open-in-editor";
 
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT || 3000);
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -35,14 +35,16 @@ if (!isProduction) {
 	app.post("/__open-in-editor", ({ body }) => {
 		const { relativePath, lineNumber, columnNumber } = body as {
 			relativePath: string;
-			lineNumber: number;
-			columnNumber: number;
+			lineNumber: string;
+			columnNumber: string;
 		};
 
+		const editor = (process.env.REACT_EDITOR || "code") as any;
+
 		openInEditor(relativePath, {
-			line: lineNumber,
-			column: columnNumber,
-			editor: "antigravity",
+			line: Number(lineNumber),
+			column: Number(columnNumber),
+			editor: editor,
 		});
 
 		return { ok: true };

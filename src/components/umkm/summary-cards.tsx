@@ -9,7 +9,6 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import {
-	IconCategory,
 	IconCurrencyDollar,
 	IconTrendingUp,
 	IconUsers,
@@ -54,19 +53,23 @@ const KpiCard = ({
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#141D34" : "white"}
-			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
+			bg={dark ? "#1E293B" : "white"}
+			style={{
+				borderColor: dark ? "#334155" : "white",
+				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				transition: "transform 0.15s ease, box-shadow 0.15s ease",
+			}}
 		>
 			<Group justify="space-between" align="center">
 				<Stack gap={2}>
 					<Text size="sm" c={dark ? "dark.3" : "dimmed"} fw={500}>
 						{title}
 					</Text>
-					<Text size="xl" fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
+					<Text size="xl" fw={700} c={dark ? "white" : "#1e3a5f"}>
 						{formatValue(value)}
 					</Text>
 					{subtitle && (
-						<Text size="xs" c={dark ? "dark.4" : "gray.6"}>
+						<Text size="xs" c={dark ? "white" : "gray.6"}>
 							{subtitle}
 						</Text>
 					)}
@@ -99,14 +102,12 @@ interface SummaryCardsProps {
 }
 
 export const SummaryCards = ({ data }: SummaryCardsProps) => {
-	const defaultData = {
-		umkmAktif: 45,
-		umkmTerdaftar: 68,
-		omzet: 48000000,
-		kategoriTerbanyak: { count: 34, name: "Kuliner" },
+	const displayData = data ?? {
+		umkmAktif: 0,
+		umkmTerdaftar: 0,
+		omzet: 0,
+		kategoriTerbanyak: { count: 0, name: "-" },
 	};
-
-	const displayData = data || defaultData;
 
 	const kpiData: KpiCardProps[] = [
 		{
@@ -145,8 +146,8 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 
 	return (
 		<Grid gutter="md">
-			{kpiData.map((kpi, index) => (
-				<GridCol key={index} span={{ base: 12, sm: 6, lg: 3 }}>
+			{kpiData.map((kpi) => (
+				<GridCol key={kpi.title} span={{ base: 12, sm: 6, lg: 3 }}>
 					<KpiCard {...kpi} />
 				</GridCol>
 			))}

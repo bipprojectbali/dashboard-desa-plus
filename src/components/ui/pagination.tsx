@@ -4,7 +4,6 @@ import {
 	MoreHorizontalIcon,
 } from "lucide-react";
 import type * as React from "react";
-import { Button } from "./button";
 import { cn } from "./utils";
 
 const baseClasses =
@@ -13,7 +12,6 @@ const baseClasses =
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
 	return (
 		<nav
-			role="navigation"
 			aria-label="pagination"
 			data-slot="pagination"
 			className={cn("mx-auto flex w-full justify-center", className)}

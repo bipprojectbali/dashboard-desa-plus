@@ -80,6 +80,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
 
 	return (
 		<style
+			// biome-ignore lint/security/noDangerouslySetInnerHtml: This is a safe use of dangerouslySetInnerHTML for generating dynamic CSS variables for charts.
 			dangerouslySetInnerHTML={{
 				__html: Object.entries(THEMES)
 					.map(
@@ -125,6 +126,11 @@ function ChartTooltipContent({
 		indicator?: "line" | "dot" | "dashed";
 		nameKey?: string;
 		labelKey?: string;
+		// biome-ignore lint/suspicious/noExplicitAny: Recharts payload is complex and better handled as any[] for this wrapper.
+		payload?: any[];
+		// biome-ignore lint/suspicious/noExplicitAny: Recharts label can be any type.
+		label?: any;
+		active?: boolean;
 	}) {
 	const { config } = useChart();
 
@@ -257,9 +263,11 @@ function ChartLegendContent({
 	verticalAlign = "bottom",
 	nameKey,
 }: React.ComponentProps<"div"> &
-	Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+	Pick<RechartsPrimitive.LegendProps, "verticalAlign"> & {
 		hideIcon?: boolean;
 		nameKey?: string;
+		// biome-ignore lint/suspicious/noExplicitAny: Recharts legend payload.
+		payload?: any[];
 	}) {
 	const { config } = useChart();
 

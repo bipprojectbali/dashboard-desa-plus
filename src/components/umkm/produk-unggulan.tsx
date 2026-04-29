@@ -15,11 +15,11 @@ const MetricCard = ({ title, value, trend }: MetricCardProps) => {
 
 	return (
 		<Group justify="space-between" align="center">
-			<Text size="sm" c={dark ? "dark.3" : "dimmed"} fw={500}>
+			<Text size="sm" c={dark ? "white" : "dimmed"} fw={500}>
 				{title}
 			</Text>
 			<Stack gap={0} align="flex-end">
-				<Text size="lg" fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
+				<Text size="lg" fw={700} c={dark ? "white" : "#1e3a5f"}>
 					{value}
 				</Text>
 				{trend && (
@@ -49,17 +49,12 @@ export const ProdukUnggulan = ({ data }: ProdukUnggulanProps) => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const defaultData = {
-		totalPenjualan: 30900000,
-		produkAktif: 7,
-		totalTransaksi: 500,
-		trend: {
-			value: 18,
-			label: "vs bulan lalu",
-		},
+	const displayData = data ?? {
+		totalPenjualan: 0,
+		produkAktif: 0,
+		totalTransaksi: 0,
+		trend: undefined,
 	};
-
-	const displayData = data || defaultData;
 
 	const formatCurrency = (value: number) => {
 		if (value >= 1000000) {
@@ -77,8 +72,12 @@ export const ProdukUnggulan = ({ data }: ProdukUnggulanProps) => {
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#141D34" : "white"}
-			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
+			bg={dark ? "#1E293B" : "white"}
+			style={{
+				borderColor: dark ? "#334155" : "white",
+				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				transition: "transform 0.15s ease, box-shadow 0.15s ease",
+			}}
 		>
 			<Stack gap="lg">
 				<MetricCard

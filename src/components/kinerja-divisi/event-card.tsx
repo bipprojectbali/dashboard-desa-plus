@@ -2,11 +2,14 @@ import {
 	Box,
 	Card,
 	Group,
+	Loader,
 	Stack,
 	Text,
 	useMantineColorScheme,
 } from "@mantine/core";
 import { Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
+import { apiClient } from "@/utils/api-client";
 
 interface AgendaItem {
 	time: string;
@@ -17,9 +20,43 @@ interface EventCardProps {
 	agendas?: AgendaItem[];
 }
 
-export function EventCard({ agendas = [] }: EventCardProps) {
+export function EventCard({ agendas: propAgendas }: EventCardProps) {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+
+	const [agendas, setAgendas] = useState<AgendaItem[]>(propAgendas || []);
+	const [loading, setLoading] = useState(!propAgendas);
+
+	useEffect(() => {
+		// If agendas not provided via props, fetch from API
+		if (!propAgendas || propAgendas.length === 0) {
+			async function fetchTodayEvents() {
+				try {
+					const res = await apiClient.GET("/api/noc/upcoming-events", {
+						params: { query: { idDesa: "desa1", filter: "today" } },
+					});
+					if (res.data?.data) {
+						const todayEvents = (
+							res.data.data as { startDate: string; title: string }[]
+						).map((e) => ({
+							time: new Date(e.startDate).toLocaleTimeString("id-ID", {
+								hour: "2-digit",
+								minute: "2-digit",
+							}),
+							event: e.title,
+						}));
+						setAgendas(todayEvents);
+					}
+				} catch (error) {
+					console.error("Failed to fetch today's events from NOC", error);
+				} finally {
+					setLoading(false);
+				}
+			}
+
+			fetchTodayEvents();
+		}
+	}, [propAgendas]);
 
 	return (
 		<Card
@@ -41,10 +78,18 @@ export function EventCard({ agendas = [] }: EventCardProps) {
 					Acara Hari Ini
 				</Text>
 			</Group>
-			{agendas.length > 0 ? (
+			{loading ? (
+				<Group justify="center" py="md">
+					<Loader size="sm" />
+				</Group>
+			) : agendas.length > 0 ? (
 				<Stack gap="sm">
-					{agendas.map((agenda, index) => (
-						<Group key={index} align="flex-start" gap="md">
+					{agendas.map((agenda) => (
+						<Group
+							key={`${agenda.time}-${agenda.event}`}
+							align="flex-start"
+							gap="md"
+						>
 							<Box w={60}>
 								<Text size="sm" fw={600} c={dark ? "white" : "#1E3A5F"}>
 									{agenda.time}

@@ -20,6 +20,7 @@ import { Route as JennaAnalyticRouteImport } from './routes/jenna-analytic'
 import { Route as DemografiPekerjaanRouteImport } from './routes/demografi-pekerjaan'
 import { Route as BumdesRouteImport } from './routes/bumdes'
 import { Route as BantuanRouteImport } from './routes/bantuan'
+import { Route as ProfileRouteRouteImport } from './routes/profile/route'
 import { Route as PengaturanRouteRouteImport } from './routes/pengaturan/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,6 +30,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UsersIdRouteImport } from './routes/users/$id'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
 import { Route as PengaturanUmumRouteImport } from './routes/pengaturan/umum'
+import { Route as PengaturanSinkronisasiRouteImport } from './routes/pengaturan/sinkronisasi'
 import { Route as PengaturanNotifikasiRouteImport } from './routes/pengaturan/notifikasi'
 import { Route as PengaturanKeamananRouteImport } from './routes/pengaturan/keamanan'
 import { Route as PengaturanAksesDanTimRouteImport } from './routes/pengaturan/akses-dan-tim'
@@ -91,6 +93,11 @@ const BantuanRoute = BantuanRouteImport.update({
   path: '/bantuan',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRouteRoute = ProfileRouteRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PengaturanRouteRoute = PengaturanRouteRouteImport.update({
   id: '/pengaturan',
   path: '/pengaturan',
@@ -112,9 +119,9 @@ const UsersIndexRoute = UsersIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileIndexRoute = ProfileIndexRouteImport.update({
-  id: '/profile/',
-  path: '/profile/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProfileRouteRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -127,13 +134,18 @@ const UsersIdRoute = UsersIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileEditRoute = ProfileEditRouteImport.update({
-  id: '/profile/edit',
-  path: '/profile/edit',
-  getParentRoute: () => rootRouteImport,
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => ProfileRouteRoute,
 } as any)
 const PengaturanUmumRoute = PengaturanUmumRouteImport.update({
   id: '/umum',
   path: '/umum',
+  getParentRoute: () => PengaturanRouteRoute,
+} as any)
+const PengaturanSinkronisasiRoute = PengaturanSinkronisasiRouteImport.update({
+  id: '/sinkronisasi',
+  path: '/sinkronisasi',
   getParentRoute: () => PengaturanRouteRoute,
 } as any)
 const PengaturanNotifikasiRoute = PengaturanNotifikasiRouteImport.update({
@@ -171,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/pengaturan': typeof PengaturanRouteRouteWithChildren
+  '/profile': typeof ProfileRouteRouteWithChildren
   '/bantuan': typeof BantuanRoute
   '/bumdes': typeof BumdesRoute
   '/demografi-pekerjaan': typeof DemografiPekerjaanRoute
@@ -188,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
   '/pengaturan/keamanan': typeof PengaturanKeamananRoute
   '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
+  '/pengaturan/sinkronisasi': typeof PengaturanSinkronisasiRoute
   '/pengaturan/umum': typeof PengaturanUmumRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
@@ -215,6 +229,7 @@ export interface FileRoutesByTo {
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
   '/pengaturan/keamanan': typeof PengaturanKeamananRoute
   '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
+  '/pengaturan/sinkronisasi': typeof PengaturanSinkronisasiRoute
   '/pengaturan/umum': typeof PengaturanUmumRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
@@ -227,6 +242,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/pengaturan': typeof PengaturanRouteRouteWithChildren
+  '/profile': typeof ProfileRouteRouteWithChildren
   '/bantuan': typeof BantuanRoute
   '/bumdes': typeof BumdesRoute
   '/demografi-pekerjaan': typeof DemografiPekerjaanRoute
@@ -244,6 +260,7 @@ export interface FileRoutesById {
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
   '/pengaturan/keamanan': typeof PengaturanKeamananRoute
   '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
+  '/pengaturan/sinkronisasi': typeof PengaturanSinkronisasiRoute
   '/pengaturan/umum': typeof PengaturanUmumRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
@@ -257,6 +274,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/pengaturan'
+    | '/profile'
     | '/bantuan'
     | '/bumdes'
     | '/demografi-pekerjaan'
@@ -274,6 +292,7 @@ export interface FileRouteTypes {
     | '/pengaturan/akses-dan-tim'
     | '/pengaturan/keamanan'
     | '/pengaturan/notifikasi'
+    | '/pengaturan/sinkronisasi'
     | '/pengaturan/umum'
     | '/profile/edit'
     | '/users/$id'
@@ -301,6 +320,7 @@ export interface FileRouteTypes {
     | '/pengaturan/akses-dan-tim'
     | '/pengaturan/keamanan'
     | '/pengaturan/notifikasi'
+    | '/pengaturan/sinkronisasi'
     | '/pengaturan/umum'
     | '/profile/edit'
     | '/users/$id'
@@ -312,6 +332,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/pengaturan'
+    | '/profile'
     | '/bantuan'
     | '/bumdes'
     | '/demografi-pekerjaan'
@@ -329,6 +350,7 @@ export interface FileRouteTypes {
     | '/pengaturan/akses-dan-tim'
     | '/pengaturan/keamanan'
     | '/pengaturan/notifikasi'
+    | '/pengaturan/sinkronisasi'
     | '/pengaturan/umum'
     | '/profile/edit'
     | '/users/$id'
@@ -341,6 +363,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   PengaturanRouteRoute: typeof PengaturanRouteRouteWithChildren
+  ProfileRouteRoute: typeof ProfileRouteRouteWithChildren
   BantuanRoute: typeof BantuanRoute
   BumdesRoute: typeof BumdesRoute
   DemografiPekerjaanRoute: typeof DemografiPekerjaanRoute
@@ -352,9 +375,7 @@ export interface RootRouteChildren {
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
   SosialRoute: typeof SosialRoute
-  ProfileEditRoute: typeof ProfileEditRoute
   UsersIdRoute: typeof UsersIdRoute
-  ProfileIndexRoute: typeof ProfileIndexRoute
   UsersIndexRoute: typeof UsersIndexRoute
 }
 
@@ -437,6 +458,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BantuanRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pengaturan': {
       id: '/pengaturan'
       path: '/pengaturan'
@@ -467,10 +495,10 @@ declare module '@tanstack/react-router' {
     }
     '/profile/': {
       id: '/profile/'
-      path: '/profile'
+      path: '/'
       fullPath: '/profile/'
       preLoaderRoute: typeof ProfileIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProfileRouteRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -488,16 +516,23 @@ declare module '@tanstack/react-router' {
     }
     '/profile/edit': {
       id: '/profile/edit'
-      path: '/profile/edit'
+      path: '/edit'
       fullPath: '/profile/edit'
       preLoaderRoute: typeof ProfileEditRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProfileRouteRoute
     }
     '/pengaturan/umum': {
       id: '/pengaturan/umum'
       path: '/umum'
       fullPath: '/pengaturan/umum'
       preLoaderRoute: typeof PengaturanUmumRouteImport
+      parentRoute: typeof PengaturanRouteRoute
+    }
+    '/pengaturan/sinkronisasi': {
+      id: '/pengaturan/sinkronisasi'
+      path: '/sinkronisasi'
+      fullPath: '/pengaturan/sinkronisasi'
+      preLoaderRoute: typeof PengaturanSinkronisasiRouteImport
       parentRoute: typeof PengaturanRouteRoute
     }
     '/pengaturan/notifikasi': {
@@ -567,6 +602,7 @@ interface PengaturanRouteRouteChildren {
   PengaturanAksesDanTimRoute: typeof PengaturanAksesDanTimRoute
   PengaturanKeamananRoute: typeof PengaturanKeamananRoute
   PengaturanNotifikasiRoute: typeof PengaturanNotifikasiRoute
+  PengaturanSinkronisasiRoute: typeof PengaturanSinkronisasiRoute
   PengaturanUmumRoute: typeof PengaturanUmumRoute
 }
 
@@ -574,6 +610,7 @@ const PengaturanRouteRouteChildren: PengaturanRouteRouteChildren = {
   PengaturanAksesDanTimRoute: PengaturanAksesDanTimRoute,
   PengaturanKeamananRoute: PengaturanKeamananRoute,
   PengaturanNotifikasiRoute: PengaturanNotifikasiRoute,
+  PengaturanSinkronisasiRoute: PengaturanSinkronisasiRoute,
   PengaturanUmumRoute: PengaturanUmumRoute,
 }
 
@@ -581,10 +618,25 @@ const PengaturanRouteRouteWithChildren = PengaturanRouteRoute._addFileChildren(
   PengaturanRouteRouteChildren,
 )
 
+interface ProfileRouteRouteChildren {
+  ProfileEditRoute: typeof ProfileEditRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
+}
+
+const ProfileRouteRouteChildren: ProfileRouteRouteChildren = {
+  ProfileEditRoute: ProfileEditRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
+}
+
+const ProfileRouteRouteWithChildren = ProfileRouteRoute._addFileChildren(
+  ProfileRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   PengaturanRouteRoute: PengaturanRouteRouteWithChildren,
+  ProfileRouteRoute: ProfileRouteRouteWithChildren,
   BantuanRoute: BantuanRoute,
   BumdesRoute: BumdesRoute,
   DemografiPekerjaanRoute: DemografiPekerjaanRoute,
@@ -596,9 +648,7 @@ const rootRouteChildren: RootRouteChildren = {
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
   SosialRoute: SosialRoute,
-  ProfileEditRoute: ProfileEditRoute,
   UsersIdRoute: UsersIdRoute,
-  ProfileIndexRoute: ProfileIndexRoute,
   UsersIndexRoute: UsersIndexRoute,
 }
 export const routeTree = rootRouteImport

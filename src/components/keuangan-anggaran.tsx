@@ -3,8 +3,8 @@ import {
 	Box,
 	Card,
 	Grid,
-	GridCol,
 	Group,
+	Loader,
 	Stack,
 	Text,
 	ThemeIcon,
@@ -19,6 +19,7 @@ import {
 	TrendingDown,
 	TrendingUp,
 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -30,92 +31,232 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { apiClient } from "@/utils/api-client";
 
-// KPI Data
-const kpiData = [
-	{
-		id: 1,
-		title: "Total APBDes",
-		value: "Rp 5.2M",
-		subtitle: "Tahun 2025",
-		icon: Coins,
-	},
-	{
-		id: 2,
-		title: "Realisasi",
-		value: "68%",
-		subtitle: "Rp 3.5M dari 5.2M",
-		icon: CheckCircle,
-	},
-	{
-		id: 3,
-		title: "Pemasukan",
-		value: "Rp 580jt",
-		subtitle: "Bulan ini",
-		trend: "+8%",
-		icon: TrendingUp,
-	},
-	{
-		id: 4,
-		title: "Pengeluaran",
-		value: "Rp 520jt",
-		subtitle: "Bulan ini",
-		icon: TrendingDown,
-	},
-];
+// Data Interfaces
+interface KpiItem {
+	id: number;
+	title: string;
+	value: string;
+	subtitle: string;
+	icon: any;
+	trend?: string;
+}
 
-// Income & Expense Data
-const incomeExpenseData = [
-	{ month: "Apr", income: 450, expense: 380 },
-	{ month: "Mei", income: 520, expense: 420 },
-	{ month: "Jun", income: 480, expense: 500 },
-	{ month: "Jul", income: 580, expense: 450 },
-	{ month: "Agu", income: 550, expense: 520 },
-	{ month: "Sep", income: 600, expense: 480 },
-	{ month: "Okt", income: 580, expense: 520 },
-];
+interface ChartData {
+	month: string;
+	income: number;
+	expense: number;
+}
 
-// Sector Allocation Data
-const allocationData = [
-	{ sector: "Pembangunan", amount: 1200 },
-	{ sector: "Kesehatan", amount: 800 },
-	{ sector: "Pendidikan", amount: 650 },
-	{ sector: "Sosial", amount: 550 },
-	{ sector: "Kebudayaan", amount: 400 },
-	{ sector: "Teknologi", amount: 300 },
-];
+interface AllocationData {
+	sector: string;
+	amount: number;
+}
 
-// APBDes Report Data
-const apbdReport = {
-	income: [
-		{ category: "Dana Desa", amount: 1800 },
-		{ category: "Alokasi Dana Desa", amount: 480 },
-		{ category: "Bagi Hasil Pajak & Retribusi", amount: 300 },
-		{ category: "Pendapatan Asli Desa", amount: 200 },
-		{ category: "Hibah Bantuan", amount: 300 },
-	],
-	expenses: [
-		{ category: "Penyelenggaraan Pemerintah", amount: 425 },
-		{ category: "Pembangunan Desa", amount: 850 },
-		{ category: "Pembinaan Kemasyarakatan", amount: 320 },
-		{ category: "Pemberdayaan Masyarakat", amount: 380 },
-		{ category: "Penanggulangan Bencana", amount: 180 },
-	],
-	totalIncome: 3080,
-	totalExpenses: 2155,
-};
+interface ReportItem {
+	category: string;
+	amount: number;
+}
 
-// Aid & Grants Data
-const assistanceFundData = [
-	{ source: "Dana Desa (DD)", amount: 1800, status: "cair" },
-	{ source: "Alokasi Dana Desa (ADD)", amount: 950, status: "cair" },
-	{ source: "Bagi Hasil Pajak", amount: 450, status: "cair" },
-	{ source: "Hibah Provinsi", amount: 300, status: "proses" },
-];
+interface AssistanceData {
+	source: string;
+	amount: number;
+	status: string;
+}
 
 const KeuanganAnggaran = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+
+	const [loading, setLoading] = useState(true);
+	const [kpiData, setKpiData] = useState<KpiItem[]>([]);
+	const [incomeExpenseData, setIncomeExpenseData] = useState<ChartData[]>([]);
+	const [allocationData, setAllocationData] = useState<AllocationData[]>([]);
+	const [reportData, setReportData] = useState<{
+		income: ReportItem[];
+		expenses: ReportItem[];
+		totalIncome: number;
+		totalExpenses: number;
+	}>({ income: [], expenses: [], totalIncome: 0, totalExpenses: 0 });
+	const [assistanceData, setAssistanceData] = useState<AssistanceData[]>([]);
+
+	const fetchData = useCallback(async () => {
+		try {
+			setLoading(true);
+			const id = "cmk-apbdes-001";
+			const { data, error } = (await apiClient.GET("/api/demografi/apbdes/{id}", {
+				params: { path: { id } },
+			})) as any;
+
+			if (!data || !data.success || !data.data) {
+				console.error("Failed to fetch APBDes detail:", error);
+				return;
+			}
+
+			const rawData = data.data.data || data.data;
+			const items = rawData.items || [];
+
+			// Helper to parse amount (handles strings like "1.850.000.000" or numbers)
+			const parseAmount = (val: any) => {
+				if (typeof val === "number") return val;
+				if (typeof val === "string")
+					return Number(val.replace(/\./g, "").replace(/,/g, ""));
+				return 0;
+			};
+
+			// 1. Calculate Real Totals by iterating through all realisasiItems
+			let calculatedTotalIncomeReal = 0;
+			let calculatedTotalExpenseReal = 0;
+
+			items.forEach((item: any) => {
+				const type = item.tipe?.toLowerCase();
+				if (item.realisasiItems && Array.isArray(item.realisasiItems)) {
+					const itemReal = item.realisasiItems.reduce(
+						(acc: number, curr: any) => acc + (curr.jumlah || 0),
+						0,
+					);
+					if (type === "pendapatan") calculatedTotalIncomeReal += itemReal;
+					else if (type === "belanja") calculatedTotalExpenseReal += itemReal;
+				}
+			});
+
+			// 2. KPI Data Mapping
+			// Use the "jumlah" field from rawData which represents Total Pendapatan + Pembiayaan
+			const totalBudget = parseAmount(rawData.jumlah);
+
+			const realisasiPercent =
+				totalBudget > 0
+					? Math.round((calculatedTotalExpenseReal / totalBudget) * 100)
+					: 0;
+
+			// Helper to format currency in Millions
+			const formatM = (val: number) => {
+				const m = val / 1000000;
+				if (m >= 1000) return `${(m / 1000).toFixed(1)}M`;
+				return `${m.toFixed(1)}jt`;
+			};
+
+			setKpiData([
+				{
+					id: 1,
+					title: "Total APBDes",
+					value: `Rp ${formatM(totalBudget)}`,
+					subtitle: `Tahun ${rawData.tahun || "2025"}`,
+					icon: Coins,
+				},
+				{
+					id: 2,
+					title: "Realisasi",
+					value: `${realisasiPercent}%`,
+					subtitle: `Rp ${formatM(calculatedTotalExpenseReal)} dari ${formatM(totalBudget)}`,
+					icon: CheckCircle,
+				},
+				{
+					id: 3,
+					title: "Pemasukan",
+					value: `Rp ${formatM(calculatedTotalIncomeReal)}`,
+					subtitle: "Total Realisasi",
+					trend: "+0%",
+					icon: TrendingUp,
+				},
+				{
+					id: 4,
+					title: "Pengeluaran",
+					value: `Rp ${formatM(calculatedTotalExpenseReal)}`,
+					subtitle: "Total Realisasi",
+					icon: TrendingDown,
+				},
+			]);
+
+			// 3. Line Chart Mapping (Time Series)
+			const monthlyData: Record<number, { income: number; expense: number }> = {};
+			for (let i = 0; i < 12; i++) monthlyData[i] = { income: 0, expense: 0 };
+
+			const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+
+			items.forEach((item: any) => {
+				const type = item.tipe?.toLowerCase();
+				if (item.realisasiItems && Array.isArray(item.realisasiItems)) {
+					item.realisasiItems.forEach((r: any) => {
+						const date = new Date(r.tanggal);
+						const mIdx = date.getMonth();
+						if (monthlyData[mIdx]) {
+							if (type === "pendapatan") monthlyData[mIdx].income += r.jumlah || 0;
+							else if (type === "belanja") monthlyData[mIdx].expense += r.jumlah || 0;
+						}
+					});
+				}
+			});
+
+			const chartData: ChartData[] = Object.entries(monthlyData)
+				.map(([mIdx, val]) => ({
+					month: months[Number(mIdx)] || "",
+					income: val.income / 1000000,
+					expense: val.expense / 1000000,
+					sortKey: Number(mIdx),
+				}))
+				.sort((a, b) => a.sortKey - b.sortKey);
+
+			setIncomeExpenseData(chartData);
+
+			// 4. Bar Chart Mapping (Bidang - level 2 Belanja)
+			const sectorItems = items.filter((item: any) => item.level === 2 && item.tipe === "belanja");
+			setAllocationData(
+				sectorItems.map((s: any) => ({
+					sector: s.uraian?.length > 20 ? s.uraian.substring(0, 17) + "..." : s.uraian,
+					amount: (s.anggaran || 0) / 1000000,
+				})),
+			);
+
+			// 5. Report Table Mapping
+			const incomeLevel2 = items.filter((item: any) => item.level === 2 && item.tipe === "pendapatan");
+			const expenseLevel2 = items.filter((item: any) => item.level === 2 && item.tipe === "belanja");
+
+			setReportData({
+				income: incomeLevel2.map((i: any) => ({
+					category: i.uraian,
+					amount: (i.anggaran || 0) / 1000000,
+				})),
+				expenses: expenseLevel2.map((e: any) => ({
+					category: e.uraian,
+					amount: (e.anggaran || 0) / 1000000,
+				})),
+				totalIncome: calculatedTotalIncomeReal / 1000000,
+				totalExpenses: calculatedTotalExpenseReal / 1000000,
+			});
+
+			// 5. Aid & Grants Mapping
+			const aidGrants = items.filter(
+				(item: any) =>
+					item.uraian?.toLowerCase().includes("bantuan") ||
+					item.uraian?.toLowerCase().includes("hibah"),
+			);
+			setAssistanceData(
+				aidGrants.map((a: any) => ({
+					source: a.uraian,
+					amount: (a.anggaran || 0) / 1000000,
+					status: (a.totalRealisasi || 0) > 0 ? "cair" : "proses",
+				})),
+			);
+		} catch (err) {
+			console.error("Error fetching financial data:", err);
+		} finally {
+			setLoading(false);
+		}
+	}, []);
+
+	useEffect(() => {
+		fetchData();
+	}, [fetchData]);
+
+	if (loading) {
+		return (
+			<Group justify="center" py="xl" h="100%">
+				<Loader size="xl" />
+			</Group>
+		);
+	}
 
 	return (
 		<Stack gap="lg">
@@ -187,7 +328,7 @@ const KeuanganAnggaran = () => {
 								<PieChartIcon size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Pemasukan dan Pengeluaran
+								Pemasukan dan Pengeluaran (jt)
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={300}>
@@ -213,7 +354,7 @@ const KeuanganAnggaran = () => {
 										fill: dark ? "#E2E8F0" : "#374151",
 										fontSize: 12,
 									}}
-									tickFormatter={(value) => `Rp ${value}jt`}
+									tickFormatter={(value) => `${value}`}
 								/>
 								<Tooltip
 									contentStyle={{
@@ -268,7 +409,7 @@ const KeuanganAnggaran = () => {
 								<PieChartIcon size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Alokasi Anggaran Per Sektor
+								Alokasi Anggaran Per Bidang (jt)
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={300}>
@@ -297,7 +438,7 @@ const KeuanganAnggaran = () => {
 										fill: dark ? "#E2E8F0" : "#374151",
 										fontSize: 11,
 									}}
-									width={100}
+									width={120}
 								/>
 								<Tooltip
 									contentStyle={{
@@ -312,7 +453,7 @@ const KeuanganAnggaran = () => {
 								/>
 								<Bar
 									dataKey="amount"
-									fill="#1E3A5F"
+									fill="#396aaaff"
 									radius={[0, 8, 8, 0]}
 									maxBarSize={30}
 								/>
@@ -354,8 +495,8 @@ const KeuanganAnggaran = () => {
 										Pendapatan
 									</Title>
 									<Stack gap="xs">
-										{apbdReport.income.map((item, index) => (
-											<Group key={index} justify="space-between">
+										{reportData.income.map((item) => (
+											<Group key={item.category} justify="space-between">
 												<Text size="sm" c={dark ? "gray.3" : "gray.7"}>
 													{item.category}
 												</Text>
@@ -376,7 +517,7 @@ const KeuanganAnggaran = () => {
 												Total:
 											</Text>
 											<Text fw={700} c="#22C55E">
-												Rp {apbdReport.totalIncome.toLocaleString()}jt
+												Rp {reportData.totalIncome.toLocaleString()}jt
 											</Text>
 										</Group>
 									</Stack>
@@ -390,8 +531,8 @@ const KeuanganAnggaran = () => {
 										Belanja
 									</Title>
 									<Stack gap="xs">
-										{apbdReport.expenses.map((item, index) => (
-											<Group key={index} justify="space-between">
+										{reportData.expenses.map((item) => (
+											<Group key={item.category} justify="space-between">
 												<Text size="sm" c={dark ? "gray.3" : "gray.7"}>
 													{item.category}
 												</Text>
@@ -412,7 +553,7 @@ const KeuanganAnggaran = () => {
 												Total:
 											</Text>
 											<Text fw={700} c="#EF4444">
-												Rp {apbdReport.totalExpenses.toLocaleString()}jt
+												Rp {reportData.totalExpenses.toLocaleString()}jt
 											</Text>
 										</Group>
 									</Stack>
@@ -436,14 +577,14 @@ const KeuanganAnggaran = () => {
 								fw={700}
 								size="lg"
 								c={
-									apbdReport.totalIncome > apbdReport.totalExpenses
+									reportData.totalIncome > reportData.totalExpenses
 										? "#22C55E"
 										: "#EF4444"
 								}
 							>
 								Rp{" "}
 								{(
-									apbdReport.totalIncome - apbdReport.totalExpenses
+									reportData.totalIncome - reportData.totalExpenses
 								).toLocaleString()}
 								jt
 							</Text>
@@ -473,37 +614,43 @@ const KeuanganAnggaran = () => {
 							</Title>
 						</Group>
 						<Stack gap="sm">
-							{assistanceFundData.map((fund, index) => (
-								<Card
-									key={index}
-									p="sm"
-									radius="lg"
-									bg={dark ? "#334155" : "#F1F5F9"}
-									style={{
-										borderColor: "transparent",
-										transition: "background-color 0.15s ease",
-									}}
-								>
-									<Group justify="space-between" align="center">
-										<Box>
-											<Text size="sm" fw={600} c={dark ? "white" : "gray.9"}>
-												{fund.source}
-											</Text>
-											<Text size="xs" c="dimmed">
-												Rp {fund.amount.toLocaleString()}jt
-											</Text>
-										</Box>
-										<Badge
-											variant="light"
-											color={fund.status === "cair" ? "green" : "yellow"}
-											radius="sm"
-											fw={600}
-										>
-											{fund.status === "cair" ? "Cair" : "Proses"}
-										</Badge>
-									</Group>
-								</Card>
-							))}
+							{assistanceData.length > 0 ? (
+								assistanceData.map((fund) => (
+									<Card
+										key={fund.source}
+										p="sm"
+										radius="lg"
+										bg={dark ? "#334155" : "#F1F5F9"}
+										style={{
+											borderColor: "transparent",
+											transition: "background-color 0.15s ease",
+										}}
+									>
+										<Group justify="space-between" align="center">
+											<Box>
+												<Text size="sm" fw={600} c={dark ? "white" : "gray.9"}>
+													{fund.source}
+												</Text>
+												<Text size="xs" c="dimmed">
+													Rp {fund.amount.toLocaleString()}jt
+												</Text>
+											</Box>
+											<Badge
+												variant="light"
+												color={fund.status === "cair" ? "green" : "yellow"}
+												radius="sm"
+												fw={600}
+											>
+												{fund.status === "cair" ? "Cair" : "Proses"}
+											</Badge>
+										</Group>
+									</Card>
+								))
+							) : (
+								<Text size="sm" c="dimmed" ta="center" py="xl">
+									Tidak ada data bantuan/hibah ditemukan
+								</Text>
+							)}
 						</Stack>
 					</Card>
 				</Grid.Col>
@@ -513,3 +660,4 @@ const KeuanganAnggaran = () => {
 };
 
 export default KeuanganAnggaran;
+

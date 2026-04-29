@@ -3,7 +3,6 @@ import {
 	Box,
 	Card,
 	Grid,
-	GridCol,
 	Group,
 	Progress,
 	Stack,
@@ -197,7 +196,7 @@ const JennaAnalytic = () => {
 						/>
 						<Bar
 							dataKey="total"
-							fill="#1E3A5F"
+							fill="#396aaaff"
 							radius={[8, 8, 0, 0]}
 							maxBarSize={60}
 						/>
@@ -224,9 +223,9 @@ const JennaAnalytic = () => {
 							Topik Pertanyaan Terbanyak
 						</Title>
 						<Stack gap="xs">
-							{topTopics.map((item, index) => (
+							{topTopics.map((item) => (
 								<Box
-									key={index}
+									key={item.topic}
 									p="sm"
 									bg={dark ? "#334155" : "#F1F5F9"}
 									style={{
@@ -270,8 +269,8 @@ const JennaAnalytic = () => {
 							Jam Tersibuk
 						</Title>
 						<Stack gap="md">
-							{busyHours.map((item, index) => (
-								<Box key={index}>
+							{busyHours.map((item) => (
+								<Box key={item.period}>
 									<Group justify="space-between" mb={5}>
 										<Text size="sm" fw={500} c={dark ? "white" : "gray.9"}>
 											{item.period}

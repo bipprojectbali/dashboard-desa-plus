@@ -42,34 +42,7 @@ export const TopProducts = ({ products }: TopProductsProps) => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const defaultProducts: TopProduct[] = [
-		{
-			rank: 1,
-			name: "Beras Premium Organik",
-			umkmName: "Warung Pak Joko",
-			revenue: 8500000,
-			quantitySold: 650,
-			trend: 12,
-		},
-		{
-			rank: 2,
-			name: "Keripik Singkong",
-			umkmName: "Ibu Sari Snack",
-			revenue: 4200000,
-			quantitySold: 320,
-			trend: 8,
-		},
-		{
-			rank: 3,
-			name: "Madu Alami",
-			umkmName: "Peternakan Lebah",
-			revenue: 3750000,
-			quantitySold: 150,
-			trend: 5,
-		},
-	];
-
-	const displayProducts = products || defaultProducts;
+	const displayProducts = products ?? [];
 
 	const getRankColor = (rank: number) => {
 		if (rank === 1) return "yellow";
@@ -84,8 +57,12 @@ export const TopProducts = ({ products }: TopProductsProps) => {
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#141D34" : "white"}
-			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
+			bg={dark ? "#1E293B" : "white"}
+			style={{
+				borderColor: dark ? "#334155" : "white",
+				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				transition: "transform 0.15s ease, box-shadow 0.15s ease",
+			}}
 		>
 			<Title order={4} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>
 				Top 3 Produk Terlaris
@@ -105,20 +82,20 @@ export const TopProducts = ({ products }: TopProductsProps) => {
 								{product.rank}
 							</Badge>
 							<Stack gap={0}>
-								<Text fw={600} c={dark ? "dark.0" : "#1e3a5f"}>
+								<Text fw={600} c={dark ? "white" : "#1e3a5f"}>
 									{product.name}
 								</Text>
-								<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+								<Text size="sm" c={dark ? "white" : "dimmed"}>
 									{product.umkmName}
 								</Text>
 								<Group gap="xs" mt={2}>
-									<Text size="xs" c={dark ? "dark.4" : "gray.6"}>
+									<Text size="xs" c={dark ? "white" : "gray.6"}>
 										Rp {formatCurrency(product.revenue)}
 									</Text>
-									<Text size="xs" c={dark ? "dark.4" : "gray.6"}>
+									<Text size="xs" c={dark ? "white" : "gray.6"}>
 										•
 									</Text>
-									<Text size="xs" c={dark ? "dark.4" : "gray.6"}>
+									<Text size="xs" c={dark ? "white" : "gray.6"}>
 										{formatNumber(product.quantitySold)} terjual
 									</Text>
 								</Group>

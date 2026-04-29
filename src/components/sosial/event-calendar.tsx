@@ -53,8 +53,12 @@ export const EventCalendar = ({ data }: EventCalendarProps) => {
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#141D34" : "white"}
-			style={{ borderColor: dark ? "#141D34" : "#e5e7eb" }}
+			bg={dark ? "#1E293B" : "white"}
+			style={{
+				borderColor: dark ? "#334155" : "white",
+				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				transition: "transform 0.15s ease, box-shadow 0.15s ease",
+			}}
 		>
 			<Title order={3} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>
 				Kalender Event Budaya
@@ -68,7 +72,6 @@ export const EventCalendar = ({ data }: EventCalendarProps) => {
 						withBorder
 						bg={dark ? "#263852ff" : "#F1F5F9"}
 						style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
-						hoverable
 					>
 						<Group justify="space-between" mb="xs">
 							<Group gap="sm" align="center">
@@ -89,7 +92,7 @@ export const EventCalendar = ({ data }: EventCalendarProps) => {
 							</Text>
 						</Group>
 						<Group pl={36}>
-							<Text size="sm" c={dark ? "dark.4" : "gray.6"}>
+							<Text size="sm" c={dark ? "white" : "gray.6"}>
 								{event.tanggal}
 							</Text>
 						</Group>
