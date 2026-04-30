@@ -15,11 +15,15 @@ import { useState } from "react";
 import { authClient } from "../utils/auth-client";
 
 export const Route = createFileRoute("/signin")({
+	validateSearch: (search: Record<string, unknown>) => ({
+		redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+	}),
 	component: SigninComponent,
 });
 
 function SigninComponent() {
 	const navigate = useNavigate();
+	const { redirect } = Route.useSearch();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -37,12 +41,11 @@ function SigninComponent() {
 					password,
 				},
 				{
-					onRequest: () => {
-						console.log("Sign in request started");
-					},
 					onSuccess: async () => {
-						console.log("Sign in successful, navigating to dashboard");
-						navigate({ to: "/profile", replace: true });
+						const destination = redirect
+							? new URL(redirect, window.location.origin).pathname
+							: "/";
+						navigate({ to: destination, replace: true });
 					},
 					onError: (ctx) => {
 						setError(ctx.error.message || "Failed to sign in");
@@ -113,7 +116,9 @@ function SigninComponent() {
 					onClick={async () => {
 						await authClient.signIn.social({
 							provider: "github",
-							callbackURL: "/profile",
+							callbackURL: redirect
+								? new URL(redirect, window.location.origin).pathname
+								: "/",
 						});
 					}}
 				>

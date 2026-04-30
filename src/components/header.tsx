@@ -16,6 +16,8 @@ import {
 } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Bell, Moon, Sun, User as UserIcon } from "lucide-react";
+import { useSnapshot } from "valtio";
+import { authStore } from "@/store/auth";
 
 interface HeaderProps {
 	onSidebarToggle?: () => void;
@@ -26,6 +28,12 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 	const navigate = useNavigate();
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const snap = useSnapshot(authStore);
+	const isAdmin = snap.user?.role === "admin";
+	const displayName = snap.user?.name ?? snap.user?.email ?? "";
+	const truncatedName =
+		displayName.length > 20 ? `${displayName.slice(0, 20)}...` : displayName;
+	const initials = displayName.charAt(0).toUpperCase();
 
 	const pathnames = location.pathname.split("/").filter((x) => x);
 
@@ -118,16 +126,24 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 			<Group gap="md">
 				{/* User Info */}
 				<Group gap="sm">
-					<Box ta="right">
-						<Text c={"white"} size="sm" fw={500}>
-							I. B. Surya Prabhawa M...
+					<Box ta="right" visibleFrom="sm">
+						<Text c="white" size="sm" fw={500}>
+							{truncatedName}
 						</Text>
-						<Text c={"white"} size="xs">
-							Kepala Desa
+						<Text c="white" size="xs" opacity={0.75}>
+							{isAdmin ? "Administrator" : "Pengguna"}
 						</Text>
 					</Box>
-					<Avatar color="blue" radius="xl">
-						<UserIcon color="white" style={{ width: "70%", height: "70%" }} />
+					<Avatar
+						src={snap.user?.image}
+						color="blue"
+						radius="xl"
+						style={{ cursor: "pointer" }}
+						onClick={() => navigate({ to: "/profile" })}
+					>
+						{initials || (
+							<UserIcon color="white" style={{ width: "70%", height: "70%" }} />
+						)}
 					</Avatar>
 				</Group>
 
@@ -161,13 +177,20 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 							10
 						</Badge>
 					</ActionIcon>
-					<ActionIcon variant="subtle" size="lg" radius="xl">
-						<IconUserShield
-							color="white"
-							style={{ width: "70%", height: "70%" }}
+					{isAdmin && (
+						<ActionIcon
+							variant="subtle"
+							size="lg"
+							radius="xl"
 							onClick={() => navigate({ to: "/admin" })}
-						/>
-					</ActionIcon>
+							aria-label="Admin panel"
+						>
+							<IconUserShield
+								color="white"
+								style={{ width: "70%", height: "70%" }}
+							/>
+						</ActionIcon>
+					)}
 				</Group>
 			</Group>
 		</Group>

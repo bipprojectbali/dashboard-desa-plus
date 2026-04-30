@@ -60,36 +60,22 @@ type RouteRule = {
 };
 
 const routeRules: RouteRule[] = [
-	// Public routes - no auth required
+	// Truly public — only signin and signup
 	{
-		match: (p) =>
-			p === "/" ||
-			p === "/signin" ||
-			p === "/signup" ||
-			p.startsWith("/kinerja-divisi") ||
-			p.startsWith("/pengaduan") ||
-			p.startsWith("/jenna") ||
-			p.startsWith("/demografi") ||
-			p.startsWith("/keuangan") ||
-			p.startsWith("/bumdes") ||
-			p.startsWith("/sosial") ||
-			p.startsWith("/keamanan") ||
-			p.startsWith("/bantuan") ||
-			p.startsWith("/pengaturan") ||
-			p.startsWith("/users"),
+		match: (p) => p === "/signin" || p === "/signup",
 		requireAuth: false,
 	},
-	// Profile routes - auth required for all roles
-	{
-		match: (p) => p === "/profile" || p.startsWith("/profile/"),
-		requireAuth: true,
-		redirectTo: "/signin",
-	},
-	// Admin routes - auth required with admin role only
+	// Admin routes — auth + admin role required
 	{
 		match: (p) => p.startsWith("/admin"),
 		requireAuth: true,
 		requiredRole: "admin",
+		redirectTo: "/signin",
+	},
+	// All other routes — auth required
+	{
+		match: () => true,
+		requireAuth: true,
 		redirectTo: "/signin",
 	},
 ];
@@ -120,14 +106,14 @@ export function createProtectedRoute(options: ProtectedRouteOptions = {}) {
 	}) => {
 		const rule = findRouteRule(location.pathname);
 
-		// If no rule matches, allow access by default
-		if (!rule) return;
-
-		// If route explicitly doesn't require auth, allow access
-		if (rule.requireAuth === false) return;
-
+		// Always fetch session so authStore can be populated for all routes
 		const session = await fetchSession();
 		const user = session?.user;
+
+		// If no rule matches or route is public, return session data without enforcing auth
+		if (!rule || rule.requireAuth === false) {
+			return { session, user };
+		}
 
 		// If auth is required but user is not logged in, redirect to login
 		if (rule.requireAuth && !user) {
