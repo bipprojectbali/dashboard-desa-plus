@@ -101,10 +101,12 @@ const BumdesPage = () => {
 				if (topProdukJson.success) setTopProduk(topProdukJson.data);
 				if (kategoriJson.success)
 					setKategoriOptions(
-						(kategoriJson.data ?? []).map((k: { id: string; nama: string }) => ({
-							value: k.id,
-							label: k.nama,
-						})),
+						(kategoriJson.data ?? []).map(
+							(k: { id: string; nama: string }) => ({
+								value: k.id,
+								label: k.nama,
+							}),
+						),
 					);
 				if (umkmJson.success)
 					setUmkmOptions(
@@ -199,9 +201,7 @@ const BumdesPage = () => {
 				<GridCol span={{ base: 12, lg: 4 }}>
 					<Stack gap="md">
 						<ProdukUnggulan data={produkUnggulanData} />
-						<TopProducts
-							products={topProductsData ?? undefined}
-						/>
+						<TopProducts products={topProductsData ?? undefined} />
 					</Stack>
 				</GridCol>
 

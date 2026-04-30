@@ -1,22 +1,22 @@
 {
-  "security": {
-    "auth": {
-      "selectedType": "openai"
-    }
-  },
-  "env": {
-    "OPENAI_BASE_URL": "https://claude-local.wibudev.com/v1",
-    "OPENAI_API_KEY": "sk-T8mDcFAe83WWOQsHGx0JxvTmgBVdTQ2uFKzIRjZpwrh0H4Bg",
-    "OPENAI_MODEL": "claude-sonnet-4-6"
-  },
-  "projectContext": {
-    "enabled": false
-  },
-  "agent": {
-    "enabled": false
-  },
-  "permissions": {
-    "allow": []
-  },
-  "$version": 3
+	"security": {
+		"auth": {
+			"selectedType": "openai"
+		}
+	},
+	"env": {
+		"OPENAI_BASE_URL": "https://claude-local.wibudev.com/v1",
+		"OPENAI_API_KEY": "sk-T8mDcFAe83WWOQsHGx0JxvTmgBVdTQ2uFKzIRjZpwrh0H4Bg",
+		"OPENAI_MODEL": "claude-sonnet-4-6"
+	},
+	"projectContext": {
+		"enabled": false
+	},
+	"agent": {
+		"enabled": false
+	},
+	"permissions": {
+		"allow": []
+	},
+	"$version": 3
 }

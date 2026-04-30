@@ -56,6 +56,56 @@
         "operationId": "getApiHealth"
       }
     },
+    "/api/version": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "version"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "version"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "version"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiVersion"
+      }
+    },
     "/api/session": {
       "get": {
         "responses": {
@@ -98,6 +148,210 @@
           }
         },
         "operationId": "getApiSession"
+      }
+    },
+    "/api/admin/users": {
+      "get": {
+        "operationId": "getApiAdminUsers",
+        "summary": "List all users (admin only)",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/stats": {
+      "get": {
+        "operationId": "getApiAdminStats",
+        "summary": "Admin system stats",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/users/update-role": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAdminUsersUpdate-role",
+        "summary": "Update user role (admin only)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "role"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "role"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "role"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/users/verify": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAdminUsersVerify",
+        "summary": "Set user email verification (admin only)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "verified"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "verified": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "verified"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "verified": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "verified"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "verified": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/users/delete": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAdminUsersDelete",
+        "summary": "Delete user (admin only)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
       }
     },
     "/api/noc/sync": {

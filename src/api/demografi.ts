@@ -376,13 +376,18 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 				);
 
 				if (response.error) {
-					console.error("[Demografi API] External sectors error:", response.error);
+					console.error(
+						"[Demografi API] External sectors error:",
+						response.error,
+					);
 					return { success: false, error: response.error };
 				}
 
 				// Log sample of data to help debugging
 				const data = response.data?.data || [];
-				console.log(`[Demografi API] Sectors fetched successfully: ${Array.isArray(data) ? data.length : 0} items`);
+				console.log(
+					`[Demografi API] Sectors fetched successfully: ${Array.isArray(data) ? data.length : 0} items`,
+				);
 
 				return {
 					success: true,
@@ -427,15 +432,29 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 					apbdes,
 				] = await Promise.all([
 					desaExternalClient.GET("/api/kependudukan/dashboard/summary"),
-					desaExternalClient.GET("/api/kependudukan/databanjar/find-many" as any),
-					desaExternalClient.GET("/api/kependudukan/distribusiumur/find-many" as any),
-					desaExternalClient.GET("/api/ekonomi/demografipekerjaan/find-many" as any),
-					desaExternalClient.GET("/api/kependudukan/distribusiagama/find-many" as any),
+					desaExternalClient.GET(
+						"/api/kependudukan/databanjar/find-many" as any,
+					),
+					desaExternalClient.GET(
+						"/api/kependudukan/distribusiumur/find-many" as any,
+					),
+					desaExternalClient.GET(
+						"/api/ekonomi/demografipekerjaan/find-many" as any,
+					),
+					desaExternalClient.GET(
+						"/api/kependudukan/distribusiagama/find-many" as any,
+					),
 					desaExternalClient.GET("/api/kesehatan/kelahiran/findMany"),
 					desaExternalClient.GET("/api/kesehatan/kematian/findMany"),
-					desaExternalClient.GET("/api/kependudukan/migrasipenduduk/find-many" as any),
-					desaExternalClient.GET("/api/ekonomi/sektourunggulandesa/find-many" as any),
-					desaExternalClient.GET("/api/landingpage/apbdes/cmk-apbdes-001" as any),
+					desaExternalClient.GET(
+						"/api/kependudukan/migrasipenduduk/find-many" as any,
+					),
+					desaExternalClient.GET(
+						"/api/ekonomi/sektourunggulandesa/find-many" as any,
+					),
+					desaExternalClient.GET(
+						"/api/landingpage/apbdes/cmk-apbdes-001" as any,
+					),
 				]);
 
 				// Check for errors
@@ -526,7 +545,10 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		async ({ params: { id } }) => {
 			try {
 				// Use cache if it matches the ID and exists
-				if (demografiCache.data.apbdes && (demografiCache.data.apbdes.id === id || id === "cmk-apbdes-001")) {
+				if (
+					demografiCache.data.apbdes &&
+					(demografiCache.data.apbdes.id === id || id === "cmk-apbdes-001")
+				) {
 					console.log("[Demografi API] Returning cached APBDes detail");
 					return {
 						success: true,

@@ -17,9 +17,9 @@ import {
 	IconAlertCircle,
 	IconCheck,
 	IconClock,
+	IconDatabase,
 	IconRefresh,
 	IconUsers,
-	IconDatabase,
 } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -334,10 +334,14 @@ const SinkronisasiSettings = () => {
 										)
 									}
 									title={
-										demografiStatus.type === "success" ? "Berhasil" : "Kesalahan"
+										demografiStatus.type === "success"
+											? "Berhasil"
+											: "Kesalahan"
 									}
 									color={demografiStatus.type === "success" ? "blue" : "red"}
-									onClose={() => setDemografiStatus({ type: null, message: "" })}
+									onClose={() =>
+										setDemografiStatus({ type: null, message: "" })
+									}
 									withCloseButton
 								>
 									{demografiStatus.message}

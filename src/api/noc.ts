@@ -445,10 +445,7 @@ export const noc = new Elysia({ prefix: "/noc" })
 				let apbdesData: any = null;
 
 				// 1. Check Cache first if ID matches
-				if (
-					idDesa === "cmk-apbdes-001" &&
-					demografiCache.data.apbdes
-				) {
+				if (idDesa === "cmk-apbdes-001" && demografiCache.data.apbdes) {
 					console.log("[APBDes API] Returning cached APBDes data");
 					apbdesData = demografiCache.data.apbdes;
 				} else {
@@ -466,7 +463,7 @@ export const noc = new Elysia({ prefix: "/noc" })
 							data: [],
 						};
 					}
-					
+
 					apbdesData = extData.data || extData;
 				}
 
@@ -488,16 +485,16 @@ export const noc = new Elysia({ prefix: "/noc" })
 						for (const item of apbdesData.items) {
 							const tipe = item.tipe?.toLowerCase() || "lainnya";
 							const level = item.level;
-							
+
 							// Only add to totalAnggaran if it's a top-level item to avoid double counting
-							const anggaran = level === 1 ? (item.anggaran || 0) : 0;
-							
+							const anggaran = level === 1 ? item.anggaran || 0 : 0;
+
 							// Calculate realisasi from realisasiItems
 							let itemRealisasi = 0;
 							if (item.realisasiItems && Array.isArray(item.realisasiItems)) {
 								itemRealisasi = item.realisasiItems.reduce(
 									(acc: number, r: any) => acc + (r.jumlah || 0),
-									0
+									0,
 								);
 							}
 

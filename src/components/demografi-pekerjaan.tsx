@@ -211,7 +211,11 @@ const DemografiPekerjaan = () => {
 				setAgeData(
 					ageList.map((a: any) => ({
 						ageRange:
-							a.rentangUmur || a.range || a.ageRange || a.kelompokUmur || "Unknown",
+							a.rentangUmur ||
+							a.range ||
+							a.ageRange ||
+							a.kelompokUmur ||
+							"Unknown",
 						total: Number(a.jumlah || a.total || a.count || 0),
 					})),
 				);
@@ -227,7 +231,7 @@ const DemografiPekerjaan = () => {
 							j.jumlah ||
 								j.total ||
 								j.count ||
-								(Number(j.lakiLaki || 0) + Number(j.perempuan || 0)) ||
+								Number(j.lakiLaki || 0) + Number(j.perempuan || 0) ||
 								0,
 						),
 					})),
@@ -250,8 +254,7 @@ const DemografiPekerjaan = () => {
 					religionList.map((r: any) => ({
 						name: r.agama || r.religion || r.name || "Unknown",
 						value: Number(r.jumlah || r.value || r.count || 0),
-						color:
-							religionColors[r.agama || r.religion || r.name] || "#94A3B8",
+						color: religionColors[r.agama || r.religion || r.name] || "#94A3B8",
 					})),
 				);
 			}

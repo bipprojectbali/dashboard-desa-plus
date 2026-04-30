@@ -85,9 +85,12 @@ const KeuanganAnggaran = () => {
 		try {
 			setLoading(true);
 			const id = "cmk-apbdes-001";
-			const { data, error } = (await apiClient.GET("/api/demografi/apbdes/{id}", {
-				params: { path: { id } },
-			})) as any;
+			const { data, error } = (await apiClient.GET(
+				"/api/demografi/apbdes/{id}",
+				{
+					params: { path: { id } },
+				},
+			)) as any;
 
 			if (!data || !data.success || !data.data) {
 				console.error("Failed to fetch APBDes detail:", error);
@@ -170,10 +173,24 @@ const KeuanganAnggaran = () => {
 			]);
 
 			// 3. Line Chart Mapping (Time Series)
-			const monthlyData: Record<number, { income: number; expense: number }> = {};
+			const monthlyData: Record<number, { income: number; expense: number }> =
+				{};
 			for (let i = 0; i < 12; i++) monthlyData[i] = { income: 0, expense: 0 };
 
-			const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+			const months = [
+				"Jan",
+				"Feb",
+				"Mar",
+				"Apr",
+				"Mei",
+				"Jun",
+				"Jul",
+				"Agu",
+				"Sep",
+				"Okt",
+				"Nov",
+				"Des",
+			];
 
 			items.forEach((item: any) => {
 				const type = item.tipe?.toLowerCase();
@@ -182,8 +199,10 @@ const KeuanganAnggaran = () => {
 						const date = new Date(r.tanggal);
 						const mIdx = date.getMonth();
 						if (monthlyData[mIdx]) {
-							if (type === "pendapatan") monthlyData[mIdx].income += r.jumlah || 0;
-							else if (type === "belanja") monthlyData[mIdx].expense += r.jumlah || 0;
+							if (type === "pendapatan")
+								monthlyData[mIdx].income += r.jumlah || 0;
+							else if (type === "belanja")
+								monthlyData[mIdx].expense += r.jumlah || 0;
 						}
 					});
 				}
@@ -201,17 +220,26 @@ const KeuanganAnggaran = () => {
 			setIncomeExpenseData(chartData);
 
 			// 4. Bar Chart Mapping (Bidang - level 2 Belanja)
-			const sectorItems = items.filter((item: any) => item.level === 2 && item.tipe === "belanja");
+			const sectorItems = items.filter(
+				(item: any) => item.level === 2 && item.tipe === "belanja",
+			);
 			setAllocationData(
 				sectorItems.map((s: any) => ({
-					sector: s.uraian?.length > 20 ? s.uraian.substring(0, 17) + "..." : s.uraian,
+					sector:
+						s.uraian?.length > 20
+							? s.uraian.substring(0, 17) + "..."
+							: s.uraian,
 					amount: (s.anggaran || 0) / 1000000,
 				})),
 			);
 
 			// 5. Report Table Mapping
-			const incomeLevel2 = items.filter((item: any) => item.level === 2 && item.tipe === "pendapatan");
-			const expenseLevel2 = items.filter((item: any) => item.level === 2 && item.tipe === "belanja");
+			const incomeLevel2 = items.filter(
+				(item: any) => item.level === 2 && item.tipe === "pendapatan",
+			);
+			const expenseLevel2 = items.filter(
+				(item: any) => item.level === 2 && item.tipe === "belanja",
+			);
 
 			setReportData({
 				income: incomeLevel2.map((i: any) => ({
@@ -660,4 +688,3 @@ const KeuanganAnggaran = () => {
 };
 
 export default KeuanganAnggaran;
-

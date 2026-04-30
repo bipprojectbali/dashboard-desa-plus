@@ -3,6 +3,7 @@ import { swagger } from "@elysiajs/swagger";
 import Elysia, { t } from "elysia";
 import { apiMiddleware } from "../middleware/apiMiddleware";
 import { auth } from "../utils/auth";
+import { adminApi } from "./admin";
 import { apikey } from "./apikey";
 import { complaint } from "./complaint";
 import { dashboard } from "./dashboard";
@@ -27,7 +28,9 @@ const api = new Elysia({
 	.get(
 		"/version",
 		async () => {
-			const pkg = await Bun.file("package.json").json() as { version: string };
+			const pkg = (await Bun.file("package.json").json()) as {
+				version: string;
+			};
 			return { version: pkg.version };
 		},
 		{
@@ -50,6 +53,7 @@ const api = new Elysia({
 		},
 	)
 	.use(apiMiddleware)
+	.use(adminApi)
 	.use(noc)
 	.use(apikey)
 	.use(profile)
