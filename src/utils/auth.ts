@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { compare, hash } from "bcryptjs";
 import { PrismaClient } from "../../generated/prisma";
 import { VITE_PUBLIC_URL } from "./env";
 
@@ -15,6 +16,11 @@ export const auth = betterAuth({
 	}),
 	emailAndPassword: {
 		enabled: true,
+		password: {
+			hash: (password) => hash(password, 12),
+			verify: ({ hash: hashedPassword, password }) =>
+				compare(password, hashedPassword),
+		},
 	},
 	socialProviders: {
 		github: {
