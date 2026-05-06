@@ -1,4 +1,5 @@
 import { Grid, GridCol, Stack } from "@mantine/core";
+import { useEffect, useState } from "react";
 import { Beasiswa } from "./sosial/beasiswa";
 import { EventCalendar } from "./sosial/event-calendar";
 import { HealthStats } from "./sosial/health-stats";
@@ -6,39 +7,110 @@ import { Pendidikan } from "./sosial/pendidikan";
 import { PosyanduSchedule } from "./sosial/posyandu-schedule";
 import { SummaryCards } from "./sosial/summary-cards";
 
+const DESA_API =
+	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
+		? import.meta.env.VITE_DESA_API_URL
+		: "https://desa-darmasaba-stg.wibudev.com";
+
+interface KesehatanStats {
+	ibuHamilAktif: number;
+	balitaTerdaftar: number;
+	alertStunting: number;
+	imunisasiLengkapPct: number;
+	pemeriksaanRutinPct: number;
+	giziBaikPct: number;
+	targetStuntingPct: number;
+}
+
+interface PosyanduForCount {
+	isActive: boolean;
+}
+
 const SosialPage = () => {
+	const [kesehatanStats, setKesehatanStats] = useState<KesehatanStats | null>(
+		null,
+	);
+	const [posyandus, setPosyandus] = useState<PosyanduForCount[] | null>(null);
+
+	useEffect(() => {
+		async function fetchData() {
+			try {
+				const [kesehatanRes, posyanduRes] = await Promise.all([
+					fetch(`${DESA_API}/api/kesehatan/ringkasankesehatan/stats`),
+					fetch(`${DESA_API}/api/kesehatan/posyandu/find-many`),
+				]);
+				const [kesehatan, posyandu] = await Promise.all([
+					kesehatanRes.json(),
+					posyanduRes.json(),
+				]);
+				if (kesehatan.success) setKesehatanStats(kesehatan.data);
+				if (posyandu.success)
+					setPosyandus(
+						(posyandu.data as PosyanduForCount[]).filter((p) => p.isActive),
+					);
+			} catch {
+				// ignore
+			}
+		}
+		fetchData();
+	}, []);
+
+	const summaryData = kesehatanStats
+		? {
+				ibuHamil: kesehatanStats.ibuHamilAktif,
+				balita: kesehatanStats.balitaTerdaftar,
+				alertStunting: kesehatanStats.alertStunting,
+				posyanduAktif: posyandus ? posyandus.length : 0,
+			}
+		: undefined;
+
+	const healthData = kesehatanStats
+		? [
+				{
+					label: "Imunisasi Lengkap",
+					value: kesehatanStats.imunisasiLengkapPct,
+					color: "green",
+				},
+				{
+					label: "Pemeriksaan Rutin",
+					value: kesehatanStats.pemeriksaanRutinPct,
+					color: "blue",
+				},
+				{
+					label: "Gizi Baik",
+					value: kesehatanStats.giziBaikPct,
+					color: "teal",
+				},
+				{
+					label: "Target Stunting",
+					value: kesehatanStats.targetStuntingPct,
+					color: "red",
+				},
+			]
+		: undefined;
+
 	return (
 		<Stack gap="lg">
-			{/* Top Summary Cards - 4 Grid */}
-			<SummaryCards />
+			<SummaryCards data={summaryData} />
 
-			{/* Second Row - 2 Column Grid */}
 			<Grid gutter="md">
-				{/* Left - Statistik Kesehatan */}
 				<GridCol span={{ base: 12, lg: 6 }}>
-					<HealthStats />
+					<HealthStats data={healthData} />
 				</GridCol>
-
-				{/* Right - Jadwal Posyandu */}
 				<GridCol span={{ base: 12, lg: 6 }}>
 					<PosyanduSchedule />
 				</GridCol>
 			</Grid>
 
-			{/* Third Row - 2 Column Grid */}
 			<Grid gutter="md">
-				{/* Left - Pendidikan */}
 				<GridCol span={{ base: 12, lg: 6 }}>
 					<Pendidikan />
 				</GridCol>
-
-				{/* Right - Beasiswa Desa */}
 				<GridCol span={{ base: 12, lg: 6 }}>
 					<Beasiswa />
 				</GridCol>
 			</Grid>
 
-			{/* Bottom Section - Event Budaya */}
 			<EventCalendar />
 		</Stack>
 	);
