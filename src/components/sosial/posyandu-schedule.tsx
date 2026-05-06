@@ -2,55 +2,56 @@ import {
 	Badge,
 	Card,
 	Group,
+	Loader,
 	Stack,
 	Text,
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { useEffect, useState } from "react";
 
-interface PosyanduItem {
+const DESA_API =
+	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
+		? import.meta.env.VITE_DESA_API_URL
+		: "https://desa-darmasaba-stg.wibudev.com";
+
+function stripHtml(html: string): string {
+	return html.replace(/<[^>]*>/g, "").trim();
+}
+
+function extractTime(html: string): string {
+	const text = stripHtml(html);
+	const match = text.match(/\d{2}:\d{2}\s*[–-]\s*\d{2}:\d{2}/);
+	if (!match) return "";
+	return match[0].replace(/\s*–\s*/g, " - ");
+}
+
+function extractScheduleDesc(html: string): string {
+	const text = stripHtml(html);
+	return text.length > 60 ? `${text.slice(0, 57)}...` : text;
+}
+
+interface PosyanduApiItem {
 	id: string;
-	nama: string;
-	tanggal: string;
-	jam: string;
+	name: string;
+	jadwalPelayanan: string;
 }
 
-interface PosyanduScheduleProps {
-	data?: PosyanduItem[];
-}
-
-export const PosyanduSchedule = ({ data }: PosyanduScheduleProps) => {
+export const PosyanduSchedule = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const [items, setItems] = useState<PosyanduApiItem[]>([]);
+	const [loading, setLoading] = useState(true);
 
-	const defaultData: PosyanduItem[] = [
-		{
-			id: "1",
-			nama: "Posyandu Mawar",
-			tanggal: "Senin, 15 Feb 2026",
-			jam: "08:00 - 11:00",
-		},
-		{
-			id: "2",
-			nama: "Posyandu Melati",
-			tanggal: "Selasa, 16 Feb 2026",
-			jam: "08:00 - 11:00",
-		},
-		{
-			id: "3",
-			nama: "Posyandu Dahlia",
-			tanggal: "Rabu, 17 Feb 2026",
-			jam: "08:00 - 11:00",
-		},
-		{
-			id: "4",
-			nama: "Posyandu Anggrek",
-			tanggal: "Kamis, 18 Feb 2026",
-			jam: "08:00 - 11:00",
-		},
-	];
-
-	const displayData = data || defaultData;
+	useEffect(() => {
+		fetch(`${DESA_API}/api/kesehatan/posyandu/find-many`)
+			.then((r) => r.json())
+			.then((res) => {
+				if (res.success) setItems((res.data as PosyanduApiItem[]).slice(0, 5));
+			})
+			.catch(() => {})
+			.finally(() => setLoading(false));
+	}, []);
 
 	return (
 		<Card
@@ -68,32 +69,40 @@ export const PosyanduSchedule = ({ data }: PosyanduScheduleProps) => {
 			<Title order={3} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>
 				Jadwal Posyandu
 			</Title>
-			<Stack gap="sm">
-				{displayData.map((item) => (
-					<Card
-						key={item.id}
-						p="md"
-						radius="md"
-						withBorder
-						bg={dark ? "#263852ff" : "#F1F5F9"}
-						style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
-					>
-						<Group justify="space-between">
-							<Stack gap={0}>
-								<Text fw={600} c={dark ? "white" : "#1e3a5f"}>
-									{item.nama}
-								</Text>
-								<Text size="sm" c={dark ? "white" : "dimmed"}>
-									{item.tanggal}
-								</Text>
-							</Stack>
-							<Badge variant="light" color="darmasaba-blue" size="md">
-								{item.jam}
-							</Badge>
-						</Group>
-					</Card>
-				))}
-			</Stack>
+			{loading ? (
+				<Group justify="center" py="xl">
+					<Loader size="sm" color="darmasaba-blue" />
+				</Group>
+			) : (
+				<Stack gap="sm">
+					{items.map((item) => (
+						<Card
+							key={item.id}
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#263852ff" : "#F1F5F9"}
+							style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
+						>
+							<Group justify="space-between">
+								<Stack gap={0}>
+									<Text fw={600} c={dark ? "white" : "#1e3a5f"}>
+										{item.name}
+									</Text>
+									<Text size="sm" c={dark ? "white" : "dimmed"}>
+										{extractScheduleDesc(item.jadwalPelayanan)}
+									</Text>
+								</Stack>
+								{extractTime(item.jadwalPelayanan) && (
+									<Badge variant="light" color="darmasaba-blue" size="md">
+										{extractTime(item.jadwalPelayanan)}
+									</Badge>
+								)}
+							</Group>
+						</Card>
+					))}
+				</Stack>
+			)}
 		</Card>
 	);
 };
