@@ -1,6 +1,6 @@
+import { compare, hash } from "bcryptjs";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { compare, hash } from "bcryptjs";
 import { PrismaClient } from "../../generated/prisma";
 import { VITE_PUBLIC_URL } from "./env";
 
