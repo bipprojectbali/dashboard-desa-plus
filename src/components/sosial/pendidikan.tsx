@@ -1,47 +1,45 @@
 import {
 	Card,
 	Group,
+	Skeleton,
 	Stack,
 	Text,
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { useEffect, useState } from "react";
 
-interface EducationData {
-	siswa: {
-		tk: number;
-		sd: number;
-		smp: number;
-		sma: number;
-	};
-	sekolah: {
-		jumlah: number;
-		guru: number;
-	};
+const DESA_API =
+	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
+		? import.meta.env.VITE_DESA_API_URL
+		: "";
+
+interface JenjangItem {
+	nama: string;
+	jumlahSiswa: number;
 }
 
-interface PendidikanProps {
-	data?: EducationData;
+interface PendidikanStats {
+	perJenjang: JenjangItem[];
+	jumlahLembaga: number;
+	jumlahPengajar: number;
 }
 
-export const Pendidikan = ({ data }: PendidikanProps) => {
+export const Pendidikan = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const defaultData: EducationData = {
-		siswa: {
-			tk: 125,
-			sd: 480,
-			smp: 210,
-			sma: 150,
-		},
-		sekolah: {
-			jumlah: 8,
-			guru: 42,
-		},
-	};
+	const [stats, setStats] = useState<PendidikanStats | null>(null);
+	const [loading, setLoading] = useState(true);
 
-	const displayData = data || defaultData;
+	useEffect(() => {
+		fetch(`${DESA_API}/api/pendidikan/ringkasan/stats`)
+			.then((r) => r.json())
+			.then((json) => {
+				if (json.success) setStats(json.data);
+			})
+			.finally(() => setLoading(false));
+	}, []);
 
 	return (
 		<Card
@@ -60,38 +58,21 @@ export const Pendidikan = ({ data }: PendidikanProps) => {
 				Pendidikan
 			</Title>
 			<Stack gap="md">
-				<Group justify="space-between">
-					<Text fw={500} c={dark ? "dark.0" : "#1e3a5f"}>
-						TK / PAUD
-					</Text>
-					<Text fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
-						{displayData.siswa.tk}
-					</Text>
-				</Group>
-				<Group justify="space-between">
-					<Text fw={500} c={dark ? "dark.0" : "#1e3a5f"}>
-						SD
-					</Text>
-					<Text fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
-						{displayData.siswa.sd}
-					</Text>
-				</Group>
-				<Group justify="space-between">
-					<Text fw={500} c={dark ? "dark.0" : "#1e3a5f"}>
-						SMP
-					</Text>
-					<Text fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
-						{displayData.siswa.smp}
-					</Text>
-				</Group>
-				<Group justify="space-between">
-					<Text fw={500} c={dark ? "dark.0" : "#1e3a5f"}>
-						SMA
-					</Text>
-					<Text fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
-						{displayData.siswa.sma}
-					</Text>
-				</Group>
+				{loading
+					? Array.from({ length: 4 }).map((_, i) => (
+							// biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
+							<Skeleton key={i} height={20} radius="sm" />
+						))
+					: stats?.perJenjang.map((item) => (
+							<Group key={item.nama} justify="space-between">
+								<Text fw={500} c={dark ? "dark.0" : "#1e3a5f"}>
+									{item.nama}
+								</Text>
+								<Text fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
+									{item.jumlahSiswa}
+								</Text>
+							</Group>
+						))}
 
 				<Card
 					withBorder
@@ -105,17 +86,25 @@ export const Pendidikan = ({ data }: PendidikanProps) => {
 						<Text fw={500} c={dark ? "dark.0" : "#1e3a5f"}>
 							Jumlah Lembaga Pendidikan
 						</Text>
-						<Text fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
-							{displayData.sekolah.jumlah}
-						</Text>
+						{loading ? (
+							<Skeleton height={20} width={40} radius="sm" />
+						) : (
+							<Text fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
+								{stats?.jumlahLembaga ?? 0}
+							</Text>
+						)}
 					</Group>
 					<Group justify="space-between" mt="sm">
 						<Text fw={500} c={dark ? "dark.0" : "#1e3a5f"}>
 							Jumlah Tenaga Pengajar
 						</Text>
-						<Text fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
-							{displayData.sekolah.guru}
-						</Text>
+						{loading ? (
+							<Skeleton height={20} width={40} radius="sm" />
+						) : (
+							<Text fw={700} c={dark ? "dark.0" : "#1e3a5f"}>
+								{stats?.jumlahPengajar ?? 0}
+							</Text>
+						)}
 					</Group>
 				</Card>
 			</Stack>
