@@ -78,6 +78,17 @@ jobs:
             type=raw,value=${{ github.event.inputs.stack_env }}-${{ github.event.inputs.tag }}
             type=raw,value=${{ github.event.inputs.stack_env }}-latest
 
+      - name: Set VITE_DESA_API_URL by env
+        id: vite_env
+        run: |
+          if [ "${{ github.event.inputs.stack_env }}" = "stg" ]; then
+            echo "VITE_DESA_API_URL=https://desa-darmasaba-stg.wibudev.com" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.inputs.stack_env }}" = "prod" ]; then
+            echo "VITE_DESA_API_URL=https://desa-darmasaba.wibudev.com" >> $GITHUB_OUTPUT
+          else
+            echo "VITE_DESA_API_URL=http://localhost:3000" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
@@ -88,6 +99,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           no-cache: true
+          build-args: |
+            VITE_DESA_API_URL=${{ steps.vite_env.outputs.VITE_DESA_API_URL }}
 
       - name: Notify success
         if: success()
