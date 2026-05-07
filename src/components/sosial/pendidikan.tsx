@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 const DESA_API =
 	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
 		? import.meta.env.VITE_DESA_API_URL
-		: "";
+		: "https://desa-darmasaba-stg.wibudev.com";
 
 interface JenjangItem {
 	nama: string;
