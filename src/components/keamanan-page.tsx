@@ -1,10 +1,11 @@
 import {
 	Badge,
-	Box,
 	Card,
 	Grid,
 	GridCol,
 	Group,
+	Pagination,
+	Skeleton,
 	Stack,
 	Text,
 	ThemeIcon,
@@ -17,98 +18,170 @@ import {
 	IconClock,
 	IconMapPin,
 } from "@tabler/icons-react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { useEffect, useRef, useState } from "react";
+
+const DESA_API =
+	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
+		? import.meta.env.VITE_DESA_API_URL
+		: "https://desa-darmasaba-stg.wibudev.com";
+
+type CctvItem = {
+	id: string;
+	kode: string;
+	nama: string;
+	lokasi: string;
+	latitude: number;
+	longitude: number;
+	status: string; // "Online" | "Offline"
+	lastActive: string;
+	isActive: boolean;
+};
+
+type LaporanItem = {
+	id: string;
+	judul: string;
+	lokasi: string;
+	tanggalWaktu: string;
+	status: string; // "Proses" | "Selesai" | "Baru"
+};
+
+type CctvStats = {
+	cctvOnline: number;
+	laporanMingguIni: number;
+};
+
+const CCTV_PER_PAGE = 5;
+
+const markerIcon = L.icon({
+	iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+	iconRetinaUrl:
+		"https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+	shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+	iconSize: [25, 41],
+	iconAnchor: [12, 41],
+	popupAnchor: [1, -34],
+	shadowSize: [41, 41],
+});
+
+const CctvMap = ({
+	cctvList,
+	dark,
+}: {
+	cctvList: CctvItem[];
+	dark: boolean;
+}) => {
+	const mapRef = useRef<HTMLDivElement>(null);
+	const leafletMap = useRef<L.Map | null>(null);
+
+	useEffect(() => {
+		if (!mapRef.current || leafletMap.current) return;
+
+		const validItems = cctvList.filter((c) => c.latitude && c.longitude);
+		const first = validItems[0];
+		const center: [number, number] = first
+			? [first.latitude, first.longitude]
+			: [-8.6705, 115.212];
+
+		const map = L.map(mapRef.current, { center, zoom: 14 });
+		leafletMap.current = map;
+
+		L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+			attribution: "© OpenStreetMap contributors",
+		}).addTo(map);
+
+		for (const cctv of validItems) {
+			L.marker([cctv.latitude, cctv.longitude], { icon: markerIcon })
+				.addTo(map)
+				.bindPopup(
+					`<b>${cctv.kode}</b><br>${cctv.nama}<br><small>${cctv.lokasi}</small><br><span style="color:${cctv.status === "Online" ? "green" : "gray"}">${cctv.status}</span>`,
+				);
+		}
+
+		if (validItems.length > 1) {
+			const bounds = L.latLngBounds(
+				validItems.map((c) => [c.latitude, c.longitude]),
+			);
+			map.fitBounds(bounds, { padding: [40, 40] });
+		}
+
+		return () => {
+			map.remove();
+			leafletMap.current = null;
+		};
+	}, [cctvList]);
+
+	return (
+		<div
+			ref={mapRef}
+			style={{
+				height: "400px",
+				borderRadius: "8px",
+				border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
+				zIndex: 0,
+			}}
+		/>
+	);
+};
 
 const KeamananPage = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	// Sample data for KPI cards
-	const kpiData = [
+	const [cctvStats, setCctvStats] = useState<CctvStats>({
+		cctvOnline: 0,
+		laporanMingguIni: 0,
+	});
+	const [cctvList, setCctvList] = useState<CctvItem[]>([]);
+	const [laporanList, setLaporanList] = useState<LaporanItem[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [cctvPage, setCctvPage] = useState(1);
+
+	useEffect(() => {
+		const fetchAll = async () => {
+			try {
+				const [statsRes, cctvRes, laporanRes] = await Promise.all([
+					fetch(`${DESA_API}/api/keamanan/cctv/stats`).then((r) => r.json()),
+					fetch(`${DESA_API}/api/keamanan/cctv/find-many`).then((r) =>
+						r.json(),
+					),
+					fetch(`${DESA_API}/api/keamanan/laporanpublik/find-many`).then((r) =>
+						r.json(),
+					),
+				]);
+				if (statsRes.data) setCctvStats(statsRes.data as CctvStats);
+				if (Array.isArray(cctvRes.data))
+					setCctvList(cctvRes.data as CctvItem[]);
+				if (Array.isArray(laporanRes.data))
+					setLaporanList(laporanRes.data as LaporanItem[]);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchAll();
+	}, []);
+
+	const cctvTotalPages = Math.ceil(cctvList.length / CCTV_PER_PAGE);
+	const cctvPaged = cctvList.slice(
+		(cctvPage - 1) * CCTV_PER_PAGE,
+		cctvPage * CCTV_PER_PAGE,
+	);
+
+	const kpiCards = [
 		{
 			title: "CCTV Aktif",
-			value: 20,
+			value: cctvStats.cctvOnline,
 			subtitle: "Kamera Online",
 			icon: <IconCamera size={24} />,
 			color: "darmasaba-success",
 		},
 		{
 			title: "Laporan Keamanan",
-			value: 15,
+			value: cctvStats.laporanMingguIni,
 			subtitle: "Minggu ini",
 			icon: <IconAlertTriangle size={24} />,
 			color: "darmasaba-danger",
-		},
-	];
-
-	// Sample data for CCTV locations
-	const cctvLocations = [
-		{
-			id: "CCTV-01",
-			lat: -8.5,
-			lng: 115.2,
-			status: "active",
-			lastSeen: "2 jam yang lalu",
-			location: "Balai Desa",
-		},
-		{
-			id: "CCTV-02",
-			lat: -8.6,
-			lng: 115.3,
-			status: "active",
-			lastSeen: "1 jam yang lalu",
-			location: "Pintu Masuk Desa",
-		},
-		{
-			id: "CCTV-03",
-			lat: -8.4,
-			lng: 115.1,
-			status: "offline",
-			lastSeen: "1 hari yang lalu",
-			location: "Taman Desa",
-		},
-		{
-			id: "CCTV-04",
-			lat: -8.7,
-			lng: 115.4,
-			status: "active",
-			lastSeen: "30 menit yang lalu",
-			location: "Pasar Desa",
-		},
-	];
-
-	// Sample data for security reports
-	const securityReports = [
-		{
-			id: "REP-001",
-			title: "Pencurian Motor",
-			reportedAt: "2 jam yang lalu",
-			date: "12 Feb 2026, 14:30",
-			location: "Jl. Kecubung 20",
-			status: "baru",
-		},
-		{
-			id: "REP-002",
-			title: "Kerusuhan Antar Warga",
-			reportedAt: "4 jam yang lalu",
-			date: "12 Feb 2026, 12:15",
-			location: "RT 05 RW 02",
-			status: "baru",
-		},
-		{
-			id: "REP-003",
-			title: "Kebakaran Rumah",
-			reportedAt: "1 hari yang lalu",
-			date: "11 Feb 2026, 08:45",
-			location: "Jl. Flamboyan 15",
-			status: "diproses",
-		},
-		{
-			id: "REP-004",
-			title: "Kehilangan Barang",
-			reportedAt: "2 hari yang lalu",
-			date: "10 Feb 2026, 16:20",
-			location: "Taman Desa",
-			status: "selesai",
 		},
 	];
 
@@ -120,7 +193,7 @@ const KeamananPage = () => {
 					<Stack gap={"xs"}>
 						{/* KPI Cards */}
 						<Grid gutter="md">
-							{kpiData.map((kpi) => (
+							{kpiCards.map((kpi) => (
 								<GridCol key={kpi.title} span={{ base: 12, sm: 6, md: 6 }}>
 									<Card
 										p="md"
@@ -140,13 +213,20 @@ const KeamananPage = () => {
 													{kpi.subtitle}
 												</Text>
 												<Group gap="xs" align="center">
-													<Text
-														size="xl"
-														fw={700}
-														c={dark ? "dark.0" : "black"}
+													<Skeleton
+														visible={loading}
+														width={40}
+														height={28}
+														radius="sm"
 													>
-														{kpi.value}
-													</Text>
+														<Text
+															size="xl"
+															fw={700}
+															c={dark ? "dark.0" : "black"}
+														>
+															{kpi.value}
+														</Text>
+													</Skeleton>
 													<Text size="sm" c={dark ? "white" : "dimmed"}>
 														{kpi.title}
 													</Text>
@@ -184,37 +264,42 @@ const KeamananPage = () => {
 								Titik Lokasi CCTV
 							</Text>
 
-							{/* Placeholder for map */}
-							<Box
-								style={{
-									backgroundColor: dark ? "#2d3748" : "#e2e8f0",
-									borderRadius: "8px",
-									height: "400px",
-									display: "flex",
-									alignItems: "center",
-									justifyContent: "center",
-								}}
-							>
-								<Stack align="center">
-									<IconMapPin
-										size={48}
-										stroke={1.5}
-										color={dark ? "#94a3b8" : "#64748b"}
-									/>
-									<Text c={dark ? "dark.3" : "dimmed"}>Peta Lokasi CCTV</Text>
-									<Text size="sm" c={dark ? "dark.3" : "dimmed"} ta="center">
-										Integrasi dengan Google Maps atau Mapbox akan ditampilkan di
-										sini
-									</Text>
-								</Stack>
-							</Box>
+							{loading ? (
+								<Skeleton height={400} radius="md" />
+							) : (
+								<CctvMap cctvList={cctvList} dark={dark} />
+							)}
 
 							{/* CCTV Locations List */}
 							<Stack mt="md" gap="sm">
-								<Title order={4} c={dark ? "dark.0" : "black"}>
-									Daftar CCTV
-								</Title>
-								{cctvLocations.map((cctv) => (
+								<Group justify="space-between" align="center">
+									<Title order={4} c={dark ? "dark.0" : "black"}>
+										Daftar CCTV
+									</Title>
+									{!loading && cctvList.length > 0 && (
+										<Text size="xs" c={dark ? "dark.3" : "dimmed"}>
+											{cctvList.length} kamera
+										</Text>
+									)}
+								</Group>
+								{loading && (
+									<Stack gap="sm">
+										{[1, 2, 3].map((i) => (
+											<Skeleton key={i} height={60} radius="md" />
+										))}
+									</Stack>
+								)}
+								{!loading && cctvList.length === 0 && (
+									<Text
+										size="sm"
+										c={dark ? "dark.3" : "dimmed"}
+										ta="center"
+										py="md"
+									>
+										Belum ada data CCTV
+									</Text>
+								)}
+								{cctvPaged.map((cctv) => (
 									<Card
 										key={cctv.id}
 										p="md"
@@ -227,28 +312,49 @@ const KeamananPage = () => {
 											<Stack gap={0}>
 												<Group gap="xs">
 													<Text fw={500} c={dark ? "dark.0" : "black"}>
-														{cctv.id}
+														{cctv.kode}
 													</Text>
 													<Badge
 														variant="dot"
-														color={cctv.status === "active" ? "green" : "gray"}
+														color={cctv.status === "Online" ? "green" : "gray"}
 													>
-														{cctv.status === "active" ? "Online" : "Offline"}
+														{cctv.status}
 													</Badge>
 												</Group>
 												<Text size="sm" c={dark ? "white" : "dimmed"}>
-													{cctv.location}
+													{cctv.nama}
+												</Text>
+												<Text size="xs" c={dark ? "dark.3" : "dimmed"}>
+													{cctv.lokasi}
 												</Text>
 											</Stack>
 											<Group gap="xs">
 												<IconClock size={16} stroke={1.5} />
 												<Text size="sm" c={dark ? "white" : "dimmed"}>
-													{cctv.lastSeen}
+													{new Date(cctv.lastActive).toLocaleDateString(
+														"id-ID",
+														{
+															day: "numeric",
+															month: "short",
+															hour: "2-digit",
+															minute: "2-digit",
+														},
+													)}
 												</Text>
 											</Group>
 										</Group>
 									</Card>
 								))}
+								{!loading && cctvTotalPages > 1 && (
+									<Group justify="center" mt="xs">
+										<Pagination
+											total={cctvTotalPages}
+											value={cctvPage}
+											onChange={setCctvPage}
+											size="sm"
+										/>
+									</Group>
+								)}
 							</Stack>
 						</Card>
 					</Stack>
@@ -268,8 +374,28 @@ const KeamananPage = () => {
 						}}
 						h="100%"
 					>
+						<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
+							Laporan Publik
+						</Title>
 						<Stack gap="sm">
-							{securityReports.map((report) => (
+							{loading && (
+								<Stack gap="sm">
+									{[1, 2, 3, 4].map((i) => (
+										<Skeleton key={i} height={80} radius="md" />
+									))}
+								</Stack>
+							)}
+							{!loading && laporanList.length === 0 && (
+								<Text
+									size="sm"
+									c={dark ? "dark.3" : "dimmed"}
+									ta="center"
+									py="xl"
+								>
+									Belum ada laporan keamanan
+								</Text>
+							)}
+							{laporanList.map((report) => (
 								<Card
 									key={report.id}
 									p="md"
@@ -278,19 +404,24 @@ const KeamananPage = () => {
 									bg={dark ? "#263852ff" : "#F1F5F9"}
 									style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
 								>
-									<Group justify="space-between" mb="sm">
-										<Text fw={500} c={dark ? "dark.0" : "black"}>
-											{report.title}
+									<Group justify="space-between" mb="xs" align="flex-start">
+										<Text
+											fw={500}
+											c={dark ? "dark.0" : "black"}
+											style={{ flex: 1 }}
+										>
+											{report.judul}
 										</Text>
 										<Badge
 											variant="light"
 											color={
-												report.status === "baru"
-													? "red"
-													: report.status === "diproses"
+												report.status === "Selesai"
+													? "green"
+													: report.status === "Proses"
 														? "yellow"
-														: "green"
+														: "red"
 											}
+											ml="xs"
 										>
 											{report.status}
 										</Badge>
@@ -300,20 +431,23 @@ const KeamananPage = () => {
 										<Group gap="xs">
 											<IconMapPin size={16} stroke={1.5} />
 											<Text size="sm" c={dark ? "white" : "dimmed"}>
-												{report.location}
+												{report.lokasi}
 											</Text>
 										</Group>
 										<Group gap="xs">
 											<IconClock size={16} stroke={1.5} />
 											<Text size="sm" c={dark ? "white" : "dimmed"}>
-												{report.reportedAt}
+												{new Date(report.tanggalWaktu).toLocaleDateString(
+													"id-ID",
+													{
+														day: "numeric",
+														month: "short",
+														year: "numeric",
+													},
+												)}
 											</Text>
 										</Group>
 									</Group>
-
-									<Text size="sm" c={dark ? "white" : "dimmed"} mt="sm">
-										{report.date}
-									</Text>
 								</Card>
 							))}
 						</Stack>
