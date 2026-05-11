@@ -32,10 +32,78 @@ model User {
   healthRecords     HealthRecord[]
   populationDynamics PopulationDynamic[]
   budgetTransactions BudgetTransaction[]
-  posyandus         Posyandu[]
-  securityReports   SecurityReport[]
+  posyandus              Posyandu[]
+  securityReports        SecurityReport[]
+  notificationPreference NotificationPreference?
+  umumPreference         UmumPreference?
+  keamananPreference     KeamananPreference?
+  aksesPreference        AksesPreference?
 
   @@map("user")
+}
+
+model NotificationPreference {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  laporanHarian   Boolean  @default(true)
+  alertSistem     Boolean  @default(true)
+  updateKeamanan  Boolean  @default(true)
+  newsletterBulan Boolean  @default(true)
+  alertKritis     Boolean  @default(true)
+  aktivitasTim    Boolean  @default(true)
+  komentarMention Boolean  @default(true)
+  bunyiNotifikasi Boolean  @default(true)
+  tresholdMemori  Boolean  @default(true)
+  tresholdCpu     Boolean  @default(true)
+  tresholdDisk    Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_preference")
+}
+
+model UmumPreference {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  bahasa            String   @default("id")
+  zonaWaktu         String   @default("Asia/Jakarta")
+  formatTanggal     String   @default("DD/MM/YYYY")
+  refreshOtomatis   Boolean  @default(true)
+  intervalRefresh   String   @default("1")
+  tampilkanGrid     Boolean  @default(true)
+  animasiTransisi   Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("umum_preference")
+}
+
+model KeamananPreference {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  twoFactorAuth   Boolean  @default(false)
+  biometrikLogin  Boolean  @default(false)
+  ipWhitelist     Boolean  @default(false)
+  logAktivitas    Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("keamanan_preference")
+}
+
+model AksesPreference {
+  id                        String   @id @default(cuid())
+  userId                    String   @unique
+  izinExportData            Boolean  @default(true)
+  requireApprovalPerubahan  Boolean  @default(true)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("akses_preference")
 }
 
 // --- KATEGORI 1: KINERJA DIVISI & AKTIVITAS ---
