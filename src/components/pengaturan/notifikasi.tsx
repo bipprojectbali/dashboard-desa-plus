@@ -1,14 +1,33 @@
 import {
+	Alert,
+	Badge,
+	Box,
 	Button,
-	Grid,
-	GridCol,
+	Divider,
 	Group,
-	Notification,
+	Paper,
+	Skeleton,
 	Stack,
 	Switch,
 	Text,
+	ThemeIcon,
 	Title,
+	useMantineColorScheme,
 } from "@mantine/core";
+import {
+	IconBell,
+	IconBellRinging,
+	IconCheck,
+	IconCpu,
+	IconDatabase,
+	IconDeviceFloppy,
+	IconMailForward,
+	IconMessageCircle,
+	IconShieldCheck,
+	IconUsers,
+	IconVolume,
+	IconX,
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslate } from "@/hooks/useTranslate";
 
@@ -104,83 +123,288 @@ const NotifikasiSettings = () => {
 		setPrefs(savedPrefs);
 	};
 
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
+
 	const SwitchRow = ({
 		label,
+		description,
+		icon,
 		field,
+		badge,
 	}: {
 		label: string;
+		description: string;
+		icon: React.ReactNode;
 		field: keyof Prefs;
+		badge?: string;
 	}) => (
-		<Group mb="md" justify="space-between">
-			<Text fw="bold" fz="sm">
-				{label}
-			</Text>
+		<Group justify="space-between" wrap="nowrap" py="sm">
+			<Group gap="sm" wrap="nowrap">
+				<ThemeIcon size={36} radius="md" variant="light" color="blue">
+					{icon}
+				</ThemeIcon>
+				<Box>
+					<Group gap={6}>
+						<Text fw={600} fz="sm">
+							{label}
+						</Text>
+						{badge && (
+							<Badge size="xs" color="orange" variant="light">
+								{badge}
+							</Badge>
+						)}
+					</Group>
+					<Text fz="xs" c="dimmed">
+						{description}
+					</Text>
+				</Box>
+			</Group>
 			<Switch
 				checked={prefs[field]}
 				onChange={() => toggle(field)}
 				disabled={loading}
+				size="md"
 			/>
 		</Group>
 	);
 
+	const SkeletonRows = ({ count }: { count: number }) => (
+		<Stack gap="sm">
+			{Array.from({ length: count }).map((_, i) => (
+				// biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
+				<Skeleton key={i} height={52} radius="md" />
+			))}
+		</Stack>
+	);
+
 	return (
-		<Stack pr="20%" gap="xs">
+		<Box maw={680}>
 			{toast && (
-				<Notification
+				<Alert
 					color={toast.type === "success" ? "green" : "red"}
+					icon={
+						toast.type === "success" ? (
+							<IconCheck size={16} />
+						) : (
+							<IconX size={16} />
+						)
+					}
+					withCloseButton
 					onClose={() => setToast(null)}
-					mb="sm"
+					mb="md"
+					radius="md"
 				>
 					{toast.message}
-				</Notification>
+				</Alert>
 			)}
-			<Grid gutter={{ base: 5, xs: "md", md: "xl", xl: 50 }}>
-				<GridCol span={6}>
-					<Stack gap="xs">
-						<Title order={3} mb="sm">
+
+			{/* Metode Notifikasi */}
+			<Paper
+				withBorder
+				radius="lg"
+				p="xl"
+				mb="lg"
+				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+			>
+				<Group gap="sm" mb="lg">
+					<ThemeIcon
+						size={38}
+						radius="md"
+						variant="gradient"
+						gradient={{ from: "blue", to: "cyan" }}
+					>
+						<IconBell size={20} />
+					</ThemeIcon>
+					<Box>
+						<Title order={4} fw={700}>
 							{t.notifikasi.metodeNotifikasi}
 						</Title>
-						<SwitchRow label={t.notifikasi.laporanHarian} field="laporanHarian" />
-						<SwitchRow label={t.notifikasi.alertSistem} field="alertSistem" />
-						<SwitchRow label={t.notifikasi.updateKeamanan} field="updateKeamanan" />
-						<SwitchRow label={t.notifikasi.newsletterBulanan} field="newsletterBulan" />
-					</Stack>
-				</GridCol>
-				<GridCol span={6}>
-					<Stack gap="xs">
-						<Title order={3} mb="sm">
+						<Text fz="xs" c="dimmed">
+							Pilih jenis notifikasi yang ingin kamu terima
+						</Text>
+					</Box>
+				</Group>
+
+				{loading ? (
+					<SkeletonRows count={4} />
+				) : (
+					<>
+						<SwitchRow
+							label={t.notifikasi.laporanHarian}
+							description="Ringkasan aktivitas desa dikirim setiap hari ke email kamu"
+							icon={<IconMailForward size={18} />}
+							field="laporanHarian"
+						/>
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+						<SwitchRow
+							label={t.notifikasi.alertSistem}
+							description="Pemberitahuan saat ada gangguan atau pemeliharaan sistem"
+							icon={<IconBellRinging size={18} />}
+							field="alertSistem"
+						/>
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+						<SwitchRow
+							label={t.notifikasi.updateKeamanan}
+							description="Info pembaruan keamanan dan patch penting"
+							icon={<IconShieldCheck size={18} />}
+							field="updateKeamanan"
+							badge="Penting"
+						/>
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+						<SwitchRow
+							label={t.notifikasi.newsletterBulanan}
+							description="Artikel dan tips penggunaan dashboard setiap bulan"
+							icon={<IconMailForward size={18} />}
+							field="newsletterBulan"
+						/>
+					</>
+				)}
+			</Paper>
+
+			{/* Preferensi Alert Sistem */}
+			<Paper
+				withBorder
+				radius="lg"
+				p="xl"
+				mb="lg"
+				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+			>
+				<Group gap="sm" mb="lg">
+					<ThemeIcon
+						size={38}
+						radius="md"
+						variant="gradient"
+						gradient={{ from: "orange", to: "red" }}
+					>
+						<IconCpu size={20} />
+					</ThemeIcon>
+					<Box>
+						<Title order={4} fw={700}>
 							{t.notifikasi.preferensiAlert}
 						</Title>
-						<SwitchRow label={t.notifikasi.tresholdMemori} field="tresholdMemori" />
-						<SwitchRow label={t.notifikasi.tresholdCpu} field="tresholdCpu" />
-						<SwitchRow label={t.notifikasi.tresholdDisk} field="tresholdDisk" />
-					</Stack>
-				</GridCol>
-				<GridCol span={6}>
-					<Stack gap="xs">
-						<Title order={3} mb="sm">
+						<Text fz="xs" c="dimmed">
+							Alert otomatis saat penggunaan sumber daya melewati batas
+						</Text>
+					</Box>
+				</Group>
+
+				{loading ? (
+					<SkeletonRows count={3} />
+				) : (
+					<>
+						<SwitchRow
+							label={t.notifikasi.tresholdMemori}
+							description="Alert saat penggunaan RAM server melebihi 80%"
+							icon={<IconDeviceFloppy size={18} />}
+							field="tresholdMemori"
+							badge="Auto"
+						/>
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+						<SwitchRow
+							label={t.notifikasi.tresholdCpu}
+							description="Alert saat beban CPU server melebihi 90% selama 5 menit"
+							icon={<IconCpu size={18} />}
+							field="tresholdCpu"
+							badge="Auto"
+						/>
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+						<SwitchRow
+							label={t.notifikasi.tresholdDisk}
+							description="Alert saat kapasitas disk tersisa kurang dari 10%"
+							icon={<IconDatabase size={18} />}
+							field="tresholdDisk"
+							badge="Auto"
+						/>
+					</>
+				)}
+			</Paper>
+
+			{/* Notifikasi Push & Aktivitas */}
+			<Paper
+				withBorder
+				radius="lg"
+				p="xl"
+				mb="lg"
+				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+			>
+				<Group gap="sm" mb="lg">
+					<ThemeIcon
+						size={38}
+						radius="md"
+						variant="gradient"
+						gradient={{ from: "violet", to: "grape" }}
+					>
+						<IconMessageCircle size={20} />
+					</ThemeIcon>
+					<Box>
+						<Title order={4} fw={700}>
 							{t.notifikasi.notifikasiPush}
 						</Title>
-						<SwitchRow label={t.notifikasi.alertKritis} field="alertKritis" />
-						<SwitchRow label={t.notifikasi.aktivitasTim} field="aktivitasTim" />
-						<SwitchRow label={t.notifikasi.komentarMention} field="komentarMention" />
-						<SwitchRow label={t.notifikasi.bunyiNotifikasi} field="bunyiNotifikasi" />
-					</Stack>
-				</GridCol>
-			</Grid>
-			<Group justify="flex-start" mt="xl">
+						<Text fz="xs" c="dimmed">
+							Notifikasi real-time aktivitas tim dan interaksi
+						</Text>
+					</Box>
+				</Group>
+
+				{loading ? (
+					<SkeletonRows count={4} />
+				) : (
+					<>
+						<SwitchRow
+							label={t.notifikasi.alertKritis}
+							description="Push notification segera untuk kejadian kritis yang perlu tindakan cepat"
+							icon={<IconBellRinging size={18} />}
+							field="alertKritis"
+							badge="Kritis"
+						/>
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+						<SwitchRow
+							label={t.notifikasi.aktivitasTim}
+							description="Notifikasi saat anggota tim menambah kegiatan atau dokumen baru"
+							icon={<IconUsers size={18} />}
+							field="aktivitasTim"
+						/>
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+						<SwitchRow
+							label={t.notifikasi.komentarMention}
+							description="Notifikasi saat kamu disebut dalam komentar atau diskusi"
+							icon={<IconMessageCircle size={18} />}
+							field="komentarMention"
+						/>
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+						<SwitchRow
+							label={t.notifikasi.bunyiNotifikasi}
+							description="Putar suara saat notifikasi masuk di browser"
+							icon={<IconVolume size={18} />}
+							field="bunyiNotifikasi"
+						/>
+					</>
+				)}
+			</Paper>
+
+			<Group justify="flex-end" gap="sm">
 				<Button
-					variant="outline"
+					variant="default"
 					onClick={handleBatal}
 					disabled={saving || loading}
+					radius="md"
 				>
 					{t.common.batal}
 				</Button>
-				<Button onClick={handleSave} loading={saving} disabled={loading}>
+				<Button
+					onClick={handleSave}
+					loading={saving}
+					disabled={loading}
+					radius="md"
+					variant="gradient"
+					gradient={{ from: "blue", to: "violet" }}
+					leftSection={<IconCheck size={16} />}
+				>
 					{t.common.simpanPreferensi}
 				</Button>
 			</Group>
-		</Stack>
+		</Box>
 	);
 };
 

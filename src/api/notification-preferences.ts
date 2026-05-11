@@ -26,14 +26,14 @@ export const notificationPreferences = new Elysia({
 		async ({ set, user }) => {
 			try {
 				const pref = await prisma.notificationPreference.upsert({
-					where: { userId: user!.id },
-					create: { userId: user!.id },
+					where: { userId: user?.id },
+					create: { userId: user?.id },
 					update: {},
 				});
 				return { data: pref };
 			} catch (error) {
 				logger.error(
-					{ error, userId: user!.id },
+					{ error, userId: user?.id },
 					"Failed to get notification preferences",
 				);
 				set.status = 500;
@@ -53,15 +53,15 @@ export const notificationPreferences = new Elysia({
 		async ({ body, set, user }) => {
 			try {
 				const pref = await prisma.notificationPreference.upsert({
-					where: { userId: user!.id },
-					create: { userId: user!.id, ...body },
+					where: { userId: user?.id },
+					create: { userId: user?.id, ...body },
 					update: body,
 				});
-				logger.info({ userId: user!.id }, "Notification preferences updated");
+				logger.info({ userId: user?.id }, "Notification preferences updated");
 				return { data: pref };
 			} catch (error) {
 				logger.error(
-					{ error, userId: user!.id },
+					{ error, userId: user?.id },
 					"Failed to update notification preferences",
 				);
 				set.status = 500;

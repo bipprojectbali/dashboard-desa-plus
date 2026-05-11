@@ -17,13 +17,16 @@ export const aksesPreferences = new Elysia({
 		async ({ set, user }) => {
 			try {
 				const pref = await prisma.aksesPreference.upsert({
-					where: { userId: user!.id },
-					create: { userId: user!.id },
+					where: { userId: user?.id },
+					create: { userId: user?.id },
 					update: {},
 				});
 				return { data: pref };
 			} catch (error) {
-				logger.error({ error, userId: user!.id }, "Failed to get akses preferences");
+				logger.error(
+					{ error, userId: user?.id },
+					"Failed to get akses preferences",
+				);
 				set.status = 500;
 				return { error: "Failed to get preferences" };
 			}
@@ -41,14 +44,17 @@ export const aksesPreferences = new Elysia({
 		async ({ body, set, user }) => {
 			try {
 				const pref = await prisma.aksesPreference.upsert({
-					where: { userId: user!.id },
-					create: { userId: user!.id, ...body },
+					where: { userId: user?.id },
+					create: { userId: user?.id, ...body },
 					update: body,
 				});
-				logger.info({ userId: user!.id }, "Akses preferences updated");
+				logger.info({ userId: user?.id }, "Akses preferences updated");
 				return { data: pref };
 			} catch (error) {
-				logger.error({ error, userId: user!.id }, "Failed to update akses preferences");
+				logger.error(
+					{ error, userId: user?.id },
+					"Failed to update akses preferences",
+				);
 				set.status = 500;
 				return { error: "Failed to save preferences" };
 			}

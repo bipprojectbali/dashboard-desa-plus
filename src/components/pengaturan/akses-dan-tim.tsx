@@ -1,4 +1,31 @@
-import { Box, Button, Group, Notification, Stack, Switch, Text, Title } from "@mantine/core";
+import {
+	Alert,
+	Badge,
+	Box,
+	Button,
+	Divider,
+	Group,
+	Paper,
+	RingProgress,
+	Skeleton,
+	Stack,
+	Switch,
+	Text,
+	ThemeIcon,
+	Title,
+	useMantineColorScheme,
+} from "@mantine/core";
+import {
+	IconCheck,
+	IconFileExport,
+	IconGitPullRequest,
+	IconKey,
+	IconMailPlus,
+	IconShieldHalf,
+	IconUsers,
+	IconUsersGroup,
+	IconX,
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslate } from "@/hooks/useTranslate";
 
@@ -76,77 +103,344 @@ const AksesDanTimSettings = () => {
 		setPrefs(savedPrefs);
 	};
 
-	const SwitchRow = ({ label, field }: { label: string; field: keyof Prefs }) => (
-		<Group mb="md" justify="space-between">
-			<Text fw="bold" fz="sm">
-				{label}
-			</Text>
-			<Switch checked={prefs[field]} onChange={() => toggle(field)} disabled={loading} />
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
+
+	const totalAnggota = 12;
+	const roleData = [
+		{
+			label: t.akses.administrator,
+			count: 2,
+			color: "red",
+			pct: Math.round((2 / totalAnggota) * 100),
+		},
+		{
+			label: t.akses.editor,
+			count: 5,
+			color: "blue",
+			pct: Math.round((5 / totalAnggota) * 100),
+		},
+		{
+			label: t.akses.viewer,
+			count: 5,
+			color: "teal",
+			pct: Math.round((5 / totalAnggota) * 100),
+		},
+	];
+
+	const SwitchRow = ({
+		label,
+		description,
+		icon,
+		field,
+	}: {
+		label: string;
+		description: string;
+		icon: React.ReactNode;
+		field: keyof Prefs;
+	}) => (
+		<Group justify="space-between" wrap="nowrap" py="sm">
+			<Group gap="sm" wrap="nowrap">
+				<ThemeIcon size={36} radius="md" variant="light" color="violet">
+					{icon}
+				</ThemeIcon>
+				<Box>
+					<Text fw={600} fz="sm">
+						{label}
+					</Text>
+					<Text fz="xs" c="dimmed">
+						{description}
+					</Text>
+				</Box>
+			</Group>
+			<Switch
+				checked={prefs[field]}
+				onChange={() => toggle(field)}
+				disabled={loading}
+				size="md"
+				color="violet"
+			/>
 		</Group>
 	);
 
 	return (
-		<Stack pr="50%" gap="xl">
+		<Box maw={680}>
 			{toast && (
-				<Notification
+				<Alert
 					color={toast.type === "success" ? "green" : "red"}
+					icon={
+						toast.type === "success" ? (
+							<IconCheck size={16} />
+						) : (
+							<IconX size={16} />
+						)
+					}
+					withCloseButton
 					onClose={() => setToast(null)}
+					mb="md"
+					radius="md"
 				>
 					{toast.message}
-				</Notification>
+				</Alert>
 			)}
-			<Box>
-				<Stack gap="xs">
-					<Title order={2}>{t.akses.manajemenTim}</Title>
-					<Button bg="#1E3A5F" radius="md" c="white" fullWidth>
-						{t.akses.undanganAnggota}
-					</Button>
-					<Button bg="#1E3A5F" radius="md" c="white" fullWidth>
-						{t.akses.kelolaRole}
-					</Button>
-					<Group justify="space-between">
-						<Text fw="bold" fz="sm">
-							{t.akses.daftarAnggotaAktif}
+
+			{/* Manajemen Tim */}
+			<Paper
+				withBorder
+				radius="lg"
+				p="xl"
+				mb="lg"
+				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+			>
+				<Group gap="sm" mb="lg">
+					<ThemeIcon
+						size={38}
+						radius="md"
+						variant="gradient"
+						gradient={{ from: "violet", to: "grape" }}
+					>
+						<IconUsersGroup size={20} />
+					</ThemeIcon>
+					<Box>
+						<Title order={4} fw={700}>
+							{t.akses.manajemenTim}
+						</Title>
+						<Text fz="xs" c="dimmed">
+							Kelola anggota tim dan undang pengguna baru
 						</Text>
-						<Text fw="bold" fz="sm">
-							12 {t.akses.anggota}
+					</Box>
+				</Group>
+
+				{loading ? (
+					<Stack gap="sm">
+						<Skeleton height={52} radius="md" />
+						<Skeleton height={52} radius="md" />
+						<Skeleton height={44} radius="md" />
+					</Stack>
+				) : (
+					<>
+						<Group justify="space-between" wrap="nowrap" py="sm">
+							<Group gap="sm" wrap="nowrap">
+								<ThemeIcon size={36} radius="md" variant="light" color="violet">
+									<IconMailPlus size={18} />
+								</ThemeIcon>
+								<Box>
+									<Text fw={600} fz="sm">
+										{t.akses.undanganAnggota}
+									</Text>
+									<Text fz="xs" c="dimmed">
+										Kirim undangan via email ke anggota tim baru
+									</Text>
+								</Box>
+							</Group>
+							<Button
+								size="xs"
+								variant="light"
+								color="violet"
+								radius="md"
+								disabled={loading}
+							>
+								Buka
+							</Button>
+						</Group>
+
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+
+						<Group justify="space-between" wrap="nowrap" py="sm">
+							<Group gap="sm" wrap="nowrap">
+								<ThemeIcon size={36} radius="md" variant="light" color="violet">
+									<IconKey size={18} />
+								</ThemeIcon>
+								<Box>
+									<Text fw={600} fz="sm">
+										{t.akses.kelolaRole}
+									</Text>
+									<Text fz="xs" c="dimmed">
+										Atur hak akses dan permission setiap role
+									</Text>
+								</Box>
+							</Group>
+							<Button
+								size="xs"
+								variant="light"
+								color="violet"
+								radius="md"
+								disabled={loading}
+							>
+								Buka
+							</Button>
+						</Group>
+
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+
+						<Group justify="space-between" py="sm">
+							<Group gap="sm">
+								<ThemeIcon size={36} radius="md" variant="light" color="violet">
+									<IconUsers size={18} />
+								</ThemeIcon>
+								<Box>
+									<Text fw={600} fz="sm">
+										{t.akses.daftarAnggotaAktif}
+									</Text>
+									<Text fz="xs" c="dimmed">
+										Total pengguna aktif saat ini
+									</Text>
+								</Box>
+							</Group>
+							<Badge size="lg" color="violet" variant="light" radius="md">
+								{totalAnggota} {t.akses.anggota}
+							</Badge>
+						</Group>
+					</>
+				)}
+			</Paper>
+
+			{/* Hak Akses */}
+			<Paper
+				withBorder
+				radius="lg"
+				p="xl"
+				mb="lg"
+				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+			>
+				<Group gap="sm" mb="lg">
+					<ThemeIcon
+						size={38}
+						radius="md"
+						variant="gradient"
+						gradient={{ from: "blue", to: "cyan" }}
+					>
+						<IconShieldHalf size={20} />
+					</ThemeIcon>
+					<Box>
+						<Title order={4} fw={700}>
+							{t.akses.hakAkses}
+						</Title>
+						<Text fz="xs" c="dimmed">
+							Distribusi role dan hak akses anggota tim
 						</Text>
+					</Box>
+				</Group>
+
+				{loading ? (
+					<Stack gap="sm">
+						<Skeleton height={52} radius="md" />
+						<Skeleton height={52} radius="md" />
+						<Skeleton height={52} radius="md" />
+					</Stack>
+				) : (
+					<Group gap="xl" align="center">
+						<RingProgress
+							size={120}
+							thickness={12}
+							roundCaps
+							sections={roleData.map((r) => ({ value: r.pct, color: r.color }))}
+						/>
+						<Stack gap="xs" style={{ flex: 1 }}>
+							{roleData.map((role) => (
+								<Group key={role.label} justify="space-between">
+									<Group gap="xs">
+										<Box
+											style={{
+												width: 10,
+												height: 10,
+												borderRadius: "50%",
+												background: `var(--mantine-color-${role.color}-5)`,
+												flexShrink: 0,
+											}}
+										/>
+										<Text fz="sm" fw={500}>
+											{role.label}
+										</Text>
+									</Group>
+									<Group gap="xs">
+										<Badge size="sm" color={role.color} variant="light">
+											{role.count} {t.akses.orang}
+										</Badge>
+										<Text fz="xs" c="dimmed">
+											{role.pct}%
+										</Text>
+									</Group>
+								</Group>
+							))}
+						</Stack>
 					</Group>
-				</Stack>
-			</Box>
-			<Box>
-				<Stack gap="xs">
-					<Title order={2}>{t.akses.hakAkses}</Title>
-					<Group justify="space-between">
-						<Text fw="bold" fz="sm">{t.akses.administrator}</Text>
-						<Text fw="bold" fz="sm">2 {t.akses.orang}</Text>
-					</Group>
-					<Group justify="space-between">
-						<Text fw="bold" fz="sm">{t.akses.editor}</Text>
-						<Text fw="bold" fz="sm">5 {t.akses.orang}</Text>
-					</Group>
-					<Group justify="space-between">
-						<Text fw="bold" fz="sm">{t.akses.viewer}</Text>
-						<Text fw="bold" fz="sm">5 {t.akses.orang}</Text>
-					</Group>
-				</Stack>
-			</Box>
-			<Box>
-				<Stack gap="xs">
-					<Title order={2}>{t.akses.kolaborasi}</Title>
-					<SwitchRow label={t.akses.izinExport} field="izinExportData" />
-					<SwitchRow label={t.akses.requireApproval} field="requireApprovalPerubahan" />
-				</Stack>
-			</Box>
-			<Group justify="flex-start" mt="xl">
-				<Button variant="outline" onClick={handleBatal} disabled={saving || loading}>
+				)}
+			</Paper>
+
+			{/* Kolaborasi */}
+			<Paper
+				withBorder
+				radius="lg"
+				p="xl"
+				mb="lg"
+				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+			>
+				<Group gap="sm" mb="lg">
+					<ThemeIcon
+						size={38}
+						radius="md"
+						variant="gradient"
+						gradient={{ from: "teal", to: "green" }}
+					>
+						<IconGitPullRequest size={20} />
+					</ThemeIcon>
+					<Box>
+						<Title order={4} fw={700}>
+							{t.akses.kolaborasi}
+						</Title>
+						<Text fz="xs" c="dimmed">
+							Atur kebijakan ekspor data dan persetujuan perubahan
+						</Text>
+					</Box>
+				</Group>
+
+				{loading ? (
+					<Stack gap="sm">
+						<Skeleton height={52} radius="md" />
+						<Skeleton height={52} radius="md" />
+					</Stack>
+				) : (
+					<>
+						<SwitchRow
+							label={t.akses.izinExport}
+							description="Izinkan anggota tim mengekspor data ke format CSV atau Excel"
+							icon={<IconFileExport size={18} />}
+							field="izinExportData"
+						/>
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+						<SwitchRow
+							label={t.akses.requireApproval}
+							description="Setiap perubahan data penting memerlukan persetujuan administrator"
+							icon={<IconGitPullRequest size={18} />}
+							field="requireApprovalPerubahan"
+						/>
+					</>
+				)}
+			</Paper>
+
+			<Group justify="flex-end" gap="sm">
+				<Button
+					variant="default"
+					onClick={handleBatal}
+					disabled={saving || loading}
+					radius="md"
+				>
 					{t.common.batal}
 				</Button>
-				<Button onClick={handleSave} loading={saving} disabled={loading}>
+				<Button
+					onClick={handleSave}
+					loading={saving}
+					disabled={loading}
+					radius="md"
+					variant="gradient"
+					gradient={{ from: "violet", to: "grape" }}
+					leftSection={<IconCheck size={16} />}
+				>
 					{t.common.simpan}
 				</Button>
 			</Group>
-		</Stack>
+		</Box>
 	);
 };
 

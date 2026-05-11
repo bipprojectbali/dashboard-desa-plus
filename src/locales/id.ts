@@ -240,7 +240,8 @@ const id: TranslationKeys = {
 	},
 	sinkronisasi: {
 		judul: "Sinkronisasi Data",
-		deskripsi: "Gunakan fitur ini untuk memperbarui data dashboard dengan data terbaru dari server sumber.",
+		deskripsi:
+			"Gunakan fitur ini untuk memperbarui data dashboard dengan data terbaru dari server sumber.",
 		dataNoc: "Data NOC (muku.id)",
 		websiteDesa: "Website Desa (darmasaba.desa.id)",
 		informasiSumber: "Informasi Sumber Data",
@@ -251,14 +252,18 @@ const id: TranslationKeys = {
 		belumPernahDilakukan: "Belum pernah dilakukan",
 		sinkronkanNoc: "Sinkronkan NOC",
 		sinkronkanDesa: "Sinkronkan Website Desa",
-		tidakAdaAkses: "Anda tidak memiliki akses. Pastikan Anda login sebagai admin.",
-		gagalSinkronisasi: "Gagal melakukan sinkronisasi. Periksa console untuk detail.",
+		tidakAdaAkses:
+			"Anda tidak memiliki akses. Pastikan Anda login sebagai admin.",
+		gagalSinkronisasi:
+			"Gagal melakukan sinkronisasi. Periksa console untuk detail.",
 		sinkronisasiBerhasil: "Sinkronisasi berhasil dilakukan",
 		responseGagal: "Response tidak dikenali dari server",
-		kesalahanSistem: "Terjadi kesalahan sistem saat sinkronisasi. Periksa console untuk detail.",
+		kesalahanSistem:
+			"Terjadi kesalahan sistem saat sinkronisasi. Periksa console untuk detail.",
 		gagalDemografi: "Gagal melakukan sinkronisasi data demografi.",
 		berhasilDemografi: "Sinkronisasi data demografi berhasil",
-		kesalahanDemografi: "Terjadi kesalahan sistem saat sinkronisasi data demografi.",
+		kesalahanDemografi:
+			"Terjadi kesalahan sistem saat sinkronisasi data demografi.",
 		model: "Model:",
 		url: "URL:",
 		nocNama: "Network Operation Center (NOC)",

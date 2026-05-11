@@ -11,6 +11,7 @@ import { dashboard } from "./dashboard";
 import { demografi } from "./demografi";
 import { division } from "./division";
 import { event } from "./event";
+import { jennaChat } from "./jenna";
 import { keamananPreferences } from "./keamanan-preferences";
 import { noc } from "./noc";
 import { notificationPreferences } from "./notification-preferences";
@@ -70,7 +71,8 @@ const api = new Elysia({
 	.use(notificationPreferences)
 	.use(umumPreferences)
 	.use(keamananPreferences)
-	.use(aksesPreferences);
+	.use(aksesPreferences)
+	.use(jennaChat);
 
 if (!isProduction) {
 	api.use(

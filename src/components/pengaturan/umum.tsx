@@ -1,13 +1,30 @@
 import {
+	Alert,
+	Badge,
 	Box,
 	Button,
+	Divider,
 	Group,
-	Notification,
+	Paper,
 	Select,
+	Skeleton,
+	Stack,
 	Switch,
 	Text,
+	ThemeIcon,
 	Title,
+	useMantineColorScheme,
 } from "@mantine/core";
+import {
+	IconCheck,
+	IconClock,
+	IconGlobe,
+	IconLanguage,
+	IconLayoutGrid,
+	IconRefresh,
+	IconSparkles,
+	IconX,
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslate } from "@/hooks/useTranslate";
 import { setLang, setZonaWaktu } from "@/store/i18n";
@@ -108,118 +125,306 @@ const UmumSettings = () => {
 		setZonaWaktu(savedPrefs.zonaWaktu);
 	};
 
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
+
 	const SwitchRow = ({
 		label,
+		description,
+		icon,
 		field,
 	}: {
 		label: string;
+		description: string;
+		icon: React.ReactNode;
 		field: "refreshOtomatis" | "tampilkanGrid" | "animasiTransisi";
 	}) => (
-		<Group mb="md" justify="space-between">
-			<Text fw="bold" fz="sm">
-				{label}
-			</Text>
+		<Group justify="space-between" wrap="nowrap" py="sm">
+			<Group gap="sm" wrap="nowrap">
+				<ThemeIcon size={36} radius="md" variant="light" color="blue">
+					{icon}
+				</ThemeIcon>
+				<Box>
+					<Text fw={600} fz="sm">
+						{label}
+					</Text>
+					<Text fz="xs" c="dimmed">
+						{description}
+					</Text>
+				</Box>
+			</Group>
 			<Switch
 				checked={prefs[field]}
 				onChange={() => updatePref(field, !prefs[field])}
 				disabled={loading}
+				size="md"
 			/>
 		</Group>
 	);
 
 	return (
-		<Box pr="50%">
+		<Box maw={680}>
 			{toast && (
-				<Notification
+				<Alert
 					color={toast.type === "success" ? "green" : "red"}
+					icon={
+						toast.type === "success" ? (
+							<IconCheck size={16} />
+						) : (
+							<IconX size={16} />
+						)
+					}
+					withCloseButton
 					onClose={() => setToast(null)}
-					mb="sm"
+					mb="md"
+					radius="md"
 				>
 					{toast.message}
-				</Notification>
+				</Alert>
 			)}
 
-			<Title order={2} mb="lg">
-				{t.umum.judulTampilan}
-			</Title>
+			{/* Tampilan & Bahasa */}
+			<Paper
+				withBorder
+				radius="lg"
+				p="xl"
+				mb="lg"
+				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+			>
+				<Group gap="sm" mb="lg">
+					<ThemeIcon
+						size={38}
+						radius="md"
+						variant="gradient"
+						gradient={{ from: "blue", to: "violet" }}
+					>
+						<IconGlobe size={20} />
+					</ThemeIcon>
+					<Box>
+						<Title order={4} fw={700}>
+							{t.umum.judulTampilan}
+						</Title>
+						<Text fz="xs" c="dimmed">
+							Atur bahasa, zona waktu, dan format tampilan
+						</Text>
+					</Box>
+				</Group>
 
-			<Select
-				label={t.umum.bahasaAplikasi}
-				data={[
-					{ value: "id", label: "Indonesia" },
-					{ value: "en", label: "English" },
-				]}
-				value={prefs.bahasa}
-				onChange={handleBahasaChange}
-				disabled={loading}
-				mb="md"
-			/>
+				<Stack gap="md">
+					{loading ? (
+						<>
+							<Skeleton height={56} radius="md" />
+							<Skeleton height={56} radius="md" />
+							<Skeleton height={56} radius="md" />
+						</>
+					) : (
+						<>
+							<Select
+								label={
+									<Group gap={6} mb={4}>
+										<IconLanguage size={14} />
+										<Text fz="sm" fw={600}>
+											{t.umum.bahasaAplikasi}
+										</Text>
+									</Group>
+								}
+								description="Bahasa yang digunakan di seluruh antarmuka aplikasi"
+								data={[
+									{ value: "id", label: "🇮🇩  Bahasa Indonesia" },
+									{ value: "en", label: "🇬🇧  English" },
+								]}
+								value={prefs.bahasa}
+								onChange={handleBahasaChange}
+								disabled={loading}
+								radius="md"
+								rightSection={
+									<Badge size="xs" color="blue" variant="light">
+										{prefs.bahasa === "en" ? "EN" : "ID"}
+									</Badge>
+								}
+							/>
 
-			<Select
-				label={t.umum.zonaWaktu}
-				data={[
-					{ value: "Asia/Jakarta", label: "Asia/Jakarta (GMT+7)" },
-					{ value: "Asia/Makassar", label: "Asia/Makassar (GMT+8)" },
-					{ value: "Asia/Jayapura", label: "Asia/Jayapura (GMT+9)" },
-				]}
-				value={prefs.zonaWaktu}
-				onChange={(v) => {
-					const zona = v ?? "Asia/Jakarta";
-					updatePref("zonaWaktu", zona);
-					setZonaWaktu(zona);
-				}}
-				disabled={loading}
-				mb="md"
-			/>
+							<Select
+								label={
+									<Group gap={6} mb={4}>
+										<IconClock size={14} />
+										<Text fz="sm" fw={600}>
+											{t.umum.zonaWaktu}
+										</Text>
+									</Group>
+								}
+								description="Zona waktu untuk menampilkan tanggal dan jam di dashboard"
+								data={[
+									{
+										value: "Asia/Jakarta",
+										label: "Asia/Jakarta — WIB (GMT+7)",
+									},
+									{
+										value: "Asia/Makassar",
+										label: "Asia/Makassar — WITA (GMT+8)",
+									},
+									{
+										value: "Asia/Jayapura",
+										label: "Asia/Jayapura — WIT (GMT+9)",
+									},
+								]}
+								value={prefs.zonaWaktu}
+								onChange={(v) => {
+									const zona = v ?? "Asia/Jakarta";
+									updatePref("zonaWaktu", zona);
+									setZonaWaktu(zona);
+								}}
+								disabled={loading}
+								radius="md"
+							/>
 
-			<Select
-				label={t.umum.formatTanggal}
-				data={[
-					{ value: "DD/MM/YYYY", label: "DD/MM/YYYY" },
-					{ value: "MM/DD/YYYY", label: "MM/DD/YYYY" },
-					{ value: "YYYY-MM-DD", label: "YYYY-MM-DD" },
-				]}
-				value={prefs.formatTanggal}
-				onChange={(v) => updatePref("formatTanggal", v ?? "DD/MM/YYYY")}
-				disabled={loading}
-				mb="xl"
-			/>
+							<Select
+								label={
+									<Group gap={6} mb={4}>
+										<IconClock size={14} />
+										<Text fz="sm" fw={600}>
+											{t.umum.formatTanggal}
+										</Text>
+									</Group>
+								}
+								description="Format penulisan tanggal di seluruh halaman dashboard"
+								data={[
+									{
+										value: "DD/MM/YYYY",
+										label: "DD/MM/YYYY  (contoh: 11/05/2026)",
+									},
+									{
+										value: "MM/DD/YYYY",
+										label: "MM/DD/YYYY  (contoh: 05/11/2026)",
+									},
+									{
+										value: "YYYY-MM-DD",
+										label: "YYYY-MM-DD  (contoh: 2026-05-11)",
+									},
+								]}
+								value={prefs.formatTanggal}
+								onChange={(v) => updatePref("formatTanggal", v ?? "DD/MM/YYYY")}
+								disabled={loading}
+								radius="md"
+							/>
+						</>
+					)}
+				</Stack>
+			</Paper>
 
-			<Title order={2} mb="lg">
-				{t.umum.judulDashboard}
-			</Title>
+			{/* Dashboard */}
+			<Paper
+				withBorder
+				radius="lg"
+				p="xl"
+				mb="lg"
+				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+			>
+				<Group gap="sm" mb="lg">
+					<ThemeIcon
+						size={38}
+						radius="md"
+						variant="gradient"
+						gradient={{ from: "teal", to: "cyan" }}
+					>
+						<IconLayoutGrid size={20} />
+					</ThemeIcon>
+					<Box>
+						<Title order={4} fw={700}>
+							{t.umum.judulDashboard}
+						</Title>
+						<Text fz="xs" c="dimmed">
+							Konfigurasi perilaku dan tampilan dashboard
+						</Text>
+					</Box>
+				</Group>
 
-			<SwitchRow label={t.umum.refreshOtomatis} field="refreshOtomatis" />
+				{loading ? (
+					<Stack gap="sm">
+						<Skeleton height={52} radius="md" />
+						<Skeleton height={52} radius="md" />
+						<Skeleton height={52} radius="md" />
+					</Stack>
+				) : (
+					<>
+						<SwitchRow
+							label={t.umum.refreshOtomatis}
+							description="Data dashboard diperbarui otomatis secara berkala"
+							icon={<IconRefresh size={18} />}
+							field="refreshOtomatis"
+						/>
 
-			<Group mb="md" justify="space-between">
-				<Text fw="bold" fz="sm">
-					{t.umum.intervalRefresh}
-				</Text>
-				<Select
-					data={[
-						{ value: "1", label: "30d" },
-						{ value: "2", label: "60d" },
-						{ value: "3", label: "90d" },
-					]}
-					value={prefs.intervalRefresh}
-					onChange={(v) => updatePref("intervalRefresh", v ?? "1")}
-					disabled={loading}
-					w={90}
-				/>
-			</Group>
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 
-			<SwitchRow label={t.umum.tampilkanGrid} field="tampilkanGrid" />
-			<SwitchRow label={t.umum.animasiTransisi} field="animasiTransisi" />
+						<Group justify="space-between" wrap="nowrap" py="sm">
+							<Group gap="sm" wrap="nowrap">
+								<ThemeIcon size={36} radius="md" variant="light" color="blue">
+									<IconClock size={18} />
+								</ThemeIcon>
+								<Box>
+									<Text fw={600} fz="sm">
+										{t.umum.intervalRefresh}
+									</Text>
+									<Text fz="xs" c="dimmed">
+										Seberapa sering data diperbarui secara otomatis
+									</Text>
+								</Box>
+							</Group>
+							<Select
+								data={[
+									{ value: "1", label: "30 detik" },
+									{ value: "2", label: "1 menit" },
+									{ value: "3", label: "5 menit" },
+									{ value: "4", label: "15 menit" },
+								]}
+								value={prefs.intervalRefresh}
+								onChange={(v) => updatePref("intervalRefresh", v ?? "1")}
+								disabled={loading || !prefs.refreshOtomatis}
+								w={130}
+								radius="md"
+								size="sm"
+							/>
+						</Group>
 
-			<Group justify="flex-end" mt="xl">
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+
+						<SwitchRow
+							label={t.umum.tampilkanGrid}
+							description="Tampilkan garis grid di latar belakang tabel dan grafik"
+							icon={<IconLayoutGrid size={18} />}
+							field="tampilkanGrid"
+						/>
+
+						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+
+						<SwitchRow
+							label={t.umum.animasiTransisi}
+							description="Aktifkan animasi saat berpindah halaman atau memuat data"
+							icon={<IconSparkles size={18} />}
+							field="animasiTransisi"
+						/>
+					</>
+				)}
+			</Paper>
+
+			<Group justify="flex-end" gap="sm">
 				<Button
-					variant="outline"
+					variant="default"
 					onClick={handleBatal}
 					disabled={saving || loading}
+					radius="md"
 				>
 					{t.common.batal}
 				</Button>
-				<Button onClick={handleSave} loading={saving} disabled={loading}>
+				<Button
+					onClick={handleSave}
+					loading={saving}
+					disabled={loading}
+					radius="md"
+					gradient={{ from: "blue", to: "violet" }}
+					variant="gradient"
+					leftSection={<IconCheck size={16} />}
+				>
 					{t.common.simpan}
 				</Button>
 			</Group>

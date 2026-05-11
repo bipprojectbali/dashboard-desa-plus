@@ -108,7 +108,8 @@ const en: TranslationKeys = {
 	},
 	sinkronisasi: {
 		judul: "Data Synchronization",
-		deskripsi: "Use this feature to update dashboard data with the latest data from the source server.",
+		deskripsi:
+			"Use this feature to update dashboard data with the latest data from the source server.",
 		dataNoc: "NOC Data (muku.id)",
 		websiteDesa: "Village Website (darmasaba.desa.id)",
 		informasiSumber: "Data Source Information",
@@ -119,11 +120,13 @@ const en: TranslationKeys = {
 		belumPernahDilakukan: "Never done",
 		sinkronkanNoc: "Sync NOC",
 		sinkronkanDesa: "Sync Village Website",
-		tidakAdaAkses: "You don't have access. Make sure you are logged in as admin.",
+		tidakAdaAkses:
+			"You don't have access. Make sure you are logged in as admin.",
 		gagalSinkronisasi: "Sync failed. Check console for details.",
 		sinkronisasiBerhasil: "Synchronization completed successfully",
 		responseGagal: "Unrecognized response from server",
-		kesalahanSistem: "System error during synchronization. Check console for details.",
+		kesalahanSistem:
+			"System error during synchronization. Check console for details.",
 		gagalDemografi: "Failed to sync demographic data.",
 		berhasilDemografi: "Demographic data sync completed successfully",
 		kesalahanDemografi: "System error during demographic data synchronization.",

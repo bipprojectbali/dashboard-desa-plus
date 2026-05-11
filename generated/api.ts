@@ -910,6 +910,95 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notification-preferences/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get notification preferences for current user */
+        get: operations["getApiNotification-preferences"];
+        /** Save notification preferences for current user */
+        put: operations["putApiNotification-preferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/umum-preferences/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get umum preferences for current user */
+        get: operations["getApiUmum-preferences"];
+        /** Save umum preferences for current user */
+        put: operations["putApiUmum-preferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/keamanan-preferences/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get keamanan preferences for current user */
+        get: operations["getApiKeamanan-preferences"];
+        /** Save keamanan preferences for current user */
+        put: operations["putApiKeamanan-preferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/akses-preferences/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get akses preferences for current user */
+        get: operations["getApiAkses-preferences"];
+        /** Save akses preferences for current user */
+        put: operations["putApiAkses-preferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/jenna/chat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Chat dengan Jenna Virtual Assistant (stub) */
+        post: operations["postApiJennaChat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3479,6 +3568,512 @@ export interface operations {
                         success: boolean;
                         data: unknown;
                         error?: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiNotification-preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "putApiNotification-preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    laporanHarian: boolean;
+                    alertSistem: boolean;
+                    updateKeamanan: boolean;
+                    newsletterBulan: boolean;
+                    alertKritis: boolean;
+                    aktivitasTim: boolean;
+                    komentarMention: boolean;
+                    bunyiNotifikasi: boolean;
+                    tresholdMemori: boolean;
+                    tresholdCpu: boolean;
+                    tresholdDisk: boolean;
+                };
+                "multipart/form-data": {
+                    laporanHarian: boolean;
+                    alertSistem: boolean;
+                    updateKeamanan: boolean;
+                    newsletterBulan: boolean;
+                    alertKritis: boolean;
+                    aktivitasTim: boolean;
+                    komentarMention: boolean;
+                    bunyiNotifikasi: boolean;
+                    tresholdMemori: boolean;
+                    tresholdCpu: boolean;
+                    tresholdDisk: boolean;
+                };
+                "text/plain": {
+                    laporanHarian: boolean;
+                    alertSistem: boolean;
+                    updateKeamanan: boolean;
+                    newsletterBulan: boolean;
+                    alertKritis: boolean;
+                    aktivitasTim: boolean;
+                    komentarMention: boolean;
+                    bunyiNotifikasi: boolean;
+                    tresholdMemori: boolean;
+                    tresholdCpu: boolean;
+                    tresholdDisk: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiUmum-preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "putApiUmum-preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    bahasa: string;
+                    zonaWaktu: string;
+                    formatTanggal: string;
+                    refreshOtomatis: boolean;
+                    intervalRefresh: string;
+                    tampilkanGrid: boolean;
+                    animasiTransisi: boolean;
+                };
+                "multipart/form-data": {
+                    bahasa: string;
+                    zonaWaktu: string;
+                    formatTanggal: string;
+                    refreshOtomatis: boolean;
+                    intervalRefresh: string;
+                    tampilkanGrid: boolean;
+                    animasiTransisi: boolean;
+                };
+                "text/plain": {
+                    bahasa: string;
+                    zonaWaktu: string;
+                    formatTanggal: string;
+                    refreshOtomatis: boolean;
+                    intervalRefresh: string;
+                    tampilkanGrid: boolean;
+                    animasiTransisi: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiKeamanan-preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "putApiKeamanan-preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    twoFactorAuth: boolean;
+                    biometrikLogin: boolean;
+                    ipWhitelist: boolean;
+                    logAktivitas: boolean;
+                };
+                "multipart/form-data": {
+                    twoFactorAuth: boolean;
+                    biometrikLogin: boolean;
+                    ipWhitelist: boolean;
+                    logAktivitas: boolean;
+                };
+                "text/plain": {
+                    twoFactorAuth: boolean;
+                    biometrikLogin: boolean;
+                    ipWhitelist: boolean;
+                    logAktivitas: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiAkses-preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "putApiAkses-preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    izinExportData: boolean;
+                    requireApprovalPerubahan: boolean;
+                };
+                "multipart/form-data": {
+                    izinExportData: boolean;
+                    requireApprovalPerubahan: boolean;
+                };
+                "text/plain": {
+                    izinExportData: boolean;
+                    requireApprovalPerubahan: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    postApiJennaChat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    message: string;
+                    history: {
+                        id: number;
+                        text: string;
+                        sender: string;
+                    }[];
+                };
+                "multipart/form-data": {
+                    message: string;
+                    history: {
+                        id: number;
+                        text: string;
+                        sender: string;
+                    }[];
+                };
+                "text/plain": {
+                    message: string;
+                    history: {
+                        id: number;
+                        text: string;
+                        sender: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        reply: string;
+                    };
+                    "multipart/form-data": {
+                        reply: string;
+                    };
+                    "text/plain": {
+                        reply: string;
                     };
                 };
             };

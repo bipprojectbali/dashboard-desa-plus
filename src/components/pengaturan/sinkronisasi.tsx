@@ -3,27 +3,30 @@ import {
 	Badge,
 	Box,
 	Button,
-	Card,
 	Divider,
-	Grid,
 	Group,
-	Loader,
+	Paper,
 	Stack,
 	Text,
+	ThemeIcon,
 	Title,
+	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconAlertCircle,
+	IconArrowRight,
 	IconCheck,
+	IconCircleCheck,
 	IconClock,
+	IconCloudUpload,
 	IconDatabase,
 	IconRefresh,
 	IconUsers,
 } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { apiClient } from "@/utils/api-client";
 import { useTranslate } from "@/hooks/useTranslate";
+import { apiClient } from "@/utils/api-client";
 import "dayjs/locale/id";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -35,7 +38,9 @@ const SinkronisasiSettings = () => {
 	const [loading, setLoading] = useState(false);
 	const [demografiLoading, setDemografiLoading] = useState(false);
 	const [lastSync, setLastSync] = useState<string | null>(null);
-	const [demografiLastSync, setDemografiLastSync] = useState<string | null>(null);
+	const [demografiLastSync, setDemografiLastSync] = useState<string | null>(
+		null,
+	);
 	const [status, setStatus] = useState<{
 		type: "success" | "error" | null;
 		message: string;
@@ -65,6 +70,7 @@ const SinkronisasiSettings = () => {
 		}
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: fetch once on mount
 	useEffect(() => {
 		fetchLastSync();
 		fetchDemografiLastSync();
@@ -75,7 +81,10 @@ const SinkronisasiSettings = () => {
 		setStatus({ type: null, message: "" });
 
 		try {
-			const { data, error, response } = await apiClient.POST("/api/noc/sync", {});
+			const { data, error, response } = await apiClient.POST(
+				"/api/noc/sync",
+				{},
+			);
 
 			if (response?.status === 401) {
 				setStatus({ type: "error", message: t.sinkronisasi.tidakAdaAkses });
@@ -83,11 +92,12 @@ const SinkronisasiSettings = () => {
 			}
 
 			if (error) {
+				const errObj = error as Record<string, string>;
 				setStatus({
 					type: "error",
 					message:
-						(error as any)?.error ||
-						(error as any)?.message ||
+						errObj?.error ||
+						errObj?.message ||
 						t.sinkronisasi.gagalSinkronisasi,
 				});
 				return;
@@ -119,12 +129,11 @@ const SinkronisasiSettings = () => {
 			const { data, error } = await apiClient.POST("/api/demografi/sync", {});
 
 			if (error) {
+				const errObj = error as Record<string, string>;
 				setDemografiStatus({
 					type: "error",
 					message:
-						(error as any)?.error ||
-						(error as any)?.message ||
-						t.sinkronisasi.gagalDemografi,
+						errObj?.error || errObj?.message || t.sinkronisasi.gagalDemografi,
 				});
 				return;
 			}
@@ -139,222 +148,294 @@ const SinkronisasiSettings = () => {
 			} else if (data?.error) {
 				setDemografiStatus({ type: "error", message: data.error });
 			} else {
-				setDemografiStatus({ type: "error", message: t.sinkronisasi.responseGagal });
+				setDemografiStatus({
+					type: "error",
+					message: t.sinkronisasi.responseGagal,
+				});
 			}
 		} catch {
-			setDemografiStatus({ type: "error", message: t.sinkronisasi.kesalahanDemografi });
+			setDemografiStatus({
+				type: "error",
+				message: t.sinkronisasi.kesalahanDemografi,
+			});
 		} finally {
 			setDemografiLoading(false);
 		}
 	};
 
-	return (
-		<Box pr="20%">
-			<Title order={2} mb="lg">
-				{t.sinkronisasi.judul}
-			</Title>
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
 
-			<Text c="dimmed" mb="xl">
-				{t.sinkronisasi.deskripsi}
+	const SyncCard = ({
+		title,
+		description,
+		icon,
+		iconColor,
+		gradientFrom,
+		gradientTo,
+		lastSyncTime,
+		syncStatus,
+		onSync,
+		isSyncing,
+		buttonLabel,
+		buttonColor,
+		onClearStatus,
+		dataModels,
+		sourceUrl,
+		sourceName,
+	}: {
+		title: string;
+		description: string;
+		icon: React.ReactNode;
+		iconColor: string;
+		gradientFrom: string;
+		gradientTo: string;
+		lastSyncTime: string | null;
+		syncStatus: { type: "success" | "error" | null; message: string };
+		onSync: () => void;
+		isSyncing: boolean;
+		buttonLabel: string;
+		buttonColor: string;
+		onClearStatus: () => void;
+		dataModels: { label: string; color: string }[];
+		sourceUrl: string;
+		sourceName: string;
+	}) => (
+		<Paper
+			withBorder
+			radius="lg"
+			p="xl"
+			mb="lg"
+			style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+		>
+			{/* Header */}
+			<Group gap="sm" mb="lg">
+				<ThemeIcon
+					size={38}
+					radius="md"
+					variant="gradient"
+					gradient={{ from: gradientFrom, to: gradientTo }}
+				>
+					{icon}
+				</ThemeIcon>
+				<Box style={{ flex: 1 }}>
+					<Group justify="space-between" align="flex-start">
+						<Box>
+							<Title order={4} fw={700}>
+								{title}
+							</Title>
+							<Text fz="xs" c="dimmed">
+								{description}
+							</Text>
+						</Box>
+						<Badge
+							color={lastSyncTime ? iconColor : "gray"}
+							variant="light"
+							size="sm"
+							leftSection={
+								lastSyncTime ? (
+									<IconCircleCheck size={12} />
+								) : (
+									<IconClock size={12} />
+								)
+							}
+						>
+							{lastSyncTime
+								? t.sinkronisasi.terkoneksi
+								: t.sinkronisasi.belumPernah}
+						</Badge>
+					</Group>
+				</Box>
+			</Group>
+
+			{/* Last sync info */}
+			<Paper
+				radius="md"
+				p="md"
+				mb="md"
+				style={{
+					background: dark ? "#0f172a" : "#f8fafc",
+					border: `1px solid ${dark ? "#1e293b" : "#e2e8f0"}`,
+				}}
+			>
+				<Group gap="xs" mb={4}>
+					<IconClock size={14} color="gray" />
+					<Text
+						fz="xs"
+						fw={600}
+						c="dimmed"
+						tt="uppercase"
+						style={{ letterSpacing: "0.05em" }}
+					>
+						{t.sinkronisasi.waktuSinkronisasi}
+					</Text>
+				</Group>
+				<Text fw={700} fz="sm">
+					{lastSyncTime
+						? dayjs(lastSyncTime).format("DD MMMM YYYY, HH:mm:ss")
+						: t.sinkronisasi.belumPernahDilakukan}
+				</Text>
+				{lastSyncTime && (
+					<Text fz="xs" c="dimmed" mt={2}>
+						{dayjs(lastSyncTime).fromNow()}
+					</Text>
+				)}
+			</Paper>
+
+			{/* Data models */}
+			<Group gap="xs" mb="md">
+				<Text fz="xs" fw={600} c="dimmed">
+					{t.sinkronisasi.model}:
+				</Text>
+				{dataModels.map((m) => (
+					<Badge key={m.label} size="xs" color={m.color} variant="light">
+						{m.label}
+					</Badge>
+				))}
+			</Group>
+
+			{/* Source URL */}
+			<Group gap="xs" mb="md">
+				<Text fz="xs" fw={600} c="dimmed">
+					{t.sinkronisasi.url}:
+				</Text>
+				<Text fz="xs" c="dimmed" style={{ fontFamily: "monospace" }}>
+					{sourceUrl}
+				</Text>
+			</Group>
+
+			{/* Status alert */}
+			{syncStatus.type && (
+				<Alert
+					icon={
+						syncStatus.type === "success" ? (
+							<IconCheck size={14} />
+						) : (
+							<IconAlertCircle size={14} />
+						)
+					}
+					color={syncStatus.type === "success" ? iconColor : "red"}
+					onClose={onClearStatus}
+					withCloseButton
+					radius="md"
+					mb="md"
+					py="xs"
+				>
+					<Text fz="sm">{syncStatus.message}</Text>
+				</Alert>
+			)}
+
+			<Divider mb="md" color={dark ? "#1e293b" : "#f1f5f9"} />
+
+			{/* Sync button */}
+			<Button
+				variant="gradient"
+				gradient={{ from: gradientFrom, to: gradientTo }}
+				leftSection={
+					<IconRefresh
+						size={16}
+						style={{
+							animation: isSyncing ? "spin 1s linear infinite" : undefined,
+						}}
+					/>
+				}
+				rightSection={<IconArrowRight size={14} />}
+				onClick={onSync}
+				loading={isSyncing}
+				fullWidth
+				radius="md"
+			>
+				{buttonLabel}
+			</Button>
+
+			<Text fz="xs" c="dimmed" ta="center" mt="xs">
+				Sumber: {sourceName}
 			</Text>
+		</Paper>
+	);
 
-			<Grid gutter="xl">
-				<Grid.Col span={{ base: 12, md: 6 }}>
-					<Title order={3} mb="md">
-						{t.sinkronisasi.dataNoc}
-					</Title>
-					<Card withBorder padding="lg" radius="md" mb="xl">
-						<Stack gap="md">
-							<Group justify="space-between">
-								<Group>
-									<IconDatabase size={20} color="gray" />
-									<Text fw={500}>{t.sinkronisasi.statusTerakhir}</Text>
-								</Group>
-								<Badge color={lastSync ? "green" : "gray"} variant="light">
-									{lastSync ? t.sinkronisasi.terkoneksi : t.sinkronisasi.belumPernah}
-								</Badge>
-							</Group>
+	return (
+		<Box maw={720}>
+			{/* Page header */}
+			<Paper
+				withBorder
+				radius="lg"
+				p="xl"
+				mb="lg"
+				style={{
+					background: dark
+						? "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)"
+						: "linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%)",
+					borderColor: dark ? "#334155" : "#bfdbfe",
+				}}
+			>
+				<Group gap="sm">
+					<ThemeIcon
+						size={44}
+						radius="md"
+						variant="gradient"
+						gradient={{ from: "blue", to: "teal" }}
+					>
+						<IconCloudUpload size={22} />
+					</ThemeIcon>
+					<Box>
+						<Title order={3} fw={700}>
+							{t.sinkronisasi.judul}
+						</Title>
+						<Text fz="sm" c="dimmed">
+							{t.sinkronisasi.deskripsi}
+						</Text>
+					</Box>
+				</Group>
+			</Paper>
 
-							<Divider />
+			{/* NOC Sync */}
+			<SyncCard
+				title={t.sinkronisasi.dataNoc}
+				description="Data kinerja divisi, kegiatan, dan diskusi dari sistem NOC"
+				icon={<IconDatabase size={20} />}
+				iconColor="green"
+				gradientFrom="teal"
+				gradientTo="green"
+				lastSyncTime={lastSync}
+				syncStatus={status}
+				onSync={handleSync}
+				isSyncing={loading}
+				buttonLabel={t.sinkronisasi.sinkronkanNoc}
+				buttonColor="teal"
+				onClearStatus={() => setStatus({ type: null, message: "" })}
+				dataModels={[
+					{ label: "Divisi", color: "teal" },
+					{ label: "Kegiatan", color: "teal" },
+					{ label: "Diskusi", color: "teal" },
+				]}
+				sourceUrl="darmasaba.muku.id/api/noc"
+				sourceName={t.sinkronisasi.nocNama}
+			/>
 
-							<Box>
-								<Text size="sm" c="dimmed">
-									{t.sinkronisasi.waktuSinkronisasi}
-								</Text>
-								<Text fw={700} size="lg">
-									{lastSync
-										? dayjs(lastSync).format("DD MMMM YYYY, HH:mm:ss")
-										: t.sinkronisasi.belumPernahDilakukan}
-								</Text>
-								{lastSync && (
-									<Text size="xs" c="dimmed" mt={4}>
-										({dayjs(lastSync).fromNow()})
-									</Text>
-								)}
-							</Box>
-
-							{status.type && (
-								<Alert
-									icon={
-										status.type === "success" ? (
-											<IconCheck size={16} />
-										) : (
-											<IconAlertCircle size={16} />
-										)
-									}
-									title={status.type === "success" ? t.common.berhasil : t.common.kesalahan}
-									color={status.type === "success" ? "green" : "red"}
-									onClose={() => setStatus({ type: null, message: "" })}
-									withCloseButton
-								>
-									{status.message}
-								</Alert>
-							)}
-
-							<Button
-								leftSection={
-									loading ? <Loader size={16} color="white" /> : <IconRefresh size={16} />
-								}
-								onClick={handleSync}
-								loading={loading}
-								fullWidth
-								mt="md"
-							>
-								{t.sinkronisasi.sinkronkanNoc}
-							</Button>
-						</Stack>
-					</Card>
-				</Grid.Col>
-
-				<Grid.Col span={{ base: 12, md: 6 }}>
-					<Title order={3} mb="md">
-						{t.sinkronisasi.websiteDesa}
-					</Title>
-					<Card withBorder padding="lg" radius="md" mb="xl">
-						<Stack gap="md">
-							<Group justify="space-between">
-								<Group>
-									<IconUsers size={20} color="gray" />
-									<Text fw={500}>{t.sinkronisasi.statusTerakhir}</Text>
-								</Group>
-								<Badge color={demografiLastSync ? "blue" : "gray"} variant="light">
-									{demografiLastSync ? t.sinkronisasi.terkoneksi : t.sinkronisasi.belumPernah}
-								</Badge>
-							</Group>
-
-							<Divider />
-
-							<Box>
-								<Text size="sm" c="dimmed">
-									{t.sinkronisasi.waktuSinkronisasi}
-								</Text>
-								<Text fw={700} size="lg">
-									{demografiLastSync
-										? dayjs(demografiLastSync).format("DD MMMM YYYY, HH:mm:ss")
-										: t.sinkronisasi.belumPernahDilakukan}
-								</Text>
-								{demografiLastSync && (
-									<Text size="xs" c="dimmed" mt={4}>
-										({dayjs(demografiLastSync).fromNow()})
-									</Text>
-								)}
-							</Box>
-
-							{demografiStatus.type && (
-								<Alert
-									icon={
-										demografiStatus.type === "success" ? (
-											<IconCheck size={16} />
-										) : (
-											<IconAlertCircle size={16} />
-										)
-									}
-									title={
-										demografiStatus.type === "success"
-											? t.common.berhasil
-											: t.common.kesalahan
-									}
-									color={demografiStatus.type === "success" ? "blue" : "red"}
-									onClose={() => setDemografiStatus({ type: null, message: "" })}
-									withCloseButton
-								>
-									{demografiStatus.message}
-								</Alert>
-							)}
-
-							<Button
-								color="blue"
-								leftSection={
-									demografiLoading ? (
-										<Loader size={16} color="white" />
-									) : (
-										<IconRefresh size={16} />
-									)
-								}
-								onClick={handleDemografiSync}
-								loading={demografiLoading}
-								fullWidth
-								mt="md"
-							>
-								{t.sinkronisasi.sinkronkanDesa}
-							</Button>
-						</Stack>
-					</Card>
-				</Grid.Col>
-			</Grid>
-
-			<Title order={2} mb="lg">
-				{t.sinkronisasi.informasiSumber}
-			</Title>
-
-			<Grid>
-				<Grid.Col span={{ base: 12, md: 6 }}>
-					<Card withBorder padding="md" radius="md" bg="gray.0">
-						<Stack gap="xs">
-							<Text fw={700} size="sm">
-								{t.sinkronisasi.nocNama}
-							</Text>
-							<Group>
-								<Text fw={600} size="xs" w={80}>
-									{t.sinkronisasi.url}
-								</Text>
-								<Text size="xs">https://darmasaba.muku.id/api/noc/</Text>
-							</Group>
-							<Group>
-								<Text fw={600} size="xs" w={80}>
-									{t.sinkronisasi.model}
-								</Text>
-								<Badge size="xs" variant="outline">Divisi</Badge>
-								<Badge size="xs" variant="outline">Kegiatan</Badge>
-								<Badge size="xs" variant="outline">Diskusi</Badge>
-							</Group>
-						</Stack>
-					</Card>
-				</Grid.Col>
-				<Grid.Col span={{ base: 12, md: 6 }}>
-					<Card withBorder padding="md" radius="md" bg="gray.0">
-						<Stack gap="xs">
-							<Text fw={700} size="sm">
-								{t.sinkronisasi.desaNama}
-							</Text>
-							<Group>
-								<Text fw={600} size="xs" w={80}>
-									{t.sinkronisasi.url}
-								</Text>
-								<Text size="xs">https://desa-darmasaba-stg.wibudev.com</Text>
-							</Group>
-							<Group>
-								<Text fw={600} size="xs" w={80}>
-									{t.sinkronisasi.model}
-								</Text>
-								<Badge size="xs" variant="outline" color="blue">Demografi</Badge>
-								<Badge size="xs" variant="outline" color="blue">APBDes</Badge>
-								<Badge size="xs" variant="outline" color="blue">Sektor</Badge>
-							</Group>
-						</Stack>
-					</Card>
-				</Grid.Col>
-			</Grid>
+			{/* Demografi Sync */}
+			<SyncCard
+				title={t.sinkronisasi.websiteDesa}
+				description="Data demografi penduduk, APBDes, dan sektor ekonomi dari website desa"
+				icon={<IconUsers size={20} />}
+				iconColor="blue"
+				gradientFrom="blue"
+				gradientTo="cyan"
+				lastSyncTime={demografiLastSync}
+				syncStatus={demografiStatus}
+				onSync={handleDemografiSync}
+				isSyncing={demografiLoading}
+				buttonLabel={t.sinkronisasi.sinkronkanDesa}
+				buttonColor="blue"
+				onClearStatus={() => setDemografiStatus({ type: null, message: "" })}
+				dataModels={[
+					{ label: "Demografi", color: "blue" },
+					{ label: "APBDes", color: "blue" },
+					{ label: "Sektor", color: "blue" },
+				]}
+				sourceUrl="desa-darmasaba-stg.wibudev.com"
+				sourceName={t.sinkronisasi.desaNama}
+			/>
 		</Box>
 	);
 };

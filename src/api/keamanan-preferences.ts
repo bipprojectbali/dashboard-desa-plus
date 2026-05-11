@@ -19,13 +19,16 @@ export const keamananPreferences = new Elysia({
 		async ({ set, user }) => {
 			try {
 				const pref = await prisma.keamananPreference.upsert({
-					where: { userId: user!.id },
-					create: { userId: user!.id },
+					where: { userId: user?.id },
+					create: { userId: user?.id },
 					update: {},
 				});
 				return { data: pref };
 			} catch (error) {
-				logger.error({ error, userId: user!.id }, "Failed to get keamanan preferences");
+				logger.error(
+					{ error, userId: user?.id },
+					"Failed to get keamanan preferences",
+				);
 				set.status = 500;
 				return { error: "Failed to get preferences" };
 			}
@@ -43,14 +46,17 @@ export const keamananPreferences = new Elysia({
 		async ({ body, set, user }) => {
 			try {
 				const pref = await prisma.keamananPreference.upsert({
-					where: { userId: user!.id },
-					create: { userId: user!.id, ...body },
+					where: { userId: user?.id },
+					create: { userId: user?.id, ...body },
 					update: body,
 				});
-				logger.info({ userId: user!.id }, "Keamanan preferences updated");
+				logger.info({ userId: user?.id }, "Keamanan preferences updated");
 				return { data: pref };
 			} catch (error) {
-				logger.error({ error, userId: user!.id }, "Failed to update keamanan preferences");
+				logger.error(
+					{ error, userId: user?.id },
+					"Failed to update keamanan preferences",
+				);
 				set.status = 500;
 				return { error: "Failed to save preferences" };
 			}

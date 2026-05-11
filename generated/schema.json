@@ -6923,6 +6923,1290 @@
         },
         "operationId": "getApiDemografiApbdesById"
       }
+    },
+    "/api/notification-preferences/": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiNotification-preferences",
+        "summary": "Get notification preferences for current user"
+      },
+      "put": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "putApiNotification-preferences",
+        "summary": "Save notification preferences for current user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "laporanHarian",
+                  "alertSistem",
+                  "updateKeamanan",
+                  "newsletterBulan",
+                  "alertKritis",
+                  "aktivitasTim",
+                  "komentarMention",
+                  "bunyiNotifikasi",
+                  "tresholdMemori",
+                  "tresholdCpu",
+                  "tresholdDisk"
+                ],
+                "properties": {
+                  "laporanHarian": {
+                    "type": "boolean"
+                  },
+                  "alertSistem": {
+                    "type": "boolean"
+                  },
+                  "updateKeamanan": {
+                    "type": "boolean"
+                  },
+                  "newsletterBulan": {
+                    "type": "boolean"
+                  },
+                  "alertKritis": {
+                    "type": "boolean"
+                  },
+                  "aktivitasTim": {
+                    "type": "boolean"
+                  },
+                  "komentarMention": {
+                    "type": "boolean"
+                  },
+                  "bunyiNotifikasi": {
+                    "type": "boolean"
+                  },
+                  "tresholdMemori": {
+                    "type": "boolean"
+                  },
+                  "tresholdCpu": {
+                    "type": "boolean"
+                  },
+                  "tresholdDisk": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "laporanHarian",
+                  "alertSistem",
+                  "updateKeamanan",
+                  "newsletterBulan",
+                  "alertKritis",
+                  "aktivitasTim",
+                  "komentarMention",
+                  "bunyiNotifikasi",
+                  "tresholdMemori",
+                  "tresholdCpu",
+                  "tresholdDisk"
+                ],
+                "properties": {
+                  "laporanHarian": {
+                    "type": "boolean"
+                  },
+                  "alertSistem": {
+                    "type": "boolean"
+                  },
+                  "updateKeamanan": {
+                    "type": "boolean"
+                  },
+                  "newsletterBulan": {
+                    "type": "boolean"
+                  },
+                  "alertKritis": {
+                    "type": "boolean"
+                  },
+                  "aktivitasTim": {
+                    "type": "boolean"
+                  },
+                  "komentarMention": {
+                    "type": "boolean"
+                  },
+                  "bunyiNotifikasi": {
+                    "type": "boolean"
+                  },
+                  "tresholdMemori": {
+                    "type": "boolean"
+                  },
+                  "tresholdCpu": {
+                    "type": "boolean"
+                  },
+                  "tresholdDisk": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "laporanHarian",
+                  "alertSistem",
+                  "updateKeamanan",
+                  "newsletterBulan",
+                  "alertKritis",
+                  "aktivitasTim",
+                  "komentarMention",
+                  "bunyiNotifikasi",
+                  "tresholdMemori",
+                  "tresholdCpu",
+                  "tresholdDisk"
+                ],
+                "properties": {
+                  "laporanHarian": {
+                    "type": "boolean"
+                  },
+                  "alertSistem": {
+                    "type": "boolean"
+                  },
+                  "updateKeamanan": {
+                    "type": "boolean"
+                  },
+                  "newsletterBulan": {
+                    "type": "boolean"
+                  },
+                  "alertKritis": {
+                    "type": "boolean"
+                  },
+                  "aktivitasTim": {
+                    "type": "boolean"
+                  },
+                  "komentarMention": {
+                    "type": "boolean"
+                  },
+                  "bunyiNotifikasi": {
+                    "type": "boolean"
+                  },
+                  "tresholdMemori": {
+                    "type": "boolean"
+                  },
+                  "tresholdCpu": {
+                    "type": "boolean"
+                  },
+                  "tresholdDisk": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/umum-preferences/": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiUmum-preferences",
+        "summary": "Get umum preferences for current user"
+      },
+      "put": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "putApiUmum-preferences",
+        "summary": "Save umum preferences for current user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "bahasa",
+                  "zonaWaktu",
+                  "formatTanggal",
+                  "refreshOtomatis",
+                  "intervalRefresh",
+                  "tampilkanGrid",
+                  "animasiTransisi"
+                ],
+                "properties": {
+                  "bahasa": {
+                    "type": "string"
+                  },
+                  "zonaWaktu": {
+                    "type": "string"
+                  },
+                  "formatTanggal": {
+                    "type": "string"
+                  },
+                  "refreshOtomatis": {
+                    "type": "boolean"
+                  },
+                  "intervalRefresh": {
+                    "type": "string"
+                  },
+                  "tampilkanGrid": {
+                    "type": "boolean"
+                  },
+                  "animasiTransisi": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "bahasa",
+                  "zonaWaktu",
+                  "formatTanggal",
+                  "refreshOtomatis",
+                  "intervalRefresh",
+                  "tampilkanGrid",
+                  "animasiTransisi"
+                ],
+                "properties": {
+                  "bahasa": {
+                    "type": "string"
+                  },
+                  "zonaWaktu": {
+                    "type": "string"
+                  },
+                  "formatTanggal": {
+                    "type": "string"
+                  },
+                  "refreshOtomatis": {
+                    "type": "boolean"
+                  },
+                  "intervalRefresh": {
+                    "type": "string"
+                  },
+                  "tampilkanGrid": {
+                    "type": "boolean"
+                  },
+                  "animasiTransisi": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "bahasa",
+                  "zonaWaktu",
+                  "formatTanggal",
+                  "refreshOtomatis",
+                  "intervalRefresh",
+                  "tampilkanGrid",
+                  "animasiTransisi"
+                ],
+                "properties": {
+                  "bahasa": {
+                    "type": "string"
+                  },
+                  "zonaWaktu": {
+                    "type": "string"
+                  },
+                  "formatTanggal": {
+                    "type": "string"
+                  },
+                  "refreshOtomatis": {
+                    "type": "boolean"
+                  },
+                  "intervalRefresh": {
+                    "type": "string"
+                  },
+                  "tampilkanGrid": {
+                    "type": "boolean"
+                  },
+                  "animasiTransisi": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/keamanan-preferences/": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiKeamanan-preferences",
+        "summary": "Get keamanan preferences for current user"
+      },
+      "put": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "putApiKeamanan-preferences",
+        "summary": "Save keamanan preferences for current user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "twoFactorAuth",
+                  "biometrikLogin",
+                  "ipWhitelist",
+                  "logAktivitas"
+                ],
+                "properties": {
+                  "twoFactorAuth": {
+                    "type": "boolean"
+                  },
+                  "biometrikLogin": {
+                    "type": "boolean"
+                  },
+                  "ipWhitelist": {
+                    "type": "boolean"
+                  },
+                  "logAktivitas": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "twoFactorAuth",
+                  "biometrikLogin",
+                  "ipWhitelist",
+                  "logAktivitas"
+                ],
+                "properties": {
+                  "twoFactorAuth": {
+                    "type": "boolean"
+                  },
+                  "biometrikLogin": {
+                    "type": "boolean"
+                  },
+                  "ipWhitelist": {
+                    "type": "boolean"
+                  },
+                  "logAktivitas": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "twoFactorAuth",
+                  "biometrikLogin",
+                  "ipWhitelist",
+                  "logAktivitas"
+                ],
+                "properties": {
+                  "twoFactorAuth": {
+                    "type": "boolean"
+                  },
+                  "biometrikLogin": {
+                    "type": "boolean"
+                  },
+                  "ipWhitelist": {
+                    "type": "boolean"
+                  },
+                  "logAktivitas": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/akses-preferences/": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiAkses-preferences",
+        "summary": "Get akses preferences for current user"
+      },
+      "put": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {}
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "putApiAkses-preferences",
+        "summary": "Save akses preferences for current user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "izinExportData",
+                  "requireApprovalPerubahan"
+                ],
+                "properties": {
+                  "izinExportData": {
+                    "type": "boolean"
+                  },
+                  "requireApprovalPerubahan": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "izinExportData",
+                  "requireApprovalPerubahan"
+                ],
+                "properties": {
+                  "izinExportData": {
+                    "type": "boolean"
+                  },
+                  "requireApprovalPerubahan": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "izinExportData",
+                  "requireApprovalPerubahan"
+                ],
+                "properties": {
+                  "izinExportData": {
+                    "type": "boolean"
+                  },
+                  "requireApprovalPerubahan": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jenna/chat": {
+      "post": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reply": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "reply"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reply": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "reply"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reply": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "reply"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postApiJennaChat",
+        "summary": "Chat dengan Jenna Virtual Assistant (stub)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message",
+                  "history"
+                ],
+                "properties": {
+                  "message": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "history": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "text",
+                        "sender"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "sender": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message",
+                  "history"
+                ],
+                "properties": {
+                  "message": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "history": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "text",
+                        "sender"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "sender": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message",
+                  "history"
+                ],
+                "properties": {
+                  "message": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "history": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "text",
+                        "sender"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "sender": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

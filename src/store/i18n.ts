@@ -1,6 +1,6 @@
 import { proxy } from "valtio";
-import id from "../locales/id";
 import en from "../locales/en";
+import id from "../locales/id";
 
 type Lang = "id" | "en";
 

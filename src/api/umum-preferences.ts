@@ -22,13 +22,16 @@ export const umumPreferences = new Elysia({
 		async ({ set, user }) => {
 			try {
 				const pref = await prisma.umumPreference.upsert({
-					where: { userId: user!.id },
-					create: { userId: user!.id },
+					where: { userId: user?.id },
+					create: { userId: user?.id },
 					update: {},
 				});
 				return { data: pref };
 			} catch (error) {
-				logger.error({ error, userId: user!.id }, "Failed to get umum preferences");
+				logger.error(
+					{ error, userId: user?.id },
+					"Failed to get umum preferences",
+				);
 				set.status = 500;
 				return { error: "Failed to get preferences" };
 			}
@@ -46,14 +49,17 @@ export const umumPreferences = new Elysia({
 		async ({ body, set, user }) => {
 			try {
 				const pref = await prisma.umumPreference.upsert({
-					where: { userId: user!.id },
-					create: { userId: user!.id, ...body },
+					where: { userId: user?.id },
+					create: { userId: user?.id, ...body },
 					update: body,
 				});
-				logger.info({ userId: user!.id }, "Umum preferences updated");
+				logger.info({ userId: user?.id }, "Umum preferences updated");
 				return { data: pref };
 			} catch (error) {
-				logger.error({ error, userId: user!.id }, "Failed to update umum preferences");
+				logger.error(
+					{ error, userId: user?.id },
+					"Failed to update umum preferences",
+				);
 				set.status = 500;
 				return { error: "Failed to save preferences" };
 			}
