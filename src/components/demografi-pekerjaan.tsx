@@ -32,6 +32,9 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { useSnapshot } from "valtio";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { i18nStore } from "@/store/i18n";
 import { apiClient } from "@/utils/api-client";
 
 // External API base URL
@@ -79,6 +82,7 @@ interface DashboardSummary {
 const DemografiPekerjaan = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const { tampilkanGrid } = useSnapshot(i18nStore);
 
 	const [stats, setStats] = useState<DashboardSummary>({
 		total: 0,
@@ -336,6 +340,8 @@ const DemografiPekerjaan = () => {
 		fetchData();
 	}, [fetchData]);
 
+	useAutoRefresh(fetchData);
+
 	// Listen for sync complete event to refresh data
 	useEffect(() => {
 		const handleSyncComplete = () => {
@@ -499,11 +505,13 @@ const DemografiPekerjaan = () => {
 								</Group>
 							) : (
 								<BarChart data={ageData}>
-									<CartesianGrid
-										strokeDasharray="3 3"
-										vertical={false}
-										stroke={dark ? "#334155" : "#e5e7eb"}
-									/>
+									{tampilkanGrid && (
+										<CartesianGrid
+											strokeDasharray="3 3"
+											vertical={false}
+											stroke={dark ? "#334155" : "#e5e7eb"}
+										/>
+									)}
 									<XAxis
 										dataKey="ageRange"
 										axisLine={false}
@@ -569,11 +577,13 @@ const DemografiPekerjaan = () => {
 								</Group>
 							) : (
 								<BarChart data={jobData} layout="vertical">
-									<CartesianGrid
-										strokeDasharray="3 3"
-										horizontal={false}
-										stroke={dark ? "#334155" : "#e5e7eb"}
-									/>
+									{tampilkanGrid && (
+										<CartesianGrid
+											strokeDasharray="3 3"
+											horizontal={false}
+											stroke={dark ? "#334155" : "#e5e7eb"}
+										/>
+									)}
 									<XAxis
 										type="number"
 										axisLine={false}
@@ -926,11 +936,13 @@ const DemografiPekerjaan = () => {
 								</Group>
 							) : (
 								<BarChart data={sektorData} layout="vertical">
-									<CartesianGrid
-										strokeDasharray="3 3"
-										horizontal={false}
-										stroke={dark ? "#334155" : "#e5e7eb"}
-									/>
+									{tampilkanGrid && (
+										<CartesianGrid
+											strokeDasharray="3 3"
+											horizontal={false}
+											stroke={dark ? "#334155" : "#e5e7eb"}
+										/>
+									)}
 									<XAxis
 										type="number"
 										axisLine={false}

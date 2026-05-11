@@ -27,6 +27,8 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { useSnapshot } from "valtio";
+import { i18nStore } from "@/store/i18n";
 
 // KPI Data
 const kpiData = [
@@ -92,6 +94,7 @@ const busyHours = [
 const JennaAnalytic = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const { tampilkanGrid } = useSnapshot(i18nStore);
 
 	return (
 		<Stack gap="lg">
@@ -169,11 +172,13 @@ const JennaAnalytic = () => {
 				</Group>
 				<ResponsiveContainer width="100%" height={300}>
 					<BarChart data={chartData}>
-						<CartesianGrid
-							strokeDasharray="3 3"
-							vertical={false}
-							stroke={dark ? "#334155" : "#e5e7eb"}
-						/>
+						{tampilkanGrid && (
+							<CartesianGrid
+								strokeDasharray="3 3"
+								vertical={false}
+								stroke={dark ? "#334155" : "#e5e7eb"}
+							/>
+						)}
 						<XAxis
 							dataKey="day"
 							axisLine={false}

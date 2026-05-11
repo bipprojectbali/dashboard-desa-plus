@@ -16,10 +16,10 @@ export function useSidebarFullscreen() {
 			const newCount = clickCount + 1;
 			setClickCount(newCount);
 
-			if (newCount === 2) {
+			if (newCount >= 3) {
 				toggleSidebar();
 			} else {
-				setTimeout(() => setClickCount(0), 300);
+				setTimeout(() => setClickCount(0), 500);
 			}
 		}
 	};

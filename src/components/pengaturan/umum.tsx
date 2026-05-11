@@ -27,7 +27,13 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslate } from "@/hooks/useTranslate";
-import { setLang, setZonaWaktu } from "@/store/i18n";
+import {
+	type FormatTanggal,
+	setDashboardPrefs,
+	setFormatTanggal,
+	setLang,
+	setZonaWaktu,
+} from "@/store/i18n";
 
 type Prefs = {
 	bahasa: string;
@@ -72,6 +78,13 @@ const UmumSettings = () => {
 				// Sync bahasa & zona waktu ke store saat load
 				setLang(data.bahasa === "en" ? "en" : "id");
 				setZonaWaktu(data.zonaWaktu);
+				setFormatTanggal(data.formatTanggal as FormatTanggal);
+				setDashboardPrefs({
+					refreshOtomatis: data.refreshOtomatis,
+					intervalRefresh: data.intervalRefresh,
+					tampilkanGrid: data.tampilkanGrid,
+					animasiTransisi: data.animasiTransisi,
+				});
 			} catch {
 				// keep defaults
 			} finally {
@@ -111,6 +124,13 @@ const UmumSettings = () => {
 			const data = json.data as Prefs;
 			setPrefs(data);
 			setSavedPrefs(data);
+			setFormatTanggal(data.formatTanggal as FormatTanggal);
+			setDashboardPrefs({
+				refreshOtomatis: data.refreshOtomatis,
+				intervalRefresh: data.intervalRefresh,
+				tampilkanGrid: data.tampilkanGrid,
+				animasiTransisi: data.animasiTransisi,
+			});
 			setToast({ type: "success", message: t.common.berhasilDisimpan });
 		} catch {
 			setToast({ type: "error", message: t.common.gagalSimpan });
@@ -123,6 +143,13 @@ const UmumSettings = () => {
 		setPrefs(savedPrefs);
 		setLang(savedPrefs.bahasa === "en" ? "en" : "id");
 		setZonaWaktu(savedPrefs.zonaWaktu);
+		setFormatTanggal(savedPrefs.formatTanggal as FormatTanggal);
+		setDashboardPrefs({
+			refreshOtomatis: savedPrefs.refreshOtomatis,
+			intervalRefresh: savedPrefs.intervalRefresh,
+			tampilkanGrid: savedPrefs.tampilkanGrid,
+			animasiTransisi: savedPrefs.animasiTransisi,
+		});
 	};
 
 	const { colorScheme } = useMantineColorScheme();

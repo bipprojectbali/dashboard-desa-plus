@@ -34,9 +34,10 @@ export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const snap = useSnapshot(authStore);
-	const { zonaWaktu } = useSnapshot(i18nStore);
+	const { zonaWaktu, formatTanggal } = useSnapshot(i18nStore);
 	const t = useTranslate();
 	const [waktu, setWaktu] = useState("");
+	const [tanggal, setTanggal] = useState("");
 
 	// ── Clock ──────────────────────────────────────────────────────────────────
 	useEffect(() => {
@@ -52,6 +53,33 @@ export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 		const id = setInterval(tick, 1000);
 		return () => clearInterval(id);
 	}, [zonaWaktu]);
+
+	// ── Date ───────────────────────────────────────────────────────────────────
+	useEffect(() => {
+		const now = new Date();
+		const parts = new Intl.DateTimeFormat("en-CA", {
+			timeZone: zonaWaktu,
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+		})
+			.formatToParts(now)
+			.reduce(
+				(acc, p) => {
+					if (p.type !== "literal") acc[p.type] = p.value;
+					return acc;
+				},
+				{} as Record<string, string>,
+			);
+		const { year, month, day } = parts;
+		const formatted =
+			formatTanggal === "MM/DD/YYYY"
+				? `${month}/${day}/${year}`
+				: formatTanggal === "YYYY-MM-DD"
+					? `${year}-${month}-${day}`
+					: `${day}/${month}/${year}`;
+		setTanggal(formatted);
+	}, [zonaWaktu, formatTanggal]);
 
 	// ── User info ──────────────────────────────────────────────────────────────
 	const isAdmin = snap.user?.role === "admin";
@@ -156,14 +184,14 @@ export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 
 			{/* Kanan: Jam, info user, aksi */}
 			<Group gap="md">
-				{/* Jam zona waktu */}
+				{/* Jam & tanggal zona waktu */}
 				{waktu && (
 					<Box ta="center" visibleFrom="sm">
 						<Text c="white" size="sm" fw={600} ff="monospace">
 							{waktu}
 						</Text>
 						<Text c="white" size="xs" opacity={0.6}>
-							{kotaLabel}
+							{tanggal} · {kotaLabel}
 						</Text>
 					</Box>
 				)}

@@ -1,8 +1,10 @@
 import { AppShell, Burger, Group, useMantineColorScheme } from "@mantine/core";
 import type React from "react";
+import { useSnapshot } from "valtio";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 import { useSidebarFullscreen } from "@/hooks/use-sidebar-fullscreen";
+import { i18nStore } from "@/store/i18n";
 
 interface MainLayoutProps {
 	children: React.ReactNode;
@@ -17,6 +19,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 		handleMainClick,
 	} = useSidebarFullscreen();
 	const { colorScheme } = useMantineColorScheme();
+	const { animasiTransisi } = useSnapshot(i18nStore);
 
 	const headerBgColor = colorScheme === "dark" ? "#11192D" : "#19355E";
 	const navbarBgColor = colorScheme === "dark" ? "#11192D" : "white";
@@ -57,7 +60,11 @@ export function MainLayout({ children }: MainLayoutProps) {
 			<AppShell.Main
 				bg={mainBgColor}
 				onClick={handleMainClick}
-				style={{ cursor: sidebarCollapsed ? "default" : "pointer" }}
+				style={{
+					transition: animasiTransisi
+						? "background-color 0.2s ease, opacity 0.2s ease"
+						: "none",
+				}}
 			>
 				{children}
 			</AppShell.Main>

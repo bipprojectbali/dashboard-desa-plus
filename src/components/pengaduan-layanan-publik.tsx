@@ -14,7 +14,7 @@ import {
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { CheckCircle, Clock, FileText, MessageCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -26,6 +26,9 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { useSnapshot } from "valtio";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { i18nStore } from "@/store/i18n";
 import { apiClient } from "@/utils/api-client";
 
 dayjs.extend(relativeTime);
@@ -83,6 +86,7 @@ const getStatusColor = (status: string) => {
 const PengaduanLayananPublik = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const { tampilkanGrid } = useSnapshot(i18nStore);
 
 	const [stats, setStats] = useState({
 		total: 0,
@@ -96,51 +100,53 @@ const PengaduanLayananPublik = () => {
 	const [innovationIdeas, setInnovationIdeas] = useState<InnovationIdea[]>([]);
 	const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
-		async function fetchData() {
-			try {
-				const [statsRes, recentRes, serviceRes, trendsRes, ideasRes] =
-					await Promise.all([
-						apiClient.GET("/api/complaint/stats"),
-						apiClient.GET("/api/complaint/recent"),
-						apiClient.GET("/api/complaint/service-stats"),
-						apiClient.GET("/api/complaint/trends"),
-						apiClient.GET("/api/complaint/innovation-ideas"),
-					]);
+	const fetchData = useCallback(async () => {
+		try {
+			const [statsRes, recentRes, serviceRes, trendsRes, ideasRes] =
+				await Promise.all([
+					apiClient.GET("/api/complaint/stats"),
+					apiClient.GET("/api/complaint/recent"),
+					apiClient.GET("/api/complaint/service-stats"),
+					apiClient.GET("/api/complaint/trends"),
+					apiClient.GET("/api/complaint/innovation-ideas"),
+				]);
 
-				if (statsRes.data?.data) setStats(statsRes.data.data);
-				if (recentRes.data?.data)
-					setRecentComplaints(recentRes.data.data as Complaint[]);
-				if (serviceRes.data?.data) {
-					const mappedService = (
-						serviceRes.data.data as ServiceApiResponse[]
-					).map((item) => ({
-						jenis: item.letterType,
-						jumlah: item._count?._all || 0,
-					}));
-					setServiceStats(mappedService);
-				}
-				if (trendsRes.data?.data) {
-					const mappedTrends = (
-						trendsRes.data.data as { month: string; count: number }[]
-					).map((item) => ({
-						bulan: item.month,
-						jumlah: item.count,
-					}));
-					setTrendData(mappedTrends);
-				}
-				if (ideasRes.data?.data) {
-					setInnovationIdeas(ideasRes.data.data as InnovationIdea[]);
-				}
-			} catch (error) {
-				console.error("Failed to fetch complaint data", error);
-			} finally {
-				setLoading(false);
+			if (statsRes.data?.data) setStats(statsRes.data.data);
+			if (recentRes.data?.data)
+				setRecentComplaints(recentRes.data.data as Complaint[]);
+			if (serviceRes.data?.data) {
+				const mappedService = (
+					serviceRes.data.data as ServiceApiResponse[]
+				).map((item) => ({
+					jenis: item.letterType,
+					jumlah: item._count?._all || 0,
+				}));
+				setServiceStats(mappedService);
 			}
+			if (trendsRes.data?.data) {
+				const mappedTrends = (
+					trendsRes.data.data as { month: string; count: number }[]
+				).map((item) => ({
+					bulan: item.month,
+					jumlah: item.count,
+				}));
+				setTrendData(mappedTrends);
+			}
+			if (ideasRes.data?.data) {
+				setInnovationIdeas(ideasRes.data.data as InnovationIdea[]);
+			}
+		} catch (error) {
+			console.error("Failed to fetch complaint data", error);
+		} finally {
+			setLoading(false);
 		}
-
-		fetchData();
 	}, []);
+
+	useEffect(() => {
+		fetchData();
+	}, [fetchData]);
+
+	useAutoRefresh(fetchData);
 
 	const summaryData = [
 		{
@@ -240,11 +246,13 @@ const PengaduanLayananPublik = () => {
 						</Group>
 					) : trendData.length > 0 ? (
 						<LineChart data={trendData}>
-							<CartesianGrid
-								strokeDasharray="3 3"
-								vertical={false}
-								stroke={dark ? "#334155" : "#e5e7eb"}
-							/>
+							{tampilkanGrid && (
+								<CartesianGrid
+									strokeDasharray="3 3"
+									vertical={false}
+									stroke={dark ? "#334155" : "#e5e7eb"}
+								/>
+							)}
 							<XAxis
 								dataKey="bulan"
 								axisLine={false}
@@ -313,11 +321,13 @@ const PengaduanLayananPublik = () => {
 								</Group>
 							) : (
 								<BarChart data={serviceStats} layout="vertical">
-									<CartesianGrid
-										strokeDasharray="3 3"
-										horizontal={false}
-										stroke={dark ? "#334155" : "#e5e7eb"}
-									/>
+									{tampilkanGrid && (
+										<CartesianGrid
+											strokeDasharray="3 3"
+											horizontal={false}
+											stroke={dark ? "#334155" : "#e5e7eb"}
+										/>
+									)}
 									<XAxis
 										type="number"
 										axisLine={false}
