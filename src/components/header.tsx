@@ -16,8 +16,10 @@ import {
 } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Bell, Moon, Sun, User as UserIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
+import { i18nStore } from "@/store/i18n";
 import { useTranslate } from "@/hooks/useTranslate";
 
 interface HeaderProps {
@@ -30,7 +32,23 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const snap = useSnapshot(authStore);
+	const { zonaWaktu } = useSnapshot(i18nStore);
 	const t = useTranslate();
+	const [waktu, setWaktu] = useState("");
+
+	useEffect(() => {
+		const fmt = new Intl.DateTimeFormat([], {
+			timeZone: zonaWaktu,
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+			hour12: false,
+		});
+		const tick = () => setWaktu(fmt.format(new Date()));
+		tick();
+		const id = setInterval(tick, 1000);
+		return () => clearInterval(id);
+	}, [zonaWaktu]);
 	const isAdmin = snap.user?.role === "admin";
 	const displayName = snap.user?.name ?? snap.user?.email ?? "";
 	const truncatedName =
@@ -124,6 +142,18 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 
 			{/* Right Section */}
 			<Group gap="md">
+				{/* Jam zona waktu */}
+				{waktu && (
+					<Box ta="center" visibleFrom="sm">
+						<Text c="white" size="sm" fw={600} ff="monospace">
+							{waktu}
+						</Text>
+						<Text c="white" size="xs" opacity={0.6}>
+							{zonaWaktu.replace("Asia/", "")}
+						</Text>
+					</Box>
+				)}
+
 				{/* User Info */}
 				<Group gap="sm">
 					<Box ta="right" visibleFrom="sm">

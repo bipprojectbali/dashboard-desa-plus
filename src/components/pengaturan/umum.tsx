@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useTranslate } from "@/hooks/useTranslate";
-import { setLang } from "@/store/i18n";
+import { setLang, setZonaWaktu } from "@/store/i18n";
 
 type Prefs = {
 	bahasa: string;
@@ -52,8 +52,9 @@ const UmumSettings = () => {
 				const data = json.data as Prefs;
 				setPrefs(data);
 				setSavedPrefs(data);
-				// Sync bahasa ke store saat load
+				// Sync bahasa & zona waktu ke store saat load
 				setLang(data.bahasa === "en" ? "en" : "id");
+				setZonaWaktu(data.zonaWaktu);
 			} catch {
 				// keep defaults
 			} finally {
@@ -103,8 +104,8 @@ const UmumSettings = () => {
 
 	const handleBatal = () => {
 		setPrefs(savedPrefs);
-		// Reset bahasa ke yang tersimpan
 		setLang(savedPrefs.bahasa === "en" ? "en" : "id");
+		setZonaWaktu(savedPrefs.zonaWaktu);
 	};
 
 	const SwitchRow = ({
@@ -162,7 +163,11 @@ const UmumSettings = () => {
 					{ value: "Asia/Jayapura", label: "Asia/Jayapura (GMT+9)" },
 				]}
 				value={prefs.zonaWaktu}
-				onChange={(v) => updatePref("zonaWaktu", v ?? "Asia/Jakarta")}
+				onChange={(v) => {
+					const zona = v ?? "Asia/Jakarta";
+					updatePref("zonaWaktu", zona);
+					setZonaWaktu(zona);
+				}}
 				disabled={loading}
 				mb="md"
 			/>
