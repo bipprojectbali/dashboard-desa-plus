@@ -8,6 +8,27 @@ export type TranslationKeys = {
 		gagalSimpan: string;
 		berhasil: string;
 		kesalahan: string;
+		administrator: string;
+		pengguna: string;
+	};
+	breadcrumb: {
+		home: string;
+		kinerjaDevisi: string;
+		pengaduanLayanan: string;
+		jennaAnalytic: string;
+		demografi: string;
+		keuangan: string;
+		bumdes: string;
+		sosial: string;
+		keamanan: string;
+		bantuan: string;
+		pengaturan: string;
+		umum: string;
+		notifikasi: string;
+		aksesDanTim: string;
+		sinkronisasi: string;
+		profile: string;
+		edit: string;
 	};
 	sidebar: {
 		cariApaSaja: string;
@@ -121,6 +142,27 @@ const id: TranslationKeys = {
 		gagalSimpan: "Gagal menyimpan preferensi",
 		berhasil: "Berhasil",
 		kesalahan: "Kesalahan",
+		administrator: "Administrator",
+		pengguna: "Pengguna",
+	},
+	breadcrumb: {
+		home: "Desa Darmasaba",
+		kinerjaDevisi: "Kinerja Divisi",
+		pengaduanLayanan: "Pengaduan & Layanan Publik",
+		jennaAnalytic: "Jenna Analytic",
+		demografi: "Demografi & Kependudukan",
+		keuangan: "Keuangan & Anggaran",
+		bumdes: "Bumdes & UMKM",
+		sosial: "Sosial",
+		keamanan: "Keamanan",
+		bantuan: "Bantuan",
+		pengaturan: "Pengaturan",
+		umum: "Umum",
+		notifikasi: "Notifikasi",
+		aksesDanTim: "Akses & Tim",
+		sinkronisasi: "Sinkronisasi NOC",
+		profile: "Profil",
+		edit: "Edit",
 	},
 	sidebar: {
 		cariApaSaja: "cari apa saja",

@@ -18,6 +18,7 @@ import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Bell, Moon, Sun, User as UserIcon } from "lucide-react";
 import { useSnapshot } from "valtio";
 import { authStore } from "@/store/auth";
+import { useTranslate } from "@/hooks/useTranslate";
 
 interface HeaderProps {
 	onSidebarToggle?: () => void;
@@ -29,6 +30,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const snap = useSnapshot(authStore);
+	const t = useTranslate();
 	const isAdmin = snap.user?.role === "admin";
 	const displayName = snap.user?.name ?? snap.user?.email ?? "";
 	const truncatedName =
@@ -36,6 +38,25 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 	const initials = displayName.charAt(0).toUpperCase();
 
 	const pathnames = location.pathname.split("/").filter((x) => x);
+
+	const labelMap: Record<string, string> = {
+		"kinerja-divisi": t.breadcrumb.kinerjaDevisi,
+		"pengaduan-layanan-publik": t.breadcrumb.pengaduanLayanan,
+		"jenna-analytic": t.breadcrumb.jennaAnalytic,
+		"demografi-pekerjaan": t.breadcrumb.demografi,
+		"keuangan-anggaran": t.breadcrumb.keuangan,
+		bumdes: t.breadcrumb.bumdes,
+		sosial: t.breadcrumb.sosial,
+		keamanan: t.breadcrumb.keamanan,
+		bantuan: t.breadcrumb.bantuan,
+		pengaturan: t.breadcrumb.pengaturan,
+		umum: t.breadcrumb.umum,
+		notifikasi: t.breadcrumb.notifikasi,
+		"akses-dan-tim": t.breadcrumb.aksesDanTim,
+		sinkronisasi: t.breadcrumb.sinkronisasi,
+		profile: t.breadcrumb.profile,
+		edit: t.breadcrumb.edit,
+	};
 
 	const breadcrumbItems = [
 		<Anchor
@@ -45,33 +66,12 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 			size="sm"
 			underline="hover"
 		>
-			Desa Darmasaba
+			{t.breadcrumb.home}
 		</Anchor>,
 		...pathnames.map((value, index) => {
 			const to = `/${pathnames.slice(0, index + 1).join("/")}`;
 			const isLast = index === pathnames.length - 1;
-
-			// Map route path to human-readable label
-			const labelMap: Record<string, string> = {
-				"kinerja-divisi": "Kinerja Divisi",
-				"pengaduan-layanan-publik": "Pengaduan & Layanan Publik",
-				"jenna-analytic": "Jenna Analytic",
-				"demografi-pekerjaan": "Demografi & Kependudukan",
-				"keuangan-anggaran": "Keuangan & Anggaran",
-				bumdes: "Bumdes & UMKM",
-				sosial: "Sosial",
-				keamanan: "Keamanan",
-				bantuan: "Bantuan",
-				pengaturan: "Pengaturan",
-				umum: "Umum",
-				notifikasi: "Notifikasi",
-				"akses-dan-tim": "Akses & Tim",
-				profile: "Profil",
-				edit: "Edit",
-			};
-
-			const label =
-				labelMap[value] || value.charAt(0).toUpperCase() + value.slice(1);
+			const label = labelMap[value] ?? value.charAt(0).toUpperCase() + value.slice(1);
 
 			return isLast ? (
 				<Text key={to} c="white" size="sm" fw={600}>
@@ -131,7 +131,7 @@ export function Header({ onSidebarToggle }: HeaderProps) {
 							{truncatedName}
 						</Text>
 						<Text c="white" size="xs" opacity={0.75}>
-							{isAdmin ? "Administrator" : "Pengguna"}
+							{isAdmin ? t.common.administrator : t.common.pengguna}
 						</Text>
 					</Box>
 					<Avatar
