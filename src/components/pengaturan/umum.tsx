@@ -4,12 +4,13 @@ import {
 	Group,
 	Notification,
 	Select,
-	Stack,
 	Switch,
 	Text,
 	Title,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
+import { setLang } from "@/store/i18n";
 
 type Prefs = {
 	bahasa: string;
@@ -32,6 +33,7 @@ const DEFAULT_PREFS: Prefs = {
 };
 
 const UmumSettings = () => {
+	const t = useTranslate();
 	const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [savedPrefs, setSavedPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [loading, setLoading] = useState(true);
@@ -50,6 +52,8 @@ const UmumSettings = () => {
 				const data = json.data as Prefs;
 				setPrefs(data);
 				setSavedPrefs(data);
+				// Sync bahasa ke store saat load
+				setLang(data.bahasa === "en" ? "en" : "id");
 			} catch {
 				// keep defaults
 			} finally {
@@ -61,12 +65,19 @@ const UmumSettings = () => {
 
 	useEffect(() => {
 		if (!toast) return;
-		const t = setTimeout(() => setToast(null), 3000);
-		return () => clearTimeout(t);
+		const timer = setTimeout(() => setToast(null), 3000);
+		return () => clearTimeout(timer);
 	}, [toast]);
 
 	const updatePref = (key: keyof Prefs, value: Prefs[keyof Prefs]) => {
 		setPrefs((p) => ({ ...p, [key]: value }));
+	};
+
+	const handleBahasaChange = (v: string | null) => {
+		const lang = v === "en" ? "en" : "id";
+		updatePref("bahasa", lang);
+		// Langsung apply perubahan bahasa ke UI
+		setLang(lang);
 	};
 
 	const handleSave = async () => {
@@ -82,9 +93,9 @@ const UmumSettings = () => {
 			const data = json.data as Prefs;
 			setPrefs(data);
 			setSavedPrefs(data);
-			setToast({ type: "success", message: "Preferensi berhasil disimpan" });
+			setToast({ type: "success", message: t.umum.berhasilDisimpan });
 		} catch {
-			setToast({ type: "error", message: "Gagal menyimpan preferensi" });
+			setToast({ type: "error", message: t.umum.gagalSimpan });
 		} finally {
 			setSaving(false);
 		}
@@ -92,6 +103,8 @@ const UmumSettings = () => {
 
 	const handleBatal = () => {
 		setPrefs(savedPrefs);
+		// Reset bahasa ke yang tersimpan
+		setLang(savedPrefs.bahasa === "en" ? "en" : "id");
 	};
 
 	const SwitchRow = ({
@@ -126,23 +139,23 @@ const UmumSettings = () => {
 			)}
 
 			<Title order={2} mb="lg">
-				Preferensi Tampilan
+				{t.umum.judulTampilan}
 			</Title>
 
 			<Select
-				label="Bahasa Aplikasi"
+				label={t.umum.bahasaAplikasi}
 				data={[
 					{ value: "id", label: "Indonesia" },
 					{ value: "en", label: "English" },
 				]}
 				value={prefs.bahasa}
-				onChange={(v) => updatePref("bahasa", v ?? "id")}
+				onChange={handleBahasaChange}
 				disabled={loading}
 				mb="md"
 			/>
 
 			<Select
-				label="Zona Waktu"
+				label={t.umum.zonaWaktu}
 				data={[
 					{ value: "Asia/Jakarta", label: "Asia/Jakarta (GMT+7)" },
 					{ value: "Asia/Makassar", label: "Asia/Makassar (GMT+8)" },
@@ -155,7 +168,7 @@ const UmumSettings = () => {
 			/>
 
 			<Select
-				label="Format Tanggal"
+				label={t.umum.formatTanggal}
 				data={[
 					{ value: "DD/MM/YYYY", label: "DD/MM/YYYY" },
 					{ value: "MM/DD/YYYY", label: "MM/DD/YYYY" },
@@ -168,14 +181,14 @@ const UmumSettings = () => {
 			/>
 
 			<Title order={2} mb="lg">
-				Dashboard
+				{t.umum.judulDashboard}
 			</Title>
 
-			<SwitchRow label="Refresh Otomatis" field="refreshOtomatis" />
+			<SwitchRow label={t.umum.refreshOtomatis} field="refreshOtomatis" />
 
 			<Group mb="md" justify="space-between">
 				<Text fw="bold" fz="sm">
-					Interval Refresh
+					{t.umum.intervalRefresh}
 				</Text>
 				<Select
 					data={[
@@ -190,8 +203,8 @@ const UmumSettings = () => {
 				/>
 			</Group>
 
-			<SwitchRow label="Tampilkan Grid" field="tampilkanGrid" />
-			<SwitchRow label="Animasi Transisi" field="animasiTransisi" />
+			<SwitchRow label={t.umum.tampilkanGrid} field="tampilkanGrid" />
+			<SwitchRow label={t.umum.animasiTransisi} field="animasiTransisi" />
 
 			<Group justify="flex-end" mt="xl">
 				<Button
@@ -199,10 +212,10 @@ const UmumSettings = () => {
 					onClick={handleBatal}
 					disabled={saving || loading}
 				>
-					Batal
+					{t.umum.batal}
 				</Button>
 				<Button onClick={handleSave} loading={saving} disabled={loading}>
-					Simpan Perubahan
+					{t.umum.simpan}
 				</Button>
 			</Group>
 		</Box>
