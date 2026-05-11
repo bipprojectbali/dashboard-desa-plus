@@ -1,14 +1,6 @@
-import {
-	Box,
-	Button,
-	Group,
-	Notification,
-	Stack,
-	Switch,
-	Text,
-	Title,
-} from "@mantine/core";
+import { Box, Button, Group, Notification, Stack, Switch, Text, Title } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 
 type Prefs = {
 	twoFactorAuth: boolean;
@@ -25,6 +17,7 @@ const DEFAULT_PREFS: Prefs = {
 };
 
 const KeamananSettings = () => {
+	const t = useTranslate();
 	const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [savedPrefs, setSavedPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [loading, setLoading] = useState(true);
@@ -38,7 +31,7 @@ const KeamananSettings = () => {
 		const fetchPrefs = async () => {
 			try {
 				const res = await fetch("/api/keamanan-preferences");
-				if (!res.ok) throw new Error("Gagal memuat preferensi");
+				if (!res.ok) throw new Error("error");
 				const json = await res.json();
 				const data = json.data as Prefs;
 				setPrefs(data);
@@ -54,8 +47,8 @@ const KeamananSettings = () => {
 
 	useEffect(() => {
 		if (!toast) return;
-		const t = setTimeout(() => setToast(null), 3000);
-		return () => clearTimeout(t);
+		const timer = setTimeout(() => setToast(null), 3000);
+		return () => clearTimeout(timer);
 	}, [toast]);
 
 	const toggle = (key: keyof Prefs) => {
@@ -70,14 +63,14 @@ const KeamananSettings = () => {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(prefs),
 			});
-			if (!res.ok) throw new Error("Gagal menyimpan");
+			if (!res.ok) throw new Error("error");
 			const json = await res.json();
 			const data = json.data as Prefs;
 			setPrefs(data);
 			setSavedPrefs(data);
-			setToast({ type: "success", message: "Preferensi berhasil disimpan" });
+			setToast({ type: "success", message: t.common.berhasilDisimpan });
 		} catch {
-			setToast({ type: "error", message: "Gagal menyimpan preferensi" });
+			setToast({ type: "error", message: t.common.gagalSimpan });
 		} finally {
 			setSaving(false);
 		}
@@ -87,22 +80,12 @@ const KeamananSettings = () => {
 		setPrefs(savedPrefs);
 	};
 
-	const SwitchRow = ({
-		label,
-		field,
-	}: {
-		label: string;
-		field: keyof Prefs;
-	}) => (
+	const SwitchRow = ({ label, field }: { label: string; field: keyof Prefs }) => (
 		<Group mb="md" justify="space-between">
 			<Text fw="bold" fz="sm">
 				{label}
 			</Text>
-			<Switch
-				checked={prefs[field]}
-				onChange={() => toggle(field)}
-				disabled={loading}
-			/>
+			<Switch checked={prefs[field]} onChange={() => toggle(field)} disabled={loading} />
 		</Group>
 	);
 
@@ -118,45 +101,41 @@ const KeamananSettings = () => {
 			)}
 			<Box>
 				<Stack gap="xs">
-					<Title order={2}>Autentikasi</Title>
-					<SwitchRow label="Two-Factor Authentication" field="twoFactorAuth" />
-					<SwitchRow label="Biometrik Login" field="biometrikLogin" />
-					<SwitchRow label="IP Whitelist" field="ipWhitelist" />
+					<Title order={2}>{t.keamanan.autentikasi}</Title>
+					<SwitchRow label={t.keamanan.twoFactor} field="twoFactorAuth" />
+					<SwitchRow label={t.keamanan.biometrikLogin} field="biometrikLogin" />
+					<SwitchRow label={t.keamanan.ipWhitelist} field="ipWhitelist" />
 				</Stack>
 			</Box>
 			<Box>
 				<Stack gap="xs">
-					<Title order={2}>Password</Title>
+					<Title order={2}>{t.keamanan.password}</Title>
 					<Button bg="#1E3A5F" radius="md" c="white" fullWidth>
-						Ubah Password
+						{t.keamanan.ubahPassword}
 					</Button>
 					<Button bg="#1E3A5F" radius="md" c="white" fullWidth>
-						Riwayat Login
+						{t.keamanan.riwayatLogin}
 					</Button>
 					<Button bg="#1E3A5F" radius="md" c="white" fullWidth>
-						Perangkat Terdaftar
+						{t.keamanan.perangkatTerdaftar}
 					</Button>
 				</Stack>
 			</Box>
 			<Box>
 				<Stack gap="xs">
-					<Title order={2}>Audit & Log</Title>
-					<SwitchRow label="Log Aktivitas" field="logAktivitas" />
+					<Title order={2}>{t.keamanan.auditLog}</Title>
+					<SwitchRow label={t.keamanan.logAktivitas} field="logAktivitas" />
 					<Button bg="#1E3A5F" radius="md" c="white" fullWidth>
-						Download Log
+						{t.keamanan.downloadLog}
 					</Button>
 				</Stack>
 			</Box>
 			<Group justify="flex-start" mt="xl">
-				<Button
-					variant="outline"
-					onClick={handleBatal}
-					disabled={saving || loading}
-				>
-					Batal
+				<Button variant="outline" onClick={handleBatal} disabled={saving || loading}>
+					{t.common.batal}
 				</Button>
 				<Button onClick={handleSave} loading={saving} disabled={loading}>
-					Simpan Perubahan
+					{t.common.simpan}
 				</Button>
 			</Group>
 		</Stack>

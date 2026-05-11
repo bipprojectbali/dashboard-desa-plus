@@ -10,6 +10,7 @@ import {
 	Title,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 
 type Prefs = {
 	laporanHarian: boolean;
@@ -40,6 +41,7 @@ const DEFAULT_PREFS: Prefs = {
 };
 
 const NotifikasiSettings = () => {
+	const t = useTranslate();
 	const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [savedPrefs, setSavedPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [loading, setLoading] = useState(true);
@@ -53,7 +55,7 @@ const NotifikasiSettings = () => {
 		const fetchPrefs = async () => {
 			try {
 				const res = await fetch("/api/notification-preferences");
-				if (!res.ok) throw new Error("Gagal memuat preferensi");
+				if (!res.ok) throw new Error("error");
 				const json = await res.json();
 				const data = json.data as Prefs;
 				setPrefs(data);
@@ -69,8 +71,8 @@ const NotifikasiSettings = () => {
 
 	useEffect(() => {
 		if (!toast) return;
-		const t = setTimeout(() => setToast(null), 3000);
-		return () => clearTimeout(t);
+		const timer = setTimeout(() => setToast(null), 3000);
+		return () => clearTimeout(timer);
 	}, [toast]);
 
 	const toggle = (key: keyof Prefs) => {
@@ -85,14 +87,14 @@ const NotifikasiSettings = () => {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(prefs),
 			});
-			if (!res.ok) throw new Error("Gagal menyimpan");
+			if (!res.ok) throw new Error("error");
 			const json = await res.json();
 			const data = json.data as Prefs;
 			setPrefs(data);
 			setSavedPrefs(data);
-			setToast({ type: "success", message: "Preferensi berhasil disimpan" });
+			setToast({ type: "success", message: t.common.berhasilDisimpan });
 		} catch {
-			setToast({ type: "error", message: "Gagal menyimpan preferensi" });
+			setToast({ type: "error", message: t.common.gagalSimpan });
 		} finally {
 			setSaving(false);
 		}
@@ -136,33 +138,33 @@ const NotifikasiSettings = () => {
 				<GridCol span={6}>
 					<Stack gap="xs">
 						<Title order={3} mb="sm">
-							Metode Notifikasi
+							{t.notifikasi.metodeNotifikasi}
 						</Title>
-						<SwitchRow label="Laporan Harian" field="laporanHarian" />
-						<SwitchRow label="Alert Sistem" field="alertSistem" />
-						<SwitchRow label="Update Keamanan" field="updateKeamanan" />
-						<SwitchRow label="Newsletter Bulanan" field="newsletterBulan" />
+						<SwitchRow label={t.notifikasi.laporanHarian} field="laporanHarian" />
+						<SwitchRow label={t.notifikasi.alertSistem} field="alertSistem" />
+						<SwitchRow label={t.notifikasi.updateKeamanan} field="updateKeamanan" />
+						<SwitchRow label={t.notifikasi.newsletterBulanan} field="newsletterBulan" />
 					</Stack>
 				</GridCol>
 				<GridCol span={6}>
 					<Stack gap="xs">
 						<Title order={3} mb="sm">
-							Preferensi Alert
+							{t.notifikasi.preferensiAlert}
 						</Title>
-						<SwitchRow label="Treshold Memori" field="tresholdMemori" />
-						<SwitchRow label="Treshold CPU" field="tresholdCpu" />
-						<SwitchRow label="Treshold Disk" field="tresholdDisk" />
+						<SwitchRow label={t.notifikasi.tresholdMemori} field="tresholdMemori" />
+						<SwitchRow label={t.notifikasi.tresholdCpu} field="tresholdCpu" />
+						<SwitchRow label={t.notifikasi.tresholdDisk} field="tresholdDisk" />
 					</Stack>
 				</GridCol>
 				<GridCol span={6}>
 					<Stack gap="xs">
 						<Title order={3} mb="sm">
-							Notifikasi Push
+							{t.notifikasi.notifikasiPush}
 						</Title>
-						<SwitchRow label="Alert Kritis" field="alertKritis" />
-						<SwitchRow label="Aktivitas Tim" field="aktivitasTim" />
-						<SwitchRow label="Komentar & Mention" field="komentarMention" />
-						<SwitchRow label="Bunyi Notifikasi" field="bunyiNotifikasi" />
+						<SwitchRow label={t.notifikasi.alertKritis} field="alertKritis" />
+						<SwitchRow label={t.notifikasi.aktivitasTim} field="aktivitasTim" />
+						<SwitchRow label={t.notifikasi.komentarMention} field="komentarMention" />
+						<SwitchRow label={t.notifikasi.bunyiNotifikasi} field="bunyiNotifikasi" />
 					</Stack>
 				</GridCol>
 			</Grid>
@@ -172,10 +174,10 @@ const NotifikasiSettings = () => {
 					onClick={handleBatal}
 					disabled={saving || loading}
 				>
-					Batal
+					{t.common.batal}
 				</Button>
 				<Button onClick={handleSave} loading={saving} disabled={loading}>
-					Simpan Preferensi
+					{t.common.simpanPreferensi}
 				</Button>
 			</Group>
 		</Stack>

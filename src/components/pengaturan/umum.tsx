@@ -93,9 +93,9 @@ const UmumSettings = () => {
 			const data = json.data as Prefs;
 			setPrefs(data);
 			setSavedPrefs(data);
-			setToast({ type: "success", message: t.umum.berhasilDisimpan });
+			setToast({ type: "success", message: t.common.berhasilDisimpan });
 		} catch {
-			setToast({ type: "error", message: t.umum.gagalSimpan });
+			setToast({ type: "error", message: t.common.gagalSimpan });
 		} finally {
 			setSaving(false);
 		}
@@ -212,10 +212,10 @@ const UmumSettings = () => {
 					onClick={handleBatal}
 					disabled={saving || loading}
 				>
-					{t.umum.batal}
+					{t.common.batal}
 				</Button>
 				<Button onClick={handleSave} loading={saving} disabled={loading}>
-					{t.umum.simpan}
+					{t.common.simpan}
 				</Button>
 			</Group>
 		</Box>

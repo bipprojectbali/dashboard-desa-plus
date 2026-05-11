@@ -9,7 +9,6 @@ import {
 	Group,
 	Loader,
 	Stack,
-	Tabs,
 	Text,
 	Title,
 } from "@mantine/core";
@@ -24,6 +23,7 @@ import {
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/utils/api-client";
+import { useTranslate } from "@/hooks/useTranslate";
 import "dayjs/locale/id";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -31,12 +31,11 @@ dayjs.extend(relativeTime);
 dayjs.locale("id");
 
 const SinkronisasiSettings = () => {
+	const t = useTranslate();
 	const [loading, setLoading] = useState(false);
 	const [demografiLoading, setDemografiLoading] = useState(false);
 	const [lastSync, setLastSync] = useState<string | null>(null);
-	const [demografiLastSync, setDemografiLastSync] = useState<string | null>(
-		null,
-	);
+	const [demografiLastSync, setDemografiLastSync] = useState<string | null>(null);
 	const [status, setStatus] = useState<{
 		type: "success" | "error" | null;
 		message: string;
@@ -76,37 +75,20 @@ const SinkronisasiSettings = () => {
 		setStatus({ type: null, message: "" });
 
 		try {
-			console.log("[Sync] Starting NOC synchronization...");
+			const { data, error, response } = await apiClient.POST("/api/noc/sync", {});
 
-			const { data, error, response } = await apiClient.POST(
-				"/api/noc/sync",
-				{},
-			);
-
-			console.log("[Sync] Response:", {
-				data,
-				error,
-				status: response?.status,
-			});
-
-			// Check HTTP status first
 			if (response?.status === 401) {
-				setStatus({
-					type: "error",
-					message:
-						"Anda tidak memiliki akses. Pastikan Anda login sebagai admin.",
-				});
+				setStatus({ type: "error", message: t.sinkronisasi.tidakAdaAkses });
 				return;
 			}
 
 			if (error) {
-				console.error("[Sync] API Error:", error);
 				setStatus({
 					type: "error",
 					message:
 						(error as any)?.error ||
 						(error as any)?.message ||
-						"Gagal melakukan sinkronisasi. Periksa console untuk detail.",
+						t.sinkronisasi.gagalSinkronisasi,
 				});
 				return;
 			}
@@ -114,29 +96,16 @@ const SinkronisasiSettings = () => {
 			if (data?.success) {
 				setStatus({
 					type: "success",
-					message: data.message || "Sinkronisasi berhasil dilakukan",
+					message: data.message || t.sinkronisasi.sinkronisasiBerhasil,
 				});
-				if (data.lastSyncedAt) {
-					setLastSync(data.lastSyncedAt);
-				}
+				if (data.lastSyncedAt) setLastSync(data.lastSyncedAt);
 			} else if (data?.error) {
-				setStatus({
-					type: "error",
-					message: data.error,
-				});
+				setStatus({ type: "error", message: data.error });
 			} else {
-				setStatus({
-					type: "error",
-					message: "Response tidak dikenali dari server",
-				});
+				setStatus({ type: "error", message: t.sinkronisasi.responseGagal });
 			}
-		} catch (err) {
-			console.error("[Sync] Exception:", err);
-			setStatus({
-				type: "error",
-				message:
-					"Terjadi kesalahan sistem saat sinkronisasi. Periksa console untuk detail.",
-			});
+		} catch {
+			setStatus({ type: "error", message: t.sinkronisasi.kesalahanSistem });
 		} finally {
 			setLoading(false);
 		}
@@ -147,27 +116,15 @@ const SinkronisasiSettings = () => {
 		setDemografiStatus({ type: null, message: "" });
 
 		try {
-			console.log("[Demografi Sync] Starting demografi synchronization...");
-
-			const { data, error, response } = await apiClient.POST(
-				"/api/demografi/sync",
-				{},
-			);
-
-			console.log("[Demografi Sync] Response:", {
-				data,
-				error,
-				status: response?.status,
-			});
+			const { data, error } = await apiClient.POST("/api/demografi/sync", {});
 
 			if (error) {
-				console.error("[Demografi Sync] API Error:", error);
 				setDemografiStatus({
 					type: "error",
 					message:
 						(error as any)?.error ||
 						(error as any)?.message ||
-						"Gagal melakukan sinkronisasi data demografi.",
+						t.sinkronisasi.gagalDemografi,
 				});
 				return;
 			}
@@ -175,60 +132,46 @@ const SinkronisasiSettings = () => {
 			if (data?.success) {
 				setDemografiStatus({
 					type: "success",
-					message: data.message || "Sinkronisasi data demografi berhasil",
+					message: data.message || t.sinkronisasi.berhasilDemografi,
 				});
-				if (data.lastSyncedAt) {
-					setDemografiLastSync(data.lastSyncedAt);
-				}
-				// Trigger refresh in demografi component
+				if (data.lastSyncedAt) setDemografiLastSync(data.lastSyncedAt);
 				window.dispatchEvent(new CustomEvent("demografi-sync-complete"));
 			} else if (data?.error) {
-				setDemografiStatus({
-					type: "error",
-					message: data.error,
-				});
+				setDemografiStatus({ type: "error", message: data.error });
 			} else {
-				setDemografiStatus({
-					type: "error",
-					message: "Response tidak dikenali dari server",
-				});
+				setDemografiStatus({ type: "error", message: t.sinkronisasi.responseGagal });
 			}
-		} catch (err) {
-			console.error("[Demografi Sync] Exception:", err);
-			setDemografiStatus({
-				type: "error",
-				message: "Terjadi kesalahan sistem saat sinkronisasi data demografi.",
-			});
+		} catch {
+			setDemografiStatus({ type: "error", message: t.sinkronisasi.kesalahanDemografi });
 		} finally {
 			setDemografiLoading(false);
 		}
 	};
 
 	return (
-		<Box pr={"20%"}>
+		<Box pr="20%">
 			<Title order={2} mb="lg">
-				Sinkronisasi Data
+				{t.sinkronisasi.judul}
 			</Title>
 
 			<Text c="dimmed" mb="xl">
-				Gunakan fitur ini untuk memperbarui data dashboard dengan data terbaru
-				dari server sumber.
+				{t.sinkronisasi.deskripsi}
 			</Text>
 
 			<Grid gutter="xl">
 				<Grid.Col span={{ base: 12, md: 6 }}>
 					<Title order={3} mb="md">
-						Data NOC (muku.id)
+						{t.sinkronisasi.dataNoc}
 					</Title>
 					<Card withBorder padding="lg" radius="md" mb="xl">
 						<Stack gap="md">
 							<Group justify="space-between">
 								<Group>
 									<IconDatabase size={20} color="gray" />
-									<Text fw={500}>Status Terakhir</Text>
+									<Text fw={500}>{t.sinkronisasi.statusTerakhir}</Text>
 								</Group>
 								<Badge color={lastSync ? "green" : "gray"} variant="light">
-									{lastSync ? "Terkoneksi" : "Belum Pernah Sinkron"}
+									{lastSync ? t.sinkronisasi.terkoneksi : t.sinkronisasi.belumPernah}
 								</Badge>
 							</Group>
 
@@ -236,12 +179,12 @@ const SinkronisasiSettings = () => {
 
 							<Box>
 								<Text size="sm" c="dimmed">
-									Waktu Sinkronisasi Terakhir:
+									{t.sinkronisasi.waktuSinkronisasi}
 								</Text>
 								<Text fw={700} size="lg">
 									{lastSync
 										? dayjs(lastSync).format("DD MMMM YYYY, HH:mm:ss")
-										: "Belum pernah dilakukan"}
+										: t.sinkronisasi.belumPernahDilakukan}
 								</Text>
 								{lastSync && (
 									<Text size="xs" c="dimmed" mt={4}>
@@ -259,7 +202,7 @@ const SinkronisasiSettings = () => {
 											<IconAlertCircle size={16} />
 										)
 									}
-									title={status.type === "success" ? "Berhasil" : "Kesalahan"}
+									title={status.type === "success" ? t.common.berhasil : t.common.kesalahan}
 									color={status.type === "success" ? "green" : "red"}
 									onClose={() => setStatus({ type: null, message: "" })}
 									withCloseButton
@@ -270,18 +213,14 @@ const SinkronisasiSettings = () => {
 
 							<Button
 								leftSection={
-									loading ? (
-										<Loader size={16} color="white" />
-									) : (
-										<IconRefresh size={16} />
-									)
+									loading ? <Loader size={16} color="white" /> : <IconRefresh size={16} />
 								}
 								onClick={handleSync}
 								loading={loading}
 								fullWidth
 								mt="md"
 							>
-								Sinkronkan NOC
+								{t.sinkronisasi.sinkronkanNoc}
 							</Button>
 						</Stack>
 					</Card>
@@ -289,20 +228,17 @@ const SinkronisasiSettings = () => {
 
 				<Grid.Col span={{ base: 12, md: 6 }}>
 					<Title order={3} mb="md">
-						Website Desa (darmasaba.desa.id)
+						{t.sinkronisasi.websiteDesa}
 					</Title>
 					<Card withBorder padding="lg" radius="md" mb="xl">
 						<Stack gap="md">
 							<Group justify="space-between">
 								<Group>
 									<IconUsers size={20} color="gray" />
-									<Text fw={500}>Status Terakhir</Text>
+									<Text fw={500}>{t.sinkronisasi.statusTerakhir}</Text>
 								</Group>
-								<Badge
-									color={demografiLastSync ? "blue" : "gray"}
-									variant="light"
-								>
-									{demografiLastSync ? "Terkoneksi" : "Belum Pernah Sinkron"}
+								<Badge color={demografiLastSync ? "blue" : "gray"} variant="light">
+									{demografiLastSync ? t.sinkronisasi.terkoneksi : t.sinkronisasi.belumPernah}
 								</Badge>
 							</Group>
 
@@ -310,12 +246,12 @@ const SinkronisasiSettings = () => {
 
 							<Box>
 								<Text size="sm" c="dimmed">
-									Waktu Sinkronisasi Terakhir:
+									{t.sinkronisasi.waktuSinkronisasi}
 								</Text>
 								<Text fw={700} size="lg">
 									{demografiLastSync
 										? dayjs(demografiLastSync).format("DD MMMM YYYY, HH:mm:ss")
-										: "Belum pernah dilakukan"}
+										: t.sinkronisasi.belumPernahDilakukan}
 								</Text>
 								{demografiLastSync && (
 									<Text size="xs" c="dimmed" mt={4}>
@@ -335,13 +271,11 @@ const SinkronisasiSettings = () => {
 									}
 									title={
 										demografiStatus.type === "success"
-											? "Berhasil"
-											: "Kesalahan"
+											? t.common.berhasil
+											: t.common.kesalahan
 									}
 									color={demografiStatus.type === "success" ? "blue" : "red"}
-									onClose={() =>
-										setDemografiStatus({ type: null, message: "" })
-									}
+									onClose={() => setDemografiStatus({ type: null, message: "" })}
 									withCloseButton
 								>
 									{demografiStatus.message}
@@ -362,7 +296,7 @@ const SinkronisasiSettings = () => {
 								fullWidth
 								mt="md"
 							>
-								Sinkronkan Website Desa
+								{t.sinkronisasi.sinkronkanDesa}
 							</Button>
 						</Stack>
 					</Card>
@@ -370,7 +304,7 @@ const SinkronisasiSettings = () => {
 			</Grid>
 
 			<Title order={2} mb="lg">
-				Informasi Sumber Data
+				{t.sinkronisasi.informasiSumber}
 			</Title>
 
 			<Grid>
@@ -378,27 +312,21 @@ const SinkronisasiSettings = () => {
 					<Card withBorder padding="md" radius="md" bg="gray.0">
 						<Stack gap="xs">
 							<Text fw={700} size="sm">
-								Network Operation Center (NOC)
+								{t.sinkronisasi.nocNama}
 							</Text>
 							<Group>
 								<Text fw={600} size="xs" w={80}>
-									URL:
+									{t.sinkronisasi.url}
 								</Text>
 								<Text size="xs">https://darmasaba.muku.id/api/noc/</Text>
 							</Group>
 							<Group>
 								<Text fw={600} size="xs" w={80}>
-									Model:
+									{t.sinkronisasi.model}
 								</Text>
-								<Badge size="xs" variant="outline">
-									Divisi
-								</Badge>
-								<Badge size="xs" variant="outline">
-									Kegiatan
-								</Badge>
-								<Badge size="xs" variant="outline">
-									Diskusi
-								</Badge>
+								<Badge size="xs" variant="outline">Divisi</Badge>
+								<Badge size="xs" variant="outline">Kegiatan</Badge>
+								<Badge size="xs" variant="outline">Diskusi</Badge>
 							</Group>
 						</Stack>
 					</Card>
@@ -407,27 +335,21 @@ const SinkronisasiSettings = () => {
 					<Card withBorder padding="md" radius="md" bg="gray.0">
 						<Stack gap="xs">
 							<Text fw={700} size="sm">
-								Website Desa Darmasaba
+								{t.sinkronisasi.desaNama}
 							</Text>
 							<Group>
 								<Text fw={600} size="xs" w={80}>
-									URL:
+									{t.sinkronisasi.url}
 								</Text>
 								<Text size="xs">https://desa-darmasaba-stg.wibudev.com</Text>
 							</Group>
 							<Group>
 								<Text fw={600} size="xs" w={80}>
-									Model:
+									{t.sinkronisasi.model}
 								</Text>
-								<Badge size="xs" variant="outline" color="blue">
-									Demografi
-								</Badge>
-								<Badge size="xs" variant="outline" color="blue">
-									APBDes
-								</Badge>
-								<Badge size="xs" variant="outline" color="blue">
-									Sektor
-								</Badge>
+								<Badge size="xs" variant="outline" color="blue">Demografi</Badge>
+								<Badge size="xs" variant="outline" color="blue">APBDes</Badge>
+								<Badge size="xs" variant="outline" color="blue">Sektor</Badge>
 							</Group>
 						</Stack>
 					</Card>

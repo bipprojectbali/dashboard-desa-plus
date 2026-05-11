@@ -10,6 +10,7 @@ import {
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { ChevronDown, ChevronUp, Search } from "lucide-react";
 import { useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 
 interface SidebarProps {
 	className?: string;
@@ -19,39 +20,36 @@ export function Sidebar({ className }: SidebarProps) {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const { colorScheme } = useMantineColorScheme();
+	const t = useTranslate();
 	const dark = colorScheme === "dark";
 	const isActiveBg = colorScheme === "dark" ? "#182949" : "#E6F0FF";
 	const isActiveBorder = colorScheme === "dark" ? "#00398D" : "#1F41AE";
 
-	// State for settings submenu collapse
 	const [settingsOpen, setSettingsOpen] = useState(
 		location.pathname.startsWith("/pengaturan"),
 	);
 
-	// Define menu items with their paths
 	const menuItems = [
-		{ name: "Beranda", path: "/" },
-		{ name: "Kinerja Divisi", path: "/kinerja-divisi" },
-		{ name: "Pengaduan & Layanan Publik", path: "/pengaduan-layanan-publik" },
-		{ name: "Jenna Analytic", path: "/jenna-analytic" },
-		{ name: "Demografi & Kependudukan", path: "/demografi-pekerjaan" },
-		{ name: "Keuangan & Anggaran", path: "/keuangan-anggaran" },
-		{ name: "Bumdes & UMKM Desa", path: "/bumdes" },
-		{ name: "Sosial", path: "/sosial" },
-		{ name: "Keamanan", path: "/keamanan" },
-		{ name: "Bantuan", path: "/bantuan" },
+		{ name: t.sidebar.beranda, path: "/" },
+		{ name: t.sidebar.kinerjaDevisi, path: "/kinerja-divisi" },
+		{ name: t.sidebar.pengaduanLayanan, path: "/pengaduan-layanan-publik" },
+		{ name: t.sidebar.analitik, path: "/jenna-analytic" },
+		{ name: t.sidebar.demografi, path: "/demografi-pekerjaan" },
+		{ name: t.sidebar.keuangan, path: "/keuangan-anggaran" },
+		{ name: t.sidebar.bumdes, path: "/bumdes" },
+		{ name: t.sidebar.sosial, path: "/sosial" },
+		{ name: t.sidebar.keamanan, path: "/keamanan" },
+		{ name: t.sidebar.bantuan, path: "/bantuan" },
 	];
 
-	// Settings submenu items
 	const settingsItems = [
-		{ name: "Umum", path: "/pengaturan/umum" },
-		{ name: "Notifikasi", path: "/pengaturan/notifikasi" },
-		{ name: "Keamanan", path: "/pengaturan/keamanan" },
-		{ name: "Akses & Tim", path: "/pengaturan/akses-dan-tim" },
-		{ name: "Sinkronisasi NOC", path: "/pengaturan/sinkronisasi" },
+		{ name: t.sidebar.settingsUmum, path: "/pengaturan/umum" },
+		{ name: t.sidebar.settingsNotifikasi, path: "/pengaturan/notifikasi" },
+		{ name: t.sidebar.settingsKeamanan, path: "/pengaturan/keamanan" },
+		{ name: t.sidebar.settingsAksesTim, path: "/pengaturan/akses-dan-tim" },
+		{ name: t.sidebar.settingsSinkronisasi, path: "/pengaturan/sinkronisasi" },
 	];
 
-	// Check if any settings submenu is active
 	const isSettingsActive = settingsItems.some(
 		(item) => location.pathname === item.path,
 	);
@@ -64,7 +62,7 @@ export function Sidebar({ className }: SidebarProps) {
 			{/* Search */}
 			<Box p="md">
 				<Input
-					placeholder="cari apa saja"
+					placeholder={t.sidebar.cariApaSaja}
 					leftSection={<Search size={16} />}
 					styles={{
 						input: {
@@ -116,7 +114,7 @@ export function Sidebar({ className }: SidebarProps) {
 						rightSection={
 							settingsOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />
 						}
-						label="Pengaturan"
+						label={t.sidebar.pengaturan}
 						active={isSettingsActive}
 						variant="subtle"
 						color="blue"
