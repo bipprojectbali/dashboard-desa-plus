@@ -110,19 +110,15 @@ if (!isProduction) {
 				},
 				headers: {} as Record<string, string>,
 				end(data: any) {
-					// Handle potential Buffer or string data from Vite
-					let body = data;
-					// If we have collected chunks from write() calls, combine them
-					if (this._chunks && this._chunks.length > 0) {
-						body = Buffer.concat(this._chunks);
+					const chunks: Buffer[] = this._chunks || [];
+					if (data != null) {
+						if (data instanceof Uint8Array || Buffer.isBuffer(data)) {
+							chunks.push(Buffer.from(data));
+						} else if (typeof data === "string") {
+							chunks.push(Buffer.from(data));
+						}
 					}
-					if (data instanceof Uint8Array) {
-						body = data;
-					} else if (typeof data === "string") {
-						body = data;
-					} else if (data) {
-						body = String(data);
-					}
+					const body = chunks.length > 0 ? Buffer.concat(chunks) : undefined;
 
 					resolve(
 						new Response(body || "", {

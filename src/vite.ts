@@ -18,7 +18,7 @@ export async function createVite() {
 		server: {
 			middlewareMode: true,
 			hmr: {
-				port: 3000,
+				port: 24678,
 			},
 		},
 		appType: "custom",
