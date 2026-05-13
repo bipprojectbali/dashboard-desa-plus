@@ -143,6 +143,7 @@ export function DevInspector({ children }: { children: React.ReactNode }) {
 				const loc = `${info.relativePath}:${info.line}:${info.column}`;
 				console.log("[DevInspector] Open:", loc);
 				openInEditor(info);
+				navigator.clipboard.writeText(loc).catch(() => {});
 			}
 			setActive(false);
 		};

@@ -10,6 +10,7 @@ type UserRole = "user" | "admin";
 type SessionUser = {
 	id: string;
 	role: UserRole;
+	emailVerified?: boolean | null;
 };
 
 type SessionResponse = {
@@ -72,6 +73,13 @@ const routeRules: RouteRule[] = [
 		requiredRole: "admin",
 		redirectTo: "/signin",
 	},
+	// Akses & Tim settings — admin only
+	{
+		match: (p) => p === "/pengaturan/akses-dan-tim",
+		requireAuth: true,
+		requiredRole: "admin",
+		redirectTo: "/",
+	},
 	// All other routes — auth required
 	{
 		match: () => true,
@@ -118,6 +126,11 @@ export function createProtectedRoute(options: ProtectedRouteOptions = {}) {
 		// If auth is required but user is not logged in, redirect to login
 		if (rule.requireAuth && !user) {
 			redirectToLogin(rule.redirectTo ?? redirectTo, location.href);
+		}
+
+		// If user has not been verified by admin yet, block access
+		if (user && user.emailVerified === false) {
+			redirectToLogin("/signin", location.href);
 		}
 
 		// If specific role is required, check it

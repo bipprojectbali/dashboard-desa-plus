@@ -27,8 +27,9 @@ export const Route = createRootRoute({
 
 function RootComponent() {
 	const routerState = useRouterState();
+	const pathname = routerState.location.pathname;
 	const isPublicRoute = ["/signin", "/signup", "/admin", "/profile"].some(
-		(path) => routerState.location.pathname.startsWith(path),
+		(path) => pathname.startsWith(path),
 	);
 
 	if (isPublicRoute) {
@@ -36,7 +37,7 @@ function RootComponent() {
 	}
 
 	return (
-		<MainLayout>
+		<MainLayout routeKey={pathname}>
 			<Outlet />
 		</MainLayout>
 	);

@@ -31,6 +31,9 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { useSnapshot } from "valtio";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { i18nStore } from "@/store/i18n";
 import { apiClient } from "@/utils/api-client";
 
 // Data Interfaces
@@ -68,6 +71,7 @@ interface AssistanceData {
 const KeuanganAnggaran = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const { tampilkanGrid } = useSnapshot(i18nStore);
 
 	const [loading, setLoading] = useState(true);
 	const [kpiData, setKpiData] = useState<KpiItem[]>([]);
@@ -278,6 +282,8 @@ const KeuanganAnggaran = () => {
 		fetchData();
 	}, [fetchData]);
 
+	useAutoRefresh(fetchData);
+
 	if (loading) {
 		return (
 			<Group justify="center" py="xl" h="100%">
@@ -361,11 +367,13 @@ const KeuanganAnggaran = () => {
 						</Group>
 						<ResponsiveContainer width="100%" height={300}>
 							<LineChart data={incomeExpenseData}>
-								<CartesianGrid
-									strokeDasharray="3 3"
-									vertical={false}
-									stroke={dark ? "#334155" : "#e5e7eb"}
-								/>
+								{tampilkanGrid && (
+									<CartesianGrid
+										strokeDasharray="3 3"
+										vertical={false}
+										stroke={dark ? "#334155" : "#e5e7eb"}
+									/>
+								)}
 								<XAxis
 									dataKey="month"
 									axisLine={false}
@@ -442,11 +450,13 @@ const KeuanganAnggaran = () => {
 						</Group>
 						<ResponsiveContainer width="100%" height={300}>
 							<BarChart data={allocationData} layout="vertical">
-								<CartesianGrid
-									strokeDasharray="3 3"
-									horizontal={false}
-									stroke={dark ? "#334155" : "#e5e7eb"}
-								/>
+								{tampilkanGrid && (
+									<CartesianGrid
+										strokeDasharray="3 3"
+										horizontal={false}
+										stroke={dark ? "#334155" : "#e5e7eb"}
+									/>
+								)}
 								<XAxis
 									type="number"
 									axisLine={false}
