@@ -57,6 +57,42 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 			detail: { summary: "Admin system stats" },
 		},
 	)
+	.get(
+		"/user-stats",
+		async ({ set, user }) => {
+			if (user?.role !== "admin") {
+				set.status = 403;
+				return { error: "Forbidden" };
+			}
+			const [total, adminCount] = await Promise.all([
+				prisma.user.count(),
+				prisma.user.count({ where: { role: "admin" } }),
+			]);
+			const userCount = total - adminCount;
+			return {
+				data: {
+					total,
+					roles: [
+						{
+							role: "admin",
+							label: "Administrator",
+							count: adminCount,
+							color: "red",
+						},
+						{
+							role: "user",
+							label: "Pengguna",
+							count: userCount,
+							color: "blue",
+						},
+					],
+				},
+			};
+		},
+		{
+			detail: { summary: "User count per role (admin only)" },
+		},
+	)
 	.post(
 		"/users/update-role",
 		async ({ body, set, user }) => {

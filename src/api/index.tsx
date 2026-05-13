@@ -3,6 +3,7 @@ import { swagger } from "@elysiajs/swagger";
 import Elysia, { t } from "elysia";
 import { apiMiddleware } from "../middleware/apiMiddleware";
 import { auth } from "../utils/auth";
+import { activityLog } from "./activity-log";
 import { adminApi } from "./admin";
 import { aksesPreferences } from "./akses-preferences";
 import { apikey } from "./apikey";
@@ -11,12 +12,14 @@ import { dashboard } from "./dashboard";
 import { demografi } from "./demografi";
 import { division } from "./division";
 import { event } from "./event";
+import { invitationRoutes } from "./invitation";
 import { jennaChat } from "./jenna";
 import { keamananPreferences } from "./keamanan-preferences";
 import { noc } from "./noc";
 import { notificationPreferences } from "./notification-preferences";
 import { profile } from "./profile";
 import { resident } from "./resident";
+import { systemStatsRoutes } from "./system-stats";
 import { umumPreferences } from "./umum-preferences";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -72,7 +75,10 @@ const api = new Elysia({
 	.use(umumPreferences)
 	.use(keamananPreferences)
 	.use(aksesPreferences)
-	.use(jennaChat);
+	.use(jennaChat)
+	.use(systemStatsRoutes)
+	.use(activityLog)
+	.use(invitationRoutes);
 
 if (!isProduction) {
 	api.use(

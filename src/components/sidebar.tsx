@@ -10,7 +10,9 @@ import {
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { ChevronDown, ChevronUp, Search } from "lucide-react";
 import { useState } from "react";
+import { useSnapshot } from "valtio";
 import { useTranslate } from "@/hooks/useTranslate";
+import { authStore } from "@/store/auth";
 
 interface SidebarProps {
 	className?: string;
@@ -25,9 +27,13 @@ export function Sidebar({ className }: SidebarProps) {
 	const isActiveBg = colorScheme === "dark" ? "#182949" : "#E6F0FF";
 	const isActiveBorder = colorScheme === "dark" ? "#00398D" : "#1F41AE";
 
+	const snap = useSnapshot(authStore);
+	const isAdmin = snap.user?.role === "admin";
+
 	const [settingsOpen, setSettingsOpen] = useState(
 		location.pathname.startsWith("/pengaturan"),
 	);
+	const [query, setQuery] = useState("");
 
 	const menuItems = [
 		{ name: t.sidebar.beranda, path: "/" },
@@ -45,38 +51,84 @@ export function Sidebar({ className }: SidebarProps) {
 	const settingsItems = [
 		{ name: t.sidebar.settingsUmum, path: "/pengaturan/umum" },
 		{ name: t.sidebar.settingsNotifikasi, path: "/pengaturan/notifikasi" },
-		{ name: t.sidebar.settingsKeamanan, path: "/pengaturan/keamanan" },
-		{ name: t.sidebar.settingsAksesTim, path: "/pengaturan/akses-dan-tim" },
-		{ name: t.sidebar.settingsSinkronisasi, path: "/pengaturan/sinkronisasi" },
+		...(isAdmin
+			? [
+					{ name: t.sidebar.settingsKeamanan, path: "/pengaturan/keamanan" },
+					{ name: t.sidebar.settingsAksesTim, path: "/pengaturan/akses-dan-tim" },
+					{
+						name: t.sidebar.settingsSinkronisasi,
+						path: "/pengaturan/sinkronisasi",
+					},
+				]
+			: []),
 	];
+
+	const q = query.trim().toLowerCase();
+
+	const filteredMenu = q
+		? menuItems.filter((item) => item.name.toLowerCase().includes(q))
+		: menuItems;
+
+	const filteredSettings = q
+		? settingsItems.filter((item) => item.name.toLowerCase().includes(q))
+		: settingsItems;
+
+	// When searching, auto-open settings collapse if there are setting results
+	const showSettings = q ? filteredSettings.length > 0 : true;
+	const settingsCollapseOpen = q ? filteredSettings.length > 0 : settingsOpen;
 
 	const isSettingsActive = settingsItems.some(
 		(item) => location.pathname === item.path,
 	);
 
+	const navLinkStyle = (isActive: boolean) => ({
+		background: isActive ? isActiveBg : "transparent",
+		fontWeight: isActive ? ("bold" as const) : ("normal" as const),
+		borderLeft: isActive
+			? `4px solid ${isActiveBorder}`
+			: "4px solid transparent",
+		borderRadius: "8px",
+		transition: "all 200ms ease",
+		margin: "2px 0",
+	});
+
+	const navLinkStyles = {
+		body: {
+			"&:hover": {
+				background: "#F1F5F9",
+			},
+		},
+	};
+
 	return (
 		<Box className={className}>
-			{/* Logo */}
-			<Image src={dark ? "/white.png" : "/light-mode.png"} alt="Logo" />
+			{/* Logo — fixed size regardless of color scheme */}
+			<Box
+				p="md"
+				style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+			>
+				<Image
+					src={dark ? "/white-1.png" : "/light-mode.png"}
+					alt="Logo"
+					w={215}
+					h={100}
+					
+				/>
+			</Box>
 
 			{/* Search */}
-			<Box p="md">
+			<Box px="md" pb="md">
 				<Input
 					placeholder={t.sidebar.cariApaSaja}
 					leftSection={<Search size={16} />}
-					styles={{
-						input: {
-							"&::placeholder": {
-								color: dark ? "#F1F5F9" : "#263852ff",
-							},
-						},
-					}}
+					value={query}
+					onChange={(e) => setQuery(e.currentTarget.value)}
 				/>
 			</Box>
 
 			{/* Menu Items */}
 			<Stack gap={0} px="xs" style={{ overflowY: "auto" }}>
-				{menuItems.map((item) => {
+				{filteredMenu.map((item) => {
 					const isActive = location.pathname === item.path;
 					return (
 						<MantineNavLink
@@ -86,95 +138,58 @@ export function Sidebar({ className }: SidebarProps) {
 							active={isActive}
 							variant="subtle"
 							color="blue"
-							style={{
-								background: isActive ? isActiveBg : "transparent",
-								fontWeight: isActive ? "bold" : "normal",
-								borderLeft: isActive
-									? `4px solid ${isActiveBorder}`
-									: "4px solid transparent",
-								borderRadius: "8px",
-								transition: "all 200ms ease",
-								margin: "2px 0",
-							}}
-							styles={{
-								body: {
-									"&:hover": {
-										background: "#F1F5F9",
-									},
-								},
-							}}
+							style={navLinkStyle(isActive)}
+							styles={navLinkStyles}
 						/>
 					);
 				})}
 
 				{/* Settings with submenu */}
-				<Box>
-					<MantineNavLink
-						onClick={() => setSettingsOpen(!settingsOpen)}
-						rightSection={
-							settingsOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />
-						}
-						label={t.sidebar.pengaturan}
-						active={isSettingsActive}
-						variant="subtle"
-						color="blue"
-						style={{
-							background: isSettingsActive ? isActiveBg : "transparent",
-							fontWeight: isSettingsActive ? "bold" : "normal",
-							borderLeft: isSettingsActive
-								? `4px solid ${isActiveBorder}`
-								: "4px solid transparent",
-							borderRadius: "8px",
-							transition: "all 200ms ease",
-							margin: "2px 0",
-						}}
-						styles={{
-							body: {
-								"&:hover": {
-									background: "#F1F5F9",
-								},
-							},
-						}}
-					/>
-					<Collapse in={settingsOpen}>
-						<Stack
-							gap={0}
-							ml="lg"
-							style={{ overflowY: "auto", maxHeight: "200px" }}
-						>
-							{settingsItems.map((item) => {
-								const isActive = location.pathname === item.path;
-								return (
-									<MantineNavLink
-										key={item.path}
-										onClick={() => navigate({ to: item.path })}
-										label={item.name}
-										active={isActive}
-										variant="subtle"
-										color="blue"
-										style={{
-											background: isActive ? isActiveBg : "transparent",
-											fontWeight: isActive ? "bold" : "normal",
-											borderLeft: isActive
-												? `4px solid ${isActiveBorder}`
-												: "4px solid transparent",
-											borderRadius: "8px",
-											transition: "all 200ms ease",
-											margin: "2px 0",
-										}}
-										styles={{
-											body: {
-												"&:hover": {
-													background: "#F1F5F9",
-												},
-											},
-										}}
-									/>
-								);
-							})}
-						</Stack>
-					</Collapse>
-				</Box>
+				{showSettings && (
+					<Box>
+						{!q && (
+							<MantineNavLink
+								onClick={() => setSettingsOpen(!settingsOpen)}
+								rightSection={
+									settingsOpen ? (
+										<ChevronUp size={16} />
+									) : (
+										<ChevronDown size={16} />
+									)
+								}
+								label={t.sidebar.pengaturan}
+								active={isSettingsActive}
+								variant="subtle"
+								color="blue"
+								style={navLinkStyle(isSettingsActive)}
+								styles={navLinkStyles}
+							/>
+						)}
+						<Collapse in={settingsCollapseOpen}>
+							<Stack
+								gap={0}
+								ml={q ? 0 : "lg"}
+								style={{ overflowY: "auto", maxHeight: "200px" }}
+							>
+								{filteredSettings.map((item) => {
+									const isActive = location.pathname === item.path;
+									return (
+										<MantineNavLink
+											key={item.path}
+											onClick={() => navigate({ to: item.path })}
+											label={item.name}
+											active={isActive}
+											variant="subtle"
+											color="blue"
+											style={navLinkStyle(isActive)}
+											styles={navLinkStyles}
+										/>
+									);
+								})}
+							</Stack>
+						</Collapse>
+					</Box>
+				)}
 			</Stack>
 		</Box>
 	);

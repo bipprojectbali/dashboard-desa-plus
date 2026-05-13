@@ -12,6 +12,7 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
+	Tooltip,
 	useMantineColorScheme,
 } from "@mantine/core";
 import {
@@ -29,7 +30,13 @@ import {
 	IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import { useSnapshot } from "valtio";
+import { useActivityLogger } from "@/hooks/useActivityLogger";
+import { useApprovalGuard } from "@/hooks/useApprovalGuard";
 import { useTranslate } from "@/hooks/useTranslate";
+import { authStore } from "@/store/auth";
+import { SesiAktifModal } from "./keamanan/SesiAktifModal";
+import { UbahPasswordModal } from "./keamanan/UbahPasswordModal";
 
 type Prefs = {
 	twoFactorAuth: boolean;
@@ -47,6 +54,10 @@ const DEFAULT_PREFS: Prefs = {
 
 const KeamananSettings = () => {
 	const t = useTranslate();
+	const { withApproval } = useApprovalGuard();
+	const { log } = useActivityLogger();
+	const snap = useSnapshot(authStore);
+	const isAdmin = snap.user?.role === "admin";
 	const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [savedPrefs, setSavedPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [loading, setLoading] = useState(true);
@@ -55,6 +66,8 @@ const KeamananSettings = () => {
 		type: "success" | "error";
 		message: string;
 	} | null>(null);
+	const [ubahPasswordOpened, setUbahPasswordOpened] = useState(false);
+	const [sesiAktifOpened, setSesiAktifOpened] = useState(false);
 
 	useEffect(() => {
 		const fetchPrefs = async () => {
@@ -97,6 +110,7 @@ const KeamananSettings = () => {
 			const data = json.data as Prefs;
 			setPrefs(data);
 			setSavedPrefs(data);
+			log("ubah-pengaturan-keamanan", "Preferensi keamanan diperbarui");
 			setToast({ type: "success", message: t.common.berhasilDisimpan });
 		} catch {
 			setToast({ type: "error", message: t.common.gagalSimpan });
@@ -118,21 +132,30 @@ const KeamananSettings = () => {
 		icon,
 		field,
 		badge,
+		disabled: forceDisabled,
+		disabledTooltip,
 	}: {
 		label: string;
 		description: string;
 		icon: React.ReactNode;
 		field: keyof Prefs;
 		badge?: { label: string; color: string };
+		disabled?: boolean;
+		disabledTooltip?: string;
 	}) => (
 		<Group justify="space-between" wrap="nowrap" py="sm">
 			<Group gap="sm" wrap="nowrap">
-				<ThemeIcon size={36} radius="md" variant="light" color="red">
+				<ThemeIcon
+					size={36}
+					radius="md"
+					variant="light"
+					color={forceDisabled ? "gray" : "red"}
+				>
 					{icon}
 				</ThemeIcon>
 				<Box>
 					<Group gap={6}>
-						<Text fw={600} fz="sm">
+						<Text fw={600} fz="sm" c={forceDisabled ? "dimmed" : undefined}>
 							{label}
 						</Text>
 						{badge && (
@@ -146,13 +169,21 @@ const KeamananSettings = () => {
 					</Text>
 				</Box>
 			</Group>
-			<Switch
-				checked={prefs[field]}
-				onChange={() => toggle(field)}
-				disabled={loading}
-				size="md"
-				color="red"
-			/>
+			<Tooltip
+				label={disabledTooltip}
+				disabled={!disabledTooltip || !forceDisabled}
+				position="left"
+				multiline
+				maw={220}
+			>
+				<Switch
+					checked={prefs[field]}
+					onChange={() => toggle(field)}
+					disabled={loading || !!forceDisabled}
+					size="md"
+					color="red"
+				/>
+			</Tooltip>
 		</Group>
 	);
 
@@ -162,12 +193,14 @@ const KeamananSettings = () => {
 		icon,
 		onClick,
 		color = "blue",
+		buttonLabel = "Buka",
 	}: {
 		label: string;
 		description: string;
 		icon: React.ReactNode;
 		onClick?: () => void;
 		color?: string;
+		buttonLabel?: string;
 	}) => (
 		<Group justify="space-between" wrap="nowrap" py="sm">
 			<Group gap="sm" wrap="nowrap">
@@ -191,13 +224,32 @@ const KeamananSettings = () => {
 				onClick={onClick}
 				disabled={loading}
 			>
-				Buka
+				{buttonLabel}
 			</Button>
 		</Group>
 	);
 
+	if (!isAdmin) {
+		return (
+			<Box maw={680}>
+				<Alert color="orange" radius="md" icon={<IconShieldLock size={16} />}>
+					Halaman ini hanya dapat diakses oleh administrator.
+				</Alert>
+			</Box>
+		);
+	}
+
 	return (
 		<Box maw={680}>
+			<UbahPasswordModal
+				opened={ubahPasswordOpened}
+				onClose={() => setUbahPasswordOpened(false)}
+			/>
+			<SesiAktifModal
+				opened={sesiAktifOpened}
+				onClose={() => setSesiAktifOpened(false)}
+			/>
+
 			{toast && (
 				<Alert
 					color={toast.type === "success" ? "green" : "red"}
@@ -257,7 +309,9 @@ const KeamananSettings = () => {
 							description="Verifikasi dua langkah via aplikasi authenticator atau SMS saat login"
 							icon={<IconShieldCheck size={18} />}
 							field="twoFactorAuth"
-							badge={{ label: "Disarankan", color: "green" }}
+							badge={{ label: "Segera Hadir", color: "gray" }}
+							disabled
+							disabledTooltip="Membutuhkan konfigurasi plugin 2FA di server"
 						/>
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 						<SwitchRow
@@ -265,6 +319,9 @@ const KeamananSettings = () => {
 							description="Gunakan sidik jari atau Face ID untuk login lebih cepat dan aman"
 							icon={<IconFingerprint size={18} />}
 							field="biometrikLogin"
+							badge={{ label: "Segera Hadir", color: "gray" }}
+							disabled
+							disabledTooltip="Fitur WebAuthn/Passkey belum tersedia"
 						/>
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 						<SwitchRow
@@ -272,7 +329,9 @@ const KeamananSettings = () => {
 							description="Batasi akses hanya dari alamat IP yang telah didaftarkan"
 							icon={<IconNetwork size={18} />}
 							field="ipWhitelist"
-							badge={{ label: "Lanjutan", color: "orange" }}
+							badge={{ label: "Segera Hadir", color: "gray" }}
+							disabled
+							disabledTooltip="Fitur whitelist IP belum tersedia"
 						/>
 					</>
 				)}
@@ -318,6 +377,7 @@ const KeamananSettings = () => {
 							description="Ganti password akun secara berkala untuk menjaga keamanan"
 							icon={<IconKey size={18} />}
 							color="blue"
+							onClick={() => setUbahPasswordOpened(true)}
 						/>
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 						<ActionRow
@@ -325,6 +385,7 @@ const KeamananSettings = () => {
 							description="Lihat daftar login terbaru beserta lokasi dan perangkat yang digunakan"
 							icon={<IconHistory size={18} />}
 							color="blue"
+							onClick={() => setSesiAktifOpened(true)}
 						/>
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 						<ActionRow
@@ -332,6 +393,7 @@ const KeamananSettings = () => {
 							description="Kelola perangkat yang pernah digunakan untuk masuk ke akun ini"
 							icon={<IconDevices size={18} />}
 							color="blue"
+							onClick={() => setSesiAktifOpened(true)}
 						/>
 					</>
 				)}
@@ -383,6 +445,13 @@ const KeamananSettings = () => {
 							description="Unduh riwayat log aktivitas dalam format CSV untuk keperluan audit"
 							icon={<IconDownload size={18} />}
 							color="teal"
+							buttonLabel="Download"
+							onClick={() => {
+								const a = document.createElement("a");
+								a.href = "/api/activity-log/export";
+								a.download = "activity-log.csv";
+								a.click();
+							}}
 						/>
 					</>
 				)}
@@ -398,7 +467,7 @@ const KeamananSettings = () => {
 					{t.common.batal}
 				</Button>
 				<Button
-					onClick={handleSave}
+					onClick={() => withApproval(handleSave, "pengaturan keamanan")}
 					loading={saving}
 					disabled={loading}
 					radius="md"

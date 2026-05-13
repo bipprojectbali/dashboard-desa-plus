@@ -26,6 +26,7 @@ import {
 	IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import { useApprovalGuard } from "@/hooks/useApprovalGuard";
 import { useTranslate } from "@/hooks/useTranslate";
 import {
 	type FormatTanggal,
@@ -57,6 +58,7 @@ const DEFAULT_PREFS: Prefs = {
 
 const UmumSettings = () => {
 	const t = useTranslate();
+	const { withApproval } = useApprovalGuard();
 	const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [savedPrefs, setSavedPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [loading, setLoading] = useState(true);
@@ -330,7 +332,11 @@ const UmumSettings = () => {
 									},
 								]}
 								value={prefs.formatTanggal}
-								onChange={(v) => updatePref("formatTanggal", v ?? "DD/MM/YYYY")}
+								onChange={(v) => {
+									const fmt = (v ?? "DD/MM/YYYY") as FormatTanggal;
+									updatePref("formatTanggal", fmt);
+									setFormatTanggal(fmt);
+								}}
 								disabled={loading}
 								radius="md"
 							/>
@@ -444,7 +450,7 @@ const UmumSettings = () => {
 					{t.common.batal}
 				</Button>
 				<Button
-					onClick={handleSave}
+					onClick={() => withApproval(handleSave, "preferensi umum")}
 					loading={saving}
 					disabled={loading}
 					radius="md"

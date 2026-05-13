@@ -27,7 +27,13 @@ import {
 	IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import { useSnapshot } from "valtio";
+import { useApprovalGuard } from "@/hooks/useApprovalGuard";
 import { useTranslate } from "@/hooks/useTranslate";
+import { setAksesPrefs } from "@/store/akses";
+import { authStore } from "@/store/auth";
+import { KelolaRoleModal } from "./akses/KelolaRoleModal";
+import { UndanganModal } from "./akses/UndanganModal";
 
 type Prefs = {
 	izinExportData: boolean;
@@ -39,16 +45,53 @@ const DEFAULT_PREFS: Prefs = {
 	requireApprovalPerubahan: true,
 };
 
+interface RoleEntry {
+	role: string;
+	label: string;
+	count: number;
+	color: string;
+	pct?: number;
+}
+
 const AksesDanTimSettings = () => {
 	const t = useTranslate();
+	const { withApproval } = useApprovalGuard();
+	const snap = useSnapshot(authStore);
+	const isAdmin = snap.user?.role === "admin";
 	const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [savedPrefs, setSavedPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
+	const [kelolaRoleOpened, setKelolaRoleOpened] = useState(false);
+	const [undanganOpened, setUndanganOpened] = useState(false);
+	const [totalAnggota, setTotalAnggota] = useState(0);
+	const [roleData, setRoleData] = useState<RoleEntry[]>([]);
+	const [statsLoading, setStatsLoading] = useState(true);
 	const [toast, setToast] = useState<{
 		type: "success" | "error";
 		message: string;
 	} | null>(null);
+
+	const fetchUserStats = async () => {
+		setStatsLoading(true);
+		try {
+			const res = await fetch("/api/admin/user-stats");
+			if (!res.ok) return;
+			const json = await res.json();
+			const d = json.data as { total: number; roles: RoleEntry[] };
+			setTotalAnggota(d.total);
+			setRoleData(
+				d.roles.map((r) => ({
+					...r,
+					pct: d.total > 0 ? Math.round((r.count / d.total) * 100) : 0,
+				})),
+			);
+		} catch {
+			// non-critical
+		} finally {
+			setStatsLoading(false);
+		}
+	};
 
 	useEffect(() => {
 		const fetchPrefs = async () => {
@@ -59,6 +102,7 @@ const AksesDanTimSettings = () => {
 				const data = json.data as Prefs;
 				setPrefs(data);
 				setSavedPrefs(data);
+				setAksesPrefs(data);
 			} catch {
 				// keep defaults
 			} finally {
@@ -66,6 +110,7 @@ const AksesDanTimSettings = () => {
 			}
 		};
 		fetchPrefs();
+		fetchUserStats();
 	}, []);
 
 	useEffect(() => {
@@ -91,6 +136,7 @@ const AksesDanTimSettings = () => {
 			const data = json.data as Prefs;
 			setPrefs(data);
 			setSavedPrefs(data);
+			setAksesPrefs(data);
 			setToast({ type: "success", message: t.common.berhasilDisimpan });
 		} catch {
 			setToast({ type: "error", message: t.common.gagalSimpan });
@@ -105,28 +151,6 @@ const AksesDanTimSettings = () => {
 
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
-
-	const totalAnggota = 12;
-	const roleData = [
-		{
-			label: t.akses.administrator,
-			count: 2,
-			color: "red",
-			pct: Math.round((2 / totalAnggota) * 100),
-		},
-		{
-			label: t.akses.editor,
-			count: 5,
-			color: "blue",
-			pct: Math.round((5 / totalAnggota) * 100),
-		},
-		{
-			label: t.akses.viewer,
-			count: 5,
-			color: "teal",
-			pct: Math.round((5 / totalAnggota) * 100),
-		},
-	];
 
 	const SwitchRow = ({
 		label,
@@ -163,8 +187,28 @@ const AksesDanTimSettings = () => {
 		</Group>
 	);
 
+	if (!isAdmin) {
+		return (
+			<Box maw={680}>
+				<Alert color="orange" radius="md" icon={<IconShieldHalf size={16} />}>
+					Halaman ini hanya dapat diakses oleh administrator.
+				</Alert>
+			</Box>
+		);
+	}
+
 	return (
 		<Box maw={680}>
+			<KelolaRoleModal
+				opened={kelolaRoleOpened}
+				onClose={() => setKelolaRoleOpened(false)}
+				onRoleChanged={fetchUserStats}
+			/>
+			<UndanganModal
+				opened={undanganOpened}
+				onClose={() => setUndanganOpened(false)}
+			/>
+
 			{toast && (
 				<Alert
 					color={toast.type === "success" ? "green" : "red"}
@@ -238,7 +282,7 @@ const AksesDanTimSettings = () => {
 								variant="light"
 								color="violet"
 								radius="md"
-								disabled={loading}
+								onClick={() => setUndanganOpened(true)}
 							>
 								Buka
 							</Button>
@@ -265,7 +309,7 @@ const AksesDanTimSettings = () => {
 								variant="light"
 								color="violet"
 								radius="md"
-								disabled={loading}
+								onClick={() => setKelolaRoleOpened(true)}
 							>
 								Buka
 							</Button>
@@ -287,9 +331,13 @@ const AksesDanTimSettings = () => {
 									</Text>
 								</Box>
 							</Group>
-							<Badge size="lg" color="violet" variant="light" radius="md">
-								{totalAnggota} {t.akses.anggota}
-							</Badge>
+							{statsLoading ? (
+								<Skeleton height={28} width={80} radius="md" />
+							) : (
+								<Badge size="lg" color="violet" variant="light" radius="md">
+									{totalAnggota} {t.akses.anggota}
+								</Badge>
+							)}
 						</Group>
 					</>
 				)}
@@ -322,9 +370,8 @@ const AksesDanTimSettings = () => {
 					</Box>
 				</Group>
 
-				{loading ? (
+				{statsLoading ? (
 					<Stack gap="sm">
-						<Skeleton height={52} radius="md" />
 						<Skeleton height={52} radius="md" />
 						<Skeleton height={52} radius="md" />
 					</Stack>
@@ -334,7 +381,11 @@ const AksesDanTimSettings = () => {
 							size={120}
 							thickness={12}
 							roundCaps
-							sections={roleData.map((r) => ({ value: r.pct, color: r.color }))}
+							sections={
+								roleData.length > 0
+									? roleData.map((r) => ({ value: r.pct || 1, color: r.color }))
+									: [{ value: 100, color: "gray" }]
+							}
 						/>
 						<Stack gap="xs" style={{ flex: 1 }}>
 							{roleData.map((role) => (
@@ -429,7 +480,7 @@ const AksesDanTimSettings = () => {
 					{t.common.batal}
 				</Button>
 				<Button
-					onClick={handleSave}
+					onClick={() => withApproval(handleSave, "pengaturan akses & tim")}
 					loading={saving}
 					disabled={loading}
 					radius="md"

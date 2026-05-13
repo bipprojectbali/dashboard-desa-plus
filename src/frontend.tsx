@@ -7,6 +7,7 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: <explanation */
 /** biome-ignore-all lint/suspicious/noAssignInExpressions: <explanation */
 
+import { lazy, Suspense } from "react";
 import { createTheme, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
@@ -100,10 +101,22 @@ const theme = createTheme({
 	primaryColor: "darmasaba-blue",
 });
 
-// Use dynamic import for DevInspector to avoid including it in production bundle
-const InspectorWrapper = IS_DEV
-	? (await import("./components/dev-inspector")).DevInspector
-	: ({ children }: { children: React.ReactNode }) => <>{children}</>;
+const DevInspectorLazy = IS_DEV
+	? lazy(() =>
+			import("./components/dev-inspector").then((m) => ({
+				default: m.DevInspector,
+			})),
+		)
+	: null;
+
+const InspectorWrapper = ({ children }: { children: React.ReactNode }) =>
+	DevInspectorLazy ? (
+		<Suspense fallback={children}>
+			<DevInspectorLazy>{children}</DevInspectorLazy>
+		</Suspense>
+	) : (
+		<>{children}</>
+	);
 
 const elem = document.getElementById("root")!;
 const app = (

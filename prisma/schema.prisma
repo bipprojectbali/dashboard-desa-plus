@@ -38,6 +38,8 @@ model User {
   umumPreference         UmumPreference?
   keamananPreference     KeamananPreference?
   aksesPreference        AksesPreference?
+  activityLogs           ActivityLog[]
+  invitations            Invitation[]  @relation("InvitedByUser")
 
   @@map("user")
 }
@@ -702,4 +704,35 @@ model ApiKey {
 
   @@index([userId])
   @@map("api_key")
+}
+
+model Invitation {
+  id          String    @id @default(cuid())
+  token       String    @unique @default(cuid())
+  email       String?
+  role        String    @default("user")
+  invitedById String
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+  invitedBy   User      @relation("InvitedByUser", fields: [invitedById], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([invitedById])
+  @@map("invitation")
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  userId      String
+  action      String
+  detail      String?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("activity_log")
 }

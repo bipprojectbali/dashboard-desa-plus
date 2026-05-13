@@ -13,6 +13,8 @@ export async function createVite() {
 			alias: {
 				"@": path.resolve(process.cwd(), "./src"),
 			},
+			dedupe: ["react", "react-dom"],
+			extensions: [".tsx", ".ts", ".jsx", ".js", ".mjs"],
 		},
 		plugins: [tailwindcss(), inspectorPlugin(), react(), tanstackRouter()],
 		server: {
@@ -23,7 +25,14 @@ export async function createVite() {
 		},
 		appType: "custom",
 		optimizeDeps: {
-			include: ["react", "react-dom", "@mantine/core"],
+			include: [
+				"react",
+				"react-dom",
+				"react-dom/client",
+				"react/jsx-dev-runtime",
+				"react/jsx-runtime",
+				"@mantine/core",
+			],
 		},
 	});
 }

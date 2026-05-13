@@ -48,10 +48,12 @@ export const auth = betterAuth({
 							data: {
 								...user,
 								role: "admin",
+								emailVerified: true,
 							},
 						};
 					}
-					return { data: user };
+					// Non-admin users require admin verification before they can access
+					return { data: { ...user, emailVerified: false } };
 				},
 			},
 		},

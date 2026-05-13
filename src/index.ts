@@ -55,6 +55,28 @@ if (!isProduction) {
 		const url = new URL(request.url);
 		const pathname = url.pathname;
 
+		// Serve Vite pre-bundled deps directly from disk — bypass middleware mock
+		// to avoid 504 on large files like @mantine/core chunks
+		if (pathname.startsWith("/node_modules/.vite/")) {
+			const filePath = path.resolve(pathname.slice(1)); // strip leading /
+			const file = Bun.file(filePath);
+			if (await file.exists()) {
+				const ext = path.extname(filePath);
+				const mime =
+					ext === ".js"
+						? "application/javascript"
+						: ext === ".map"
+							? "application/json"
+							: "application/octet-stream";
+				return new Response(file, {
+					headers: {
+						"Content-Type": mime,
+						"Cache-Control": "max-age=31536000,immutable",
+					},
+				});
+			}
+		}
+
 		// Serve transformed index.html for root or any path that should be handled by the SPA
 		if (
 			pathname === "/" ||
@@ -78,79 +100,172 @@ if (!isProduction) {
 		}
 
 		return new Promise<Response>((resolve) => {
-			// Use a Proxy to mock Node.js req because Bun's Request is read-only
-			const req = new Proxy(request, {
-				get(target, prop) {
-					if (prop === "url") return pathname + url.search;
-					if (prop === "method") return request.method;
-					if (prop === "headers")
-						return Object.fromEntries(request.headers as any);
-					return (target as any)[prop];
-				},
-			}) as any;
+			let resolved = false;
+			const done = (r: Response) => {
+				if (!resolved) {
+					resolved = true;
+					resolve(r);
+				}
+			};
 
-			const res = {
-				statusCode: 200,
-				setHeader(name: string, value: string) {
-					this.headers[name.toLowerCase()] = value;
+			const headersObj = Object.fromEntries(request.headers as any);
+			const chunks: Buffer[] = [];
+			const resHeaders: Record<string, string | string[]> = {};
+			let statusCode = 200;
+
+			// Mock Node.js ServerResponse
+			const res: any = {
+				get statusCode() {
+					return statusCode;
+				},
+				set statusCode(v: number) {
+					statusCode = v;
+				},
+				setHeader(name: string, value: string | string[]) {
+					resHeaders[name.toLowerCase()] = value;
 				},
 				getHeader(name: string) {
-					return this.headers[name.toLowerCase()];
+					return resHeaders[name.toLowerCase()];
 				},
-				writeHead(code: number, headers: Record<string, string>) {
-					this.statusCode = code;
-					Object.assign(this.headers, headers);
+				getHeaders() {
+					return resHeaders;
 				},
-				write(chunk: any, callback?: () => void) {
-					// Collect chunks for streaming responses
-					if (!this._chunks) this._chunks = [];
-					this._chunks.push(chunk);
-					if (callback) callback();
-					return true; // Indicate we can accept more data
+				hasHeader(name: string) {
+					return name.toLowerCase() in resHeaders;
 				},
-				headers: {} as Record<string, string>,
-				end(data: any) {
-					const chunks: Buffer[] = this._chunks || [];
-					if (data != null) {
+				removeHeader(name: string) {
+					delete resHeaders[name.toLowerCase()];
+				},
+				writeHead(code: number, hdrs?: Record<string, string>) {
+					statusCode = code;
+					if (hdrs) Object.assign(resHeaders, hdrs);
+				},
+				write(chunk: any, _enc?: any, cb?: () => void) {
+					if (chunk instanceof Uint8Array || Buffer.isBuffer(chunk)) {
+						chunks.push(Buffer.from(chunk));
+					} else if (typeof chunk === "string") {
+						chunks.push(Buffer.from(chunk));
+					}
+					if (typeof _enc === "function") _enc();
+					else if (typeof cb === "function") cb();
+					return true;
+				},
+				end(data?: any, _enc?: any, cb?: () => void) {
+					if (data != null && data !== "") {
 						if (data instanceof Uint8Array || Buffer.isBuffer(data)) {
 							chunks.push(Buffer.from(data));
 						} else if (typeof data === "string") {
 							chunks.push(Buffer.from(data));
 						}
 					}
-					const body = chunks.length > 0 ? Buffer.concat(chunks) : undefined;
-
-					resolve(
-						new Response(body || "", {
-							status: this.statusCode,
-							headers: this.headers,
+					if (typeof _enc === "function") _enc();
+					else if (typeof cb === "function") cb();
+					const flat: Record<string, string> = {};
+					for (const [k, v] of Object.entries(resHeaders)) {
+						flat[k] = Array.isArray(v) ? v.join(", ") : v;
+					}
+					done(
+						new Response(chunks.length > 0 ? Buffer.concat(chunks) : "", {
+							status: statusCode,
+							headers: flat,
 						}),
 					);
 				},
-				// Minimal event emitter mock
-				once() {
-					return this;
-				},
+				// EventEmitter stubs
 				on() {
 					return this;
 				},
+				once() {
+					return this;
+				},
 				emit() {
+					return false;
+				},
+				off() {
 					return this;
 				},
 				removeListener() {
 					return this;
 				},
-			} as any;
+				addListener() {
+					return this;
+				},
+				// Node.js response stubs
+				writable: true,
+				writableEnded: false,
+				headersSent: false,
+				finished: false,
+				socket: { remoteAddress: "127.0.0.1", encrypted: false },
+				connection: { remoteAddress: "127.0.0.1" },
+				destroy() {},
+				flushHeaders() {},
+			};
+
+			// Mock Node.js IncomingMessage
+			const req: any = {
+				url: pathname + url.search,
+				method: request.method,
+				headers: headersObj,
+				httpVersion: "1.1",
+				httpVersionMajor: 1,
+				httpVersionMinor: 1,
+				socket: { remoteAddress: "127.0.0.1", encrypted: false },
+				connection: { remoteAddress: "127.0.0.1" },
+				on() {
+					return this;
+				},
+				once() {
+					return this;
+				},
+				off() {
+					return this;
+				},
+				removeListener() {
+					return this;
+				},
+				addListener() {
+					return this;
+				},
+				emit() {
+					return false;
+				},
+				resume() {
+					return this;
+				},
+				pipe() {
+					return this;
+				},
+				destroy() {},
+				readable: true,
+				[Symbol.asyncIterator]() {
+					let done = false;
+					return {
+						async next() {
+							if (done) return { value: undefined, done: true };
+							done = true;
+							const buf = await request.arrayBuffer();
+							return buf.byteLength > 0
+								? { value: Buffer.from(buf), done: false }
+								: { value: undefined, done: true };
+						},
+					};
+				},
+			};
 
 			vite.middlewares(req, res, (err: any) => {
 				if (err) {
 					console.error("Vite middleware error:", err);
-					resolve(new Response(err.stack || err.toString(), { status: 500 }));
+					done(new Response(err.stack || err.toString(), { status: 500 }));
 					return;
 				}
-				// If Vite doesn't handle it, return 404
-				resolve(new Response("Not Found", { status: 404 }));
+				done(new Response("Not Found", { status: 404 }));
 			});
+
+			// Safety timeout — prevent hanging if Vite doesn't call end()
+			setTimeout(
+				() => done(new Response("Gateway Timeout", { status: 504 })),
+				10_000,
+			);
 		});
 	});
 } else {

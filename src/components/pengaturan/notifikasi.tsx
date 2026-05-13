@@ -12,6 +12,7 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
+	Tooltip,
 	useMantineColorScheme,
 } from "@mantine/core";
 import {
@@ -28,8 +29,11 @@ import {
 	IconVolume,
 	IconX,
 } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useApprovalGuard } from "@/hooks/useApprovalGuard";
+import { useNotification } from "@/hooks/useNotification";
 import { useTranslate } from "@/hooks/useTranslate";
+import { setNotifPrefs } from "@/store/notif";
 
 type Prefs = {
 	laporanHarian: boolean;
@@ -61,14 +65,27 @@ const DEFAULT_PREFS: Prefs = {
 
 const NotifikasiSettings = () => {
 	const t = useTranslate();
+	const { withApproval } = useApprovalGuard();
+	const { requestPermission } = useNotification();
 	const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [savedPrefs, setSavedPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
+	const [requesting, setRequesting] = useState(false);
+	const [permission, setPermission] = useState<NotificationPermission>(() =>
+		"Notification" in window ? Notification.permission : "denied",
+	);
 	const [toast, setToast] = useState<{
 		type: "success" | "error";
 		message: string;
 	} | null>(null);
+
+	const handleRequestPermission = useCallback(async () => {
+		setRequesting(true);
+		const result = await requestPermission();
+		setPermission(result);
+		setRequesting(false);
+	}, [requestPermission]);
 
 	useEffect(() => {
 		const fetchPrefs = async () => {
@@ -79,6 +96,7 @@ const NotifikasiSettings = () => {
 				const data = json.data as Prefs;
 				setPrefs(data);
 				setSavedPrefs(data);
+				setNotifPrefs(data);
 			} catch {
 				// keep defaults
 			} finally {
@@ -111,6 +129,7 @@ const NotifikasiSettings = () => {
 			const data = json.data as Prefs;
 			setPrefs(data);
 			setSavedPrefs(data);
+			setNotifPrefs(data);
 			setToast({ type: "success", message: t.common.berhasilDisimpan });
 		} catch {
 			setToast({ type: "error", message: t.common.gagalSimpan });
@@ -132,25 +151,36 @@ const NotifikasiSettings = () => {
 		icon,
 		field,
 		badge,
+		badgeColor = "orange",
+		disabled: forceDisabled,
+		disabledTooltip,
 	}: {
 		label: string;
 		description: string;
 		icon: React.ReactNode;
 		field: keyof Prefs;
 		badge?: string;
+		badgeColor?: string;
+		disabled?: boolean;
+		disabledTooltip?: string;
 	}) => (
 		<Group justify="space-between" wrap="nowrap" py="sm">
 			<Group gap="sm" wrap="nowrap">
-				<ThemeIcon size={36} radius="md" variant="light" color="blue">
+				<ThemeIcon
+					size={36}
+					radius="md"
+					variant="light"
+					color={forceDisabled ? "gray" : "blue"}
+				>
 					{icon}
 				</ThemeIcon>
 				<Box>
 					<Group gap={6}>
-						<Text fw={600} fz="sm">
+						<Text fw={600} fz="sm" c={forceDisabled ? "dimmed" : undefined}>
 							{label}
 						</Text>
 						{badge && (
-							<Badge size="xs" color="orange" variant="light">
+							<Badge size="xs" color={badgeColor} variant="light">
 								{badge}
 							</Badge>
 						)}
@@ -160,12 +190,18 @@ const NotifikasiSettings = () => {
 					</Text>
 				</Box>
 			</Group>
-			<Switch
-				checked={prefs[field]}
-				onChange={() => toggle(field)}
-				disabled={loading}
-				size="md"
-			/>
+			<Tooltip
+				label={disabledTooltip}
+				disabled={!disabledTooltip || !forceDisabled}
+				position="left"
+			>
+				<Switch
+					checked={prefs[field]}
+					onChange={() => toggle(field)}
+					disabled={loading || !!forceDisabled}
+					size="md"
+				/>
+			</Tooltip>
 		</Group>
 	);
 
@@ -178,8 +214,52 @@ const NotifikasiSettings = () => {
 		</Stack>
 	);
 
+	const permissionColor =
+		permission === "granted"
+			? "green"
+			: permission === "denied"
+				? "red"
+				: "orange";
+	const permissionLabel =
+		permission === "granted"
+			? "Diizinkan"
+			: permission === "denied"
+				? "Ditolak"
+				: "Belum diatur";
+	const pushDisabled = permission !== "granted";
+
 	return (
 		<Box maw={680}>
+			{"Notification" in window && permission !== "granted" && (
+				<Alert
+					color={permission === "denied" ? "red" : "orange"}
+					icon={<IconBellRinging size={16} />}
+					mb="md"
+					radius="md"
+					title={
+						permission === "denied"
+							? "Notifikasi browser ditolak"
+							: "Notifikasi browser belum diaktifkan"
+					}
+				>
+					<Text fz="sm" mb="xs">
+						{permission === "denied"
+							? "Izin notifikasi ditolak. Aktifkan manual di pengaturan browser (ikon gembok di address bar)."
+							: "Aktifkan notifikasi browser agar push notification, alert kritis, dan bunyi dapat berfungsi."}
+					</Text>
+					{permission === "default" && (
+						<Button
+							size="xs"
+							color="orange"
+							loading={requesting}
+							onClick={handleRequestPermission}
+							leftSection={<IconBell size={14} />}
+						>
+							Aktifkan Notifikasi
+						</Button>
+					)}
+				</Alert>
+			)}
 			{toast && (
 				<Alert
 					color={toast.type === "success" ? "green" : "red"}
@@ -235,6 +315,10 @@ const NotifikasiSettings = () => {
 							description="Ringkasan aktivitas desa dikirim setiap hari ke email kamu"
 							icon={<IconMailForward size={18} />}
 							field="laporanHarian"
+							badge="Segera Hadir"
+							badgeColor="gray"
+							disabled
+							disabledTooltip="Fitur email belum tersedia, membutuhkan konfigurasi SMTP"
 						/>
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 						<SwitchRow
@@ -242,6 +326,10 @@ const NotifikasiSettings = () => {
 							description="Pemberitahuan saat ada gangguan atau pemeliharaan sistem"
 							icon={<IconBellRinging size={18} />}
 							field="alertSistem"
+							badge="Segera Hadir"
+							badgeColor="gray"
+							disabled
+							disabledTooltip="Fitur email belum tersedia, membutuhkan konfigurasi SMTP"
 						/>
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 						<SwitchRow
@@ -249,7 +337,10 @@ const NotifikasiSettings = () => {
 							description="Info pembaruan keamanan dan patch penting"
 							icon={<IconShieldCheck size={18} />}
 							field="updateKeamanan"
-							badge="Penting"
+							badge="Segera Hadir"
+							badgeColor="gray"
+							disabled
+							disabledTooltip="Fitur email belum tersedia, membutuhkan konfigurasi SMTP"
 						/>
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 						<SwitchRow
@@ -257,6 +348,10 @@ const NotifikasiSettings = () => {
 							description="Artikel dan tips penggunaan dashboard setiap bulan"
 							icon={<IconMailForward size={18} />}
 							field="newsletterBulan"
+							badge="Segera Hadir"
+							badgeColor="gray"
+							disabled
+							disabledTooltip="Fitur email belum tersedia, membutuhkan konfigurasi SMTP"
 						/>
 					</>
 				)}
@@ -328,23 +423,30 @@ const NotifikasiSettings = () => {
 				mb="lg"
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
 			>
-				<Group gap="sm" mb="lg">
-					<ThemeIcon
-						size={38}
-						radius="md"
-						variant="gradient"
-						gradient={{ from: "violet", to: "grape" }}
-					>
-						<IconMessageCircle size={20} />
-					</ThemeIcon>
-					<Box>
-						<Title order={4} fw={700}>
-							{t.notifikasi.notifikasiPush}
-						</Title>
-						<Text fz="xs" c="dimmed">
-							Notifikasi real-time aktivitas tim dan interaksi
-						</Text>
-					</Box>
+				<Group gap="sm" mb="lg" justify="space-between" wrap="nowrap">
+					<Group gap="sm" wrap="nowrap">
+						<ThemeIcon
+							size={38}
+							radius="md"
+							variant="gradient"
+							gradient={{ from: "violet", to: "grape" }}
+						>
+							<IconMessageCircle size={20} />
+						</ThemeIcon>
+						<Box>
+							<Group gap={6}>
+								<Title order={4} fw={700}>
+									{t.notifikasi.notifikasiPush}
+								</Title>
+								<Badge size="sm" color={permissionColor} variant="light">
+									{permissionLabel}
+								</Badge>
+							</Group>
+							<Text fz="xs" c="dimmed">
+								Notifikasi real-time aktivitas tim dan interaksi
+							</Text>
+						</Box>
+					</Group>
 				</Group>
 
 				{loading ? (
@@ -357,6 +459,8 @@ const NotifikasiSettings = () => {
 							icon={<IconBellRinging size={18} />}
 							field="alertKritis"
 							badge="Kritis"
+							disabled={pushDisabled}
+							disabledTooltip="Aktifkan notifikasi browser terlebih dahulu"
 						/>
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 						<SwitchRow
@@ -364,6 +468,8 @@ const NotifikasiSettings = () => {
 							description="Notifikasi saat anggota tim menambah kegiatan atau dokumen baru"
 							icon={<IconUsers size={18} />}
 							field="aktivitasTim"
+							disabled={pushDisabled}
+							disabledTooltip="Aktifkan notifikasi browser terlebih dahulu"
 						/>
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 						<SwitchRow
@@ -371,6 +477,8 @@ const NotifikasiSettings = () => {
 							description="Notifikasi saat kamu disebut dalam komentar atau diskusi"
 							icon={<IconMessageCircle size={18} />}
 							field="komentarMention"
+							disabled={pushDisabled}
+							disabledTooltip="Aktifkan notifikasi browser terlebih dahulu"
 						/>
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 						<SwitchRow
@@ -378,6 +486,8 @@ const NotifikasiSettings = () => {
 							description="Putar suara saat notifikasi masuk di browser"
 							icon={<IconVolume size={18} />}
 							field="bunyiNotifikasi"
+							disabled={pushDisabled}
+							disabledTooltip="Aktifkan notifikasi browser terlebih dahulu"
 						/>
 					</>
 				)}
@@ -393,7 +503,7 @@ const NotifikasiSettings = () => {
 					{t.common.batal}
 				</Button>
 				<Button
-					onClick={handleSave}
+					onClick={() => withApproval(handleSave, "preferensi notifikasi")}
 					loading={saving}
 					disabled={loading}
 					radius="md"

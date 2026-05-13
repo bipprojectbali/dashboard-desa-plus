@@ -1,6 +1,7 @@
 import { Center, Grid, Image, Loader, Stack } from "@mantine/core";
 import { CheckCircle, FileText, MessageCircle, Users } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { apiClient } from "@/utils/api-client";
 import { ActivityList } from "./dashboard/activity-list";
 import { ChartAPBDes } from "./dashboard/chart-apbdes";
@@ -23,50 +24,52 @@ export function DashboardContent() {
 	>([]);
 	const [sdgsLoading, setSdgsLoading] = useState(true);
 
-	useEffect(() => {
-		async function fetchStats() {
-			try {
-				const [complaintRes, residentRes, weeklyServiceRes, sdgsRes] =
-					await Promise.all([
-						apiClient.GET("/api/complaint/stats"),
-						apiClient.GET("/api/resident/stats"),
-						apiClient.GET("/api/complaint/service-weekly"),
-						apiClient.GET("/api/dashboard/sdgs"),
-					]);
+	const fetchStats = useCallback(async () => {
+		try {
+			const [complaintRes, residentRes, weeklyServiceRes, sdgsRes] =
+				await Promise.all([
+					apiClient.GET("/api/complaint/stats"),
+					apiClient.GET("/api/resident/stats"),
+					apiClient.GET("/api/complaint/service-weekly"),
+					apiClient.GET("/api/dashboard/sdgs"),
+				]);
 
-				setStats({
-					complaints: (complaintRes.data as { data: typeof stats.complaints })
-						?.data || {
-						total: 0,
-						baru: 0,
-						proses: 0,
-						selesai: 0,
-					},
-					residents: (residentRes.data as { data: typeof stats.residents })
-						?.data || {
-						total: 0,
-						heads: 0,
-						poor: 0,
-					},
-					weeklyService:
-						(weeklyServiceRes.data as { data: { count: number } })?.data
-							?.count || 0,
-					loading: false,
-				});
+			setStats({
+				complaints: (complaintRes.data as { data: typeof stats.complaints })
+					?.data || {
+					total: 0,
+					baru: 0,
+					proses: 0,
+					selesai: 0,
+				},
+				residents: (residentRes.data as { data: typeof stats.residents })
+					?.data || {
+					total: 0,
+					heads: 0,
+					poor: 0,
+				},
+				weeklyService:
+					(weeklyServiceRes.data as { data: { count: number } })?.data?.count ||
+					0,
+				loading: false,
+			});
 
-				if (sdgsRes.data?.data) {
-					setSdgsData(sdgsRes.data.data);
-				}
-				setSdgsLoading(false);
-			} catch (error) {
-				console.error("Failed to fetch dashboard content", error);
-				setStats((prev) => ({ ...prev, loading: false }));
-				setSdgsLoading(false);
+			if (sdgsRes.data?.data) {
+				setSdgsData(sdgsRes.data.data);
 			}
+			setSdgsLoading(false);
+		} catch (error) {
+			console.error("Failed to fetch dashboard content", error);
+			setStats((prev) => ({ ...prev, loading: false }));
+			setSdgsLoading(false);
 		}
-
-		fetchStats();
 	}, []);
+
+	useEffect(() => {
+		fetchStats();
+	}, [fetchStats]);
+
+	useAutoRefresh(fetchStats);
 
 	return (
 		<Stack gap="lg">

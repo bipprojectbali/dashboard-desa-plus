@@ -25,7 +25,9 @@ import {
 } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { useSnapshot } from "valtio";
 import { useTranslate } from "@/hooks/useTranslate";
+import { authStore } from "@/store/auth";
 import { apiClient } from "@/utils/api-client";
 import "dayjs/locale/id";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -35,6 +37,8 @@ dayjs.locale("id");
 
 const SinkronisasiSettings = () => {
 	const t = useTranslate();
+	const snap = useSnapshot(authStore);
+	const isAdmin = snap.user?.role === "admin";
 	const [loading, setLoading] = useState(false);
 	const [demografiLoading, setDemografiLoading] = useState(false);
 	const [lastSync, setLastSync] = useState<string | null>(null);
@@ -353,6 +357,16 @@ const SinkronisasiSettings = () => {
 			</Text>
 		</Paper>
 	);
+
+	if (!isAdmin) {
+		return (
+			<Box maw={720}>
+				<Alert color="orange" radius="md" icon={<IconAlertCircle size={16} />}>
+					Halaman ini hanya dapat diakses oleh administrator.
+				</Alert>
+			</Box>
+		);
+	}
 
 	return (
 		<Box maw={720}>
