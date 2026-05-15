@@ -5,6 +5,7 @@ import {
 	Button,
 	Divider,
 	Group,
+	LoadingOverlay,
 	Paper,
 	Select,
 	Skeleton,
@@ -87,8 +88,8 @@ const UmumSettings = () => {
 					tampilkanGrid: data.tampilkanGrid,
 					animasiTransisi: data.animasiTransisi,
 				});
-			} catch {
-				// keep defaults
+			} catch (err) {
+				console.error("Gagal memuat preferensi umum:", err);
 			} finally {
 				setLoading(false);
 			}
@@ -157,6 +158,15 @@ const UmumSettings = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
+	const isDirty =
+		prefs.bahasa !== savedPrefs.bahasa ||
+		prefs.zonaWaktu !== savedPrefs.zonaWaktu ||
+		prefs.formatTanggal !== savedPrefs.formatTanggal ||
+		prefs.refreshOtomatis !== savedPrefs.refreshOtomatis ||
+		prefs.intervalRefresh !== savedPrefs.intervalRefresh ||
+		prefs.tampilkanGrid !== savedPrefs.tampilkanGrid ||
+		prefs.animasiTransisi !== savedPrefs.animasiTransisi;
+
 	const SwitchRow = ({
 		label,
 		description,
@@ -192,7 +202,8 @@ const UmumSettings = () => {
 	);
 
 	return (
-		<Box maw={680}>
+		<Box maw={680} pos="relative">
+			<LoadingOverlay visible={loading} />
 			{toast && (
 				<Alert
 					color={toast.type === "success" ? "green" : "red"}
@@ -444,7 +455,7 @@ const UmumSettings = () => {
 				<Button
 					variant="default"
 					onClick={handleBatal}
-					disabled={saving || loading}
+					disabled={saving || loading || !isDirty}
 					radius="md"
 				>
 					{t.common.batal}
@@ -452,7 +463,7 @@ const UmumSettings = () => {
 				<Button
 					onClick={() => withApproval(handleSave, "preferensi umum")}
 					loading={saving}
-					disabled={loading}
+					disabled={loading || !isDirty}
 					radius="md"
 					gradient={{ from: "blue", to: "violet" }}
 					variant="gradient"
