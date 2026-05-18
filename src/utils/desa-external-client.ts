@@ -1,4 +1,5 @@
 import createClient from "openapi-fetch";
+import type { paths } from "../../generated/desa-external";
 import { getEnv } from "./env";
 
 /**
@@ -17,20 +18,6 @@ const cleanBaseUrl = externalBaseUrl.replace(/\/+$/, "");
 
 console.log("[Desa API Client] Base URL:", cleanBaseUrl);
 
-// Use generic type for flexible API calls
-// Since we don't have the exact schema, we use a flexible approach
-type DesaPaths = {
-	[path: string]: {
-		parameters?: {
-			path?: Record<string, string>;
-			query?: Record<string, string>;
-		};
-		responses?: {
-			200?: any;
-		};
-	};
-};
-
-export const desaExternalClient = createClient<DesaPaths>({
+export const desaExternalClient = createClient<paths>({
 	baseUrl: cleanBaseUrl,
 });
