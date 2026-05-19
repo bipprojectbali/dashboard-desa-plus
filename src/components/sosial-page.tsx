@@ -1,5 +1,6 @@
 import { Grid, GridCol, Stack } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import { Beasiswa } from "./sosial/beasiswa";
 import { EventCalendar } from "./sosial/event-calendar";
 import { HealthStats } from "./sosial/health-stats";
@@ -27,6 +28,7 @@ interface PosyanduForCount {
 }
 
 const SosialPage = () => {
+	const t = useTranslate();
 	const [kesehatanStats, setKesehatanStats] = useState<KesehatanStats | null>(
 		null,
 	);
@@ -67,22 +69,22 @@ const SosialPage = () => {
 	const healthData = kesehatanStats
 		? [
 				{
-					label: "Imunisasi Lengkap",
+					label: t.sosial.imunisasiLengkap,
 					value: kesehatanStats.imunisasiLengkapPct,
 					color: "green",
 				},
 				{
-					label: "Pemeriksaan Rutin",
+					label: t.sosial.pemeriksaanRutin,
 					value: kesehatanStats.pemeriksaanRutinPct,
 					color: "blue",
 				},
 				{
-					label: "Gizi Baik",
+					label: t.sosial.giziBaik,
 					value: kesehatanStats.giziBaikPct,
 					color: "teal",
 				},
 				{
-					label: "Target Stunting",
+					label: t.sosial.targetStunting,
 					value: kesehatanStats.targetStuntingPct,
 					color: "red",
 				},

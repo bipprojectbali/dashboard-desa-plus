@@ -10,6 +10,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
+import { useTranslate } from "@/hooks/useTranslate";
 
 export interface SalesData {
 	id: string;
@@ -44,6 +45,7 @@ export const SalesTable = ({
 	onKategoriChange,
 	onUmkmChange,
 }: SalesTableProps) => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -60,9 +62,9 @@ export const SalesTable = ({
 	};
 
 	const getStockStatus = (stock: number) => {
-		if (stock > 200) return { color: "green", label: "Aman" };
-		if (stock > 50) return { color: "yellow", label: "Sedang" };
-		return { color: "red", label: "Rendah" };
+		if (stock > 200) return { color: "green", label: t.bumdes.stokAman };
+		if (stock > 50) return { color: "yellow", label: t.bumdes.stokSedang };
+		return { color: "red", label: t.bumdes.stokRendah };
 	};
 
 	return (
@@ -80,13 +82,13 @@ export const SalesTable = ({
 		>
 			<Group justify="space-between" mb="md">
 				<Title order={4} c={dark ? "dark.0" : "#1e3a5f"}>
-					Detail Penjualan Produk
+					{t.bumdes.detailPenjualan}
 				</Title>
 				<Group gap="xs">
 					<Select
-						placeholder="Semua Kategori"
+						placeholder={t.bumdes.semuaKategori}
 						data={[
-							{ value: "", label: "Semua Kategori" },
+							{ value: "", label: t.bumdes.semuaKategori },
 							...(kategoriOptions ?? []),
 						]}
 						defaultValue=""
@@ -95,8 +97,8 @@ export const SalesTable = ({
 						onChange={(val) => onKategoriChange?.(val || null)}
 					/>
 					<Select
-						placeholder="Semua UMKM"
-						data={[{ value: "", label: "Semua UMKM" }, ...(umkmOptions ?? [])]}
+						placeholder={t.bumdes.semuaUmkm}
+						data={[{ value: "", label: t.bumdes.semuaUmkm }, ...(umkmOptions ?? [])]}
 						defaultValue=""
 						w={180}
 						size="sm"
@@ -116,37 +118,37 @@ export const SalesTable = ({
 					<Table.Tr>
 						<Table.Th style={{ backgroundColor: dark ? "#1e3a5f" : "#f8f9fa" }}>
 							<Text size="sm" fw={600} c={dark ? "white" : "dimmed"}>
-								Produk
+								{t.bumdes.produk}
 							</Text>
 						</Table.Th>
 						<Table.Th style={{ backgroundColor: dark ? "#1e3a5f" : "#f8f9fa" }}>
 							<Text size="sm" fw={600} c={dark ? "white" : "dimmed"}>
-								Penjualan Bulan Ini
+								{t.bumdes.penjualanBulanIni}
 							</Text>
 						</Table.Th>
 						<Table.Th style={{ backgroundColor: dark ? "#1e3a5f" : "#f8f9fa" }}>
 							<Text size="sm" fw={600} c={dark ? "white" : "dimmed"}>
-								Bulan Lalu
+								{t.bumdes.bulanLalu}
 							</Text>
 						</Table.Th>
 						<Table.Th style={{ backgroundColor: dark ? "#1e3a5f" : "#f8f9fa" }}>
 							<Text size="sm" fw={600} c={dark ? "white" : "dimmed"}>
-								Trend
+								{t.bumdes.trend}
 							</Text>
 						</Table.Th>
 						<Table.Th style={{ backgroundColor: dark ? "#1e3a5f" : "#f8f9fa" }}>
 							<Text size="sm" fw={600} c={dark ? "white" : "dimmed"}>
-								Volume
+								{t.bumdes.volume}
 							</Text>
 						</Table.Th>
 						<Table.Th style={{ backgroundColor: dark ? "#1e3a5f" : "#f8f9fa" }}>
 							<Text size="sm" fw={600} c={dark ? "white" : "dimmed"}>
-								Stok
+								{t.bumdes.stok}
 							</Text>
 						</Table.Th>
 						<Table.Th style={{ backgroundColor: dark ? "#1e3a5f" : "#f8f9fa" }}>
 							<Text size="sm" fw={600} c={dark ? "white" : "dimmed"}>
-								Aksi
+								{t.bumdes.aksi}
 							</Text>
 						</Table.Th>
 					</Table.Tr>
@@ -210,7 +212,7 @@ export const SalesTable = ({
 										radius="xl"
 										onClick={() => onDetailClick?.(product)}
 									>
-										Detail
+										{t.bumdes.detail}
 									</Button>
 								</Table.Td>
 							</Table.Tr>

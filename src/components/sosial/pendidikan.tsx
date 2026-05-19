@@ -8,6 +8,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 
 const DESA_API =
 	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
@@ -26,6 +27,7 @@ interface PendidikanStats {
 }
 
 export const Pendidikan = () => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -55,7 +57,7 @@ export const Pendidikan = () => {
 			}}
 		>
 			<Title order={3} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>
-				Pendidikan
+				{t.sosial.pendidikan}
 			</Title>
 			<Stack gap="md">
 				{loading
@@ -84,7 +86,7 @@ export const Pendidikan = () => {
 				>
 					<Group justify="space-between">
 						<Text fw={500} c={dark ? "dark.0" : "#1e3a5f"}>
-							Jumlah Lembaga Pendidikan
+							{t.sosial.jumlahLembagaPendidikan}
 						</Text>
 						{loading ? (
 							<Skeleton height={20} width={40} radius="sm" />
@@ -96,7 +98,7 @@ export const Pendidikan = () => {
 					</Group>
 					<Group justify="space-between" mt="sm">
 						<Text fw={500} c={dark ? "dark.0" : "#1e3a5f"}>
-							Jumlah Tenaga Pengajar
+							{t.sosial.jumlahTenagaPengajar}
 						</Text>
 						{loading ? (
 							<Skeleton height={20} width={40} radius="sm" />

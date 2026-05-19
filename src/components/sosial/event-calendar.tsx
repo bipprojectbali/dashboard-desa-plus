@@ -8,6 +8,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { IconCalendarEvent } from "@tabler/icons-react";
+import { useTranslate } from "@/hooks/useTranslate";
 
 interface EventItem {
 	id: string;
@@ -21,6 +22,7 @@ interface EventCalendarProps {
 }
 
 export const EventCalendar = ({ data }: EventCalendarProps) => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -61,7 +63,7 @@ export const EventCalendar = ({ data }: EventCalendarProps) => {
 			}}
 		>
 			<Title order={3} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>
-				Kalender Event Budaya
+				{t.sosial.kalenderEventBudaya}
 			</Title>
 			<Stack gap="sm">
 				{displayData.map((event) => (

@@ -6,6 +6,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import {
 	Bar,
 	BarChart,
@@ -25,6 +26,7 @@ interface DocumentData {
 }
 
 export function DocumentChart() {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -69,7 +71,7 @@ export function DocumentChart() {
 			h="100%"
 		>
 			<Text size="sm" fw={600} c={dark ? "white" : "#1E3A5F"} mb="md">
-				Jumlah Dokumen
+				{t.kinerjaDivisi.jumlahDokumen}
 			</Text>
 			{loading ? (
 				<Group justify="center" py="xl">
@@ -113,7 +115,7 @@ export function DocumentChart() {
 			) : (
 				<Group justify="center" py="xl">
 					<Text size="sm" c="dimmed">
-						Tidak ada dokumen
+						{t.kinerjaDivisi.tidakAdaDokumen}
 					</Text>
 				</Group>
 			)}

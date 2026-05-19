@@ -7,6 +7,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { IconAward } from "@tabler/icons-react";
+import { useTranslate } from "@/hooks/useTranslate";
 
 interface ScholarshipData {
 	penerima: number;
@@ -19,6 +20,7 @@ interface BeasiswaProps {
 }
 
 export const Beasiswa = ({ data }: BeasiswaProps) => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -47,10 +49,10 @@ export const Beasiswa = ({ data }: BeasiswaProps) => {
 			<Group justify="space-between" align="center">
 				<Stack gap={2}>
 					<Text size="sm" c={dark ? "white" : "dimmed"} fw={500}>
-						Beasiswa Desa
+						{t.sosial.beasiswaDesa}
 					</Text>
 					<Text size="xl" fw={700} c={dark ? "white" : "#1e3a5f"}>
-						Penerima: {displayData.penerima}
+						{t.sosial.penerima}: {displayData.penerima}
 					</Text>
 				</Stack>
 				<ThemeIcon
@@ -64,13 +66,13 @@ export const Beasiswa = ({ data }: BeasiswaProps) => {
 			</Group>
 			<Stack gap="xs" mt="md">
 				<Group justify="space-between">
-					<Text c={dark ? "white" : "dimmed"}>Dana Tersalurkan:</Text>
+					<Text c={dark ? "white" : "dimmed"}>{t.sosial.danaTersalurkan}:</Text>
 					<Text fw={700} c={dark ? "white" : "#1e3a5f"}>
 						{displayData.dana}
 					</Text>
 				</Group>
 				<Group justify="space-between">
-					<Text c={dark ? "white" : "dimmed"}>Tahun Ajaran:</Text>
+					<Text c={dark ? "white" : "dimmed"}>{t.sosial.tahunAjaran}:</Text>
 					<Text c={dark ? "white" : "#1e3a5f"}>{displayData.tahunAjaran}</Text>
 				</Group>
 			</Stack>

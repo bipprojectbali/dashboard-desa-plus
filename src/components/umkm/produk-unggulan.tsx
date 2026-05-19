@@ -1,4 +1,5 @@
 import { Card, Group, Stack, Text, useMantineColorScheme } from "@mantine/core";
+import { useTranslate } from "@/hooks/useTranslate";
 
 interface MetricCardProps {
 	title: string;
@@ -46,6 +47,7 @@ interface ProdukUnggulanProps {
 }
 
 export const ProdukUnggulan = ({ data }: ProdukUnggulanProps) => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -81,17 +83,17 @@ export const ProdukUnggulan = ({ data }: ProdukUnggulanProps) => {
 		>
 			<Stack gap="lg">
 				<MetricCard
-					title="Total Penjualan"
+					title={t.bumdes.totalPenjualan}
 					value={formatCurrency(displayData.totalPenjualan)}
 					trend={displayData.trend}
 				/>
 				<MetricCard
-					title="Produk Aktif"
-					value={`${displayData.produkAktif} kategori`}
+					title={t.bumdes.produkAktif}
+					value={`${displayData.produkAktif} ${t.bumdes.kategoriSuffix}`}
 				/>
 				<MetricCard
-					title="Total Transaksi"
-					value={`${displayData.totalTransaksi} transaksi`}
+					title={t.bumdes.totalTransaksi}
+					value={`${displayData.totalTransaksi} ${t.bumdes.transaksiSuffix}`}
 				/>
 			</Stack>
 		</Card>

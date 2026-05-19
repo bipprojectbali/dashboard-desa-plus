@@ -20,6 +20,7 @@ import {
 	TrendingUp,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import {
 	Bar,
 	BarChart,
@@ -69,6 +70,7 @@ interface AssistanceData {
 }
 
 const KeuanganAnggaran = () => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const { tampilkanGrid } = useSnapshot(i18nStore);
@@ -147,31 +149,31 @@ const KeuanganAnggaran = () => {
 			setKpiData([
 				{
 					id: 1,
-					title: "Total APBDes",
+					title: t.keuanganAnggaran.totalApbdes,
 					value: `Rp ${formatM(totalBudget)}`,
-					subtitle: `Tahun ${rawData.tahun || "2025"}`,
+					subtitle: `${t.keuanganAnggaran.tahun} ${rawData.tahun || "2025"}`,
 					icon: Coins,
 				},
 				{
 					id: 2,
-					title: "Realisasi",
+					title: t.keuanganAnggaran.realisasi,
 					value: `${realisasiPercent}%`,
-					subtitle: `Rp ${formatM(calculatedTotalExpenseReal)} dari ${formatM(totalBudget)}`,
+					subtitle: `Rp ${formatM(calculatedTotalExpenseReal)} ${t.keuanganAnggaran.dari} ${formatM(totalBudget)}`,
 					icon: CheckCircle,
 				},
 				{
 					id: 3,
-					title: "Pemasukan",
+					title: t.keuanganAnggaran.pemasukan,
 					value: `Rp ${formatM(calculatedTotalIncomeReal)}`,
-					subtitle: "Total Realisasi",
+					subtitle: t.keuanganAnggaran.totalRealisasi,
 					trend: "+0%",
 					icon: TrendingUp,
 				},
 				{
 					id: 4,
-					title: "Pengeluaran",
+					title: t.keuanganAnggaran.pengeluaran,
 					value: `Rp ${formatM(calculatedTotalExpenseReal)}`,
-					subtitle: "Total Realisasi",
+					subtitle: t.keuanganAnggaran.totalRealisasi,
 					icon: TrendingDown,
 				},
 			]);
@@ -182,18 +184,18 @@ const KeuanganAnggaran = () => {
 			for (let i = 0; i < 12; i++) monthlyData[i] = { income: 0, expense: 0 };
 
 			const months = [
-				"Jan",
-				"Feb",
-				"Mar",
-				"Apr",
-				"Mei",
-				"Jun",
-				"Jul",
-				"Agu",
-				"Sep",
-				"Okt",
-				"Nov",
-				"Des",
+				t.keuanganAnggaran.jan,
+				t.keuanganAnggaran.feb,
+				t.keuanganAnggaran.mar,
+				t.keuanganAnggaran.apr,
+				t.keuanganAnggaran.mei,
+				t.keuanganAnggaran.jun,
+				t.keuanganAnggaran.jul,
+				t.keuanganAnggaran.agu,
+				t.keuanganAnggaran.sep,
+				t.keuanganAnggaran.okt,
+				t.keuanganAnggaran.nov,
+				t.keuanganAnggaran.des,
 			];
 
 			items.forEach((item: any) => {
@@ -276,7 +278,7 @@ const KeuanganAnggaran = () => {
 		} finally {
 			setLoading(false);
 		}
-	}, []);
+	}, [t]);
 
 	useEffect(() => {
 		fetchData();
@@ -362,7 +364,7 @@ const KeuanganAnggaran = () => {
 								<PieChartIcon size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Pemasukan dan Pengeluaran (jt)
+								{t.keuanganAnggaran.pemasukanDanPengeluaran}
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={300}>
@@ -411,7 +413,7 @@ const KeuanganAnggaran = () => {
 									strokeWidth={2}
 									dot={{ fill: "#22C55E", strokeWidth: 2, r: 4 }}
 									activeDot={{ r: 6 }}
-									name="Pemasukan"
+									name={t.keuanganAnggaran.pemasukan}
 								/>
 								<Line
 									type="monotone"
@@ -420,7 +422,7 @@ const KeuanganAnggaran = () => {
 									strokeWidth={2}
 									dot={{ fill: "#EF4444", strokeWidth: 2, r: 4 }}
 									activeDot={{ r: 6 }}
-									name="Pengeluaran"
+									name={t.keuanganAnggaran.pengeluaran}
 								/>
 							</LineChart>
 						</ResponsiveContainer>
@@ -445,7 +447,7 @@ const KeuanganAnggaran = () => {
 								<PieChartIcon size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Alokasi Anggaran Per Bidang (jt)
+								{t.keuanganAnggaran.alokasiAnggaran}
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={300}>
@@ -486,7 +488,7 @@ const KeuanganAnggaran = () => {
 									}}
 									formatter={(value: number | undefined) => [
 										`Rp ${value}jt`,
-										"Jumlah",
+										t.keuanganAnggaran.jumlah,
 									]}
 								/>
 								<Bar
@@ -521,7 +523,7 @@ const KeuanganAnggaran = () => {
 								<Receipt size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Laporan APBDes
+								{t.keuanganAnggaran.laporanApbdes}
 							</Title>
 						</Group>
 
@@ -530,7 +532,7 @@ const KeuanganAnggaran = () => {
 							<Grid.Col span={6}>
 								<Card p="sm" radius="lg" bg={dark ? "#064E3B" : "#DCFCE7"}>
 									<Title order={5} c="#22C55E" mb="sm">
-										Pendapatan
+										{t.keuanganAnggaran.pendapatan}
 									</Title>
 									<Stack gap="xs">
 										{reportData.income.map((item) => (
@@ -552,7 +554,7 @@ const KeuanganAnggaran = () => {
 											}}
 										>
 											<Text fw={700} c="#22C55E">
-												Total:
+												{t.keuanganAnggaran.total}
 											</Text>
 											<Text fw={700} c="#22C55E">
 												Rp {reportData.totalIncome.toLocaleString()}jt
@@ -566,7 +568,7 @@ const KeuanganAnggaran = () => {
 							<Grid.Col span={6}>
 								<Card p="sm" radius="lg" bg={dark ? "#7F1D1D" : "#FEE2E2"}>
 									<Title order={5} c="#EF4444" mb="sm">
-										Belanja
+										{t.keuanganAnggaran.belanja}
 									</Title>
 									<Stack gap="xs">
 										{reportData.expenses.map((item) => (
@@ -588,7 +590,7 @@ const KeuanganAnggaran = () => {
 											}}
 										>
 											<Text fw={700} c="#EF4444">
-												Total:
+												{t.keuanganAnggaran.total}
 											</Text>
 											<Text fw={700} c="#EF4444">
 												Rp {reportData.totalExpenses.toLocaleString()}jt
@@ -609,7 +611,7 @@ const KeuanganAnggaran = () => {
 							}}
 						>
 							<Text fw={700} c={dark ? "white" : "gray.9"}>
-								Saldo:
+								{t.keuanganAnggaran.saldo}
 							</Text>
 							<Text
 								fw={700}
@@ -648,7 +650,7 @@ const KeuanganAnggaran = () => {
 								<Coins size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Dana Bantuan dan Hibah
+								{t.keuanganAnggaran.danaBantuan}
 							</Title>
 						</Group>
 						<Stack gap="sm">
@@ -679,14 +681,14 @@ const KeuanganAnggaran = () => {
 												radius="sm"
 												fw={600}
 											>
-												{fund.status === "cair" ? "Cair" : "Proses"}
+												{fund.status === "cair" ? t.keuanganAnggaran.cair : t.keuanganAnggaran.proses}
 											</Badge>
 										</Group>
 									</Card>
 								))
 							) : (
 								<Text size="sm" c="dimmed" ta="center" py="xl">
-									Tidak ada data bantuan/hibah ditemukan
+									{t.keuanganAnggaran.tidakAdaBantuan}
 								</Text>
 							)}
 						</Stack>

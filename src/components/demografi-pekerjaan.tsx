@@ -20,6 +20,7 @@ import {
 	Users,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import {
 	Bar,
 	BarChart,
@@ -80,6 +81,7 @@ interface DashboardSummary {
 }
 
 const DemografiPekerjaan = () => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const { tampilkanGrid } = useSnapshot(i18nStore);
@@ -360,30 +362,30 @@ const DemografiPekerjaan = () => {
 	const kpiData = [
 		{
 			id: 1,
-			title: "Total Penduduk",
+			title: t.demografiPekerjaan.totalPenduduk,
 			value: stats.total.toLocaleString(),
-			subtitle: "Aktif terdaftar",
+			subtitle: t.demografiPekerjaan.aktifTerdaftar,
 			icon: Users,
 		},
 		{
 			id: 2,
-			title: "Kepala Keluarga",
+			title: t.demografiPekerjaan.kepalaKeluarga,
 			value: stats.heads.toLocaleString(),
-			subtitle: "Total KK",
+			subtitle: t.demografiPekerjaan.totalKk,
 			icon: Home,
 		},
 		{
 			id: 3,
-			title: "Kelahiran",
+			title: t.demografiPekerjaan.kelahiran,
 			value: births.toString(),
-			subtitle: "Tahun ini",
+			subtitle: t.demografiPekerjaan.tahunIni,
 			icon: Baby,
 		},
 		{
 			id: 4,
-			title: "Kemiskinan",
+			title: t.demografiPekerjaan.kemiskinan,
 			value: stats.poor.toLocaleString(),
-			subtitle: "Keluarga Prasejahtera",
+			subtitle: t.demografiPekerjaan.keluargaPrasejahtera,
 			trend: "positive" as const,
 			icon: TrendingDown,
 		},
@@ -392,25 +394,25 @@ const DemografiPekerjaan = () => {
 	// Dynamic Stats Data
 	const dynamicStats = [
 		{
-			title: "Kelahiran",
+			title: t.demografiPekerjaan.kelahiran,
 			value: births.toString(),
 			icon: Baby,
 			color: "#22C55E",
 		},
 		{
-			title: "Kematian",
+			title: t.demografiPekerjaan.kematian,
 			value: deaths.toString(),
 			icon: TrendingDown,
 			color: "#EF4444",
 		},
 		{
-			title: "Pindah Masuk",
+			title: t.demografiPekerjaan.pindahMasuk,
 			value: moveIn.toString(),
 			icon: Users,
 			color: "#3B82F6",
 		},
 		{
-			title: "Pindah Keluar",
+			title: t.demografiPekerjaan.pindahKeluar,
 			value: moveOut.toString(),
 			icon: Users,
 			color: "#F97316",
@@ -495,7 +497,7 @@ const DemografiPekerjaan = () => {
 								<BarChart3 size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Pengelompokan Umur
+								{t.demografiPekerjaan.pengelompokanUmur}
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>
@@ -567,7 +569,7 @@ const DemografiPekerjaan = () => {
 								<Building2 size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Demografi Pekerjaan
+								{t.demografiPekerjaan.demografiPekerjaan}
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>
@@ -641,7 +643,7 @@ const DemografiPekerjaan = () => {
 								<BarChart3 size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Dinamika Penduduk
+								{t.demografiPekerjaan.dinamikaPenduduk}
 							</Title>
 						</Group>
 						<Grid gutter="sm">
@@ -705,7 +707,7 @@ const DemografiPekerjaan = () => {
 								<PieChartIcon size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Distribusi Agama
+								{t.demografiPekerjaan.distribusiAgama}
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>
@@ -782,7 +784,7 @@ const DemografiPekerjaan = () => {
 								<Users size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Data per Banjar
+								{t.demografiPekerjaan.dataPerBanjar}
 							</Title>
 						</Group>
 						<Box style={{ overflowX: "auto" }}>
@@ -804,7 +806,7 @@ const DemografiPekerjaan = () => {
 													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
 												}}
 											>
-												Banjar
+												{t.demografiPekerjaan.banjar}
 											</th>
 											<th
 												style={{
@@ -816,7 +818,7 @@ const DemografiPekerjaan = () => {
 													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
 												}}
 											>
-												Penduduk
+												{t.demografiPekerjaan.penduduk}
 											</th>
 											<th
 												style={{
@@ -828,7 +830,7 @@ const DemografiPekerjaan = () => {
 													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
 												}}
 											>
-												KK
+												{t.demografiPekerjaan.kk}
 											</th>
 											<th
 												style={{
@@ -840,7 +842,7 @@ const DemografiPekerjaan = () => {
 													borderBottom: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
 												}}
 											>
-												Miskin
+												{t.demografiPekerjaan.miskin}
 											</th>
 										</tr>
 									</thead>
@@ -926,7 +928,7 @@ const DemografiPekerjaan = () => {
 								<BarChart3 size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
-								Sektor Unggulan
+								{t.demografiPekerjaan.sektorUnggulan}
 							</Title>
 						</Group>
 						<ResponsiveContainer width="100%" height={250}>

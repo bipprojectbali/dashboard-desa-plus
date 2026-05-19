@@ -6,6 +6,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { useSnapshot } from "valtio";
+import { useTranslate } from "@/hooks/useTranslate";
 import { setRange, umkmStore } from "../../store/umkm";
 
 type TimeRange = "minggu" | "bulan";
@@ -15,13 +16,12 @@ interface HeaderToggleProps {
 	onRangeChange?: (range: TimeRange) => void;
 }
 
-export const HeaderToggle = ({
-	title = "Update Penjualan Produk",
-	onRangeChange,
-}: HeaderToggleProps) => {
+export const HeaderToggle = ({ title, onRangeChange }: HeaderToggleProps) => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const { selectedRange } = useSnapshot(umkmStore);
+	const displayTitle = title ?? t.bumdes.updatePenjualan;
 
 	const handleRangeChange = (range: TimeRange) => {
 		setRange(range);
@@ -39,7 +39,7 @@ export const HeaderToggle = ({
 		>
 			<Group justify="space-between" align="center" px="md" py="xs">
 				<Title order={3} c="white">
-					{title}
+					{displayTitle}
 				</Title>
 				<Group gap="xs">
 					<Button
@@ -53,7 +53,7 @@ export const HeaderToggle = ({
 							opacity: selectedRange === "minggu" ? 1 : 0.8,
 						}}
 					>
-						Minggu ini
+						{t.bumdes.mingguIni}
 					</Button>
 					<Button
 						variant={selectedRange === "bulan" ? "white" : "transparent"}
@@ -66,7 +66,7 @@ export const HeaderToggle = ({
 							opacity: selectedRange === "bulan" ? 1 : 0.8,
 						}}
 					>
-						Bulan ini
+						{t.bumdes.bulanIni}
 					</Button>
 				</Group>
 			</Group>

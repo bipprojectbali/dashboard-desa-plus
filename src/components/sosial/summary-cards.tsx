@@ -14,6 +14,7 @@ import {
 	IconMedicalCross,
 	IconStethoscope,
 } from "@tabler/icons-react";
+import { useTranslate } from "@/hooks/useTranslate";
 
 interface SummaryCardProps {
 	title: string;
@@ -88,6 +89,8 @@ interface SummaryCardsProps {
 }
 
 export const SummaryCards = ({ data }: SummaryCardsProps) => {
+	const t = useTranslate();
+
 	const defaultData: HealthSummaryData = {
 		ibuHamil: 87,
 		balita: 342,
@@ -101,9 +104,9 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 		<Grid gutter="md">
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
 				<SummaryCard
-					title="Ibu Hamil Aktif"
+					title={t.sosial.ibuHamilAktif}
 					value={displayData.ibuHamil}
-					subtitle="Aktif"
+					subtitle={t.sosial.aktif}
 					icon={<IconHeartbeat size={20} />}
 					color="white"
 					backgroundColor="#1E3A5F"
@@ -111,9 +114,9 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
 				<SummaryCard
-					title="Balita Terdaftar"
+					title={t.sosial.balitaTerdaftar}
 					value={displayData.balita}
-					subtitle="Terdaftar"
+					subtitle={t.sosial.terdaftar}
 					icon={<IconBabyCarriage size={20} />}
 					color="white"
 					backgroundColor="#1E3A5F"
@@ -121,9 +124,9 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
 				<SummaryCard
-					title="Alert Stunting"
+					title={t.sosial.alertStunting}
 					value={displayData.alertStunting}
-					subtitle="Perhatian"
+					subtitle={t.sosial.perhatian}
 					icon={<IconStethoscope size={20} />}
 					color="white"
 					backgroundColor="#1E3A5F"
@@ -131,9 +134,9 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
 				<SummaryCard
-					title="Posyandu Aktif"
+					title={t.sosial.posyanduAktif}
 					value={displayData.posyanduAktif}
-					subtitle="Aktif"
+					subtitle={t.sosial.aktif}
 					icon={<IconMedicalCross size={20} />}
 					color="white"
 					backgroundColor="#1E3A5F"

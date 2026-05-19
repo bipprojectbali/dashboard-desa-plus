@@ -9,6 +9,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 
 const DESA_API =
 	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
@@ -38,6 +39,7 @@ interface PosyanduApiItem {
 }
 
 export const PosyanduSchedule = () => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const [items, setItems] = useState<PosyanduApiItem[]>([]);
@@ -67,7 +69,7 @@ export const PosyanduSchedule = () => {
 			}}
 		>
 			<Title order={3} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>
-				Jadwal Posyandu
+				{t.sosial.jadwalPosyandu}
 			</Title>
 			{loading ? (
 				<Group justify="center" py="xl">
