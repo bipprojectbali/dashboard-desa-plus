@@ -10,6 +10,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
 interface DivisionData {
@@ -29,6 +30,7 @@ interface DivisionApiResponse {
 export function DivisionProgress() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const t = useTranslate();
 
 	const [data, setData] = useState<DivisionData[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -72,7 +74,7 @@ export function DivisionProgress() {
 			h="100%"
 		>
 			<Title order={4} c={dark ? "white" : "gray.9"} mb="lg">
-				Divisi Teraktif
+				{t.dashboard.divisiTeraktif}
 			</Title>
 			<Stack gap="sm">
 				{loading ? (
@@ -87,7 +89,7 @@ export function DivisionProgress() {
 									{divisi.name}
 								</Text>
 								<Text size="sm" fw={600} c={dark ? "white" : "gray.9"}>
-									{divisi.value} Kegiatan
+									{divisi.value} {t.dashboard.kegiatan}
 								</Text>
 							</Group>
 							<Progress
@@ -101,7 +103,7 @@ export function DivisionProgress() {
 					))
 				) : (
 					<Text size="sm" c="dimmed" ta="center">
-						Tidak ada data divisi
+						{t.dashboard.tidakAdaDataDivisi}
 					</Text>
 				)}
 			</Stack>

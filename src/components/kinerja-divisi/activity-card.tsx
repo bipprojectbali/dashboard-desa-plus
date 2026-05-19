@@ -11,7 +11,8 @@ interface ActivityCardProps {
 	title: string;
 	date: string;
 	progress: number;
-	status: "Selesai" | "Berjalan" | "Tertunda";
+	status: "SELESAI" | "BERJALAN" | "TERTUNDA";
+	statusLabel: string;
 }
 
 export function ActivityCard({
@@ -19,14 +20,15 @@ export function ActivityCard({
 	date,
 	progress,
 	status,
+	statusLabel,
 }: ActivityCardProps) {
 	const getStatusColor = () => {
 		switch (status) {
-			case "Selesai":
+			case "SELESAI":
 				return "#22C55E";
-			case "Berjalan":
+			case "BERJALAN":
 				return "#3B82F6";
-			case "Tertunda":
+			case "TERTUNDA":
 				return "#EF4444";
 			default:
 				return "#9CA3AF";
@@ -91,7 +93,7 @@ export function ActivityCard({
 							fontWeight: 600,
 						}}
 					>
-						{status}
+						{statusLabel}
 					</Box>
 				</Group>
 			</Box>

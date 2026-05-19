@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
 interface ProgressData {
@@ -34,6 +35,7 @@ interface ActivityStats {
 }
 
 export function ProgressChart() {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -90,7 +92,7 @@ export function ProgressChart() {
 			h="100%"
 		>
 			<Text size="sm" fw={600} c={dark ? "white" : "#1E3A5F"} mb="md">
-				Progres Kegiatan
+				{t.kinerjaDivisi.progresKegiatan}
 			</Text>
 			{loading ? (
 				<Group justify="center" py="xl">

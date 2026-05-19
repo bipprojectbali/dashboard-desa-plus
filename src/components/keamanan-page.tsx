@@ -21,6 +21,7 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 
 const DESA_API =
 	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
@@ -126,6 +127,7 @@ const CctvMap = ({
 };
 
 const KeamananPage = () => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -170,16 +172,16 @@ const KeamananPage = () => {
 
 	const kpiCards = [
 		{
-			title: "CCTV Aktif",
+			title: t.keamanan.cctvAktif,
 			value: cctvStats.cctvOnline,
-			subtitle: "Kamera Online",
+			subtitle: t.keamanan.kameraOnline,
 			icon: <IconCamera size={24} />,
 			color: "darmasaba-success",
 		},
 		{
-			title: "Laporan Keamanan",
+			title: t.keamanan.laporanKeamanan,
 			value: cctvStats.laporanMingguIni,
-			subtitle: "Minggu ini",
+			subtitle: t.keamanan.mingguIni,
 			icon: <IconAlertTriangle size={24} />,
 			color: "darmasaba-danger",
 		},
@@ -258,10 +260,10 @@ const KeamananPage = () => {
 							h="100%"
 						>
 							<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
-								Peta Keamanan CCTV
+								{t.keamanan.petaKeamananCctv}
 							</Title>
 							<Text size="sm" c={dark ? "white" : "dimmed"} mb="md">
-								Titik Lokasi CCTV
+								{t.keamanan.titikLokasiCctv}
 							</Text>
 
 							{loading ? (
@@ -274,11 +276,11 @@ const KeamananPage = () => {
 							<Stack mt="md" gap="sm">
 								<Group justify="space-between" align="center">
 									<Title order={4} c={dark ? "dark.0" : "black"}>
-										Daftar CCTV
+										{t.keamanan.daftarCctv}
 									</Title>
 									{!loading && cctvList.length > 0 && (
 										<Text size="xs" c={dark ? "dark.3" : "dimmed"}>
-											{cctvList.length} kamera
+											{cctvList.length} {t.keamanan.kamera}
 										</Text>
 									)}
 								</Group>
@@ -296,7 +298,7 @@ const KeamananPage = () => {
 										ta="center"
 										py="md"
 									>
-										Belum ada data CCTV
+										{t.keamanan.belumAdaDataCctv}
 									</Text>
 								)}
 								{cctvPaged.map((cctv) => (
@@ -375,7 +377,7 @@ const KeamananPage = () => {
 						h="100%"
 					>
 						<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
-							Laporan Publik
+							{t.keamanan.laporanPublik}
 						</Title>
 						<Stack gap="sm">
 							{loading && (
@@ -392,7 +394,7 @@ const KeamananPage = () => {
 									ta="center"
 									py="xl"
 								>
-									Belum ada laporan keamanan
+									{t.keamanan.belumAdaLaporanKeamanan}
 								</Text>
 							)}
 							{laporanList.map((report) => (

@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import { Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
 interface AgendaItem {
@@ -21,6 +22,7 @@ interface EventCardProps {
 }
 
 export function EventCard({ agendas: propAgendas }: EventCardProps) {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -75,7 +77,7 @@ export function EventCard({ agendas: propAgendas }: EventCardProps) {
 			<Group gap="xs" mb="md">
 				<Calendar size={20} color={dark ? "#E2E8F0" : "#1E3A5F"} />
 				<Text size="sm" fw={600} c={dark ? "white" : "#1E3A5F"}>
-					Acara Hari Ini
+					{t.kinerjaDivisi.acaraHariIni}
 				</Text>
 			</Group>
 			{loading ? (
@@ -103,7 +105,7 @@ export function EventCard({ agendas: propAgendas }: EventCardProps) {
 				</Stack>
 			) : (
 				<Text c="dimmed" ta="center" py="md">
-					Tidak ada acara hari ini
+					{t.kinerjaDivisi.tidakAdaAcara}
 				</Text>
 			)}
 		</Card>

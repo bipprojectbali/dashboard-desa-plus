@@ -2,6 +2,7 @@ import { Center, Grid, Image, Loader, Stack } from "@mantine/core";
 import { CheckCircle, FileText, MessageCircle, Users } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 import { ActivityList } from "./dashboard/activity-list";
 import { ChartAPBDes } from "./dashboard/chart-apbdes";
@@ -71,39 +72,41 @@ export function DashboardContent() {
 
 	useAutoRefresh(fetchStats);
 
+	const t = useTranslate();
+
 	return (
 		<Stack gap="lg">
 			{/* Header Metrics - 4 Stat Cards */}
 			<Grid gutter="md">
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
-						title="Surat Minggu Ini"
+						title={t.dashboard.suratMingguIni}
 						value={stats.weeklyService}
-						detail="Total surat diajukan"
+						detail={t.dashboard.totalSuratDiajukan}
 						icon={<FileText style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
-						title="Pengaduan Aktif"
+						title={t.dashboard.pengaduanAktif}
 						value={stats.complaints.baru + stats.complaints.proses}
-						detail={`${stats.complaints.baru} baru, ${stats.complaints.proses} diproses`}
+						detail={`${stats.complaints.baru} ${t.dashboard.baru}, ${stats.complaints.proses} ${t.dashboard.diproses}`}
 						icon={<MessageCircle style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
-						title="Layanan Selesai"
+						title={t.dashboard.layananSelesai}
 						value={stats.complaints.selesai}
-						detail="Total diselesaikan"
+						detail={t.dashboard.totalDiselesaikan}
 						icon={<CheckCircle style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
-						title="Total Penduduk"
+						title={t.dashboard.totalPenduduk}
 						value={stats.residents.total.toLocaleString()}
-						detail={`${stats.residents.heads} Kepala Keluarga`}
+						detail={`${stats.residents.heads} ${t.dashboard.kepalaKeluarga}`}
 						icon={<Users style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>

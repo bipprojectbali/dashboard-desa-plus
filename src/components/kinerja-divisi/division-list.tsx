@@ -8,6 +8,7 @@ import {
 } from "@mantine/core";
 import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
 interface DivisionItem {
@@ -24,6 +25,7 @@ interface DivisionApiResponse {
 }
 
 export function DivisionList() {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -66,7 +68,7 @@ export function DivisionList() {
 			h="100%"
 		>
 			<Text size="sm" fw={600} c={dark ? "white" : "#1E3A5F"} mb="md">
-				Divisi Teraktif
+				{t.dashboard.divisiTeraktif}
 			</Text>
 			<Stack gap="xs">
 				{loading ? (
@@ -100,7 +102,7 @@ export function DivisionList() {
 					))
 				) : (
 					<Text size="xs" c="dimmed" ta="center">
-						Tidak ada data divisi
+						{t.dashboard.tidakAdaDataDivisi}
 					</Text>
 				)}
 			</Stack>

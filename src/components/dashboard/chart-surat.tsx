@@ -18,6 +18,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
 interface ChartData {
@@ -28,6 +29,7 @@ interface ChartData {
 export function ChartSurat() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const t = useTranslate();
 
 	const [data, setData] = useState<ChartData[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -98,10 +100,10 @@ export function ChartSurat() {
 			<Group justify="space-between" mb="md">
 				<Box>
 					<Title order={4} c={dark ? "white" : "gray.9"} mb={5}>
-						Statistik Pengajuan Surat
+						{t.dashboard.statistikSurat}
 					</Title>
 					<Text size="sm" c="dimmed">
-						Trend pengajuan surat 6 bulan terakhir
+						{t.dashboard.trendSurat}
 					</Text>
 				</Box>
 				<ActionIcon variant="subtle" size="lg" radius="md">
@@ -112,9 +114,9 @@ export function ChartSurat() {
 						fill="none"
 						xmlns="http://www.w3.org/2000/svg"
 						role="img"
-						aria-label="Tampilkan Detail"
+						aria-label={t.dashboard.tampilkanDetail}
 					>
-						<title>Tampilkan Detail</title>
+						<title>{t.dashboard.tampilkanDetail}</title>
 						<path
 							d="M8 5L13 10L8 15"
 							stroke="currentColor"
@@ -169,7 +171,7 @@ export function ChartSurat() {
 				) : (
 					<Group justify="center" align="center" h="100%">
 						<Text size="sm" c="dimmed">
-							Tidak ada data pengajuan surat 6 bulan terakhir
+							{t.dashboard.tidakAdaDataSurat}
 						</Text>
 					</Group>
 				)}

@@ -32,31 +32,33 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { HelpCard } from "@/components/ui/help-card";
 import { supportConfig } from "@/config/support";
+import { useTranslate } from "@/hooks/useTranslate";
 
 const HelpPage = () => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	// Sample data for sections
 	const guideItems = [
 		{
-			title: "Cara Login",
-			description: "Langkah-langkah untuk login ke dashboard",
-			content: `1. Buka browser dan akses URL dashboard desa.\n2. Masukkan email dan password akun Anda pada form login.\n3. Klik tombol "Masuk" untuk melanjutkan.\n4. Jika berhasil, Anda akan diarahkan ke halaman utama dashboard.\n5. Jika lupa password, klik "Lupa Password" dan ikuti instruksi yang dikirim ke email Anda.`,
+			title: t.help.guideCaraLoginTitle,
+			description: t.help.guideCaraLoginDesc,
+			content: t.help.guideCaraLoginContent,
 		},
 		{
-			title: "Navigasi Dashboard",
-			description: "Penjelasan tentang tata letak dan navigasi",
-			content: `1. Sidebar kiri berisi menu utama: Beranda, Kinerja Divisi, Layanan Publik, Demografi, Keuangan, dan Pengaturan.\n2. Header atas menampilkan nama pengguna, notifikasi, dan tombol logout.\n3. Area utama (konten tengah) menampilkan data sesuai menu yang dipilih.\n4. Gunakan breadcrumb di atas konten untuk mengetahui posisi halaman Anda.\n5. Pada perangkat mobile, sidebar dapat dibuka/tutup via ikon menu (hamburger) di header.`,
+			title: t.help.guideNavTitle,
+			description: t.help.guideNavDesc,
+			content: t.help.guideNavContent,
 		},
 		{
-			title: "Fitur Dasar",
-			description: "Panduan penggunaan fitur-fitur utama",
-			content: `1. Beranda: Menampilkan ringkasan statistik desa, aktivitas terbaru, dan grafik utama.\n2. Kinerja Divisi: Pantau kegiatan, dokumen, dan diskusi per divisi.\n3. Layanan Publik: Kelola surat pengaduan dan surat layanan warga.\n4. Demografi: Lihat data penduduk, banjar, kesehatan, dan ketenagakerjaan.\n5. Keuangan & UMKM: Pantau anggaran desa dan daftar UMKM.\n6. Pengaturan: Kelola profil pengguna dan konfigurasi sistem.`,
+			title: t.help.guideFiturTitle,
+			description: t.help.guideFiturDesc,
+			content: t.help.guideFiturContent,
 		},
 		{
-			title: "Tips & Trik",
-			description: "Tips untuk meningkatkan produktivitas",
-			content: `1. Gunakan shortcut keyboard untuk navigasi lebih cepat di tabel data.\n2. Filter dan pencarian tersedia di setiap halaman daftar — manfaatkan untuk menemukan data spesifik.\n3. Export data ke CSV/Excel dengan tombol Export di halaman tabel untuk laporan offline.\n4. Aktifkan dark mode di Pengaturan untuk kenyamanan bekerja malam hari.\n5. Refresh data secara manual dengan tombol reload jika data tampak tidak sinkron dengan sistem pusat.\n6. Gunakan fitur Jenna (Virtual Assistant) di halaman ini untuk bantuan cepat.`,
+			title: t.help.guideTipsTitle,
+			description: t.help.guideTipsDesc,
+			content: t.help.guideTipsContent,
 		},
 	];
 
@@ -66,22 +68,22 @@ const HelpPage = () => {
 
 	const videoItems = [
 		{
-			title: "Dashboard Overview",
+			title: t.help.videoDashboardTitle,
 			duration: "5:23",
 			url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
 		},
 		{
-			title: "Analisis Data",
+			title: t.help.videoAnalisisTitle,
 			duration: "8:45",
 			url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
 		},
 		{
-			title: "Membuat Laporan",
+			title: t.help.videoLaporanTitle,
 			duration: "6:12",
 			url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
 		},
 		{
-			title: "Export Data",
+			title: t.help.videoExportTitle,
 			duration: "4:30",
 			url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
 		},
@@ -92,81 +94,32 @@ const HelpPage = () => {
 	>(null);
 
 	const faqItems = [
-		{
-			question: "Bagaimana cara reset password?",
-			answer:
-				'Anda dapat mereset password melalui halaman login dengan klik "Lupa Password"',
-		},
-		{
-			question: "Apakah saya bisa mengakses data offline?",
-			answer: "Saat ini aplikasi hanya dapat diakses secara online",
-		},
-		{
-			question: "Berapa lama waktu respon support?",
-			answer:
-				"Tim support kami biasanya merespon dalam waktu kurang dari 24 jam",
-		},
-		{
-			question: "Bagaimana cara menambahkan pengguna baru?",
-			answer:
-				"Fitur penambahan pengguna dapat ditemukan di menu Pengaturan > Manajemen Pengguna",
-		},
+		{ question: t.help.faqQ1, answer: t.help.faqA1 },
+		{ question: t.help.faqQ2, answer: t.help.faqA2 },
+		{ question: t.help.faqQ3, answer: t.help.faqA3 },
+		{ question: t.help.faqQ4, answer: t.help.faqA4 },
 	];
 
 	const documentationItems = [
 		{
-			title: "API Reference",
-			description: "Dokumentasi lengkap untuk integrasi API",
-			content: `GET /api/demografi/summary
-curl -H "Authorization: Bearer <token>" \\
-  https://dashboard-desa-plus-stg.wibudev.com/api/demografi/summary
-Response: {"totalPenduduk": 5234, "lakiLaki": 2617, "perempuan": 2617}
-
-GET /api/complaint/stats
-curl -H "Authorization: Bearer <token>" \\
-  https://dashboard-desa-plus-stg.wibudev.com/api/complaint/stats
-Response: {"total": 42, "selesai": 30, "proses": 8, "pending": 4}
-
-GET /api/umkm/summary
-curl -H "Authorization: Bearer <token>" \\
-  https://dashboard-desa-plus-stg.wibudev.com/api/umkm/summary
-Response: {"totalUmkm": 87, "aktif": 72, "nonaktif": 15}`,
+			title: t.help.docApiTitle,
+			description: t.help.docApiDesc,
+			content: t.help.docApiContent,
 		},
 		{
-			title: "Integrasi Sistem",
-			description: "Cara mengintegrasikan dengan sistem eksternal",
-			content: `1. Autentikasi: Gunakan JWT token atau session cookie. Dapatkan token via POST /api/auth/login dengan email & password.
-2. Base URL per environment:
-   - Staging: https://dashboard-desa-plus-stg.wibudev.com/api
-   - Production: https://dashboard-desa-plus.wibudev.com/api
-3. Header wajib:
-   - Content-Type: application/json
-   - Authorization: Bearer <token>
-4. Contoh request dari sistem luar:
-   curl -X POST https://dashboard-desa-plus-stg.wibudev.com/api/complaint \\
-     -H "Content-Type: application/json" \\
-     -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..." \\
-     -d '{"title": "Aduan Jalan Rusak", "description": "Jalan di Banjar Kaja berlubang"}'`,
+			title: t.help.docIntegrasiTitle,
+			description: t.help.docIntegrasiDesc,
+			content: t.help.docIntegrasiContent,
 		},
 		{
-			title: "Format Data",
-			description: "Spesifikasi format data yang didukung",
-			content: `Tanggal    : ISO 8601 (YYYY-MM-DD), contoh: 2026-05-08
-Waktu      : HH:mm:ss WIB, contoh: 14:30:00 WIB
-Mata Uang  : IDR tanpa desimal, contoh: 15000000
-Koordinat  : Latitude/Longitude desimal, contoh: -8.12345, 115.12345
-Status Enum:
-  - AKTIF / NONAKTIF
-  - NORMAL / ALERT / STUNTING`,
+			title: t.help.docFormatTitle,
+			description: t.help.docFormatDesc,
+			content: t.help.docFormatContent,
 		},
 		{
-			title: "Best Practices",
-			description: "Praktik terbaik dalam penggunaan platform",
-			content: `• Gunakan pagination (?page=&limit=) untuk mengambil data besar
-• Hindari polling interval < 30 detik untuk mengurangi beban server
-• Cache response di client-side untuk data yang jarang berubah
-• Gunakan filter periode (startDate/endDate) untuk query besar
-• Jangan expose API key di frontend — selalu gunakan token dari server`,
+			title: t.help.docBestTitle,
+			description: t.help.docBestDesc,
+			content: t.help.docBestContent,
 		},
 	];
 
@@ -175,16 +128,16 @@ Status Enum:
 	>(null);
 
 	const stats = [
-		{ value: "150+", label: "Artikel Panduan" },
-		{ value: "50+", label: "Video Tutorial" },
-		{ value: "24/7", label: "Support Aktif" },
+		{ value: "150+", label: t.help.artikelPanduan },
+		{ value: "50+", label: t.help.videoTutorial },
+		{ value: "24/7", label: t.help.supportAktif },
 	];
 
 	// State for chat functionality
 	const [messages, setMessages] = useState([
 		{
 			id: 1,
-			text: "Halo! Saya Jenna, asisten virtual Anda. Bagaimana saya bisa membantu hari ini?",
+			text: t.help.jennaGreeting,
 			sender: "jenna",
 		},
 	]);
@@ -198,10 +151,10 @@ Status Enum:
 	}, [messages, isLoading]);
 
 	const QUICK_REPLIES = [
-		"Cara login ke dashboard?",
-		"Bagaimana cara sinkronisasi data?",
-		"Fitur apa saja yang tersedia?",
-		"Cara ubah pengaturan bahasa?",
+		t.help.quickLogin,
+		t.help.quickSync,
+		t.help.quickFitur,
+		t.help.quickBahasa,
 	];
 
 	const handleSendMessage = async () => {
@@ -225,7 +178,7 @@ Status Enum:
 			});
 
 			const json = await res.json();
-			const reply = res.ok ? json.reply : (json.error ?? "Terjadi kesalahan.");
+			const reply = res.ok ? json.reply : (json.error ?? t.help.terjadiKesalahan);
 
 			setMessages((prev) => [
 				...prev,
@@ -236,7 +189,7 @@ Status Enum:
 				...prev,
 				{
 					id: Date.now() + 1,
-					text: "Koneksi gagal. Coba lagi.",
+					text: t.help.koneksiGagal,
 					sender: "jenna",
 				},
 			]);
@@ -255,10 +208,10 @@ Status Enum:
 	return (
 		<Container size="lg" py="xl">
 			<Title order={1} mb="xl" ta="center">
-				Pusat Bantuan
+				{t.help.pusatBantuan}
 			</Title>
 			<Text size="lg" color="dimmed" ta="center" mb="xl">
-				Temukan jawaban untuk pertanyaan Anda atau hubungi tim support kami
+				{t.help.subtitle}
 			</Text>
 
 			{/* Statistics Section */}
@@ -299,7 +252,7 @@ Status Enum:
 								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconBook size={24} color="white" />}
-								title="Panduan Memulai"
+								title={t.help.panduanMemulai}
 								h="100%"
 							>
 								<Box>
@@ -333,7 +286,7 @@ Status Enum:
 								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconVideo size={24} color="white" />}
-								title="Video Tutorial"
+								title={t.help.videoTutorial}
 								h="100%"
 							>
 								<Box>
@@ -367,7 +320,7 @@ Status Enum:
 								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconHelpCircle size={24} color="white" />}
-								title="FAQ"
+								title={t.help.faq}
 								h="100%"
 							>
 								<Accordion variant="separated">
@@ -403,34 +356,34 @@ Status Enum:
 								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconHeadphones size={24} color="white" />}
-								title="Hubungi Support"
+								title={t.help.hubungiSupport}
 								h="100%"
 							>
 								<Box>
-									<Text fw={500}>Email</Text>
+									<Text fw={500}>{t.help.emailLabel}</Text>
 									<Text size="sm" color="dimmed" mb="md">
 										<a href={`mailto:${supportConfig.email}`}>
 											{supportConfig.email}
 										</a>
 									</Text>
 
-									<Text fw={500}>WhatsApp</Text>
+									<Text fw={500}>{t.help.whatsappLabel}</Text>
 									<Text size="sm" color="dimmed" mb="md">
 										<a href={`https://wa.me/${supportConfig.whatsapp.number}`}>
 											{supportConfig.whatsapp.label}
 										</a>
 									</Text>
 
-									<Text fw={500}>Jam Kerja</Text>
+									<Text fw={500}>{t.help.jamKerjaLabel}</Text>
 									<Text size="sm" color="dimmed">
-										{supportConfig.jamKerja}
+										{t.help.jamKerjaValue}
 									</Text>
 
 									<Text fw={500} mt="md">
-										Waktu Respon
+										{t.help.waktuResponLabel}
 									</Text>
 									<Text size="sm" color="dimmed">
-										{supportConfig.waktuRespon}
+										{t.help.waktuResponValue}
 									</Text>
 								</Box>
 							</HelpCard>
@@ -446,7 +399,7 @@ Status Enum:
 								}}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconFileText size={24} color="white" />}
-								title="Dokumentasi"
+								title={t.help.dokumentasi}
 								h="100%"
 							>
 								<Box>
@@ -516,7 +469,7 @@ Status Enum:
 														}}
 													/>
 													<Text size="xs" c="white" opacity={0.85}>
-														Virtual Assistant • Online
+														{t.help.virtualAssistantOnline}
 													</Text>
 												</Group>
 											</Box>
@@ -527,7 +480,7 @@ Status Enum:
 											size="sm"
 											style={{ color: "#6366f1", fontWeight: 600 }}
 										>
-											AI Powered
+											{t.help.aiPowered}
 										</Badge>
 									</Group>
 								</Box>
@@ -669,7 +622,7 @@ Status Enum:
 										style={{ background: dark ? "#0f172a" : "#f8fafc" }}
 									>
 										<Text size="xs" c="dimmed" mb={6} fw={500}>
-											Pertanyaan cepat:
+											{t.help.pertanyaanCepat}
 										</Text>
 										<Group gap={6} wrap="wrap">
 											{QUICK_REPLIES.map((q) => (
@@ -704,7 +657,7 @@ Status Enum:
 											value={inputValue}
 											onChange={(e) => setInputValue(e.target.value)}
 											onKeyDown={handleKeyPress}
-											placeholder="Ketik pesan Anda..."
+											placeholder={t.help.ketikPesan}
 											radius="xl"
 											size="sm"
 											disabled={isLoading}
@@ -723,7 +676,7 @@ Status Enum:
 											color="blue"
 											disabled={isLoading || inputValue.trim() === ""}
 											onClick={() => void handleSendMessage()}
-											aria-label="Kirim pesan"
+											aria-label={t.help.kirimPesan}
 											style={{
 												background: inputValue.trim()
 													? "linear-gradient(135deg, #3b82f6, #6366f1)"
@@ -735,8 +688,7 @@ Status Enum:
 										</ActionIcon>
 									</Group>
 									<Text size="xs" c="dimmed" ta="center" mt={8}>
-										Jenna adalah asisten virtual — jawaban mungkin tidak selalu
-										akurat
+										{t.help.jennaDisclaimer}
 									</Text>
 								</Box>
 							</Box>
@@ -782,7 +734,7 @@ Status Enum:
 							size="sm"
 							style={{ color: "#6366f1" }}
 						>
-							Panduan
+							{t.help.panduanBadge}
 						</Badge>
 					</Group>
 					<Title order={3} c="white" mb={4}>
@@ -829,7 +781,7 @@ Status Enum:
 						onClick={() => setSelectedGuide(null)}
 						fw={500}
 					>
-						Tutup
+						{t.help.tutup}
 					</Text>
 				</Box>
 			</Modal>
@@ -871,14 +823,14 @@ Status Enum:
 							size="sm"
 							style={{ color: "#ef4444" }}
 						>
-							Video Tutorial
+							{t.help.videoTutorial}
 						</Badge>
 					</Group>
 					<Title order={3} c="white" mb={4}>
 						{selectedVideo?.title}
 					</Title>
 					<Text size="sm" c="white" opacity={0.8}>
-						Durasi: {selectedVideo?.duration}
+						{t.help.durasi}: {selectedVideo?.duration}
 					</Text>
 				</Box>
 
@@ -907,7 +859,7 @@ Status Enum:
 						onClick={() => setSelectedVideo(null)}
 						fw={500}
 					>
-						Tutup
+						{t.help.tutup}
 					</Text>
 				</Box>
 			</Modal>
@@ -949,7 +901,7 @@ Status Enum:
 							size="sm"
 							style={{ color: "#10b981" }}
 						>
-							Dokumentasi
+							{t.help.dokumentasi}
 						</Badge>
 					</Group>
 					<Title order={3} c="white" mb={4}>
@@ -988,7 +940,7 @@ Status Enum:
 						onClick={() => setSelectedDoc(null)}
 						fw={500}
 					>
-						Tutup
+						{t.help.tutup}
 					</Text>
 				</Box>
 			</Modal>

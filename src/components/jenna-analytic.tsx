@@ -28,73 +28,71 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
+import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 
-// KPI Data
-const kpiData = [
-	{
-		id: 1,
-		title: "Interaksi Hari Ini",
-		value: "61",
-		subtitle: "+15% dari kemarin",
-		trend: "positive",
-		icon: MessageCircle,
-	},
-	{
-		id: 2,
-		title: "Jawaban Otomatis",
-		value: "87%",
-		subtitle: "53 dari 61 interaksi",
-		icon: CheckCircle,
-	},
-	{
-		id: 3,
-		title: "Belum Ditindak",
-		value: "8",
-		subtitle: "Perlu respon manual",
-		icon: AlertTriangle,
-	},
-	{
-		id: 4,
-		title: "Waktu Respon",
-		value: "2.3 sec",
-		subtitle: "Rata-rata",
-		icon: Clock,
-	},
-];
-
-// Chart Data
-const chartData = [
-	{ day: "Sen", total: 45 },
-	{ day: "Sel", total: 62 },
-	{ day: "Rab", total: 38 },
-	{ day: "Kam", total: 75 },
-	{ day: "Jum", total: 58 },
-	{ day: "Sab", total: 32 },
-	{ day: "Min", total: 51 },
-];
-
-// Top Topics Data
-const topTopics = [
-	{ topic: "Cara mengurus KTP", count: 89 },
-	{ topic: "Syarat Kartu Keluarga", count: 76 },
-	{ topic: "Jadwal Posyandu", count: 64 },
-	{ topic: "Pengaduan jalan rusak", count: 52 },
-	{ topic: "Info program bansos", count: 48 },
-];
-
-// Busy Hours Data
-const busyHours = [
-	{ period: "Pagi (08–12)", percentage: 30 },
-	{ period: "Siang (12–16)", percentage: 40 },
-	{ period: "Sore (16–20)", percentage: 20 },
-	{ period: "Malam (20–08)", percentage: 10 },
-];
-
 const JennaAnalytic = () => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const { tampilkanGrid } = useSnapshot(i18nStore);
+
+	const kpiData = [
+		{
+			id: 1,
+			title: t.jennaAnalytic.interaksiHariIni,
+			value: "61",
+			subtitle: t.jennaAnalytic.plusDariKemarin,
+			trend: "positive",
+			icon: MessageCircle,
+		},
+		{
+			id: 2,
+			title: t.jennaAnalytic.jawabanOtomatis,
+			value: "87%",
+			subtitle: t.jennaAnalytic.dari61Interaksi,
+			icon: CheckCircle,
+		},
+		{
+			id: 3,
+			title: t.jennaAnalytic.belumDitindak,
+			value: "8",
+			subtitle: t.jennaAnalytic.perluResponManual,
+			icon: AlertTriangle,
+		},
+		{
+			id: 4,
+			title: t.jennaAnalytic.waktuRespon,
+			value: "2.3 sec",
+			subtitle: t.jennaAnalytic.rataRata,
+			icon: Clock,
+		},
+	];
+
+	const chartData = [
+		{ day: t.jennaAnalytic.sen, total: 45 },
+		{ day: t.jennaAnalytic.sel, total: 62 },
+		{ day: t.jennaAnalytic.rab, total: 38 },
+		{ day: t.jennaAnalytic.kam, total: 75 },
+		{ day: t.jennaAnalytic.jum, total: 58 },
+		{ day: t.jennaAnalytic.sab, total: 32 },
+		{ day: t.jennaAnalytic.min, total: 51 },
+	];
+
+	const topTopics = [
+		{ topic: t.jennaAnalytic.topikKtp, count: 89 },
+		{ topic: t.jennaAnalytic.topikKk, count: 76 },
+		{ topic: t.jennaAnalytic.topikPosyandu, count: 64 },
+		{ topic: t.jennaAnalytic.topikJalan, count: 52 },
+		{ topic: t.jennaAnalytic.topikBansos, count: 48 },
+	];
+
+	const busyHours = [
+		{ period: t.jennaAnalytic.pagiJam, percentage: 30 },
+		{ period: t.jennaAnalytic.siangJam, percentage: 40 },
+		{ period: t.jennaAnalytic.soreJam, percentage: 20 },
+		{ period: t.jennaAnalytic.malamJam, percentage: 10 },
+	];
 
 	return (
 		<Stack gap="lg">
@@ -167,7 +165,7 @@ const JennaAnalytic = () => {
 			>
 				<Group justify="space-between" mb="md">
 					<Title order={4} c={dark ? "white" : "gray.9"}>
-						Interaksi Chatbot
+						{t.jennaAnalytic.interaksiChatbot}
 					</Title>
 				</Group>
 				<ResponsiveContainer width="100%" height={300}>
@@ -225,7 +223,7 @@ const JennaAnalytic = () => {
 						h="100%"
 					>
 						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
-							Topik Pertanyaan Terbanyak
+							{t.jennaAnalytic.topikPertanyaan}
 						</Title>
 						<Stack gap="xs">
 							{topTopics.map((item) => (
@@ -271,7 +269,7 @@ const JennaAnalytic = () => {
 						h="100%"
 					>
 						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
-							Jam Tersibuk
+							{t.jennaAnalytic.jamTersibuk}
 						</Title>
 						<Stack gap="md">
 							{busyHours.map((item) => (

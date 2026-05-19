@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
 interface DiscussionItem {
@@ -22,6 +23,7 @@ interface DiscussionItem {
 }
 
 export function DiscussionPanel() {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -89,7 +91,7 @@ export function DiscussionPanel() {
 			<Group gap="xs" mb="md">
 				<MessageCircle size={20} color={dark ? "#E2E8F0" : "#1E3A5F"} />
 				<Text size="sm" fw={600} c={dark ? "white" : "#1E3A5F"}>
-					Diskusi
+					{t.kinerjaDivisi.diskusi}
 				</Text>
 			</Group>
 			<Stack gap="sm">
@@ -135,7 +137,7 @@ export function DiscussionPanel() {
 					))
 				) : (
 					<Text size="sm" c="dimmed" ta="center" py="xl">
-						Tidak ada diskusi
+						{t.kinerjaDivisi.tidakAdaDiskusi}
 					</Text>
 				)}
 			</Stack>

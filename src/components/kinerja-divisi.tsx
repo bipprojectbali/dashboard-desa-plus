@@ -1,6 +1,7 @@
 import { Card, Grid, Stack } from "@mantine/core";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 import { ActivityCard } from "./kinerja-divisi/activity-card";
 import { ArchiveCard } from "./kinerja-divisi/archive-card";
@@ -9,14 +10,6 @@ import { DivisionList } from "./kinerja-divisi/division-list";
 import { DocumentChart } from "./kinerja-divisi/document-chart";
 import { EventCard } from "./kinerja-divisi/event-card";
 import { ProgressChart } from "./kinerja-divisi/progress-chart";
-
-// Data for arsip digital (Section 5)
-const archiveData = [
-	{ name: "Surat Keputusan" },
-	{ name: "Dokumentasi" },
-	{ name: "Laporan Keuangan" },
-	{ name: "Notulensi Rapat" },
-];
 
 interface Activity {
 	id: string;
@@ -33,6 +26,7 @@ interface EventData {
 }
 
 const KinerjaDivisi = () => {
+	const t = useTranslate();
 	const [activities, setActivities] = useState<Activity[]>([]);
 	const [todayEvents, setTodayEvents] = useState<EventData[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -69,6 +63,13 @@ const KinerjaDivisi = () => {
 		event: event.title,
 	}));
 
+	const archiveData = [
+		{ name: t.kinerjaDivisi.suratKeputusan },
+		{ name: t.kinerjaDivisi.dokumentasi },
+		{ name: t.kinerjaDivisi.laporanKeuangan },
+		{ name: t.kinerjaDivisi.notulensiRapat },
+	];
+
 	return (
 		<Stack gap="lg">
 			{/* SECTION 1 — PROGRAM KEGIATAN */}
@@ -79,12 +80,13 @@ const KinerjaDivisi = () => {
 							title={kegiatan.title}
 							date={dayjs(kegiatan.createdAt).format("D MMMM YYYY")}
 							progress={kegiatan.progress}
-							status={
+							status={kegiatan.status}
+							statusLabel={
 								kegiatan.status === "SELESAI"
-									? "Selesai"
+									? t.kinerjaDivisi.statusSelesai
 									: kegiatan.status === "BERJALAN"
-										? "Berjalan"
-										: "Tertunda"
+										? t.kinerjaDivisi.statusBerjalan
+										: t.kinerjaDivisi.statusTertunda
 							}
 						/>
 					</Grid.Col>
@@ -92,7 +94,7 @@ const KinerjaDivisi = () => {
 				{!loading && activities.length === 0 && (
 					<Grid.Col span={12}>
 						<Card p="md" radius="xl" withBorder ta="center" c="dimmed">
-							Tidak ada aktivitas terbaru
+							{t.kinerjaDivisi.tidakAdaAktivitas}
 						</Card>
 					</Grid.Col>
 				)}

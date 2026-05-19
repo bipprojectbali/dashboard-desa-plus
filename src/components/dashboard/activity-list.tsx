@@ -11,6 +11,7 @@ import {
 import dayjs from "dayjs";
 import { Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
 interface EventData {
@@ -21,6 +22,7 @@ interface EventData {
 export function ActivityList() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const t = useTranslate();
 
 	const [data, setData] = useState<EventData[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -71,7 +73,7 @@ export function ActivityList() {
 					color={dark ? "#E2E8F0" : "#1E3A5F"}
 				/>
 				<Title order={4} c={dark ? "white" : "gray.9"}>
-					Kalender & Kegiatan Mendatang
+					{t.dashboard.kalenderKegiatan}
 				</Title>
 			</Group>
 			<Stack gap="md">
@@ -98,7 +100,7 @@ export function ActivityList() {
 					))
 				) : (
 					<Text size="sm" c="dimmed" ta="center">
-						Tidak ada kegiatan mendatang
+						{t.dashboard.tidakAdaKegiatan}
 					</Text>
 				)}
 			</Stack>

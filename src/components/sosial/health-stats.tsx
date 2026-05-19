@@ -7,6 +7,7 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { useTranslate } from "@/hooks/useTranslate";
 
 interface HealthProgressItem {
 	label: string;
@@ -19,14 +20,15 @@ interface HealthStatsProps {
 }
 
 export const HealthStats = ({ data }: HealthStatsProps) => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
 	const defaultData: HealthProgressItem[] = [
-		{ label: "Imunisasi Lengkap", value: 92, color: "green" },
-		{ label: "Pemeriksaan Rutin", value: 88, color: "blue" },
-		{ label: "Gizi Baik", value: 86, color: "teal" },
-		{ label: "Target Stunting", value: 14, color: "red" },
+		{ label: t.sosial.imunisasiLengkap, value: 92, color: "green" },
+		{ label: t.sosial.pemeriksaanRutin, value: 88, color: "blue" },
+		{ label: t.sosial.giziBaik, value: 86, color: "teal" },
+		{ label: t.sosial.targetStunting, value: 14, color: "red" },
 	];
 
 	const displayData = data || defaultData;
@@ -46,7 +48,7 @@ export const HealthStats = ({ data }: HealthStatsProps) => {
 			h={"100%"}
 		>
 			<Title order={3} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>
-				Statistik Kesehatan
+				{t.sosial.statistikKesehatan}
 			</Title>
 			<Stack gap="md">
 				{displayData.map((item) => (

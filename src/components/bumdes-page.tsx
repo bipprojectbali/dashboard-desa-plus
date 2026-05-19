@@ -1,5 +1,6 @@
 import { Grid, GridCol, Stack } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import { useSnapshot } from "valtio";
 import { umkmStore } from "../store/umkm";
 import { HeaderToggle } from "./umkm/header-toggle";
@@ -54,6 +55,7 @@ interface SelectOption {
 }
 
 const BumdesPage = () => {
+	const t = useTranslate();
 	const { selectedRange } = useSnapshot(umkmStore);
 
 	const [kpi, setKpi] = useState<KpiData | null>(null);
@@ -163,7 +165,7 @@ const BumdesPage = () => {
 				totalPenjualan: ringkasan.totalPenjualan,
 				produkAktif: ringkasan.kategoriAktif,
 				totalTransaksi: ringkasan.totalTransaksi,
-				trend: { value: ringkasan.persentasePerubahan, label: "vs bulan lalu" },
+				trend: { value: ringkasan.persentasePerubahan, label: t.bumdes.vsBulanLalu },
 			}
 		: undefined;
 

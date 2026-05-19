@@ -13,6 +13,7 @@ import {
 	IconTrendingUp,
 	IconUsers,
 } from "@tabler/icons-react";
+import { useTranslate } from "@/hooks/useTranslate";
 
 interface KpiCardProps {
 	title: string;
@@ -102,6 +103,7 @@ interface SummaryCardsProps {
 }
 
 export const SummaryCards = ({ data }: SummaryCardsProps) => {
+	const t = useTranslate();
 	const displayData = data ?? {
 		umkmAktif: 0,
 		umkmTerdaftar: 0,
@@ -111,33 +113,33 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 
 	const kpiData: KpiCardProps[] = [
 		{
-			title: "UMKM Aktif",
+			title: t.bumdes.umkmAktif,
 			value: displayData.umkmAktif,
-			subtitle: "Beroperasi",
+			subtitle: t.bumdes.beroperasi,
 			icon: <IconCurrencyDollar size={25} />,
 			color: "white",
 			backgroundColor: "#1E3A5F",
 		},
 		{
-			title: "UMKM Terdaftar",
+			title: t.bumdes.umkmTerdaftar,
 			value: displayData.umkmTerdaftar,
-			subtitle: "Total registrasi",
+			subtitle: t.bumdes.totalRegistrasi,
 			icon: <IconUsers size={25} />,
 			color: "white",
 			backgroundColor: "#1E3A5F",
 		},
 		{
-			title: "Omzet",
+			title: t.bumdes.omzet,
 			value: displayData.omzet,
-			subtitle: "Omzet BUMDes per bulan",
+			subtitle: t.bumdes.omzetBumdes,
 			icon: <IconTrendingUp size={25} />,
 			color: "white",
 			backgroundColor: "#1E3A5F",
 		},
 		{
-			title: "UMKM Terbanyak",
+			title: t.bumdes.umkmTerbanyak,
 			value: displayData.kategoriTerbanyak.count,
-			subtitle: `Kategori ${displayData.kategoriTerbanyak.name}`,
+			subtitle: `${t.bumdes.kategoriPrefix} ${displayData.kategoriTerbanyak.name}`,
 			icon: <IconTrendingUp size={25} />,
 			color: "white",
 			backgroundColor: "#1E3A5F",

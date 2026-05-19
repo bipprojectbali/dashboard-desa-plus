@@ -9,28 +9,30 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
 interface SatisfactionData {
-	name: string;
+	apiName: string;
 	value: number;
 	color: string;
 }
 
-// Mapping dari NOC API name ke label chart dan warna
+// Mapping dari NOC API name ke warna dan translation key
 const RATING_NAME_MAP: Record<
 	string,
-	{ label: string; color: string; order: number }
+	{ color: string; order: number; key: "sangatPuas" | "puas" | "cukup" | "kurang" }
 > = {
-	"Sangat Baik": { label: "Sangat Puas", color: "#10B981", order: 0 },
-	Baik: { label: "Puas", color: "#3B82F6", order: 1 },
-	"Kurang Baik": { label: "Cukup", color: "#F59E0B", order: 2 },
-	"Sangat Kurang Baik": { label: "Kurang", color: "#EF4444", order: 3 },
+	"Sangat Baik": { color: "#10B981", order: 0, key: "sangatPuas" },
+	Baik: { color: "#3B82F6", order: 1, key: "puas" },
+	"Kurang Baik": { color: "#F59E0B", order: 2, key: "cukup" },
+	"Sangat Kurang Baik": { color: "#EF4444", order: 3, key: "kurang" },
 };
 
 export function SatisfactionChart() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const t = useTranslate();
 
 	const [data, setData] = useState<SatisfactionData[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -78,7 +80,7 @@ export function SatisfactionChart() {
 				const chartData: SatisfactionData[] = Object.entries(RATING_NAME_MAP)
 					.filter(([apiName]) => ratingCounts[apiName])
 					.map(([apiName, mapping]) => ({
-						name: mapping.label,
+						apiName,
 						value: ratingCounts[apiName] ?? 0,
 						color: mapping.color,
 					}))
@@ -101,7 +103,7 @@ export function SatisfactionChart() {
 					if (countsRes.data?.data) {
 						setData(
 							countsRes.data.data.map((d) => ({
-								name: d.category,
+								apiName: d.category,
 								value: d.value,
 								color: d.color,
 							})),
@@ -133,10 +135,10 @@ export function SatisfactionChart() {
 			h="100%"
 		>
 			<Title order={4} c={dark ? "white" : "gray.9"} mb={5}>
-				Tingkat Kepuasan
+				{t.dashboard.tingkatKepuasan}
 			</Title>
 			<Text size="sm" c="dimmed" mb="md">
-				Tingkat kepuasan layanan
+				{t.dashboard.tingkatKepuasanSubtitle}
 			</Text>
 			<ResponsiveContainer width="100%" height={300}>
 				{loading ? (
@@ -146,7 +148,10 @@ export function SatisfactionChart() {
 				) : (
 					<PieChart>
 						<Pie
-							data={data}
+							data={data.map((item) => ({
+								...item,
+								name: t.dashboard[RATING_NAME_MAP[item.apiName]?.key ?? "puas"] ?? item.apiName,
+							}))}
 							cx="50%"
 							cy="50%"
 							innerRadius={80}
@@ -155,7 +160,7 @@ export function SatisfactionChart() {
 							dataKey="value"
 						>
 							{data.map((entry) => (
-								<Cell key={`cell-${entry.name}`} fill={entry.color} />
+								<Cell key={`cell-${entry.apiName}`} fill={entry.color} />
 							))}
 						</Pie>
 						<Tooltip
@@ -170,14 +175,14 @@ export function SatisfactionChart() {
 			</ResponsiveContainer>
 			<Group justify="center" gap="md" mt="md">
 				{data.map((item) => (
-					<Group key={item.name} gap="xs">
+					<Group key={item.apiName} gap="xs">
 						<Box
 							w={12}
 							h={12}
 							style={{ backgroundColor: item.color, borderRadius: "50%" }}
 						/>
 						<Text size="sm" c={dark ? "white" : "gray.7"}>
-							{item.name}
+							{t.dashboard[RATING_NAME_MAP[item.apiName]?.key ?? "puas"] ?? item.apiName}
 						</Text>
 					</Group>
 				))}

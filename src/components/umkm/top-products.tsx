@@ -7,6 +7,7 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { useTranslate } from "@/hooks/useTranslate";
 
 interface TopProduct {
 	rank: number;
@@ -39,6 +40,7 @@ const formatNumber = (value: number) => {
 };
 
 export const TopProducts = ({ products }: TopProductsProps) => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
@@ -65,7 +67,7 @@ export const TopProducts = ({ products }: TopProductsProps) => {
 			}}
 		>
 			<Title order={4} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>
-				Top 3 Produk Terlaris
+				{t.bumdes.top3Produk}
 			</Title>
 			<Stack gap="sm">
 				{displayProducts.map((product) => (
@@ -96,7 +98,7 @@ export const TopProducts = ({ products }: TopProductsProps) => {
 										•
 									</Text>
 									<Text size="xs" c={dark ? "white" : "gray.6"}>
-										{formatNumber(product.quantitySold)} terjual
+										{formatNumber(product.quantitySold)} {t.bumdes.terjual}
 									</Text>
 								</Group>
 							</Stack>

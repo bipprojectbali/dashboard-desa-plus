@@ -15,6 +15,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { CheckCircle, Clock, FileText, MessageCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import {
 	Bar,
 	BarChart,
@@ -84,6 +85,7 @@ const getStatusColor = (status: string) => {
 };
 
 const PengaduanLayananPublik = () => {
+	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const { tampilkanGrid } = useSnapshot(i18nStore);
@@ -150,30 +152,30 @@ const PengaduanLayananPublik = () => {
 
 	const summaryData = [
 		{
-			title: "Total Pengaduan",
+			title: t.pengaduanLayanan.totalPengaduan,
 			value: stats.total,
-			subtitle: "Bulan ini",
+			subtitle: t.pengaduanLayanan.bulanIni,
 			icon: MessageCircle,
 			color: "#1E3A5F",
 		},
 		{
-			title: "Baru",
+			title: t.pengaduanLayanan.baru,
 			value: stats.baru,
-			subtitle: "Belum diproses",
+			subtitle: t.pengaduanLayanan.belumDiproses,
 			icon: FileText,
 			color: "#1E3A5F",
 		},
 		{
-			title: "Diproses",
+			title: t.pengaduanLayanan.diproses,
 			value: stats.proses,
-			subtitle: "Sedang ditangani",
+			subtitle: t.pengaduanLayanan.sedangDitangani,
 			icon: Clock,
 			color: "#1E3A5F",
 		},
 		{
-			title: "Selesai",
+			title: t.pengaduanLayanan.selesai,
 			value: stats.selesai,
-			subtitle: "Terselesaikan",
+			subtitle: t.pengaduanLayanan.terselesaikan,
 			icon: CheckCircle,
 			color: "#1E3A5F",
 		},
@@ -236,7 +238,7 @@ const PengaduanLayananPublik = () => {
 			>
 				<Group justify="space-between" mb="md">
 					<Title order={4} c={dark ? "white" : "gray.9"}>
-						Tren Pengaduan
+						{t.pengaduanLayanan.trenPengaduan}
 					</Title>
 				</Group>
 				<ResponsiveContainer width="100%" height={300}>
@@ -289,7 +291,7 @@ const PengaduanLayananPublik = () => {
 					) : (
 						<Group justify="center" align="center" h="100%">
 							<Text size="sm" c="dimmed">
-								Tidak ada data pengaduan 7 bulan terakhir
+								{t.pengaduanLayanan.tidakAdaDataPengaduan}
 							</Text>
 						</Group>
 					)}
@@ -312,7 +314,7 @@ const PengaduanLayananPublik = () => {
 						h="100%"
 					>
 						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
-							Surat Terbanyak
+							{t.pengaduanLayanan.suratTerbanyak}
 						</Title>
 						<ResponsiveContainer width="100%" height={250}>
 							{loading ? (
@@ -374,7 +376,7 @@ const PengaduanLayananPublik = () => {
 						h="100%"
 					>
 						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
-							Pengajuan Terbaru
+							{t.pengaduanLayanan.pengajuanTerbaru}
 						</Title>
 						<Stack gap="sm">
 							{loading ? (
@@ -420,7 +422,7 @@ const PengaduanLayananPublik = () => {
 								))
 							) : (
 								<Text c="dimmed" ta="center">
-									Tidak ada pengajuan terbaru
+									{t.pengaduanLayanan.tidakAdaPengajuan}
 								</Text>
 							)}
 						</Stack>
@@ -441,7 +443,7 @@ const PengaduanLayananPublik = () => {
 						h="100%"
 					>
 						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
-							Ajuan Ide Inovatif
+							{t.pengaduanLayanan.ajuanIdeInovatif}
 						</Title>
 						<Stack gap="sm">
 							{loading ? (
@@ -479,14 +481,14 @@ const PengaduanLayananPublik = () => {
 												color="darmasaba-blue"
 												radius="md"
 											>
-												Detail
+												{t.pengaduanLayanan.detail}
 											</Button>
 										</Group>
 									</Card>
 								))
 							) : (
 								<Text c="dimmed" ta="center">
-									Tidak ada ide inovatif
+									{t.pengaduanLayanan.tidakAdaIde}
 								</Text>
 							)}
 						</Stack>

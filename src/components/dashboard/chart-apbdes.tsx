@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { IconArrowDownRight, IconArrowUpRight } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
 interface ApbdesData {
@@ -40,17 +41,20 @@ function getProgressColor(persen: number): string {
 }
 
 // Get status message based on realization percentage
-function getStatusMessage(persen: number): { text: string; color: string } {
+function getStatusMessage(
+	persen: number,
+	messages: { status100: string; statusBaik: string; statusCukup: string; statusRendah: string },
+): { text: string; color: string } {
 	if (persen >= 100) {
-		return { text: "Realisasi mencapai 100% dari anggaran", color: "teal" };
+		return { text: messages.status100, color: "teal" };
 	}
 	if (persen >= 80) {
-		return { text: "Realisasi baik, mendekati target", color: "blue" };
+		return { text: messages.statusBaik, color: "blue" };
 	}
 	if (persen >= 60) {
-		return { text: "Realisasi cukup, perlu ditingkatkan", color: "yellow" };
+		return { text: messages.statusCukup, color: "yellow" };
 	}
-	return { text: "Realisasi rendah, perlu perhatian khusus", color: "red" };
+	return { text: messages.statusRendah, color: "red" };
 }
 
 interface ApbdesSummaryProps {
@@ -62,8 +66,9 @@ interface ApbdesSummaryProps {
 function ApbdesSummary({ title, data, icon }: ApbdesSummaryProps) {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const t = useTranslate();
 	const progressColor = getProgressColor(data.percentage);
-	const statusMessage = getStatusMessage(data.percentage);
+	const statusMessage = getStatusMessage(data.percentage, t.dashboard);
 
 	return (
 		<Box>
@@ -114,11 +119,11 @@ function ApbdesSummary({ title, data, icon }: ApbdesSummaryProps) {
 			</Group>
 
 			<Text fz="xs" c={dark ? "gray.5" : "gray.6"} mb="sm" lh={1.5}>
-				Realisasi:{" "}
+				{t.dashboard.realisasiLabel}:{" "}
 				<Text component="span" fw={700} c={dark ? "blue.3" : "blue.9"}>
 					{formatCurrency(data.realisasi)}
 				</Text>{" "}
-				/ Anggaran:{" "}
+				/ {t.dashboard.anggaranLabel}:{" "}
 				<Text component="span" fw={700} c={dark ? "gray.4" : "gray.7"}>
 					{formatCurrency(data.anggaran)}
 				</Text>
@@ -157,6 +162,7 @@ function ApbdesSummary({ title, data, icon }: ApbdesSummaryProps) {
 export function ChartAPBDes() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const t = useTranslate();
 
 	const [data, setData] = useState<ApbdesData[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -243,7 +249,7 @@ export function ChartAPBDes() {
 					})
 				) : (
 					<Text size="sm" c="dimmed" ta="center">
-						Tidak ada data APBDes
+						{t.dashboard.tidakAdaDataApbdes}
 					</Text>
 				)}
 			</Stack>
