@@ -14,7 +14,11 @@ import {
 	ThemeIcon,
 	Title,
 } from "@mantine/core";
-import { IconBrandGithub, IconClock, IconShieldCheck } from "@tabler/icons-react";
+import {
+	IconBrandGithub,
+	IconClock,
+	IconShieldCheck,
+} from "@tabler/icons-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { authClient } from "../utils/auth-client";
@@ -109,7 +113,10 @@ function SigninComponent() {
 						}}
 					>
 						<Group gap="xs" justify="center">
-							<IconShieldCheck size={16} color="var(--mantine-color-orange-6)" />
+							<IconShieldCheck
+								size={16}
+								color="var(--mantine-color-orange-6)"
+							/>
 							<Text fz="xs" c="orange.7" fw={500}>
 								Admin akan memverifikasi akun kamu secepatnya
 							</Text>

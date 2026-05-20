@@ -178,7 +178,9 @@ const HelpPage = () => {
 			});
 
 			const json = await res.json();
-			const reply = res.ok ? json.reply : (json.error ?? t.help.terjadiKesalahan);
+			const reply = res.ok
+				? json.reply
+				: (json.error ?? t.help.terjadiKesalahan);
 
 			setMessages((prev) => [
 				...prev,

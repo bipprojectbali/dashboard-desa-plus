@@ -20,7 +20,6 @@ import {
 	TrendingUp,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { useTranslate } from "@/hooks/useTranslate";
 import {
 	Bar,
 	BarChart,
@@ -34,6 +33,7 @@ import {
 } from "recharts";
 import { useSnapshot } from "valtio";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 import { apiClient } from "@/utils/api-client";
 
@@ -681,7 +681,9 @@ const KeuanganAnggaran = () => {
 												radius="sm"
 												fw={600}
 											>
-												{fund.status === "cair" ? t.keuanganAnggaran.cair : t.keuanganAnggaran.proses}
+												{fund.status === "cair"
+													? t.keuanganAnggaran.cair
+													: t.keuanganAnggaran.proses}
 											</Badge>
 										</Group>
 									</Card>

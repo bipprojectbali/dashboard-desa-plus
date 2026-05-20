@@ -54,7 +54,10 @@ export function Sidebar({ className }: SidebarProps) {
 		...(isAdmin
 			? [
 					{ name: t.sidebar.settingsKeamanan, path: "/pengaturan/keamanan" },
-					{ name: t.sidebar.settingsAksesTim, path: "/pengaturan/akses-dan-tim" },
+					{
+						name: t.sidebar.settingsAksesTim,
+						path: "/pengaturan/akses-dan-tim",
+					},
 					{
 						name: t.sidebar.settingsSinkronisasi,
 						path: "/pengaturan/sinkronisasi",
@@ -105,14 +108,17 @@ export function Sidebar({ className }: SidebarProps) {
 			{/* Logo — fixed size regardless of color scheme */}
 			<Box
 				p="md"
-				style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+				style={{
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+				}}
 			>
 				<Image
 					src={dark ? "/white-1.png" : "/light-mode.png"}
 					alt="Logo"
 					w={215}
 					h={100}
-					
 				/>
 			</Box>
 

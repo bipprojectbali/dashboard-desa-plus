@@ -1,7 +1,7 @@
 import { Grid, GridCol, Stack } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { useTranslate } from "@/hooks/useTranslate";
 import { useSnapshot } from "valtio";
+import { useTranslate } from "@/hooks/useTranslate";
 import { umkmStore } from "../store/umkm";
 import { HeaderToggle } from "./umkm/header-toggle";
 import { ProdukUnggulan } from "./umkm/produk-unggulan";
@@ -165,7 +165,10 @@ const BumdesPage = () => {
 				totalPenjualan: ringkasan.totalPenjualan,
 				produkAktif: ringkasan.kategoriAktif,
 				totalTransaksi: ringkasan.totalTransaksi,
-				trend: { value: ringkasan.persentasePerubahan, label: t.bumdes.vsBulanLalu },
+				trend: {
+					value: ringkasan.persentasePerubahan,
+					label: t.bumdes.vsBulanLalu,
+				},
 			}
 		: undefined;
 

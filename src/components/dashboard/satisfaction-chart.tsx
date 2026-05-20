@@ -21,7 +21,11 @@ interface SatisfactionData {
 // Mapping dari NOC API name ke warna dan translation key
 const RATING_NAME_MAP: Record<
 	string,
-	{ color: string; order: number; key: "sangatPuas" | "puas" | "cukup" | "kurang" }
+	{
+		color: string;
+		order: number;
+		key: "sangatPuas" | "puas" | "cukup" | "kurang";
+	}
 > = {
 	"Sangat Baik": { color: "#10B981", order: 0, key: "sangatPuas" },
 	Baik: { color: "#3B82F6", order: 1, key: "puas" },
@@ -150,7 +154,9 @@ export function SatisfactionChart() {
 						<Pie
 							data={data.map((item) => ({
 								...item,
-								name: t.dashboard[RATING_NAME_MAP[item.apiName]?.key ?? "puas"] ?? item.apiName,
+								name:
+									t.dashboard[RATING_NAME_MAP[item.apiName]?.key ?? "puas"] ??
+									item.apiName,
 							}))}
 							cx="50%"
 							cy="50%"
@@ -182,7 +188,8 @@ export function SatisfactionChart() {
 							style={{ backgroundColor: item.color, borderRadius: "50%" }}
 						/>
 						<Text size="sm" c={dark ? "white" : "gray.7"}>
-							{t.dashboard[RATING_NAME_MAP[item.apiName]?.key ?? "puas"] ?? item.apiName}
+							{t.dashboard[RATING_NAME_MAP[item.apiName]?.key ?? "puas"] ??
+								item.apiName}
 						</Text>
 					</Group>
 				))}

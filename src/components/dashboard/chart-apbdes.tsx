@@ -43,7 +43,12 @@ function getProgressColor(persen: number): string {
 // Get status message based on realization percentage
 function getStatusMessage(
 	persen: number,
-	messages: { status100: string; statusBaik: string; statusCukup: string; statusRendah: string },
+	messages: {
+		status100: string;
+		statusBaik: string;
+		statusCukup: string;
+		statusRendah: string;
+	},
 ): { text: string; color: string } {
 	if (persen >= 100) {
 		return { text: messages.status100, color: "teal" };

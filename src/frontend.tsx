@@ -7,10 +7,10 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: <explanation */
 /** biome-ignore-all lint/suspicious/noAssignInExpressions: <explanation */
 
-import { lazy, Suspense } from "react";
 import { createTheme, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";

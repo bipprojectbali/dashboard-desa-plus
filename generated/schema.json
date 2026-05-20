@@ -6881,13 +6881,25 @@
                       "type": "boolean"
                     },
                     "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "error": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "success",
-                    "data"
+                    "data",
+                    "lastSyncedAt"
                   ]
                 }
               },
@@ -6899,13 +6911,25 @@
                       "type": "boolean"
                     },
                     "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "error": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "success",
-                    "data"
+                    "data",
+                    "lastSyncedAt"
                   ]
                 }
               },
@@ -6917,13 +6941,25 @@
                       "type": "boolean"
                     },
                     "data": {},
+                    "lastSyncedAt": {
+                      "nullable": true,
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "error": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "success",
-                    "data"
+                    "data",
+                    "lastSyncedAt"
                   ]
                 }
               }
