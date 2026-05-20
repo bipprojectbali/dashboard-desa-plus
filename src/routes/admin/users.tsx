@@ -3,11 +3,13 @@ import {
 	Alert,
 	Avatar,
 	Badge,
+	Box,
 	Button,
 	Container,
 	Group,
 	LoadingOverlay,
 	Modal,
+	Paper,
 	Select,
 	Stack,
 	Table,
@@ -260,30 +262,24 @@ function DashboardUsersComponent() {
 						<Text c="dimmed">Belum ada pengguna terdaftar</Text>
 					</Stack>
 				) : (
-					<Table striped highlightOnHover verticalSpacing="sm" withTableBorder>
-						<Table.Thead>
-							<Table.Tr>
-								<Table.Th>Pengguna</Table.Th>
-								<Table.Th>Email</Table.Th>
-								<Table.Th>Role</Table.Th>
-								<Table.Th>Verifikasi</Table.Th>
-								<Table.Th>Bergabung</Table.Th>
-								<Table.Th>Aksi</Table.Th>
-							</Table.Tr>
-						</Table.Thead>
-						<Table.Tbody>
+					<>
+						{/* Mobile: card layout */}
+						<Stack hiddenFrom="sm" gap="sm">
 							{users.map((u) => {
 								const isSelf = u.id === snap.user?.id;
 								return (
-									<Table.Tr key={u.id}>
-										<Table.Td>
-											<Group gap="sm">
-												<Avatar src={u.image} size={36} radius="xl">
+									<Paper key={u.id} p="md" withBorder radius="md">
+										<Group justify="space-between" align="flex-start" wrap="nowrap">
+											<Group gap="sm" wrap="nowrap" style={{ minWidth: 0 }}>
+												<Avatar src={u.image} size={40} radius="xl" flex="none">
 													{(u.name ?? u.email).charAt(0).toUpperCase()}
 												</Avatar>
-												<div>
-													<Text size="sm" fw={500}>
+												<div style={{ minWidth: 0 }}>
+													<Text size="sm" fw={600} truncate>
 														{u.name ?? "-"}
+													</Text>
+													<Text size="xs" c="dimmed" truncate>
+														{u.email}
 													</Text>
 													{isSelf && (
 														<Text size="xs" c="orange">
@@ -292,26 +288,7 @@ function DashboardUsersComponent() {
 													)}
 												</div>
 											</Group>
-										</Table.Td>
-										<Table.Td>
-											<Text size="sm">{u.email}</Text>
-										</Table.Td>
-										<Table.Td>{roleBadge(u.role)}</Table.Td>
-										<Table.Td>
-											<Badge
-												color={u.emailVerified ? "green" : "gray"}
-												variant="dot"
-											>
-												{u.emailVerified ? "Terverifikasi" : "Belum"}
-											</Badge>
-										</Table.Td>
-										<Table.Td>
-											<Text size="sm" c="dimmed">
-												{formatDate(u.createdAt)}
-											</Text>
-										</Table.Td>
-										<Table.Td>
-											<Group gap="xs">
+											<Group gap="xs" wrap="nowrap" flex="none">
 												<Tooltip
 													label={
 														isSelf
@@ -322,11 +299,11 @@ function DashboardUsersComponent() {
 													<ActionIcon
 														variant="light"
 														color="orange"
-														size="lg"
+														size="md"
 														disabled={isSelf}
 														onClick={() => openRoleModal(u)}
 													>
-														<IconShield size={16} />
+														<IconShield size={14} />
 													</ActionIcon>
 												</Tooltip>
 												<Tooltip
@@ -339,13 +316,13 @@ function DashboardUsersComponent() {
 													<ActionIcon
 														variant="light"
 														color={u.emailVerified ? "gray" : "green"}
-														size="lg"
+														size="md"
 														onClick={() => handleToggleVerify(u)}
 													>
 														{u.emailVerified ? (
-															<IconCircleX size={16} />
+															<IconCircleX size={14} />
 														) : (
-															<IconCircleCheck size={16} />
+															<IconCircleCheck size={14} />
 														)}
 													</ActionIcon>
 												</Tooltip>
@@ -359,20 +336,150 @@ function DashboardUsersComponent() {
 													<ActionIcon
 														variant="light"
 														color="red"
-														size="lg"
+														size="md"
 														disabled={isSelf}
 														onClick={() => handleDeleteUser(u)}
 													>
-														<IconTrash size={16} />
+														<IconTrash size={14} />
 													</ActionIcon>
 												</Tooltip>
 											</Group>
-										</Table.Td>
-									</Table.Tr>
+										</Group>
+										<Group mt="xs" gap="xs">
+											{roleBadge(u.role)}
+											<Badge
+												color={u.emailVerified ? "green" : "gray"}
+												variant="dot"
+												size="sm"
+											>
+												{u.emailVerified ? "Terverifikasi" : "Belum"}
+											</Badge>
+											<Text size="xs" c="dimmed">
+												{formatDate(u.createdAt)}
+											</Text>
+										</Group>
+									</Paper>
 								);
 							})}
-						</Table.Tbody>
-					</Table>
+						</Stack>
+
+						{/* Desktop: table */}
+						<Box visibleFrom="sm">
+							<Table striped highlightOnHover verticalSpacing="sm" withTableBorder>
+								<Table.Thead>
+									<Table.Tr>
+										<Table.Th>Pengguna</Table.Th>
+										<Table.Th>Email</Table.Th>
+										<Table.Th>Role</Table.Th>
+										<Table.Th>Verifikasi</Table.Th>
+										<Table.Th>Bergabung</Table.Th>
+										<Table.Th>Aksi</Table.Th>
+									</Table.Tr>
+								</Table.Thead>
+								<Table.Tbody>
+									{users.map((u) => {
+										const isSelf = u.id === snap.user?.id;
+										return (
+											<Table.Tr key={u.id}>
+												<Table.Td>
+													<Group gap="sm">
+														<Avatar src={u.image} size={36} radius="xl">
+															{(u.name ?? u.email).charAt(0).toUpperCase()}
+														</Avatar>
+														<div>
+															<Text size="sm" fw={500}>
+																{u.name ?? "-"}
+															</Text>
+															{isSelf && (
+																<Text size="xs" c="orange">
+																	(Anda)
+																</Text>
+															)}
+														</div>
+													</Group>
+												</Table.Td>
+												<Table.Td>
+													<Text size="sm">{u.email}</Text>
+												</Table.Td>
+												<Table.Td>{roleBadge(u.role)}</Table.Td>
+												<Table.Td>
+													<Badge
+														color={u.emailVerified ? "green" : "gray"}
+														variant="dot"
+													>
+														{u.emailVerified ? "Terverifikasi" : "Belum"}
+													</Badge>
+												</Table.Td>
+												<Table.Td>
+													<Text size="sm" c="dimmed">
+														{formatDate(u.createdAt)}
+													</Text>
+												</Table.Td>
+												<Table.Td>
+													<Group gap="xs">
+														<Tooltip
+															label={
+																isSelf
+																	? "Tidak dapat mengubah role sendiri"
+																	: "Ubah role"
+															}
+														>
+															<ActionIcon
+																variant="light"
+																color="orange"
+																size="lg"
+																disabled={isSelf}
+																onClick={() => openRoleModal(u)}
+															>
+																<IconShield size={16} />
+															</ActionIcon>
+														</Tooltip>
+														<Tooltip
+															label={
+																u.emailVerified
+																	? "Batalkan verifikasi"
+																	: "Verifikasi manual"
+															}
+														>
+															<ActionIcon
+																variant="light"
+																color={u.emailVerified ? "gray" : "green"}
+																size="lg"
+																onClick={() => handleToggleVerify(u)}
+															>
+																{u.emailVerified ? (
+																	<IconCircleX size={16} />
+																) : (
+																	<IconCircleCheck size={16} />
+																)}
+															</ActionIcon>
+														</Tooltip>
+														<Tooltip
+															label={
+																isSelf
+																	? "Tidak dapat menghapus akun sendiri"
+																	: "Hapus pengguna"
+															}
+														>
+															<ActionIcon
+																variant="light"
+																color="red"
+																size="lg"
+																disabled={isSelf}
+																onClick={() => handleDeleteUser(u)}
+															>
+																<IconTrash size={16} />
+															</ActionIcon>
+														</Tooltip>
+													</Group>
+												</Table.Td>
+											</Table.Tr>
+										);
+									})}
+								</Table.Tbody>
+							</Table>
+						</Box>
+					</>
 				)}
 			</div>
 

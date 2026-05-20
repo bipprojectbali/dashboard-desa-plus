@@ -319,6 +319,7 @@ function DashboardLayout() {
 						component={Link}
 						to="/admin/help"
 						label="Pusat Bantuan"
+						onClick={() => { if (mobileOpened) toggleMobile(); }}
 						leftSection={
 							<IconHelpCircle
 								style={{ width: rem(18), height: rem(18) }}
@@ -331,7 +332,10 @@ function DashboardLayout() {
 
 					<NavLink
 						label="Keluar"
-						onClick={handleLogout}
+						onClick={() => {
+							if (mobileOpened) toggleMobile();
+							handleLogout();
+						}}
 						leftSection={
 							<IconLogout
 								style={{ width: rem(18), height: rem(18) }}

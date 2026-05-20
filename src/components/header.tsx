@@ -154,7 +154,7 @@ export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 
 	// ── Render ─────────────────────────────────────────────────────────────────
 	return (
-		<Group justify="space-between" w="100%">
+		<Group justify="space-between" style={{ flex: 1, minWidth: 0 }}>
 			{/* Kiri: Toggle sidebar + Breadcrumb */}
 			<Group gap="md">
 				<ActionIcon
@@ -172,6 +172,7 @@ export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 				</ActionIcon>
 
 				<Breadcrumbs
+					visibleFrom="sm"
 					separator={
 						<Text c="white" size="xs">
 							/

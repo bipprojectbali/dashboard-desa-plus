@@ -112,7 +112,7 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 			padding="md"
 		>
 			<AppShell.Header bg={headerBgColor}>
-				<Group h="100%" px="md">
+				<Group h="100%" px="md" wrap="nowrap">
 					<Burger
 						opened={opened}
 						onClick={toggleMobile}
