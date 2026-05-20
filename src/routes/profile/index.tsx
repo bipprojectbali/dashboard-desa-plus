@@ -49,7 +49,7 @@ function Profile() {
 
 	async function logout() {
 		await authClient.signOut();
-		navigate({ to: "/signin" });
+		navigate({ to: "/signin", search: { redirect: undefined } });
 	}
 
 	const openLogoutModal = () =>
@@ -140,10 +140,10 @@ function Profile() {
 	);
 
 	return (
-		<Stack gap="xl" px={"lg"}>
-			{/* Header Section */}
-			<Group justify="space-between" align="center">
-				<Box>
+		<Stack gap="xl" px={{ base: "xs", sm: "lg" }}>
+			{/* Header Section — mobile: icon actions, desktop: full buttons */}
+			<Group justify="space-between" align="flex-start" wrap="nowrap">
+				<Box style={{ minWidth: 0 }}>
 					<Title order={1} c="orange.6">
 						Profil Saya
 					</Title>
@@ -151,7 +151,45 @@ function Profile() {
 						Kelola informasi akun dan pengaturan keamanan Anda
 					</Text>
 				</Box>
-				<Group>
+
+				{/* Mobile: icon-only actions */}
+				<Group gap="xs" wrap="nowrap" hiddenFrom="sm" style={{ flexShrink: 0 }}>
+					{snap.user?.role === "admin" && (
+						<Tooltip label="Admin Panel">
+							<ActionIcon
+								variant="light"
+								color="orange"
+								size="lg"
+								onClick={() => navigate({ to: "/admin" })}
+							>
+								<IconDashboard size={16} />
+							</ActionIcon>
+						</Tooltip>
+					)}
+					<Tooltip label="Edit Profil">
+						<ActionIcon
+							variant="light"
+							color="blue"
+							size="lg"
+							onClick={() => navigate({ to: "/profile/edit" })}
+						>
+							<IconEdit size={16} />
+						</ActionIcon>
+					</Tooltip>
+					<Tooltip label="Keluar">
+						<ActionIcon
+							variant="outline"
+							color="red"
+							size="lg"
+							onClick={openLogoutModal}
+						>
+							<IconLogout size={16} />
+						</ActionIcon>
+					</Tooltip>
+				</Group>
+
+				{/* Desktop: full buttons */}
+				<Group visibleFrom="sm" style={{ flexShrink: 0 }}>
 					{snap.user?.role === "admin" && (
 						<Button
 							variant="light"
@@ -193,28 +231,29 @@ function Profile() {
 						borderBottom: "1px solid var(--mantine-color-default-border)",
 					}}
 				/>
-				<Box px="xl" pb="xl" style={{ marginTop: rem(-60) }}>
-					<Group align="flex-end" gap="xl" mb="md">
+				<Box px={{ base: "md", sm: "xl" }} pb={{ base: "md", sm: "xl" }} style={{ marginTop: rem(-60) }}>
+					<Group align="flex-end" gap="md" mb="md" wrap="nowrap">
 						<Avatar
 							src={snap.user?.image}
-							size={120}
+							size={100}
 							radius={120}
 							style={{
 								border: "4px solid var(--mantine-color-body)",
 								boxShadow: "var(--mantine-shadow-md)",
+								flexShrink: 0,
 							}}
 						>
 							{snap.user?.name?.charAt(0).toUpperCase()}
 						</Avatar>
-						<Stack gap={0} pb="md">
-							<Title order={2}>{snap.user?.name}</Title>
-							<Group gap="xs">
-								<Text c="dimmed" size="sm">
+						<Stack gap={0} pb={{ base: "xs", sm: "md" }} style={{ minWidth: 0 }}>
+							<Title order={2}>
+								{snap.user?.name}
+							</Title>
+							<Group gap="xs" wrap="wrap">
+								<Text c="dimmed" size="sm" truncate>
 									{snap.user?.email}
 								</Text>
-								<Text c="dimmed" size="xs">
-									•
-								</Text>
+								<Text c="dimmed" size="xs" visibleFrom="xs">•</Text>
 								<Badge
 									variant="dot"
 									color={snap.user?.role === "admin" ? "orange" : "blue"}
@@ -235,14 +274,14 @@ function Profile() {
 							Informasi Identitas
 						</Title>
 						<Grid gutter="sm">
-							<Grid.Col span={6}>
+							<Grid.Col span={{ base: 12, xs: 6 }}>
 								<InfoField
 									icon={IconUser}
 									label="Nama Lengkap"
 									value={snap.user?.name}
 								/>
 							</Grid.Col>
-							<Grid.Col span={6}>
+							<Grid.Col span={{ base: 12, xs: 6 }}>
 								<InfoField
 									icon={IconShield}
 									label="Peran"

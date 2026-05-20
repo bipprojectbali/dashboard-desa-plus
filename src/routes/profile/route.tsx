@@ -1,7 +1,8 @@
 import {
+	ActionIcon,
 	AppShell,
+	Box,
 	Button,
-	Container,
 	Group,
 	Text,
 	useMantineColorScheme,
@@ -38,9 +39,21 @@ function ProfileLayout() {
 					paddingRight: "1rem",
 				}}
 			>
-				<Group h="100%" justify="space-between">
-					<Group>
+				<Group h="100%" justify="space-between" wrap="nowrap">
+					{/* Kiri: icon di mobile, tombol teks di desktop */}
+					<Box style={{ flex: 1 }}>
+						<ActionIcon
+							hiddenFrom="sm"
+							variant="subtle"
+							color="gray"
+							size="lg"
+							onClick={() => navigate({ to: "/" })}
+							aria-label="Kembali"
+						>
+							<IconChevronLeft size={20} />
+						</ActionIcon>
 						<Button
+							visibleFrom="sm"
 							variant="subtle"
 							color="gray"
 							leftSection={<IconChevronLeft size={16} />}
@@ -48,13 +61,15 @@ function ProfileLayout() {
 						>
 							Kembali ke Dashboard
 						</Button>
-					</Group>
+					</Box>
 
-					<Text fw={700} size="lg" c="orange.6">
+					{/* Tengah: selalu center */}
+					<Text fw={700} fz={{ base: "sm", sm: "lg" }} c="orange.6" style={{ whiteSpace: "nowrap" }}>
 						PENGATURAN AKUN
 					</Text>
 
-					<Box w={150} />
+					{/* Kanan: spacer mirror kiri */}
+					<Box style={{ flex: 1 }} />
 				</Group>
 			</AppShell.Header>
 
@@ -65,4 +80,3 @@ function ProfileLayout() {
 	);
 }
 
-import { Box } from "@mantine/core";

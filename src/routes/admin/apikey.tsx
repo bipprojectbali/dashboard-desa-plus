@@ -3,6 +3,7 @@ import {
 	ActionIcon,
 	Alert,
 	Badge,
+	Box,
 	Button,
 	Card,
 	Container,
@@ -10,6 +11,7 @@ import {
 	Group,
 	LoadingOverlay,
 	Modal,
+	Paper,
 	Stack,
 	Switch,
 	Table,
@@ -208,14 +210,26 @@ function DashboardApikeyComponent() {
 				</Alert>
 			)}
 
-			<Card
-				withBorder
-				p="xl"
-				radius="md"
-				bg="rgba(251, 240, 223, 0.05)"
-				style={{ border: "1px solid rgba(251, 240, 223, 0.1)" }}
-			>
-				<Group justify="space-between" mb="md">
+			<Card withBorder p={{ base: "md", sm: "xl" }} radius="md">
+				{/* Header: stack on mobile, row on desktop */}
+				<Stack hiddenFrom="sm" gap="sm" mb="md">
+					<div>
+						<Title order={3}>Your API Keys</Title>
+						<Text size="sm" c="dimmed">
+							Manage your API keys for secure access to our services
+						</Text>
+					</div>
+					<Button
+						leftSection={<IconPlus size={16} />}
+						onClick={() => setCreateModalOpen(true)}
+						variant="light"
+						color="blue"
+						fullWidth
+					>
+						Create New API Key
+					</Button>
+				</Stack>
+				<Group visibleFrom="sm" justify="space-between" mb="md">
 					<Stack gap={0}>
 						<Title order={3}>Your API Keys</Title>
 						<Text size="sm" c="dimmed">
@@ -232,174 +246,260 @@ function DashboardApikeyComponent() {
 					</Button>
 				</Group>
 
-				<Table striped highlightOnHover mt="md" verticalSpacing="md">
-					<Table.Thead>
-						<Table.Tr>
-							<Table.Th>
-								<Group gap={6}>
-									<IconKey size={16} stroke={1.5} /> Name
-								</Group>
-							</Table.Th>
-							<Table.Th>
-								<Group gap={6}>
-									<IconKey size={16} stroke={1.5} /> Key
-								</Group>
-							</Table.Th>
-							<Table.Th>
-								<Group gap={6}>
-									<IconCircleCheck size={16} stroke={1.5} /> Status
-								</Group>
-							</Table.Th>
-							<Table.Th>
-								<Group gap={6}>
-									<IconCalendar size={16} stroke={1.5} /> Expiration
-								</Group>
-							</Table.Th>
-							<Table.Th>
-								<Group gap={6}>
-									<IconClock size={16} stroke={1.5} /> Created
-								</Group>
-							</Table.Th>
-							<Table.Th>
-								<Group gap={6}>
-									<IconInfoCircle size={16} stroke={1.5} /> Actions
-								</Group>
-							</Table.Th>
-						</Table.Tr>
-					</Table.Thead>
-					<Table.Tbody>
-						{apiKeys.map((apiKey) => (
-							<Table.Tr
-								key={apiKey.id}
-								style={{ backgroundColor: "rgba(251, 240, 223, 0.02)" }}
-							>
-								<Table.Td>
-									<Text fw={500} c="#fbf0df">
-										{apiKey.name}
-									</Text>
-								</Table.Td>
-								<Table.Td>
-									<Group gap={6}>
-										{showKey[apiKey.id] ? (
-											<Text
-												c="#f3d5a3"
-												style={{ fontFamily: "monospace", fontSize: "0.85rem" }}
-											>
-												{apiKey.key}
-											</Text>
-										) : (
-											<Text
-												c="dimmed"
-												style={{ fontFamily: "monospace", fontSize: "0.85rem" }}
-											>
-												••••••••••••••••••••••••••••••••
-											</Text>
-										)}
-										<CopyButton value={apiKey.key}>
-											{({ copied, copy }) => (
-												<Tooltip label={copied ? "Copied" : "Copy"}>
-													<ActionIcon
-														color={copied ? "green" : "gray"}
-														onClick={copy}
-														variant="subtle"
-														size="sm"
-													>
-														<IconCopy size={16} />
-													</ActionIcon>
-												</Tooltip>
-											)}
-										</CopyButton>
-										<Tooltip
-											label={showKey[apiKey.id] ? "Hide key" : "Show key"}
-										>
+				{/* Mobile: card layout */}
+				<Stack hiddenFrom="sm" gap="sm">
+					{apiKeys.map((apiKey) => (
+						<Paper key={apiKey.id} withBorder radius="md" p="md">
+							{/* Name + Status toggle */}
+							<Group justify="space-between" align="center" mb="xs" wrap="nowrap">
+								<Text fw={600} size="sm" style={{ flex: 1, minWidth: 0 }} truncate>
+									{apiKey.name}
+								</Text>
+								<Tooltip label={`API Key is ${apiKey.isActive ? "Active" : "Inactive"}`}>
+									<Switch
+										checked={apiKey.isActive}
+										onChange={() => handleToggleApiKey(apiKey.id, apiKey.isActive)}
+										size="sm"
+										color={apiKey.isActive ? "green" : "gray"}
+										onLabel={<IconCircleCheck size={10} stroke={1.5} />}
+										offLabel={<IconCircleX size={10} stroke={1.5} />}
+									/>
+								</Tooltip>
+							</Group>
+
+							{/* Key row */}
+							<Group gap={4} mb="sm" wrap="nowrap" style={{ minWidth: 0 }}>
+								<Text
+									c={showKey[apiKey.id] ? "orange" : "dimmed"}
+									style={{
+										fontFamily: "monospace",
+										fontSize: "0.78rem",
+										flex: 1,
+										minWidth: 0,
+										overflow: "hidden",
+										textOverflow: "ellipsis",
+										whiteSpace: "nowrap",
+									}}
+								>
+									{showKey[apiKey.id] ? apiKey.key : "••••••••••••••••••••••••"}
+								</Text>
+								<CopyButton value={apiKey.key}>
+									{({ copied, copy }) => (
+										<Tooltip label={copied ? "Copied" : "Copy"}>
 											<ActionIcon
-												color="gray"
-												onClick={() => toggleShowKey(apiKey.id)}
+												color={copied ? "green" : "gray"}
+												onClick={copy}
 												variant="subtle"
 												size="sm"
+												flex="none"
 											>
-												{showKey[apiKey.id] ? (
-													<IconEyeOff size={16} />
-												) : (
-													<IconEye size={16} />
-												)}
+												<IconCopy size={14} />
 											</ActionIcon>
 										</Tooltip>
-									</Group>
-								</Table.Td>
-								<Table.Td>
-									<Group>
-										<Tooltip
-											label={`API Key is ${apiKey.isActive ? "Active" : "Inactive"}`}
-										>
-											<Switch
-												checked={apiKey.isActive}
-												onChange={() =>
-													handleToggleApiKey(apiKey.id, apiKey.isActive)
-												}
-												size="md"
-												color={apiKey.isActive ? "green" : "gray"}
-												onLabel={<IconCircleCheck size={12} stroke={1.5} />}
-												offLabel={<IconCircleX size={12} stroke={1.5} />}
-											/>
-										</Tooltip>
-									</Group>
-								</Table.Td>
-								<Table.Td>
-									{apiKey.expiresAt ? (
-										<Group>
-											<Text>{formatDate(apiKey.expiresAt)}</Text>
-											<Text c="dimmed" size="sm">
-												{formatTime(apiKey.expiresAt)}
-											</Text>
-										</Group>
-									) : (
-										<Badge variant="outline" color="blue">
-											Never Expires
-										</Badge>
 									)}
-								</Table.Td>
-								<Table.Td>
-									<Group>
-										<Text>{formatDate(apiKey.createdAt)}</Text>
-										<Text c="dimmed" size="sm">
-											{formatTime(apiKey.createdAt)}
+								</CopyButton>
+								<Tooltip label={showKey[apiKey.id] ? "Hide key" : "Show key"}>
+									<ActionIcon
+										color="gray"
+										onClick={() => toggleShowKey(apiKey.id)}
+										variant="subtle"
+										size="sm"
+										flex="none"
+									>
+										{showKey[apiKey.id] ? <IconEyeOff size={14} /> : <IconEye size={14} />}
+									</ActionIcon>
+								</Tooltip>
+							</Group>
+
+							{/* Footer: expiry + created + delete */}
+							<Group justify="space-between" align="flex-end">
+								<Stack gap={4}>
+									<Group gap={4}>
+										<IconCalendar size={12} color="var(--mantine-color-dimmed)" />
+										{apiKey.expiresAt ? (
+											<Text size="xs">{formatDate(apiKey.expiresAt)}</Text>
+										) : (
+											<Badge variant="outline" color="blue" size="xs">
+												Never Expires
+											</Badge>
+										)}
+									</Group>
+									<Group gap={4}>
+										<IconClock size={12} color="var(--mantine-color-dimmed)" />
+										<Text size="xs" c="dimmed">
+											{formatDate(apiKey.createdAt)} {formatTime(apiKey.createdAt)}
 										</Text>
 									</Group>
-								</Table.Td>
-								<Table.Td>
-									<Group>
-										<Tooltip label="Delete API Key">
-											<ActionIcon
-												color="red"
-												onClick={() => handleDeleteApiKey(apiKey.id)}
-												variant="light"
-												size="lg"
-											>
-												<IconTrash size={16} />
-											</ActionIcon>
-										</Tooltip>
+								</Stack>
+								<Tooltip label="Delete API Key">
+									<ActionIcon
+										color="red"
+										onClick={() => handleDeleteApiKey(apiKey.id)}
+										variant="light"
+										size="md"
+									>
+										<IconTrash size={14} />
+									</ActionIcon>
+								</Tooltip>
+							</Group>
+						</Paper>
+					))}
+				</Stack>
+
+				{/* Desktop: table */}
+				<Box visibleFrom="sm">
+					<Table striped highlightOnHover mt="md" verticalSpacing="md">
+						<Table.Thead>
+							<Table.Tr>
+								<Table.Th>
+									<Group gap={6}>
+										<IconKey size={16} stroke={1.5} /> Name
 									</Group>
-								</Table.Td>
+								</Table.Th>
+								<Table.Th>
+									<Group gap={6}>
+										<IconKey size={16} stroke={1.5} /> Key
+									</Group>
+								</Table.Th>
+								<Table.Th>
+									<Group gap={6}>
+										<IconCircleCheck size={16} stroke={1.5} /> Status
+									</Group>
+								</Table.Th>
+								<Table.Th>
+									<Group gap={6}>
+										<IconCalendar size={16} stroke={1.5} /> Expiration
+									</Group>
+								</Table.Th>
+								<Table.Th>
+									<Group gap={6}>
+										<IconClock size={16} stroke={1.5} /> Created
+									</Group>
+								</Table.Th>
+								<Table.Th>
+									<Group gap={6}>
+										<IconInfoCircle size={16} stroke={1.5} /> Actions
+									</Group>
+								</Table.Th>
 							</Table.Tr>
-						))}
-					</Table.Tbody>
-				</Table>
+						</Table.Thead>
+						<Table.Tbody>
+							{apiKeys.map((apiKey) => (
+								<Table.Tr key={apiKey.id}>
+									<Table.Td>
+										<Text fw={500}>{apiKey.name}</Text>
+									</Table.Td>
+									<Table.Td>
+										<Group gap={6}>
+											{showKey[apiKey.id] ? (
+												<Text
+													c="orange"
+													style={{ fontFamily: "monospace", fontSize: "0.85rem" }}
+												>
+													{apiKey.key}
+												</Text>
+											) : (
+												<Text
+													c="dimmed"
+													style={{ fontFamily: "monospace", fontSize: "0.85rem" }}
+												>
+													••••••••••••••••••••••••••••••••
+												</Text>
+											)}
+											<CopyButton value={apiKey.key}>
+												{({ copied, copy }) => (
+													<Tooltip label={copied ? "Copied" : "Copy"}>
+														<ActionIcon
+															color={copied ? "green" : "gray"}
+															onClick={copy}
+															variant="subtle"
+															size="sm"
+														>
+															<IconCopy size={16} />
+														</ActionIcon>
+													</Tooltip>
+												)}
+											</CopyButton>
+											<Tooltip label={showKey[apiKey.id] ? "Hide key" : "Show key"}>
+												<ActionIcon
+													color="gray"
+													onClick={() => toggleShowKey(apiKey.id)}
+													variant="subtle"
+													size="sm"
+												>
+													{showKey[apiKey.id] ? (
+														<IconEyeOff size={16} />
+													) : (
+														<IconEye size={16} />
+													)}
+												</ActionIcon>
+											</Tooltip>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group>
+											<Tooltip label={`API Key is ${apiKey.isActive ? "Active" : "Inactive"}`}>
+												<Switch
+													checked={apiKey.isActive}
+													onChange={() => handleToggleApiKey(apiKey.id, apiKey.isActive)}
+													size="md"
+													color={apiKey.isActive ? "green" : "gray"}
+													onLabel={<IconCircleCheck size={12} stroke={1.5} />}
+													offLabel={<IconCircleX size={12} stroke={1.5} />}
+												/>
+											</Tooltip>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										{apiKey.expiresAt ? (
+											<Group>
+												<Text>{formatDate(apiKey.expiresAt)}</Text>
+												<Text c="dimmed" size="sm">
+													{formatTime(apiKey.expiresAt)}
+												</Text>
+											</Group>
+										) : (
+											<Badge variant="outline" color="blue">
+												Never Expires
+											</Badge>
+										)}
+									</Table.Td>
+									<Table.Td>
+										<Group>
+											<Text>{formatDate(apiKey.createdAt)}</Text>
+											<Text c="dimmed" size="sm">
+												{formatTime(apiKey.createdAt)}
+											</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group>
+											<Tooltip label="Delete API Key">
+												<ActionIcon
+													color="red"
+													onClick={() => handleDeleteApiKey(apiKey.id)}
+													variant="light"
+													size="lg"
+												>
+													<IconTrash size={16} />
+												</ActionIcon>
+											</Tooltip>
+										</Group>
+									</Table.Td>
+								</Table.Tr>
+							))}
+						</Table.Tbody>
+					</Table>
+				</Box>
 
 				{apiKeys.length === 0 && !loading && (
-					<Card
-						p="xl"
-						radius="md"
-						withBorder
-						mt="xl"
-						bg="rgba(251, 240, 223, 0.03)"
-					>
+					<Card p="xl" radius="md" withBorder mt="xl">
 						<Group justify="center" align="center">
 							<Stack align="center" gap="md">
 								<IconKey
 									size={48}
 									stroke={1.2}
-									color="rgba(251, 240, 223, 0.3)"
+									color="var(--mantine-color-dimmed)"
 								/>
 								<Text ta="center" c="dimmed" fz="lg">
 									No API keys created yet
