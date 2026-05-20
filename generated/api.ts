@@ -3710,16 +3710,19 @@ export interface operations {
                     "application/json": {
                         success: boolean;
                         data: unknown;
+                        lastSyncedAt: (string | null) | null;
                         error?: string;
                     };
                     "multipart/form-data": {
                         success: boolean;
                         data: unknown;
+                        lastSyncedAt: (string | null) | null;
                         error?: string;
                     };
                     "text/plain": {
                         success: boolean;
                         data: unknown;
+                        lastSyncedAt: (string | null) | null;
                         error?: string;
                     };
                 };

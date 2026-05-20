@@ -6,7 +6,6 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { useTranslate } from "@/hooks/useTranslate";
 import {
 	Bar,
 	BarChart,
@@ -17,6 +16,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
 interface DocumentData {

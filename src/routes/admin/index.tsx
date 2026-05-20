@@ -41,7 +41,7 @@ function DashboardComponent() {
 			confirmProps: { color: "red" },
 			onConfirm: async () => {
 				await authClient.signOut();
-				navigate({ to: "/signin" });
+				navigate({ to: "/signin", search: { redirect: undefined } });
 			},
 		});
 

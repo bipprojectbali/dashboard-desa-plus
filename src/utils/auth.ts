@@ -57,6 +57,38 @@ export const auth = betterAuth({
 				},
 			},
 		},
+		session: {
+			create: {
+				after: async (session, context) => {
+					try {
+						const pref = await prisma.keamananPreference.findUnique({
+							where: { userId: session.userId },
+							select: { logAktivitas: true },
+						});
+						if (pref?.logAktivitas === false) return;
+
+						const ip =
+							context?.request?.headers
+								.get("x-forwarded-for")
+								?.split(",")[0]
+								?.trim() ??
+							context?.request?.headers.get("x-real-ip") ??
+							null;
+
+						await prisma.activityLog.create({
+							data: {
+								userId: session.userId,
+								action: "login",
+								ipAddress: ip,
+								userAgent: context?.request?.headers.get("user-agent") ?? null,
+							},
+						});
+					} catch {
+						// non-critical
+					}
+				},
+			},
+		},
 	},
 	secret: process.env.BETTER_AUTH_SECRET,
 	session: {

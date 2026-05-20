@@ -20,7 +20,6 @@ import {
 	Users,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { useTranslate } from "@/hooks/useTranslate";
 import {
 	Bar,
 	BarChart,
@@ -35,6 +34,7 @@ import {
 } from "recharts";
 import { useSnapshot } from "valtio";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 import { apiClient } from "@/utils/api-client";
 

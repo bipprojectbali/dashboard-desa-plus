@@ -1,4 +1,5 @@
 import {
+	ActionIcon,
 	AppShell,
 	Avatar,
 	Box,
@@ -11,20 +12,25 @@ import {
 	Stack,
 	Text,
 	Tooltip,
+	useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import {
 	IconChevronRight,
+	IconHelpCircle,
 	IconHome,
 	IconKey,
 	IconLogout,
+	IconMoon,
 	IconSettings,
+	IconSun,
 	IconUser,
 	IconUsers,
 } from "@tabler/icons-react";
 import {
 	createFileRoute,
+	Link,
 	Outlet,
 	useLocation,
 	useNavigate,
@@ -43,6 +49,8 @@ function DashboardLayout() {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const snap = useSnapshot(authStore);
+	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
 	const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
 	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
@@ -86,7 +94,7 @@ function DashboardLayout() {
 			confirmProps: { color: "red" },
 			onConfirm: async () => {
 				await authClient.signOut();
-				navigate({ to: "/signin" });
+				navigate({ to: "/signin", search: { redirect: undefined } });
 			},
 		});
 	};
@@ -150,6 +158,26 @@ function DashboardLayout() {
 					</Group>
 
 					<Group gap="md">
+						<ActionIcon
+							onClick={() => toggleColorScheme()}
+							variant="subtle"
+							size="lg"
+							radius="xl"
+							aria-label="Ganti tema"
+						>
+							{dark ? (
+								<IconSun
+									style={{ width: rem(18), height: rem(18) }}
+									stroke={1.5}
+								/>
+							) : (
+								<IconMoon
+									style={{ width: rem(18), height: rem(18) }}
+									stroke={1.5}
+								/>
+							)}
+						</ActionIcon>
+
 						<Menu
 							shadow="md"
 							width={200}
@@ -288,13 +316,16 @@ function DashboardLayout() {
 					pt="md"
 				>
 					<NavLink
+						component={Link}
+						to="/admin/help"
 						label="Pusat Bantuan"
 						leftSection={
-							<IconSettings
+							<IconHelpCircle
 								style={{ width: rem(18), height: rem(18) }}
 								stroke={1.5}
 							/>
 						}
+						active={isActive("/admin/help")}
 						styles={{ root: { borderRadius: rem(8) } }}
 					/>
 

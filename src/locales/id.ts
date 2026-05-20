@@ -784,7 +784,8 @@ const id: TranslationKeys = {
 	},
 	help: {
 		pusatBantuan: "Pusat Bantuan",
-		subtitle: "Temukan jawaban untuk pertanyaan Anda atau hubungi tim support kami",
+		subtitle:
+			"Temukan jawaban untuk pertanyaan Anda atau hubungi tim support kami",
 		artikelPanduan: "Artikel Panduan",
 		videoTutorial: "Video Tutorial",
 		supportAktif: "Support Aktif",
@@ -803,8 +804,10 @@ const id: TranslationKeys = {
 		pertanyaanCepat: "Pertanyaan cepat:",
 		ketikPesan: "Ketik pesan Anda...",
 		kirimPesan: "Kirim pesan",
-		jennaDisclaimer: "Jenna adalah asisten virtual — jawaban mungkin tidak selalu akurat",
-		jennaGreeting: "Halo! Saya Jenna, asisten virtual Anda. Bagaimana saya bisa membantu hari ini?",
+		jennaDisclaimer:
+			"Jenna adalah asisten virtual — jawaban mungkin tidak selalu akurat",
+		jennaGreeting:
+			"Halo! Saya Jenna, asisten virtual Anda. Bagaimana saya bisa membantu hari ini?",
 		terjadiKesalahan: "Terjadi kesalahan.",
 		koneksiGagal: "Koneksi gagal. Coba lagi.",
 		quickLogin: "Cara login ke dashboard?",
@@ -817,13 +820,16 @@ const id: TranslationKeys = {
 		guideCaraLoginContent: `1. Buka browser dan akses URL dashboard desa.\n2. Masukkan email dan password akun Anda pada form login.\n3. Klik tombol "Masuk" untuk melanjutkan.\n4. Jika berhasil, Anda akan diarahkan ke halaman utama dashboard.\n5. Jika lupa password, klik "Lupa Password" dan ikuti instruksi yang dikirim ke email Anda.`,
 		guideNavTitle: "Navigasi Dashboard",
 		guideNavDesc: "Penjelasan tentang tata letak dan navigasi",
-		guideNavContent: "1. Sidebar kiri berisi menu utama: Beranda, Kinerja Divisi, Layanan Publik, Demografi, Keuangan, dan Pengaturan.\n2. Header atas menampilkan nama pengguna, notifikasi, dan tombol logout.\n3. Area utama (konten tengah) menampilkan data sesuai menu yang dipilih.\n4. Gunakan breadcrumb di atas konten untuk mengetahui posisi halaman Anda.\n5. Pada perangkat mobile, sidebar dapat dibuka/tutup via ikon menu (hamburger) di header.",
+		guideNavContent:
+			"1. Sidebar kiri berisi menu utama: Beranda, Kinerja Divisi, Layanan Publik, Demografi, Keuangan, dan Pengaturan.\n2. Header atas menampilkan nama pengguna, notifikasi, dan tombol logout.\n3. Area utama (konten tengah) menampilkan data sesuai menu yang dipilih.\n4. Gunakan breadcrumb di atas konten untuk mengetahui posisi halaman Anda.\n5. Pada perangkat mobile, sidebar dapat dibuka/tutup via ikon menu (hamburger) di header.",
 		guideFiturTitle: "Fitur Dasar",
 		guideFiturDesc: "Panduan penggunaan fitur-fitur utama",
-		guideFiturContent: "1. Beranda: Menampilkan ringkasan statistik desa, aktivitas terbaru, dan grafik utama.\n2. Kinerja Divisi: Pantau kegiatan, dokumen, dan diskusi per divisi.\n3. Layanan Publik: Kelola surat pengaduan dan surat layanan warga.\n4. Demografi: Lihat data penduduk, banjar, kesehatan, dan ketenagakerjaan.\n5. Keuangan & UMKM: Pantau anggaran desa dan daftar UMKM.\n6. Pengaturan: Kelola profil pengguna dan konfigurasi sistem.",
+		guideFiturContent:
+			"1. Beranda: Menampilkan ringkasan statistik desa, aktivitas terbaru, dan grafik utama.\n2. Kinerja Divisi: Pantau kegiatan, dokumen, dan diskusi per divisi.\n3. Layanan Publik: Kelola surat pengaduan dan surat layanan warga.\n4. Demografi: Lihat data penduduk, banjar, kesehatan, dan ketenagakerjaan.\n5. Keuangan & UMKM: Pantau anggaran desa dan daftar UMKM.\n6. Pengaturan: Kelola profil pengguna dan konfigurasi sistem.",
 		guideTipsTitle: "Tips & Trik",
 		guideTipsDesc: "Tips untuk meningkatkan produktivitas",
-		guideTipsContent: "1. Gunakan shortcut keyboard untuk navigasi lebih cepat di tabel data.\n2. Filter dan pencarian tersedia di setiap halaman daftar — manfaatkan untuk menemukan data spesifik.\n3. Export data ke CSV/Excel dengan tombol Export di halaman tabel untuk laporan offline.\n4. Aktifkan dark mode di Pengaturan untuk kenyamanan bekerja malam hari.\n5. Refresh data secara manual dengan tombol reload jika data tampak tidak sinkron dengan sistem pusat.\n6. Gunakan fitur Jenna (Virtual Assistant) di halaman ini untuk bantuan cepat.",
+		guideTipsContent:
+			"1. Gunakan shortcut keyboard untuk navigasi lebih cepat di tabel data.\n2. Filter dan pencarian tersedia di setiap halaman daftar — manfaatkan untuk menemukan data spesifik.\n3. Export data ke CSV/Excel dengan tombol Export di halaman tabel untuk laporan offline.\n4. Aktifkan dark mode di Pengaturan untuk kenyamanan bekerja malam hari.\n5. Refresh data secara manual dengan tombol reload jika data tampak tidak sinkron dengan sistem pusat.\n6. Gunakan fitur Jenna (Virtual Assistant) di halaman ini untuk bantuan cepat.",
 		videoDashboardTitle: "Dashboard Overview",
 		videoAnalisisTitle: "Analisis Data",
 		videoLaporanTitle: "Membuat Laporan",
@@ -835,7 +841,8 @@ const id: TranslationKeys = {
 		faqQ3: "Berapa lama waktu respon support?",
 		faqA3: "Tim support kami biasanya merespon dalam waktu kurang dari 24 jam",
 		faqQ4: "Bagaimana cara menambahkan pengguna baru?",
-		faqA4: "Fitur penambahan pengguna dapat ditemukan di menu Pengaturan > Manajemen Pengguna",
+		faqA4:
+			"Fitur penambahan pengguna dapat ditemukan di menu Pengaturan > Manajemen Pengguna",
 		docApiTitle: "API Reference",
 		docApiDesc: "Dokumentasi lengkap untuk integrasi API",
 		docIntegrasiTitle: "Integrasi Sistem",

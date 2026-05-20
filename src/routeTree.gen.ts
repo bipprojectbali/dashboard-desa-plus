@@ -36,6 +36,7 @@ import { Route as PengaturanKeamananRouteImport } from './routes/pengaturan/keam
 import { Route as PengaturanAksesDanTimRouteImport } from './routes/pengaturan/akses-dan-tim'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminHelpRouteImport } from './routes/admin/help'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
 
 const SosialRoute = SosialRouteImport.update({
@@ -173,6 +174,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminHelpRoute = AdminHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminApikeyRoute = AdminApikeyRouteImport.update({
   id: '/apikey',
   path: '/apikey',
@@ -196,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/sosial': typeof SosialRoute
   '/admin/apikey': typeof AdminApikeyRoute
+  '/admin/help': typeof AdminHelpRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
@@ -224,6 +231,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/sosial': typeof SosialRoute
   '/admin/apikey': typeof AdminApikeyRoute
+  '/admin/help': typeof AdminHelpRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
@@ -255,6 +263,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/sosial': typeof SosialRoute
   '/admin/apikey': typeof AdminApikeyRoute
+  '/admin/help': typeof AdminHelpRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
@@ -287,6 +296,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sosial'
     | '/admin/apikey'
+    | '/admin/help'
     | '/admin/settings'
     | '/admin/users'
     | '/pengaturan/akses-dan-tim'
@@ -315,6 +325,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sosial'
     | '/admin/apikey'
+    | '/admin/help'
     | '/admin/settings'
     | '/admin/users'
     | '/pengaturan/akses-dan-tim'
@@ -345,6 +356,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sosial'
     | '/admin/apikey'
+    | '/admin/help'
     | '/admin/settings'
     | '/admin/users'
     | '/pengaturan/akses-dan-tim'
@@ -570,6 +582,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/help': {
+      id: '/admin/help'
+      path: '/help'
+      fullPath: '/admin/help'
+      preLoaderRoute: typeof AdminHelpRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/apikey': {
       id: '/admin/apikey'
       path: '/apikey'
@@ -582,6 +601,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteRouteChildren {
   AdminApikeyRoute: typeof AdminApikeyRoute
+  AdminHelpRoute: typeof AdminHelpRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -589,6 +609,7 @@ interface AdminRouteRouteChildren {
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminApikeyRoute: AdminApikeyRoute,
+  AdminHelpRoute: AdminHelpRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,

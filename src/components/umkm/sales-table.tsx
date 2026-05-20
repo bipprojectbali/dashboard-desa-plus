@@ -98,7 +98,10 @@ export const SalesTable = ({
 					/>
 					<Select
 						placeholder={t.bumdes.semuaUmkm}
-						data={[{ value: "", label: t.bumdes.semuaUmkm }, ...(umkmOptions ?? [])]}
+						data={[
+							{ value: "", label: t.bumdes.semuaUmkm },
+							...(umkmOptions ?? []),
+						]}
 						defaultValue=""
 						w={180}
 						size="sm"

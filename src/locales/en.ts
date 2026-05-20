@@ -378,8 +378,10 @@ const en: TranslationKeys = {
 		pertanyaanCepat: "Quick questions:",
 		ketikPesan: "Type your message...",
 		kirimPesan: "Send message",
-		jennaDisclaimer: "Jenna is a virtual assistant — answers may not always be accurate",
-		jennaGreeting: "Hello! I'm Jenna, your virtual assistant. How can I help you today?",
+		jennaDisclaimer:
+			"Jenna is a virtual assistant — answers may not always be accurate",
+		jennaGreeting:
+			"Hello! I'm Jenna, your virtual assistant. How can I help you today?",
 		terjadiKesalahan: "An error occurred.",
 		koneksiGagal: "Connection failed. Please try again.",
 		quickLogin: "How to login to the dashboard?",
@@ -392,13 +394,16 @@ const en: TranslationKeys = {
 		guideCaraLoginContent: `1. Open your browser and access the village dashboard URL.\n2. Enter your email and password on the login form.\n3. Click the "Login" button to continue.\n4. If successful, you will be redirected to the main dashboard page.\n5. If you forgot your password, click "Forgot Password" and follow the instructions sent to your email.`,
 		guideNavTitle: "Dashboard Navigation",
 		guideNavDesc: "Explanation of layout and navigation",
-		guideNavContent: "1. The left sidebar contains the main menu: Home, Division Performance, Public Services, Demographics, Finance, and Settings.\n2. The top header shows the username, notifications, and logout button.\n3. The main area (center content) displays data based on the selected menu.\n4. Use the breadcrumb above the content to know your page position.\n5. On mobile devices, the sidebar can be opened/closed via the menu icon (hamburger) in the header.",
+		guideNavContent:
+			"1. The left sidebar contains the main menu: Home, Division Performance, Public Services, Demographics, Finance, and Settings.\n2. The top header shows the username, notifications, and logout button.\n3. The main area (center content) displays data based on the selected menu.\n4. Use the breadcrumb above the content to know your page position.\n5. On mobile devices, the sidebar can be opened/closed via the menu icon (hamburger) in the header.",
 		guideFiturTitle: "Basic Features",
 		guideFiturDesc: "Guide to using main features",
-		guideFiturContent: "1. Home: Displays village statistics summary, recent activities, and main charts.\n2. Division Performance: Monitor activities, documents, and discussions per division.\n3. Public Services: Manage complaint letters and public service letters.\n4. Demographics: View population data, banjar, health, and employment.\n5. Finance & UMKM: Monitor village budget and UMKM list.\n6. Settings: Manage user profile and system configuration.",
+		guideFiturContent:
+			"1. Home: Displays village statistics summary, recent activities, and main charts.\n2. Division Performance: Monitor activities, documents, and discussions per division.\n3. Public Services: Manage complaint letters and public service letters.\n4. Demographics: View population data, banjar, health, and employment.\n5. Finance & UMKM: Monitor village budget and UMKM list.\n6. Settings: Manage user profile and system configuration.",
 		guideTipsTitle: "Tips & Tricks",
 		guideTipsDesc: "Tips to improve productivity",
-		guideTipsContent: "1. Use keyboard shortcuts for faster navigation in data tables.\n2. Filters and search are available on every list page — use them to find specific data.\n3. Export data to CSV/Excel with the Export button on the table page for offline reports.\n4. Enable dark mode in Settings for comfortable late-night work.\n5. Manually refresh data with the reload button if data appears out of sync with the central system.\n6. Use the Jenna (Virtual Assistant) feature on this page for quick help.",
+		guideTipsContent:
+			"1. Use keyboard shortcuts for faster navigation in data tables.\n2. Filters and search are available on every list page — use them to find specific data.\n3. Export data to CSV/Excel with the Export button on the table page for offline reports.\n4. Enable dark mode in Settings for comfortable late-night work.\n5. Manually refresh data with the reload button if data appears out of sync with the central system.\n6. Use the Jenna (Virtual Assistant) feature on this page for quick help.",
 		videoDashboardTitle: "Dashboard Overview",
 		videoAnalisisTitle: "Data Analysis",
 		videoLaporanTitle: "Creating Reports",
@@ -410,7 +415,8 @@ const en: TranslationKeys = {
 		faqQ3: "How long does support take to respond?",
 		faqA3: "Our support team usually responds within 24 hours",
 		faqQ4: "How to add a new user?",
-		faqA4: "The user addition feature can be found in Settings > User Management",
+		faqA4:
+			"The user addition feature can be found in Settings > User Management",
 		docApiTitle: "API Reference",
 		docApiDesc: "Complete documentation for API integration",
 		docIntegrasiTitle: "System Integration",
