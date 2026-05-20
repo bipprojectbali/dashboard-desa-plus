@@ -29,6 +29,12 @@ export const auth = betterAuth({
 			enabled: true,
 			redirectURI: `${baseUrl}/api/auth/callback/github`,
 		},
+		google: {
+			clientId: process.env.GOOGLE_CLIENT_ID || "CLIENT_ID_MISSING",
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET || "CLIENT_SECRET_MISSING",
+			enabled: true,
+			redirectURI: `${baseUrl}/api/auth/callback/google`,
+		},
 	},
 	user: {
 		additionalFields: {
