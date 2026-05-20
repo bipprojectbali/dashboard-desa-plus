@@ -16,6 +16,7 @@ import {
 import {
 	IconArrowRight,
 	IconBrandGithub,
+	IconBrandGoogle,
 	IconChartBar,
 	IconClock,
 	IconLock,
@@ -692,31 +693,59 @@ function SigninComponent() {
 						</Text>
 					</Box>
 
-					{/* GitHub */}
-					<Button
-						variant="default"
-						fullWidth
-						size="sm"
-						radius="xl"
-						leftSection={<IconBrandGithub size={17} />}
-						style={{
-							height: 44,
-							fontWeight: 500,
-							fontSize: 13.5,
-							border: "1.5px solid var(--mantine-color-default-border)",
-							boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-						}}
-						onClick={async () => {
-							await authClient.signIn.social({
-								provider: "github",
-								callbackURL: redirect
-									? new URL(redirect, window.location.origin).pathname
-									: "/",
-							});
-						}}
-					>
-						Lanjutkan dengan GitHub
-					</Button>
+					<Stack gap={"xs"}>
+						{/* GitHub */}
+						<Button
+							variant="default"
+							fullWidth
+							size="sm"
+							radius="xl"
+							leftSection={<IconBrandGithub size={17} />}
+							style={{
+								height: 44,
+								fontWeight: 500,
+								fontSize: 13.5,
+								border: "1.5px solid var(--mantine-color-default-border)",
+								boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+							}}
+							onClick={async () => {
+								await authClient.signIn.social({
+									provider: "github",
+									callbackURL: redirect
+										? new URL(redirect, window.location.origin).pathname
+										: "/",
+								});
+							}}
+						>
+							Lanjutkan dengan GitHub
+						</Button>
+
+						{/* Google */}
+						<Button
+							variant="default"
+							fullWidth
+							size="sm"
+							radius="xl"
+							leftSection={<IconBrandGoogle size={17} />}
+							style={{
+								height: 44,
+								fontWeight: 500,
+								fontSize: 13.5,
+								border: "1.5px solid var(--mantine-color-default-border)",
+								boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+							}}
+							onClick={async () => {
+								await authClient.signIn.social({
+									provider: "google",
+									callbackURL: redirect
+										? new URL(redirect, window.location.origin).pathname
+										: "/",
+								});
+							}}
+						>
+							Lanjutkan dengan Google
+						</Button>
+					</Stack>
 
 					{/* Security badge */}
 					<Group gap={6} justify="center" mt={20} mb={4}>
