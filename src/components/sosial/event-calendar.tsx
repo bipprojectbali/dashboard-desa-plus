@@ -29,21 +29,21 @@ export const EventCalendar = ({ data }: EventCalendarProps) => {
 	const defaultData: EventItem[] = [
 		{
 			id: "1",
-			nama: "Hari Kesaktian Pancasila",
-			tanggal: "1 Oktober 2025",
-			lokasi: "Balai Desa",
+			nama: t.sosial.eventBudaya1Nama,
+			tanggal: t.sosial.eventBudaya1Tanggal,
+			lokasi: t.sosial.eventBudaya1Lokasi,
 		},
 		{
 			id: "2",
-			nama: "Festival Budaya Desa",
-			tanggal: "20 Mei 2026",
-			lokasi: "Lapangan Desa",
+			nama: t.sosial.eventBudaya2Nama,
+			tanggal: t.sosial.eventBudaya2Tanggal,
+			lokasi: t.sosial.eventBudaya2Lokasi,
 		},
 		{
 			id: "3",
-			nama: "Perayaan HUT Desa",
-			tanggal: "17 Agustus 2026",
-			lokasi: "Balai Desa",
+			nama: t.sosial.eventBudaya3Nama,
+			tanggal: t.sosial.eventBudaya3Tanggal,
+			lokasi: t.sosial.eventBudaya3Lokasi,
 		},
 	];
 

@@ -6,13 +6,13 @@ import {
 	Text,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { useTranslate } from "@/hooks/useTranslate";
 
 interface ActivityCardProps {
 	title: string;
 	date: string;
 	progress: number;
 	status: "SELESAI" | "BERJALAN" | "TERTUNDA";
-	statusLabel: string;
 }
 
 export function ActivityCard({
@@ -20,8 +20,14 @@ export function ActivityCard({
 	date,
 	progress,
 	status,
-	statusLabel,
 }: ActivityCardProps) {
+	const t = useTranslate();
+	const statusLabel =
+		status === "SELESAI"
+			? t.kinerjaDivisi.statusSelesai
+			: status === "BERJALAN"
+				? t.kinerjaDivisi.statusBerjalan
+				: t.kinerjaDivisi.statusTertunda;
 	const getStatusColor = () => {
 		switch (status) {
 			case "SELESAI":

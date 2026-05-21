@@ -64,7 +64,12 @@ function ProfileLayout() {
 					</Box>
 
 					{/* Tengah: selalu center */}
-					<Text fw={700} fz={{ base: "sm", sm: "lg" }} c="orange.6" style={{ whiteSpace: "nowrap" }}>
+					<Text
+						fw={700}
+						fz={{ base: "sm", sm: "lg" }}
+						c="orange.6"
+						style={{ whiteSpace: "nowrap" }}
+					>
 						PENGATURAN AKUN
 					</Text>
 
@@ -79,4 +84,3 @@ function ProfileLayout() {
 		</AppShell>
 	);
 }
-

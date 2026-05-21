@@ -68,7 +68,7 @@ export function DivisionList() {
 			h="100%"
 		>
 			<Text size="sm" fw={600} c={dark ? "white" : "#1E3A5F"} mb="md">
-				{t.dashboard.divisiTeraktif}
+				{t.kinerjaDivisi.divisiTeraktif}
 			</Text>
 			<Stack gap="xs">
 				{loading ? (
@@ -102,7 +102,7 @@ export function DivisionList() {
 					))
 				) : (
 					<Text size="xs" c="dimmed" ta="center">
-						{t.dashboard.tidakAdaDataDivisi}
+						{t.kinerjaDivisi.tidakAdaDataDivisi}
 					</Text>
 				)}
 			</Stack>

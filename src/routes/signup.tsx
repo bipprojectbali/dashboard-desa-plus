@@ -427,7 +427,9 @@ function SignupComponent() {
 								fz="sm"
 								fw={600}
 								c="teal"
-								onClick={() => navigate({ to: "/signin", search: { redirect: undefined } })}
+								onClick={() =>
+									navigate({ to: "/signin", search: { redirect: undefined } })
+								}
 							>
 								Masuk di sini →
 							</Anchor>
