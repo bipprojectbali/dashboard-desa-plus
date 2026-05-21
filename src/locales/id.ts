@@ -190,6 +190,8 @@ export type TranslationKeys = {
 		acaraHariIni: string;
 		tidakAdaAcara: string;
 		progresKegiatan: string;
+		divisiTeraktif: string;
+		tidakAdaDataDivisi: string;
 	};
 	pengaduanLayanan: {
 		totalPengaduan: string;
@@ -351,6 +353,15 @@ export type TranslationKeys = {
 		danaTersalurkan: string;
 		tahunAjaran: string;
 		kalenderEventBudaya: string;
+		eventBudaya1Nama: string;
+		eventBudaya1Tanggal: string;
+		eventBudaya1Lokasi: string;
+		eventBudaya2Nama: string;
+		eventBudaya2Tanggal: string;
+		eventBudaya2Lokasi: string;
+		eventBudaya3Nama: string;
+		eventBudaya3Tanggal: string;
+		eventBudaya3Lokasi: string;
 	};
 	help: {
 		pusatBantuan: string;
@@ -620,6 +631,8 @@ const id: TranslationKeys = {
 		acaraHariIni: "Acara Hari Ini",
 		tidakAdaAcara: "Tidak ada acara hari ini",
 		progresKegiatan: "Progres Kegiatan",
+		divisiTeraktif: "Divisi Teraktif",
+		tidakAdaDataDivisi: "Tidak ada data divisi",
 	},
 	pengaduanLayanan: {
 		totalPengaduan: "Total Pengaduan",
@@ -781,6 +794,15 @@ const id: TranslationKeys = {
 		danaTersalurkan: "Dana Tersalurkan",
 		tahunAjaran: "Tahun Ajaran",
 		kalenderEventBudaya: "Kalender Event Budaya",
+		eventBudaya1Nama: "Hari Kesaktian Pancasila",
+		eventBudaya1Tanggal: "1 Oktober 2025",
+		eventBudaya1Lokasi: "Balai Desa",
+		eventBudaya2Nama: "Festival Budaya Desa",
+		eventBudaya2Tanggal: "20 Mei 2026",
+		eventBudaya2Lokasi: "Lapangan Desa",
+		eventBudaya3Nama: "Perayaan HUT Desa",
+		eventBudaya3Tanggal: "17 Agustus 2026",
+		eventBudaya3Lokasi: "Balai Desa",
 	},
 	help: {
 		pusatBantuan: "Pusat Bantuan",

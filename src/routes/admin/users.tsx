@@ -269,7 +269,11 @@ function DashboardUsersComponent() {
 								const isSelf = u.id === snap.user?.id;
 								return (
 									<Paper key={u.id} p="md" withBorder radius="md">
-										<Group justify="space-between" align="flex-start" wrap="nowrap">
+										<Group
+											justify="space-between"
+											align="flex-start"
+											wrap="nowrap"
+										>
 											<Group gap="sm" wrap="nowrap" style={{ minWidth: 0 }}>
 												<Avatar src={u.image} size={40} radius="xl" flex="none">
 													{(u.name ?? u.email).charAt(0).toUpperCase()}
@@ -365,7 +369,12 @@ function DashboardUsersComponent() {
 
 						{/* Desktop: table */}
 						<Box visibleFrom="sm">
-							<Table striped highlightOnHover verticalSpacing="sm" withTableBorder>
+							<Table
+								striped
+								highlightOnHover
+								verticalSpacing="sm"
+								withTableBorder
+							>
 								<Table.Thead>
 									<Table.Tr>
 										<Table.Th>Pengguna</Table.Th>

@@ -81,13 +81,6 @@ const KinerjaDivisi = () => {
 							date={dayjs(kegiatan.createdAt).format("D MMMM YYYY")}
 							progress={kegiatan.progress}
 							status={kegiatan.status}
-							statusLabel={
-								kegiatan.status === "SELESAI"
-									? t.kinerjaDivisi.statusSelesai
-									: kegiatan.status === "BERJALAN"
-										? t.kinerjaDivisi.statusBerjalan
-										: t.kinerjaDivisi.statusTertunda
-							}
 						/>
 					</Grid.Col>
 				))}

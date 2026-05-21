@@ -251,14 +251,28 @@ function DashboardApikeyComponent() {
 					{apiKeys.map((apiKey) => (
 						<Paper key={apiKey.id} withBorder radius="md" p="md">
 							{/* Name + Status toggle */}
-							<Group justify="space-between" align="center" mb="xs" wrap="nowrap">
-								<Text fw={600} size="sm" style={{ flex: 1, minWidth: 0 }} truncate>
+							<Group
+								justify="space-between"
+								align="center"
+								mb="xs"
+								wrap="nowrap"
+							>
+								<Text
+									fw={600}
+									size="sm"
+									style={{ flex: 1, minWidth: 0 }}
+									truncate
+								>
 									{apiKey.name}
 								</Text>
-								<Tooltip label={`API Key is ${apiKey.isActive ? "Active" : "Inactive"}`}>
+								<Tooltip
+									label={`API Key is ${apiKey.isActive ? "Active" : "Inactive"}`}
+								>
 									<Switch
 										checked={apiKey.isActive}
-										onChange={() => handleToggleApiKey(apiKey.id, apiKey.isActive)}
+										onChange={() =>
+											handleToggleApiKey(apiKey.id, apiKey.isActive)
+										}
 										size="sm"
 										color={apiKey.isActive ? "green" : "gray"}
 										onLabel={<IconCircleCheck size={10} stroke={1.5} />}
@@ -306,7 +320,11 @@ function DashboardApikeyComponent() {
 										size="sm"
 										flex="none"
 									>
-										{showKey[apiKey.id] ? <IconEyeOff size={14} /> : <IconEye size={14} />}
+										{showKey[apiKey.id] ? (
+											<IconEyeOff size={14} />
+										) : (
+											<IconEye size={14} />
+										)}
 									</ActionIcon>
 								</Tooltip>
 							</Group>
@@ -315,7 +333,10 @@ function DashboardApikeyComponent() {
 							<Group justify="space-between" align="flex-end">
 								<Stack gap={4}>
 									<Group gap={4}>
-										<IconCalendar size={12} color="var(--mantine-color-dimmed)" />
+										<IconCalendar
+											size={12}
+											color="var(--mantine-color-dimmed)"
+										/>
 										{apiKey.expiresAt ? (
 											<Text size="xs">{formatDate(apiKey.expiresAt)}</Text>
 										) : (
@@ -327,7 +348,8 @@ function DashboardApikeyComponent() {
 									<Group gap={4}>
 										<IconClock size={12} color="var(--mantine-color-dimmed)" />
 										<Text size="xs" c="dimmed">
-											{formatDate(apiKey.createdAt)} {formatTime(apiKey.createdAt)}
+											{formatDate(apiKey.createdAt)}{" "}
+											{formatTime(apiKey.createdAt)}
 										</Text>
 									</Group>
 								</Stack>
@@ -394,14 +416,20 @@ function DashboardApikeyComponent() {
 											{showKey[apiKey.id] ? (
 												<Text
 													c="orange"
-													style={{ fontFamily: "monospace", fontSize: "0.85rem" }}
+													style={{
+														fontFamily: "monospace",
+														fontSize: "0.85rem",
+													}}
 												>
 													{apiKey.key}
 												</Text>
 											) : (
 												<Text
 													c="dimmed"
-													style={{ fontFamily: "monospace", fontSize: "0.85rem" }}
+													style={{
+														fontFamily: "monospace",
+														fontSize: "0.85rem",
+													}}
 												>
 													••••••••••••••••••••••••••••••••
 												</Text>
@@ -420,7 +448,9 @@ function DashboardApikeyComponent() {
 													</Tooltip>
 												)}
 											</CopyButton>
-											<Tooltip label={showKey[apiKey.id] ? "Hide key" : "Show key"}>
+											<Tooltip
+												label={showKey[apiKey.id] ? "Hide key" : "Show key"}
+											>
 												<ActionIcon
 													color="gray"
 													onClick={() => toggleShowKey(apiKey.id)}
@@ -438,10 +468,14 @@ function DashboardApikeyComponent() {
 									</Table.Td>
 									<Table.Td>
 										<Group>
-											<Tooltip label={`API Key is ${apiKey.isActive ? "Active" : "Inactive"}`}>
+											<Tooltip
+												label={`API Key is ${apiKey.isActive ? "Active" : "Inactive"}`}
+											>
 												<Switch
 													checked={apiKey.isActive}
-													onChange={() => handleToggleApiKey(apiKey.id, apiKey.isActive)}
+													onChange={() =>
+														handleToggleApiKey(apiKey.id, apiKey.isActive)
+													}
 													size="md"
 													color={apiKey.isActive ? "green" : "gray"}
 													onLabel={<IconCircleCheck size={12} stroke={1.5} />}

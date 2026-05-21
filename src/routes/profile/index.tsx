@@ -231,7 +231,11 @@ function Profile() {
 						borderBottom: "1px solid var(--mantine-color-default-border)",
 					}}
 				/>
-				<Box px={{ base: "md", sm: "xl" }} pb={{ base: "md", sm: "xl" }} style={{ marginTop: rem(-60) }}>
+				<Box
+					px={{ base: "md", sm: "xl" }}
+					pb={{ base: "md", sm: "xl" }}
+					style={{ marginTop: rem(-60) }}
+				>
 					<Group align="flex-end" gap="md" mb="md" wrap="nowrap">
 						<Avatar
 							src={snap.user?.image}
@@ -245,15 +249,19 @@ function Profile() {
 						>
 							{snap.user?.name?.charAt(0).toUpperCase()}
 						</Avatar>
-						<Stack gap={0} pb={{ base: "xs", sm: "md" }} style={{ minWidth: 0 }}>
-							<Title order={2}>
-								{snap.user?.name}
-							</Title>
+						<Stack
+							gap={0}
+							pb={{ base: "xs", sm: "md" }}
+							style={{ minWidth: 0 }}
+						>
+							<Title order={2}>{snap.user?.name}</Title>
 							<Group gap="xs" wrap="wrap">
 								<Text c="dimmed" size="sm" truncate>
 									{snap.user?.email}
 								</Text>
-								<Text c="dimmed" size="xs" visibleFrom="xs">•</Text>
+								<Text c="dimmed" size="xs" visibleFrom="xs">
+									•
+								</Text>
 								<Badge
 									variant="dot"
 									color={snap.user?.role === "admin" ? "orange" : "blue"}
