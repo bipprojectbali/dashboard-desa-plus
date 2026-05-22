@@ -31,6 +31,7 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
+import { getEnv } from "@/utils/env";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 
@@ -59,8 +60,8 @@ const JennaAnalytic = () => {
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		const apiUrl = import.meta.env.VITE_JENNA_API_URL;
-		const apiToken = import.meta.env.VITE_JENNA_API_TOKEN;
+		const apiUrl = getEnv("VITE_JENNA_API_URL");
+		const apiToken = getEnv("VITE_JENNA_API_TOKEN");
 		if (!apiUrl || !apiToken) {
 			setError("Jenna API not configured");
 			setLoading(false);
