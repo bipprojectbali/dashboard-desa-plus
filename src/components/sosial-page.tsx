@@ -27,29 +27,40 @@ interface PosyanduForCount {
 	isActive: boolean;
 }
 
+interface EventBudaya {
+	id: string;
+	nama: string;
+	tanggal: string;
+	lokasi: string;
+}
+
 const SosialPage = () => {
 	const t = useTranslate();
 	const [kesehatanStats, setKesehatanStats] = useState<KesehatanStats | null>(
 		null,
 	);
 	const [posyandus, setPosyandus] = useState<PosyanduForCount[] | null>(null);
+	const [events, setEvents] = useState<EventBudaya[] | null>(null);
 
 	useEffect(() => {
 		async function fetchData() {
 			try {
-				const [kesehatanRes, posyanduRes] = await Promise.all([
+				const [kesehatanRes, posyanduRes, eventsRes] = await Promise.all([
 					fetch(`${DESA_API}/api/kesehatan/ringkasankesehatan/stats`),
 					fetch(`${DESA_API}/api/kesehatan/posyandu/find-many`),
+					fetch(`${DESA_API}/api/desa/eventbudaya/find-upcoming`),
 				]);
-				const [kesehatan, posyandu] = await Promise.all([
+				const [kesehatan, posyandu, eventBudaya] = await Promise.all([
 					kesehatanRes.json(),
 					posyanduRes.json(),
+					eventsRes.json(),
 				]);
 				if (kesehatan.success) setKesehatanStats(kesehatan.data);
 				if (posyandu.success)
 					setPosyandus(
 						(posyandu.data as PosyanduForCount[]).filter((p) => p.isActive),
 					);
+				if (eventBudaya.success) setEvents(eventBudaya.data);
 			} catch {
 				// ignore
 			}
@@ -113,7 +124,7 @@ const SosialPage = () => {
 				</GridCol>
 			</Grid>
 
-			<EventCalendar />
+			<EventCalendar data={events ?? undefined} />
 		</Stack>
 	);
 };

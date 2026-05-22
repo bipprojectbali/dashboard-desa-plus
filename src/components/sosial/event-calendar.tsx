@@ -1,6 +1,8 @@
 import {
 	Card,
 	Group,
+	Pagination,
+	Skeleton,
 	Stack,
 	Text,
 	ThemeIcon,
@@ -8,7 +10,10 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { IconCalendarEvent } from "@tabler/icons-react";
+import { useState } from "react";
 import { useTranslate } from "@/hooks/useTranslate";
+
+const PAGE_SIZE = 5;
 
 interface EventItem {
 	id: string;
@@ -21,33 +26,23 @@ interface EventCalendarProps {
 	data?: EventItem[];
 }
 
+function formatTanggal(iso: string): string {
+	return new Date(iso).toLocaleDateString("id-ID", {
+		weekday: "long",
+		day: "numeric",
+		month: "long",
+		year: "numeric",
+	});
+}
+
 export const EventCalendar = ({ data }: EventCalendarProps) => {
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const [page, setPage] = useState(1);
 
-	const defaultData: EventItem[] = [
-		{
-			id: "1",
-			nama: t.sosial.eventBudaya1Nama,
-			tanggal: t.sosial.eventBudaya1Tanggal,
-			lokasi: t.sosial.eventBudaya1Lokasi,
-		},
-		{
-			id: "2",
-			nama: t.sosial.eventBudaya2Nama,
-			tanggal: t.sosial.eventBudaya2Tanggal,
-			lokasi: t.sosial.eventBudaya2Lokasi,
-		},
-		{
-			id: "3",
-			nama: t.sosial.eventBudaya3Nama,
-			tanggal: t.sosial.eventBudaya3Tanggal,
-			lokasi: t.sosial.eventBudaya3Lokasi,
-		},
-	];
-
-	const displayData = data || defaultData;
+	const totalPages = data ? Math.ceil(data.length / PAGE_SIZE) : 1;
+	const paginatedData = data?.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
 	return (
 		<Card
@@ -66,41 +61,63 @@ export const EventCalendar = ({ data }: EventCalendarProps) => {
 				{t.sosial.kalenderEventBudaya}
 			</Title>
 			<Stack gap="sm">
-				{displayData.map((event) => (
-					<Card
-						key={event.id}
-						p="md"
-						radius="md"
-						withBorder
-						bg={dark ? "#263852ff" : "#F1F5F9"}
-						style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
-					>
-						<Group justify="space-between" mb="xs">
-							<Group gap="sm" align="center">
-								<ThemeIcon
-									color="darmasaba-blue"
-									size="md"
-									radius="xl"
-									variant="light"
-								>
-									<IconCalendarEvent size={16} />
-								</ThemeIcon>
-								<Text fw={600} c={dark ? "dark.0" : "#1e3a5f"}>
-									{event.nama}
+				{!paginatedData ? (
+					Array.from({ length: PAGE_SIZE }).map((_, i) => (
+						<Skeleton key={i} height={72} radius="md" />
+					))
+				) : paginatedData.length === 0 ? (
+					<Text size="sm" c="dimmed" ta="center" py="md">
+						Belum ada event budaya mendatang
+					</Text>
+				) : (
+					paginatedData.map((event) => (
+						<Card
+							key={event.id}
+							p="md"
+							radius="md"
+							withBorder
+							bg={dark ? "#263852ff" : "#F1F5F9"}
+							style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
+						>
+							<Group justify="space-between" mb="xs">
+								<Group gap="sm" align="center">
+									<ThemeIcon
+										color="darmasaba-blue"
+										size="md"
+										radius="xl"
+										variant="light"
+									>
+										<IconCalendarEvent size={16} />
+									</ThemeIcon>
+									<Text fw={600} c={dark ? "dark.0" : "#1e3a5f"}>
+										{event.nama}
+									</Text>
+								</Group>
+								<Text size="sm" c={dark ? "dark.3" : "dimmed"} fw={500}>
+									{event.lokasi}
 								</Text>
 							</Group>
-							<Text size="sm" c={dark ? "dark.3" : "dimmed"} fw={500}>
-								{event.lokasi}
-							</Text>
-						</Group>
-						<Group pl={36}>
-							<Text size="sm" c={dark ? "white" : "gray.6"}>
-								{event.tanggal}
-							</Text>
-						</Group>
-					</Card>
-				))}
+							<Group pl={36}>
+								<Text size="sm" c={dark ? "white" : "gray.6"}>
+									{formatTanggal(event.tanggal)}
+								</Text>
+							</Group>
+						</Card>
+					))
+				)}
 			</Stack>
+			{totalPages > 1 && (
+				<Group justify="center" mt="md">
+					<Pagination
+						value={page}
+						onChange={setPage}
+						total={totalPages}
+						size="sm"
+						radius="md"
+						color="darmasaba-blue"
+					/>
+				</Group>
+			)}
 		</Card>
 	);
 };
