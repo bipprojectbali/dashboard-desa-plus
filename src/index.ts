@@ -24,6 +24,27 @@ if (isProduction && process.env.ADMIN_EMAIL) {
 
 const app = new Elysia().use(api);
 
+// Proxy Jenna analytics — registered directly on app to bypass plugin composition issues
+app.get("/api/jenna/analytics", async ({ set }) => {
+	const apiUrl = process.env.VITE_JENNA_API_URL ?? "";
+	const apiToken = process.env.VITE_JENNA_API_TOKEN ?? "";
+	if (!apiUrl || !apiToken) {
+		set.status = 503;
+		return { message: "Jenna API not configured" };
+	}
+	try {
+		const res = await fetch(`${apiUrl}/api/noc/jenna/analytics`, {
+			headers: { Authorization: `Bearer ${apiToken}` },
+		});
+		set.status = res.status;
+		const text = await res.text();
+		return JSON.parse(text);
+	} catch {
+		set.status = 502;
+		return { message: "Failed to fetch Jenna analytics" };
+	}
+});
+
 if (!isProduction) {
 	// Development: Use Vite middleware
 	const { createVite } = await import("./vite");

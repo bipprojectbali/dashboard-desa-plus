@@ -33,7 +33,6 @@ import {
 import { useSnapshot } from "valtio";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
-import { getEnv } from "@/utils/env";
 
 type JennaAnalyticsData = {
 	stats: {
@@ -49,9 +48,6 @@ type JennaAnalyticsData = {
 	jamTersibuk: Array<{ slot: string; pct: number }>;
 };
 
-const JENNA_API_URL = getEnv("VITE_JENNA_API_URL");
-const JENNA_API_TOKEN = getEnv("VITE_JENNA_API_TOKEN");
-
 const JennaAnalytic = () => {
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
@@ -60,14 +56,25 @@ const JennaAnalytic = () => {
 
 	const [data, setData] = useState<JennaAnalyticsData | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		fetch(`${JENNA_API_URL}/api/noc/jenna/analytics`, {
-			headers: { Authorization: `Bearer ${JENNA_API_TOKEN}` },
+		const apiUrl = import.meta.env.VITE_JENNA_API_URL;
+		const apiToken = import.meta.env.VITE_JENNA_API_TOKEN;
+		if (!apiUrl || !apiToken) {
+			setError("Jenna API not configured");
+			setLoading(false);
+			return;
+		}
+		fetch(`${apiUrl}/api/noc/jenna/analytics`, {
+			headers: { Authorization: `Bearer ${apiToken}` },
 		})
-			.then((r) => r.json())
+			.then((r) => {
+				if (!r.ok) throw new Error(`HTTP ${r.status}`);
+				return r.json();
+			})
 			.then(setData)
-			.catch(console.error)
+			.catch((e) => setError(e.message))
 			.finally(() => setLoading(false));
 	}, []);
 
@@ -75,6 +82,17 @@ const JennaAnalytic = () => {
 		return (
 			<Center h={400}>
 				<Loader size="md" />
+			</Center>
+		);
+	}
+
+	if (error) {
+		return (
+			<Center h={400}>
+				<Stack align="center" gap="sm">
+					<AlertTriangle size={32} color="#ef4444" />
+					<Text c="red" fw={500}>{error}</Text>
+				</Stack>
 			</Center>
 		);
 	}
@@ -126,7 +144,7 @@ const JennaAnalytic = () => {
 	}));
 
 	return (
-		<Stack gap="lg">
+	<Stack gap="lg">
 			{/* TOP SECTION - 4 STAT CARDS */}
 			<Grid gutter="md">
 				{kpiData.map((item) => (
