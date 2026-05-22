@@ -2,8 +2,10 @@ import {
 	Badge,
 	Box,
 	Card,
+	Center,
 	Grid,
 	Group,
+	Loader,
 	Progress,
 	Stack,
 	Text,
@@ -18,6 +20,7 @@ import {
 	MessageCircle,
 	TrendingUp,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -30,6 +33,24 @@ import {
 import { useSnapshot } from "valtio";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
+import { getEnv } from "@/utils/env";
+
+type JennaAnalyticsData = {
+	stats: {
+		interaksiHariIni: number;
+		changeFromYesterday: number;
+		jawabanOtomatis: number;
+		jawabanOtomatisCount: number;
+		waktuRespon: string;
+		belumDitindak: number;
+	};
+	chartMingguan: Array<{ day: string; count: number }>;
+	topTopics: Array<{ topic: string; count: number }>;
+	jamTersibuk: Array<{ slot: string; pct: number }>;
+};
+
+const JENNA_API_URL = getEnv("VITE_JENNA_API_URL");
+const JENNA_API_TOKEN = getEnv("VITE_JENNA_API_TOKEN");
 
 const JennaAnalytic = () => {
 	const t = useTranslate();
@@ -37,62 +58,72 @@ const JennaAnalytic = () => {
 	const dark = colorScheme === "dark";
 	const { tampilkanGrid } = useSnapshot(i18nStore);
 
+	const [data, setData] = useState<JennaAnalyticsData | null>(null);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		fetch(`${JENNA_API_URL}/api/noc/jenna/analytics`, {
+			headers: { Authorization: `Bearer ${JENNA_API_TOKEN}` },
+		})
+			.then((r) => r.json())
+			.then(setData)
+			.catch(console.error)
+			.finally(() => setLoading(false));
+	}, []);
+
+	if (loading) {
+		return (
+			<Center h={400}>
+				<Loader size="md" />
+			</Center>
+		);
+	}
+
+	const change = data?.stats.changeFromYesterday ?? 0;
+
 	const kpiData = [
 		{
 			id: 1,
 			title: t.jennaAnalytic.interaksiHariIni,
-			value: "61",
-			subtitle: t.jennaAnalytic.plusDariKemarin,
-			trend: "positive",
+			value: data?.stats.interaksiHariIni.toString() ?? "—",
+			subtitle: `${change >= 0 ? "+" : ""}${change}% ${t.jennaAnalytic.plusDariKemarin}`,
+			trend: change >= 0 ? "positive" : undefined,
 			icon: MessageCircle,
 		},
 		{
 			id: 2,
 			title: t.jennaAnalytic.jawabanOtomatis,
-			value: "87%",
-			subtitle: t.jennaAnalytic.dari61Interaksi,
+			value: data ? `${data.stats.jawabanOtomatis}%` : "—",
+			subtitle: `dari ${data?.stats.interaksiHariIni ?? 0} interaksi`,
 			icon: CheckCircle,
 		},
 		{
 			id: 3,
 			title: t.jennaAnalytic.belumDitindak,
-			value: "8",
+			value: data?.stats.belumDitindak.toString() ?? "—",
 			subtitle: t.jennaAnalytic.perluResponManual,
 			icon: AlertTriangle,
 		},
 		{
 			id: 4,
 			title: t.jennaAnalytic.waktuRespon,
-			value: "2.3 sec",
+			value: data?.stats.waktuRespon ?? "—",
 			subtitle: t.jennaAnalytic.rataRata,
 			icon: Clock,
 		},
 	];
 
-	const chartData = [
-		{ day: t.jennaAnalytic.sen, total: 45 },
-		{ day: t.jennaAnalytic.sel, total: 62 },
-		{ day: t.jennaAnalytic.rab, total: 38 },
-		{ day: t.jennaAnalytic.kam, total: 75 },
-		{ day: t.jennaAnalytic.jum, total: 58 },
-		{ day: t.jennaAnalytic.sab, total: 32 },
-		{ day: t.jennaAnalytic.min, total: 51 },
-	];
+	const chartData = (data?.chartMingguan ?? []).map((item) => ({
+		day: item.day,
+		total: item.count,
+	}));
 
-	const topTopics = [
-		{ topic: t.jennaAnalytic.topikKtp, count: 89 },
-		{ topic: t.jennaAnalytic.topikKk, count: 76 },
-		{ topic: t.jennaAnalytic.topikPosyandu, count: 64 },
-		{ topic: t.jennaAnalytic.topikJalan, count: 52 },
-		{ topic: t.jennaAnalytic.topikBansos, count: 48 },
-	];
+	const topTopics = data?.topTopics ?? [];
 
-	const busyHours = [
-		{ period: t.jennaAnalytic.pagiJam, percentage: 30 },
-		{ period: t.jennaAnalytic.siangJam, percentage: 40 },
-		{ period: t.jennaAnalytic.soreJam, percentage: 20 },
-		{ period: t.jennaAnalytic.malamJam, percentage: 10 },
-	];
+	const busyHours = (data?.jamTersibuk ?? []).map((item) => ({
+		period: item.slot,
+		percentage: item.pct,
+	}));
 
 	return (
 		<Stack gap="lg">
