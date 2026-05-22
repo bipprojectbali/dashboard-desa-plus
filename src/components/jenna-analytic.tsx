@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: penjelasannya */
+
 import {
 	Badge,
 	Box,
@@ -21,6 +23,7 @@ import {
 	TrendingUp,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import type React from "react";
 import {
 	Bar,
 	BarChart,
@@ -31,9 +34,19 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
-import { getEnv } from "@/utils/env";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type KpiItem = {
+	id: number;
+	title: string;
+	value: string;
+	subtitle: string;
+	trend?: "positive";
+	icon: React.ElementType;
+};
 
 type JennaAnalyticsData = {
 	stats: {
@@ -49,35 +62,37 @@ type JennaAnalyticsData = {
 	jamTersibuk: Array<{ slot: string; pct: number }>;
 };
 
+// ─── Hook ─────────────────────────────────────────────────────────────────────
+
+function useJennaAnalytics() {
+	const [data, setData] = useState<JennaAnalyticsData | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		// Fetch via server proxy — avoids CORS & doesn't require VITE_* env vars at build time
+		fetch("/api/jenna/analytics")
+			.then((r) => {
+				if (!r.ok) throw new Error(`HTTP ${r.status}`);
+				return r.json() as Promise<JennaAnalyticsData>;
+			})
+			.then(setData)
+			.catch((e: Error) => setError(e.message))
+			.finally(() => setLoading(false));
+	}, []);
+
+	return { data, loading, error };
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 const JennaAnalytic = () => {
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const { tampilkanGrid } = useSnapshot(i18nStore);
 
-	const [data, setData] = useState<JennaAnalyticsData | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-
-	useEffect(() => {
-		const apiUrl = getEnv("VITE_JENNA_API_URL");
-		const apiToken = getEnv("VITE_JENNA_API_TOKEN");
-		if (!apiUrl || !apiToken) {
-			setError("Jenna API not configured");
-			setLoading(false);
-			return;
-		}
-		fetch(`${apiUrl}/api/noc/jenna/analytics`, {
-			headers: { Authorization: `Bearer ${apiToken}` },
-		})
-			.then((r) => {
-				if (!r.ok) throw new Error(`HTTP ${r.status}`);
-				return r.json();
-			})
-			.then(setData)
-			.catch((e) => setError(e.message))
-			.finally(() => setLoading(false));
-	}, []);
+	const { data, loading, error } = useJennaAnalytics();
 
 	if (loading) {
 		return (
@@ -92,7 +107,9 @@ const JennaAnalytic = () => {
 			<Center h={400}>
 				<Stack align="center" gap="sm">
 					<AlertTriangle size={32} color="#ef4444" />
-					<Text c="red" fw={500}>{error}</Text>
+					<Text c="red" fw={500}>
+						{error}
+					</Text>
 				</Stack>
 			</Center>
 		);
@@ -130,7 +147,7 @@ const JennaAnalytic = () => {
 			subtitle: t.jennaAnalytic.rataRata,
 			icon: Clock,
 		},
-	];
+	] satisfies KpiItem[];
 
 	const chartData = (data?.chartMingguan ?? []).map((item) => ({
 		day: item.day,
@@ -145,8 +162,8 @@ const JennaAnalytic = () => {
 	}));
 
 	return (
-	<Stack gap="lg">
-			{/* TOP SECTION - 4 STAT CARDS */}
+		<Stack gap="lg">
+			{/* KPI Cards */}
 			<Grid gutter="md">
 				{kpiData.map((item) => (
 					<Grid.Col key={item.id} span={{ base: 12, sm: 6, lg: 3 }}>
@@ -202,7 +219,7 @@ const JennaAnalytic = () => {
 				))}
 			</Grid>
 
-			{/* MAIN CHART - INTERAKSI CHATBOT */}
+			{/* Chart - Interaksi Chatbot */}
 			<Card
 				p="md"
 				radius="xl"
@@ -257,9 +274,8 @@ const JennaAnalytic = () => {
 				</ResponsiveContainer>
 			</Card>
 
-			{/* BOTTOM SECTION - 2 COLUMNS */}
+			{/* Bottom - Topik & Jam Tersibuk */}
 			<Grid gutter="lg">
-				{/* LEFT: TOPIK PERTANYAAN TERBANYAK */}
 				<Grid.Col span={{ base: 12, lg: 6 }}>
 					<Card
 						p="md"
@@ -305,7 +321,6 @@ const JennaAnalytic = () => {
 					</Card>
 				</Grid.Col>
 
-				{/* RIGHT: JAM TERSIBUK */}
 				<Grid.Col span={{ base: 12, lg: 6 }}>
 					<Card
 						p="md"
