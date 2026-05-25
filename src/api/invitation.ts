@@ -61,25 +61,34 @@ export const invitationRoutes = new Elysia({ prefix: "/invitation" })
 	)
 	.get(
 		"/list",
-		async ({ set, user }) => {
+		async ({ query, set, user }) => {
 			if (user?.role !== "admin") {
 				set.status = 403;
 				return { error: "Forbidden" };
 			}
-			const invitations = await prisma.invitation.findMany({
-				where: { invitedById: user.id },
-				orderBy: { createdAt: "desc" },
-				take: 20,
-				select: {
-					id: true,
-					token: true,
-					email: true,
-					role: true,
-					expiresAt: true,
-					usedAt: true,
-					createdAt: true,
-				},
-			});
+			const page = Math.max(1, Number(query.page ?? 1));
+			const limit = Math.min(Math.max(1, Number(query.limit ?? 5)), 100);
+			const skip = (page - 1) * limit;
+
+			const [invitations, total] = await Promise.all([
+				prisma.invitation.findMany({
+					where: { invitedById: user.id },
+					orderBy: { createdAt: "desc" },
+					take: limit,
+					skip,
+					select: {
+						id: true,
+						token: true,
+						email: true,
+						role: true,
+						expiresAt: true,
+						usedAt: true,
+						createdAt: true,
+					},
+				}),
+				prisma.invitation.count({ where: { invitedById: user.id } }),
+			]);
+
 			const baseUrl = VITE_PUBLIC_URL || "";
 			return {
 				data: invitations.map((inv) => ({
@@ -88,14 +97,29 @@ export const invitationRoutes = new Elysia({ prefix: "/invitation" })
 					expired: new Date(inv.expiresAt) < new Date(),
 					used: !!inv.usedAt,
 				})),
+				total,
+				page,
+				limit,
 			};
 		},
 		{
+			query: t.Object({
+				page: t.Optional(t.String()),
+				limit: t.Optional(t.String()),
+			}),
 			response: {
-				200: t.Object({ data: t.Any() }),
+				200: t.Object({
+					data: t.Any(),
+					total: t.Number(),
+					page: t.Number(),
+					limit: t.Number(),
+				}),
 				403: t.Object({ error: t.String() }),
 			},
-			detail: { summary: "List invitations created by this admin" },
+			detail: {
+				summary:
+					"List invitations created by this admin (paginated, default 5 per page)",
+			},
 		},
 	)
 	.get(

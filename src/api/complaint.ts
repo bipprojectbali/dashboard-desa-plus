@@ -39,13 +39,22 @@ export const complaint = new Elysia({
 	)
 	.get(
 		"/recent",
-		async ({ set }) => {
+		async ({ query, set }) => {
 			try {
-				const recent = await prisma.complaint.findMany({
-					orderBy: { createdAt: "desc" },
-					take: 5,
-				});
-				return { data: recent };
+				const page = Math.max(1, Number(query.page ?? 1));
+				const limit = Math.min(Math.max(1, Number(query.limit ?? 5)), 100);
+				const skip = (page - 1) * limit;
+
+				const [recent, total] = await Promise.all([
+					prisma.complaint.findMany({
+						orderBy: { createdAt: "desc" },
+						take: limit,
+						skip,
+					}),
+					prisma.complaint.count(),
+				]);
+
+				return { data: recent, total, page, limit };
 			} catch (error) {
 				logger.error({ error }, "Failed to fetch recent complaints");
 				set.status = 500;
@@ -53,13 +62,22 @@ export const complaint = new Elysia({
 			}
 		},
 		{
+			query: t.Object({
+				page: t.Optional(t.String()),
+				limit: t.Optional(t.String()),
+			}),
 			response: {
 				200: t.Object({
 					data: t.Array(t.Any()),
+					total: t.Number(),
+					page: t.Number(),
+					limit: t.Number(),
 				}),
 				500: t.Object({ error: t.String() }),
 			},
-			detail: { summary: "Get recent complaints" },
+			detail: {
+				summary: "Get recent complaints (paginated, default 5 per page)",
+			},
 		},
 	)
 	.get(
