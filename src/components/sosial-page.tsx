@@ -1,5 +1,6 @@
-import { Grid, GridCol, Stack } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { Alert, Button, Grid, GridCol, Skeleton, Stack } from "@mantine/core";
+import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslate } from "@/hooks/useTranslate";
 import { Beasiswa } from "./sosial/beasiswa";
 import { EventCalendar } from "./sosial/event-calendar";
@@ -41,32 +42,40 @@ const SosialPage = () => {
 	);
 	const [posyandus, setPosyandus] = useState<PosyanduForCount[] | null>(null);
 	const [events, setEvents] = useState<EventBudaya[] | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+
+	const fetchData = useCallback(async () => {
+		setLoading(true);
+		setError(null);
+		try {
+			const [kesehatanRes, posyanduRes, eventsRes] = await Promise.all([
+				fetch(`${DESA_API}/api/kesehatan/ringkasankesehatan/stats`),
+				fetch(`${DESA_API}/api/kesehatan/posyandu/find-many`),
+				fetch(`${DESA_API}/api/desa/eventbudaya/find-upcoming`),
+			]);
+			const [kesehatan, posyandu, eventBudaya] = await Promise.all([
+				kesehatanRes.json(),
+				posyanduRes.json(),
+				eventsRes.json(),
+			]);
+			if (kesehatan.success) setKesehatanStats(kesehatan.data);
+			if (posyandu.success)
+				setPosyandus(
+					(posyandu.data as PosyanduForCount[]).filter((p) => p.isActive),
+				);
+			if (eventBudaya.success) setEvents(eventBudaya.data);
+		} catch (err) {
+			console.error("Failed to fetch sosial data", err);
+			setError("Gagal memuat data sosial. Periksa koneksi dan coba lagi.");
+		} finally {
+			setLoading(false);
+		}
+	}, []);
 
 	useEffect(() => {
-		async function fetchData() {
-			try {
-				const [kesehatanRes, posyanduRes, eventsRes] = await Promise.all([
-					fetch(`${DESA_API}/api/kesehatan/ringkasankesehatan/stats`),
-					fetch(`${DESA_API}/api/kesehatan/posyandu/find-many`),
-					fetch(`${DESA_API}/api/desa/eventbudaya/find-upcoming`),
-				]);
-				const [kesehatan, posyandu, eventBudaya] = await Promise.all([
-					kesehatanRes.json(),
-					posyanduRes.json(),
-					eventsRes.json(),
-				]);
-				if (kesehatan.success) setKesehatanStats(kesehatan.data);
-				if (posyandu.success)
-					setPosyandus(
-						(posyandu.data as PosyanduForCount[]).filter((p) => p.isActive),
-					);
-				if (eventBudaya.success) setEvents(eventBudaya.data);
-			} catch {
-				// ignore
-			}
-		}
 		fetchData();
-	}, []);
+	}, [fetchData]);
 
 	const summaryData = kesehatanStats
 		? {
@@ -104,27 +113,64 @@ const SosialPage = () => {
 
 	return (
 		<Stack gap="lg">
-			<SummaryCards data={summaryData} />
+			{error && (
+				<Alert
+					icon={<IconAlertCircle size={16} />}
+					color="red"
+					title="Gagal memuat data"
+					radius="md"
+				>
+					{error}
+					<Button
+						size="xs"
+						variant="light"
+						color="red"
+						leftSection={<IconRefresh size={14} />}
+						onClick={fetchData}
+						mt="xs"
+					>
+						Coba lagi
+					</Button>
+				</Alert>
+			)}
+
+			{loading ? (
+				<Skeleton height={120} radius="xl" />
+			) : (
+				<SummaryCards data={summaryData} />
+			)}
 
 			<Grid gutter="md">
 				<GridCol span={{ base: 12, lg: 6 }}>
-					<HealthStats data={healthData} />
+					{loading ? (
+						<Skeleton height={200} radius="xl" />
+					) : (
+						<HealthStats data={healthData} />
+					)}
 				</GridCol>
 				<GridCol span={{ base: 12, lg: 6 }}>
-					<PosyanduSchedule />
+					{loading ? (
+						<Skeleton height={200} radius="xl" />
+					) : (
+						<PosyanduSchedule />
+					)}
 				</GridCol>
 			</Grid>
 
 			<Grid gutter="md">
 				<GridCol span={{ base: 12, lg: 6 }}>
-					<Pendidikan />
+					{loading ? <Skeleton height={200} radius="xl" /> : <Pendidikan />}
 				</GridCol>
 				<GridCol span={{ base: 12, lg: 6 }}>
-					<Beasiswa />
+					{loading ? <Skeleton height={200} radius="xl" /> : <Beasiswa />}
 				</GridCol>
 			</Grid>
 
-			<EventCalendar data={events ?? undefined} />
+			{loading ? (
+				<Skeleton height={300} radius="xl" />
+			) : (
+				<EventCalendar data={events ?? undefined} />
+			)}
 		</Stack>
 	);
 };

@@ -1,15 +1,18 @@
 import {
+	Alert,
 	Box,
+	Button,
 	Card,
 	Grid,
 	Group,
-	Loader,
+	Skeleton,
 	Stack,
 	Text,
 	ThemeIcon,
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import {
 	Baby,
 	BarChart3,
@@ -97,6 +100,7 @@ const DemografiPekerjaan = () => {
 	const [banjarData, setBanjarData] = useState<BanjarData[]>([]);
 	const [sektorData, setSektorData] = useState<SectorData[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
 	// Dynamic stats
 	const [births, setBirths] = useState(0);
@@ -106,6 +110,7 @@ const DemografiPekerjaan = () => {
 
 	// Fetch data function (can be called externally after sync)
 	const fetchData = useCallback(async () => {
+		setError(null);
 		try {
 			console.log("📊 Fetching demografi data from internal API...");
 			setLoading(true);
@@ -331,8 +336,9 @@ const DemografiPekerjaan = () => {
 					);
 				}
 			}
-		} catch (error) {
-			console.error("❌ Failed to fetch demografi data:", error);
+		} catch (err) {
+			console.error("❌ Failed to fetch demografi data:", err);
+			setError("Gagal memuat data demografi. Periksa koneksi dan coba lagi.");
 		} finally {
 			setLoading(false);
 		}
@@ -421,60 +427,87 @@ const DemografiPekerjaan = () => {
 
 	return (
 		<Stack gap="lg">
+			{error && (
+				<Alert
+					icon={<IconAlertCircle size={16} />}
+					color="red"
+					title="Gagal memuat data"
+					radius="md"
+				>
+					{error}
+					<Button
+						size="xs"
+						variant="light"
+						color="red"
+						leftSection={<IconRefresh size={14} />}
+						onClick={fetchData}
+						mt="xs"
+					>
+						Coba lagi
+					</Button>
+				</Alert>
+			)}
+
 			{/* TOP SECTION - 4 STAT CARDS */}
 			<Grid gutter="md">
-				{kpiData.map((item) => (
-					<Grid.Col key={item.id} span={{ base: 12, sm: 6, lg: 3 }}>
-						<Card
-							p="md"
-							radius="xl"
-							withBorder
-							bg={dark ? "#1E293B" : "white"}
-							style={{
-								borderColor: dark ? "#334155" : "white",
-								boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
-								transition: "transform 0.15s ease, box-shadow 0.15s ease",
-							}}
-							h="100%"
-						>
-							<Group justify="space-between" align="flex-start" w="100%">
-								<Stack gap={2}>
-									<Text size="sm" c="dimmed">
-										{item.title}
-									</Text>
-									<Text size="xl" fw={700} c={dark ? "white" : "gray.9"}>
-										{item.value}
-									</Text>
-									<Group gap={4} align="flex-start">
-										{item.trend === "positive" && (
-											<TrendingDown size={14} color="#22C55E" />
-										)}
-										<Text
-											size="xs"
-											c={
-												item.trend === "positive"
-													? "green"
-													: dark
-														? "gray.4"
-														: "gray.5"
-											}
-										>
-											{item.subtitle}
-										</Text>
-									</Group>
-								</Stack>
-								<ThemeIcon
-									color="#1E3A5F"
-									variant="filled"
-									size="lg"
+				{loading
+					? Array.from({ length: 4 }).map((_, i) => (
+							<Grid.Col key={i} span={{ base: 12, sm: 6, lg: 3 }}>
+								<Skeleton height={100} radius="xl" />
+							</Grid.Col>
+						))
+					: kpiData.map((item) => (
+							<Grid.Col key={item.id} span={{ base: 12, sm: 6, lg: 3 }}>
+								<Card
+									p="md"
 									radius="xl"
+									withBorder
+									bg={dark ? "#1E293B" : "white"}
+									style={{
+										borderColor: dark ? "#334155" : "white",
+										boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+										transition: "transform 0.15s ease, box-shadow 0.15s ease",
+									}}
+									h="100%"
 								>
-									<item.icon style={{ width: "60%", height: "60%" }} />
-								</ThemeIcon>
-							</Group>
-						</Card>
-					</Grid.Col>
-				))}
+									<Group justify="space-between" align="flex-start" w="100%">
+										<Stack gap={2}>
+											<Text size="sm" c="dimmed">
+												{item.title}
+											</Text>
+											<Text size="xl" fw={700} c={dark ? "white" : "gray.9"}>
+												{item.value}
+											</Text>
+											<Group gap={4} align="flex-start">
+												{item.trend === "positive" && (
+													<TrendingDown size={14} color="#22C55E" />
+												)}
+												<Text
+													size="xs"
+													c={
+														item.trend === "positive"
+															? "green"
+															: dark
+																? "gray.4"
+																: "gray.5"
+													}
+												>
+													{item.subtitle}
+												</Text>
+											</Group>
+										</Stack>
+										<ThemeIcon
+											color="#1E3A5F"
+											variant="filled"
+											size="lg"
+											radius="xl"
+										>
+											<item.icon style={{ width: "60%", height: "60%" }} />
+										</ThemeIcon>
+									</Group>
+								</Card>
+							</Grid.Col>
+						))}
 			</Grid>
 
 			{/* ROW 2 - 3 COLUMNS */}
@@ -500,12 +533,16 @@ const DemografiPekerjaan = () => {
 								{t.demografiPekerjaan.pengelompokanUmur}
 							</Title>
 						</Group>
-						<ResponsiveContainer width="100%" height={250}>
-							{loading ? (
-								<Group justify="center" align="center" h="100%">
-									<Loader />
-								</Group>
-							) : (
+						{loading ? (
+							<Skeleton height={250} radius="md" />
+						) : ageData.length === 0 ? (
+							<Group justify="center" align="center" h={250}>
+								<Text size="sm" c="dimmed">
+									Belum ada data kelompok umur.
+								</Text>
+							</Group>
+						) : (
+							<ResponsiveContainer width="100%" height={250}>
 								<BarChart data={ageData}>
 									{tampilkanGrid && (
 										<CartesianGrid
@@ -546,8 +583,8 @@ const DemografiPekerjaan = () => {
 										maxBarSize={40}
 									/>
 								</BarChart>
-							)}
-						</ResponsiveContainer>
+							</ResponsiveContainer>
+						)}
 					</Card>
 				</Grid.Col>
 
@@ -572,12 +609,16 @@ const DemografiPekerjaan = () => {
 								{t.demografiPekerjaan.demografiPekerjaan}
 							</Title>
 						</Group>
-						<ResponsiveContainer width="100%" height={250}>
-							{loading ? (
-								<Group justify="center" align="center" h="100%">
-									<Loader />
-								</Group>
-							) : (
+						{loading ? (
+							<Skeleton height={250} radius="md" />
+						) : jobData.length === 0 ? (
+							<Group justify="center" align="center" h={250}>
+								<Text size="sm" c="dimmed">
+									Belum ada data demografi pekerjaan.
+								</Text>
+							</Group>
+						) : (
+							<ResponsiveContainer width="100%" height={250}>
 								<BarChart data={jobData} layout="vertical">
 									{tampilkanGrid && (
 										<CartesianGrid
@@ -620,8 +661,8 @@ const DemografiPekerjaan = () => {
 										maxBarSize={30}
 									/>
 								</BarChart>
-							)}
-						</ResponsiveContainer>
+							</ResponsiveContainer>
+						)}
 					</Card>
 				</Grid.Col>
 
@@ -646,43 +687,47 @@ const DemografiPekerjaan = () => {
 								{t.demografiPekerjaan.dinamikaPenduduk}
 							</Title>
 						</Group>
-						<Grid gutter="sm">
-							{dynamicStats.map((stat) => (
-								<Grid.Col key={stat.title} span={6}>
-									<Card
-										p="sm"
-										radius="lg"
-										bg={dark ? "#334155" : "#F1F5F9"}
-										style={{
-											transition: "transform 0.15s ease",
-											cursor: "pointer",
-										}}
-									>
-										<Stack gap={2} align="center">
-											<ThemeIcon
-												color={stat.color}
-												variant="filled"
-												size="md"
-												radius="lg"
-											>
-												<stat.icon size={14} />
-											</ThemeIcon>
-											<Text size="xs" c="dimmed" ta="center">
-												{stat.title}
-											</Text>
-											<Text
-												size="lg"
-												fw={700}
-												c={stat.color}
-												style={{ lineHeight: 1 }}
-											>
-												{stat.value}
-											</Text>
-										</Stack>
-									</Card>
-								</Grid.Col>
-							))}
-						</Grid>
+						{loading ? (
+							<Skeleton height={160} radius="md" />
+						) : (
+							<Grid gutter="sm">
+								{dynamicStats.map((stat) => (
+									<Grid.Col key={stat.title} span={6}>
+										<Card
+											p="sm"
+											radius="lg"
+											bg={dark ? "#334155" : "#F1F5F9"}
+											style={{
+												transition: "transform 0.15s ease",
+												cursor: "pointer",
+											}}
+										>
+											<Stack gap={2} align="center">
+												<ThemeIcon
+													color={stat.color}
+													variant="filled"
+													size="md"
+													radius="lg"
+												>
+													<stat.icon size={14} />
+												</ThemeIcon>
+												<Text size="xs" c="dimmed" ta="center">
+													{stat.title}
+												</Text>
+												<Text
+													size="lg"
+													fw={700}
+													c={stat.color}
+													style={{ lineHeight: 1 }}
+												>
+													{stat.value}
+												</Text>
+											</Stack>
+										</Card>
+									</Grid.Col>
+								))}
+							</Grid>
+						)}
 					</Card>
 				</Grid.Col>
 			</Grid>
@@ -710,59 +755,64 @@ const DemografiPekerjaan = () => {
 								{t.demografiPekerjaan.distribusiAgama}
 							</Title>
 						</Group>
-						<ResponsiveContainer width="100%" height={250}>
-							{loading ? (
-								<Group justify="center" align="center" h="100%">
-									<Loader />
-								</Group>
-							) : (
-								<PieChart>
-									<Pie
-										data={religionData}
-										cx="50%"
-										cy="50%"
-										innerRadius={60}
-										outerRadius={90}
-										paddingAngle={2}
-										dataKey="value"
-									>
-										{religionData.map((entry) => (
-											<Cell key={`cell-${entry.name}`} fill={entry.color} />
-										))}
-									</Pie>
-									<Tooltip
-										contentStyle={{
-											backgroundColor: dark ? "#1E293B" : "white",
-											borderColor: dark ? "#334155" : "#e5e7eb",
-											borderRadius: "8px",
-										}}
-									/>
-								</PieChart>
-							)}
-						</ResponsiveContainer>
-						<Stack gap="xs" mt="md">
-							{!loading &&
-								religionData.map((item) => (
-									<Group key={item.name} justify="space-between">
-										<Group gap="xs">
-											<Box
-												w={10}
-												h={10}
-												style={{
-													backgroundColor: item.color,
-													borderRadius: 2,
-												}}
-											/>
-											<Text size="sm" c={dark ? "white" : "gray.7"}>
-												{item.name}
+						{loading ? (
+							<Skeleton height={250} radius="md" />
+						) : religionData.length === 0 ? (
+							<Group justify="center" align="center" h={250}>
+								<Text size="sm" c="dimmed">
+									Belum ada data distribusi agama.
+								</Text>
+							</Group>
+						) : (
+							<>
+								<ResponsiveContainer width="100%" height={250}>
+									<PieChart>
+										<Pie
+											data={religionData}
+											cx="50%"
+											cy="50%"
+											innerRadius={60}
+											outerRadius={90}
+											paddingAngle={2}
+											dataKey="value"
+										>
+											{religionData.map((entry) => (
+												<Cell key={`cell-${entry.name}`} fill={entry.color} />
+											))}
+										</Pie>
+										<Tooltip
+											contentStyle={{
+												backgroundColor: dark ? "#1E293B" : "white",
+												borderColor: dark ? "#334155" : "#e5e7eb",
+												borderRadius: "8px",
+											}}
+										/>
+									</PieChart>
+								</ResponsiveContainer>
+								<Stack gap="xs" mt="md">
+									{religionData.map((item) => (
+										<Group key={item.name} justify="space-between">
+											<Group gap="xs">
+												<Box
+													w={10}
+													h={10}
+													style={{
+														backgroundColor: item.color,
+														borderRadius: 2,
+													}}
+												/>
+												<Text size="sm" c={dark ? "white" : "gray.7"}>
+													{item.name}
+												</Text>
+											</Group>
+											<Text size="sm" fw={600} c={dark ? "white" : "gray.9"}>
+												{item.value.toLocaleString()}
 											</Text>
 										</Group>
-										<Text size="sm" fw={600} c={dark ? "white" : "gray.9"}>
-											{item.value.toLocaleString()}
-										</Text>
-									</Group>
-								))}
-						</Stack>
+									))}
+								</Stack>
+							</>
+						)}
 					</Card>
 				</Grid.Col>
 
@@ -787,12 +837,16 @@ const DemografiPekerjaan = () => {
 								{t.demografiPekerjaan.dataPerBanjar}
 							</Title>
 						</Group>
-						<Box style={{ overflowX: "auto" }}>
-							{loading ? (
-								<Group justify="center" py="xl">
-									<Loader />
-								</Group>
-							) : (
+						{loading ? (
+							<Skeleton height={250} radius="md" />
+						) : banjarData.length === 0 ? (
+							<Group justify="center" align="center" h={250}>
+								<Text size="sm" c="dimmed">
+									Belum ada data per banjar.
+								</Text>
+							</Group>
+						) : (
+							<Box style={{ overflowX: "auto" }}>
 								<table style={{ width: "100%", borderCollapse: "collapse" }}>
 									<thead>
 										<tr>
@@ -905,8 +959,8 @@ const DemografiPekerjaan = () => {
 										))}
 									</tbody>
 								</table>
-							)}
-						</Box>
+							</Box>
+						)}
 					</Card>
 				</Grid.Col>
 
@@ -931,12 +985,16 @@ const DemografiPekerjaan = () => {
 								{t.demografiPekerjaan.sektorUnggulan}
 							</Title>
 						</Group>
-						<ResponsiveContainer width="100%" height={250}>
-							{loading ? (
-								<Group justify="center" align="center" h="100%">
-									<Loader />
-								</Group>
-							) : (
+						{loading ? (
+							<Skeleton height={250} radius="md" />
+						) : sektorData.length === 0 ? (
+							<Group justify="center" align="center" h={250}>
+								<Text size="sm" c="dimmed">
+									Belum ada data sektor unggulan.
+								</Text>
+							</Group>
+						) : (
+							<ResponsiveContainer width="100%" height={250}>
 								<BarChart data={sektorData} layout="vertical">
 									{tampilkanGrid && (
 										<CartesianGrid
@@ -983,8 +1041,8 @@ const DemografiPekerjaan = () => {
 										))}
 									</Bar>
 								</BarChart>
-							)}
-						</ResponsiveContainer>
+							</ResponsiveContainer>
+						)}
 					</Card>
 				</Grid.Col>
 			</Grid>
