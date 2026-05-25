@@ -5,6 +5,7 @@ import { useTranslate } from "@/hooks/useTranslate";
 import { umkmStore } from "../store/umkm";
 import { HeaderToggle } from "./umkm/header-toggle";
 import { ProdukUnggulan } from "./umkm/produk-unggulan";
+import { SalesDetailModal } from "./umkm/sales-detail-modal";
 import type { SalesData } from "./umkm/sales-table";
 import { SalesTable } from "./umkm/sales-table";
 import { SummaryCards } from "./umkm/summary-cards";
@@ -69,6 +70,11 @@ const BumdesPage = () => {
 
 	const [kategoriId, setKategoriId] = useState<string | null>(null);
 	const [umkmId, setUmkmId] = useState<string | null>(null);
+
+	const [selectedProduct, setSelectedProduct] = useState<SalesData | null>(
+		null,
+	);
+	const [detailModalOpen, setDetailModalOpen] = useState(false);
 
 	// Fetch KPI, ringkasan, top produk, and filter lists (re-fetch on range change for future backend support)
 	useEffect(() => {
@@ -193,11 +199,17 @@ const BumdesPage = () => {
 	}));
 
 	const handleDetailClick = (product: SalesData) => {
-		console.log("Detail clicked for:", product);
+		setSelectedProduct(product);
+		setDetailModalOpen(true);
 	};
 
 	return (
 		<Stack gap="lg">
+			<SalesDetailModal
+				product={selectedProduct}
+				opened={detailModalOpen}
+				onClose={() => setDetailModalOpen(false)}
+			/>
 			<SummaryCards data={summaryCardsData} />
 
 			<HeaderToggle />

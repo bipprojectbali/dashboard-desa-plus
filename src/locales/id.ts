@@ -210,6 +210,14 @@ export type TranslationKeys = {
 		ajuanIdeInovatif: string;
 		tidakAdaIde: string;
 		detail: string;
+		detailIde: string;
+		deskripsiIde: string;
+		pengusul: string;
+		kontakPengusul: string;
+		diajukanPada: string;
+		kategoriIde: string;
+		tidakAdaKontak: string;
+		tutupIde: string;
 	};
 	bumdes: {
 		vsBulanLalu: string;
@@ -245,6 +253,12 @@ export type TranslationKeys = {
 		stokSedang: string;
 		stokRendah: string;
 		detail: string;
+		detailProduk: string;
+		perubahan: string;
+		statusStok: string;
+		perbandinganPenjualan: string;
+		tutupDetail: string;
+		infoVolume: string;
 	};
 	keuanganAnggaran: {
 		totalApbdes: string;
@@ -651,6 +665,14 @@ const id: TranslationKeys = {
 		ajuanIdeInovatif: "Ajuan Ide Inovatif",
 		tidakAdaIde: "Tidak ada ide inovatif",
 		detail: "Detail",
+		detailIde: "Detail Ide Inovatif",
+		deskripsiIde: "Deskripsi Ide",
+		pengusul: "Pengusul",
+		kontakPengusul: "Kontak",
+		diajukanPada: "Diajukan Pada",
+		kategoriIde: "Kategori",
+		tidakAdaKontak: "Tidak ada kontak",
+		tutupIde: "Tutup",
 	},
 	bumdes: {
 		vsBulanLalu: "vs bulan lalu",
@@ -686,6 +708,12 @@ const id: TranslationKeys = {
 		stokSedang: "Sedang",
 		stokRendah: "Rendah",
 		detail: "Detail",
+		detailProduk: "Detail Produk",
+		perubahan: "Perubahan",
+		statusStok: "Status Stok",
+		perbandinganPenjualan: "Perbandingan Penjualan",
+		tutupDetail: "Tutup",
+		infoVolume: "Volume Penjualan",
 	},
 	keuanganAnggaran: {
 		totalApbdes: "Total APBDes",

@@ -33,6 +33,8 @@ import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 import { apiClient } from "@/utils/api-client";
+import type { InnovationIdea as InnovationIdeaType } from "./layanan/innovation-idea-modal";
+import { InnovationIdeaModal } from "./layanan/innovation-idea-modal";
 
 dayjs.extend(relativeTime);
 
@@ -41,16 +43,7 @@ interface TrendData {
 	jumlah: number;
 }
 
-interface InnovationIdea {
-	id: string;
-	title: string;
-	description: string;
-	category: string;
-	submitterName: string;
-	submitterContact?: string;
-	status: string;
-	createdAt: string;
-}
+type InnovationIdea = InnovationIdeaType;
 
 interface ServiceStat {
 	jenis: string;
@@ -104,6 +97,9 @@ const PengaduanLayananPublik = () => {
 	const [innovationIdeas, setInnovationIdeas] = useState<InnovationIdea[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+
+	const [selectedIdea, setSelectedIdea] = useState<InnovationIdea | null>(null);
+	const [ideaModalOpen, setIdeaModalOpen] = useState(false);
 
 	const fetchData = useCallback(async () => {
 		setLoading(true);
@@ -189,6 +185,11 @@ const PengaduanLayananPublik = () => {
 
 	return (
 		<Stack gap="lg">
+			<InnovationIdeaModal
+				idea={selectedIdea}
+				opened={ideaModalOpen}
+				onClose={() => setIdeaModalOpen(false)}
+			/>
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}
@@ -511,6 +512,10 @@ const PengaduanLayananPublik = () => {
 												variant="light"
 												color="darmasaba-blue"
 												radius="md"
+												onClick={() => {
+													setSelectedIdea(item);
+													setIdeaModalOpen(true);
+												}}
 											>
 												{t.pengaduanLayanan.detail}
 											</Button>
