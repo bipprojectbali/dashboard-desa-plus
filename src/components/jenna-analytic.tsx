@@ -22,8 +22,8 @@ import {
 	MessageCircle,
 	TrendingUp,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import type React from "react";
+import { useEffect, useState } from "react";
 import {
 	Bar,
 	BarChart,

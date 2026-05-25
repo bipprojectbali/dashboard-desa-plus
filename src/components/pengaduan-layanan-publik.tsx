@@ -1,16 +1,18 @@
 import {
+	Alert,
 	Badge,
 	Button,
 	Card,
 	Grid,
 	Group,
-	Loader,
+	Skeleton,
 	Stack,
 	Text,
 	ThemeIcon,
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { CheckCircle, Clock, FileText, MessageCircle } from "lucide-react";
@@ -101,8 +103,11 @@ const PengaduanLayananPublik = () => {
 	const [trendData, setTrendData] = useState<TrendData[]>([]);
 	const [innovationIdeas, setInnovationIdeas] = useState<InnovationIdea[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
 	const fetchData = useCallback(async () => {
+		setLoading(true);
+		setError(null);
 		try {
 			const [statsRes, recentRes, serviceRes, trendsRes, ideasRes] =
 				await Promise.all([
@@ -137,8 +142,9 @@ const PengaduanLayananPublik = () => {
 			if (ideasRes.data?.data) {
 				setInnovationIdeas(ideasRes.data.data as InnovationIdea[]);
 			}
-		} catch (error) {
-			console.error("Failed to fetch complaint data", error);
+		} catch (err) {
+			console.error("Failed to fetch complaint data", err);
+			setError("Gagal memuat data pengaduan. Periksa koneksi dan coba lagi.");
 		} finally {
 			setLoading(false);
 		}
@@ -183,46 +189,73 @@ const PengaduanLayananPublik = () => {
 
 	return (
 		<Stack gap="lg">
+			{error && (
+				<Alert
+					icon={<IconAlertCircle size={16} />}
+					color="red"
+					title="Gagal memuat data"
+					radius="md"
+				>
+					{error}
+					<Button
+						size="xs"
+						variant="light"
+						color="red"
+						leftSection={<IconRefresh size={14} />}
+						onClick={fetchData}
+						mt="xs"
+					>
+						Coba lagi
+					</Button>
+				</Alert>
+			)}
+
 			{/* TOP SECTION - 4 STAT CARDS */}
 			<Grid gutter="md">
-				{summaryData.map((item) => (
-					<Grid.Col key={item.title} span={{ base: 12, sm: 6, lg: 3 }}>
-						<Card
-							p="md"
-							radius="xl"
-							withBorder
-							bg={dark ? "#1E293B" : "white"}
-							style={{
-								borderColor: dark ? "#334155" : "white",
-								boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
-								transition: "transform 0.15s ease, box-shadow 0.15s ease",
-							}}
-							h="100%"
-						>
-							<Group justify="space-between" align="center" w="100%">
-								<Stack gap={2}>
-									<Text size="sm" c="dimmed">
-										{item.title}
-									</Text>
-									<Text size="xl" fw={700} c={dark ? "white" : "gray.9"}>
-										{loading ? <Loader size="xs" /> : item.value}
-									</Text>
-									<Text size="xs" c="dimmed">
-										{item.subtitle}
-									</Text>
-								</Stack>
-								<ThemeIcon
-									color={item.color}
-									variant="filled"
-									size="lg"
+				{loading
+					? Array.from({ length: 4 }).map((_, i) => (
+							<Grid.Col key={i} span={{ base: 12, sm: 6, lg: 3 }}>
+								<Skeleton height={100} radius="xl" />
+							</Grid.Col>
+						))
+					: summaryData.map((item) => (
+							<Grid.Col key={item.title} span={{ base: 12, sm: 6, lg: 3 }}>
+								<Card
+									p="md"
 									radius="xl"
+									withBorder
+									bg={dark ? "#1E293B" : "white"}
+									style={{
+										borderColor: dark ? "#334155" : "white",
+										boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+										transition: "transform 0.15s ease, box-shadow 0.15s ease",
+									}}
+									h="100%"
 								>
-									<item.icon style={{ width: "60%", height: "60%" }} />
-								</ThemeIcon>
-							</Group>
-						</Card>
-					</Grid.Col>
-				))}
+									<Group justify="space-between" align="center" w="100%">
+										<Stack gap={2}>
+											<Text size="sm" c="dimmed">
+												{item.title}
+											</Text>
+											<Text size="xl" fw={700} c={dark ? "white" : "gray.9"}>
+												{item.value}
+											</Text>
+											<Text size="xs" c="dimmed">
+												{item.subtitle}
+											</Text>
+										</Stack>
+										<ThemeIcon
+											color={item.color}
+											variant="filled"
+											size="lg"
+											radius="xl"
+										>
+											<item.icon style={{ width: "60%", height: "60%" }} />
+										</ThemeIcon>
+									</Group>
+								</Card>
+							</Grid.Col>
+						))}
 			</Grid>
 
 			{/* MAIN CHART - TREN PENGADUAN */}
@@ -241,12 +274,10 @@ const PengaduanLayananPublik = () => {
 						{t.pengaduanLayanan.trenPengaduan}
 					</Title>
 				</Group>
-				<ResponsiveContainer width="100%" height={300}>
-					{loading ? (
-						<Group justify="center" align="center" h="100%">
-							<Loader />
-						</Group>
-					) : trendData.length > 0 ? (
+				{loading ? (
+					<Skeleton height={300} radius="md" />
+				) : trendData.length > 0 ? (
+					<ResponsiveContainer width="100%" height={300}>
 						<LineChart data={trendData}>
 							{tampilkanGrid && (
 								<CartesianGrid
@@ -288,14 +319,14 @@ const PengaduanLayananPublik = () => {
 								activeDot={{ r: 6 }}
 							/>
 						</LineChart>
-					) : (
-						<Group justify="center" align="center" h="100%">
-							<Text size="sm" c="dimmed">
-								{t.pengaduanLayanan.tidakAdaDataPengaduan}
-							</Text>
-						</Group>
-					)}
-				</ResponsiveContainer>
+					</ResponsiveContainer>
+				) : (
+					<Group justify="center" align="center" h={300}>
+						<Text size="sm" c="dimmed">
+							{t.pengaduanLayanan.tidakAdaDataPengaduan}
+						</Text>
+					</Group>
+				)}
 			</Card>
 
 			{/* BOTTOM SECTION - 3 COLUMNS */}
@@ -316,12 +347,10 @@ const PengaduanLayananPublik = () => {
 						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
 							{t.pengaduanLayanan.suratTerbanyak}
 						</Title>
-						<ResponsiveContainer width="100%" height={250}>
-							{loading ? (
-								<Group justify="center" align="center" h="100%">
-									<Loader />
-								</Group>
-							) : (
+						{loading ? (
+							<Skeleton height={250} radius="md" />
+						) : serviceStats.length > 0 ? (
+							<ResponsiveContainer width="100%" height={250}>
 								<BarChart data={serviceStats} layout="vertical">
 									{tampilkanGrid && (
 										<CartesianGrid
@@ -357,8 +386,14 @@ const PengaduanLayananPublik = () => {
 										radius={[0, 4, 4, 0]}
 									/>
 								</BarChart>
-							)}
-						</ResponsiveContainer>
+							</ResponsiveContainer>
+						) : (
+							<Group justify="center" align="center" h={250}>
+								<Text size="sm" c="dimmed">
+									Belum ada data surat.
+								</Text>
+							</Group>
+						)}
 					</Card>
 				</Grid.Col>
 
@@ -380,9 +415,7 @@ const PengaduanLayananPublik = () => {
 						</Title>
 						<Stack gap="sm">
 							{loading ? (
-								<Group justify="center" py="xl">
-									<Loader />
-								</Group>
+								<Skeleton height={180} radius="md" />
 							) : recentComplaints.length > 0 ? (
 								recentComplaints.map((item) => (
 									<Card
@@ -447,9 +480,7 @@ const PengaduanLayananPublik = () => {
 						</Title>
 						<Stack gap="sm">
 							{loading ? (
-								<Group justify="center" py="xl">
-									<Loader />
-								</Group>
+								<Skeleton height={180} radius="md" />
 							) : innovationIdeas.length > 0 ? (
 								innovationIdeas.map((item) => (
 									<Card
