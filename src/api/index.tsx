@@ -14,12 +14,14 @@ import { division } from "./division";
 import { event } from "./event";
 import { invitationRoutes } from "./invitation";
 import { jennaChat } from "./jenna";
+import { keamanan } from "./keamanan";
 import { keamananPreferences } from "./keamanan-preferences";
 import { noc } from "./noc";
 import { notificationPreferences } from "./notification-preferences";
 import { profile } from "./profile";
 import { resident } from "./resident";
 import { systemStatsRoutes } from "./system-stats";
+import { umkm } from "./umkm";
 import { umumPreferences } from "./umum-preferences";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -72,7 +74,9 @@ const api = new Elysia({
 	.use(dashboard)
 	.use(demografi)
 	.use(notificationPreferences)
+	.use(umkm)
 	.use(umumPreferences)
+	.use(keamanan)
 	.use(keamananPreferences)
 	.use(aksesPreferences)
 	.use(jennaChat)
