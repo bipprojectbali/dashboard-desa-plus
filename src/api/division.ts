@@ -40,18 +40,27 @@ export const division = new Elysia({
 	)
 	.get(
 		"/activities",
-		async ({ set }) => {
+		async ({ query, set }) => {
 			try {
-				const activities = await prisma.activity.findMany({
-					include: {
-						division: {
-							select: { name: true, color: true },
+				const page = Math.max(1, Number(query.page ?? 1));
+				const limit = Math.min(Math.max(1, Number(query.limit ?? 5)), 100);
+				const skip = (page - 1) * limit;
+
+				const [activities, total] = await Promise.all([
+					prisma.activity.findMany({
+						include: {
+							division: {
+								select: { name: true, color: true },
+							},
 						},
-					},
-					orderBy: { createdAt: "desc" },
-					take: 10,
-				});
-				return { data: activities };
+						orderBy: { createdAt: "desc" },
+						take: limit,
+						skip,
+					}),
+					prisma.activity.count(),
+				]);
+
+				return { data: activities, total, page, limit };
 			} catch (error) {
 				logger.error({ error }, "Failed to fetch activities");
 				set.status = 500;
@@ -59,13 +68,20 @@ export const division = new Elysia({
 			}
 		},
 		{
+			query: t.Object({
+				page: t.Optional(t.String()),
+				limit: t.Optional(t.String()),
+			}),
 			response: {
 				200: t.Object({
 					data: t.Array(t.Any()),
+					total: t.Number(),
+					page: t.Number(),
+					limit: t.Number(),
 				}),
 				500: t.Object({ error: t.String() }),
 			},
-			detail: { summary: "Get recent activities" },
+			detail: { summary: "Get activities (paginated, default 5 per page)" },
 		},
 	)
 	.get(
@@ -167,25 +183,33 @@ export const division = new Elysia({
 	)
 	.get(
 		"/discussions",
-		async ({ set }) => {
+		async ({ query, set }) => {
 			try {
-				// Get recent discussions with sender info
-				const discussions = await prisma.discussion.findMany({
-					where: { parentId: null }, // Only top-level discussions
-					include: {
-						sender: {
-							select: { name: true, email: true },
-						},
-						division: {
-							select: { name: true },
-						},
-					},
-					orderBy: { createdAt: "desc" },
-					take: 10,
-				});
+				const page = Math.max(1, Number(query.page ?? 1));
+				const limit = Math.min(Math.max(1, Number(query.limit ?? 5)), 100);
+				const skip = (page - 1) * limit;
 
-				// Format for frontend
-				const formattedDiscussions = discussions.map((d) => ({
+				const where = { parentId: null } as const;
+
+				const [discussions, total] = await Promise.all([
+					prisma.discussion.findMany({
+						where,
+						include: {
+							sender: {
+								select: { name: true, email: true },
+							},
+							division: {
+								select: { name: true },
+							},
+						},
+						orderBy: { createdAt: "desc" },
+						take: limit,
+						skip,
+					}),
+					prisma.discussion.count({ where }),
+				]);
+
+				const data = discussions.map((d) => ({
 					id: d.id,
 					message: d.message,
 					sender: d.sender.name || d.sender.email,
@@ -194,7 +218,7 @@ export const division = new Elysia({
 					isResolved: d.isResolved,
 				}));
 
-				return { data: formattedDiscussions };
+				return { data, total, page, limit };
 			} catch (error) {
 				logger.error({ error }, "Failed to fetch discussions");
 				set.status = 500;
@@ -202,6 +226,10 @@ export const division = new Elysia({
 			}
 		},
 		{
+			query: t.Object({
+				page: t.Optional(t.String()),
+				limit: t.Optional(t.String()),
+			}),
 			response: {
 				200: t.Object({
 					data: t.Array(
@@ -214,9 +242,12 @@ export const division = new Elysia({
 							isResolved: t.Boolean(),
 						}),
 					),
+					total: t.Number(),
+					page: t.Number(),
+					limit: t.Number(),
 				}),
 				500: t.Object({ error: t.String() }),
 			},
-			detail: { summary: "Get recent discussions" },
+			detail: { summary: "Get discussions (paginated, default 5 per page)" },
 		},
 	);
