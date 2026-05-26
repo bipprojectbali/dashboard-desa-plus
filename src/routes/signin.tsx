@@ -711,9 +711,7 @@ function SigninComponent() {
 							onClick={async () => {
 								await authClient.signIn.social({
 									provider: "github",
-									callbackURL: redirect
-										? new URL(redirect, window.location.origin).pathname
-										: "/",
+									callbackURL: "/profile",
 								});
 							}}
 						>
@@ -737,9 +735,7 @@ function SigninComponent() {
 							onClick={async () => {
 								await authClient.signIn.social({
 									provider: "google",
-									callbackURL: redirect
-										? new URL(redirect, window.location.origin).pathname
-										: "/",
+									callbackURL: "/profile",
 								});
 							}}
 						>

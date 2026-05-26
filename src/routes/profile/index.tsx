@@ -1,5 +1,6 @@
 import {
 	ActionIcon,
+	Alert,
 	Avatar,
 	Badge,
 	Box,
@@ -21,6 +22,7 @@ import { modals } from "@mantine/modals";
 import {
 	IconAt,
 	IconCheck,
+	IconClock,
 	IconCopy,
 	IconDashboard,
 	IconEdit,
@@ -141,6 +143,23 @@ function Profile() {
 
 	return (
 		<Stack gap="xl" px={{ base: "xs", sm: "lg" }}>
+			{snap.user?.emailVerified === false && (
+				<Alert
+					icon={<IconClock size={18} />}
+					color="orange"
+					radius="md"
+					title="Menunggu Verifikasi Admin"
+					style={{
+						borderLeft: "4px solid var(--mantine-color-orange-6)",
+					}}
+				>
+					<Text size="sm">
+						Akun kamu sedang menunggu verifikasi dari administrator. Setelah
+						diverifikasi, kamu bisa mengakses tampilan dashboard secara penuh.
+					</Text>
+				</Alert>
+			)}
+
 			{/* Header Section — mobile: icon actions, desktop: full buttons */}
 			<Group justify="space-between" align="flex-start" wrap="nowrap">
 				<Box style={{ minWidth: 0 }}>
