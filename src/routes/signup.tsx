@@ -3,11 +3,13 @@ import {
 	Box,
 	Button,
 	Group,
+	Modal,
 	Paper,
 	PasswordInput,
 	Stack,
 	Text,
 	TextInput,
+	ThemeIcon,
 	Title,
 } from "@mantine/core";
 import {
@@ -15,6 +17,7 @@ import {
 	IconBrandGithub,
 	IconBrandGoogle,
 	IconChartBar,
+	IconCircleCheck,
 	IconLock,
 	IconMail,
 	IconMapPin,
@@ -59,6 +62,7 @@ function SignupComponent() {
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
+	const [successModal, setSuccessModal] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -70,7 +74,8 @@ function SignupComponent() {
 			if (error) {
 				setError(error.message || "Gagal mendaftar");
 			} else {
-				navigate({ to: "/admin" });
+				await authClient.signOut();
+				setSuccessModal(true);
 			}
 		} catch {
 			setError("Terjadi kesalahan yang tidak terduga");
@@ -87,6 +92,57 @@ function SignupComponent() {
 				fontFamily: "'Inter', 'Poppins', sans-serif",
 			}}
 		>
+			{/* ── REGISTRASI BERHASIL MODAL ────────────────────────────────── */}
+			<Modal
+				opened={successModal}
+				onClose={() =>
+					navigate({ to: "/signin", search: { redirect: undefined } })
+				}
+				centered
+				withCloseButton={false}
+				radius="lg"
+				padding="xl"
+			>
+				<Stack align="center" gap="md">
+					<ThemeIcon size={64} radius="xl" variant="light" color="teal">
+						<IconCircleCheck size={32} />
+					</ThemeIcon>
+					<Title order={3} ta="center">
+						Registrasi Berhasil!
+					</Title>
+					<Text c="dimmed" ta="center" fz="sm">
+						Akun kamu berhasil dibuat. Akun kamu sedang menunggu validasi dari
+						administrator sebelum bisa digunakan.
+					</Text>
+					<Box
+						p="sm"
+						style={{
+							background: "var(--mantine-color-teal-0)",
+							borderRadius: "var(--mantine-radius-md)",
+							border: "1px solid var(--mantine-color-teal-3)",
+							width: "100%",
+						}}
+					>
+						<Group gap="xs" justify="center">
+							<IconShieldCheck size={16} color="var(--mantine-color-teal-6)" />
+							<Text fz="xs" c="teal.7" fw={500}>
+								Admin akan memvalidasi akun kamu secepatnya
+							</Text>
+						</Group>
+					</Box>
+					<Button
+						fullWidth
+						radius="md"
+						color="teal"
+						onClick={() =>
+							navigate({ to: "/signin", search: { redirect: undefined } })
+						}
+					>
+						Kembali ke Login
+					</Button>
+				</Stack>
+			</Modal>
+
 			{/* ── LEFT PANEL ───────────────────────────────────────────────── */}
 			<Box
 				visibleFrom="md"
@@ -646,7 +702,7 @@ function SignupComponent() {
 							onClick={async () => {
 								await authClient.signIn.social({
 									provider: "github",
-									callbackURL: "/",
+									callbackURL: "/profile",
 								});
 							}}
 						>
@@ -670,7 +726,7 @@ function SignupComponent() {
 							onClick={async () => {
 								await authClient.signIn.social({
 									provider: "google",
-									callbackURL: "/",
+									callbackURL: "/profile",
 								});
 							}}
 						>

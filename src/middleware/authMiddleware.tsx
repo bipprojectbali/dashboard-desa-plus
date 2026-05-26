@@ -61,9 +61,9 @@ type RouteRule = {
 };
 
 const routeRules: RouteRule[] = [
-	// Truly public — only signin and signup
+	// Truly public — signin, signup, and OAuth callback handler
 	{
-		match: (p) => p === "/signin" || p === "/signup",
+		match: (p) => p === "/signin" || p === "/signup" || p === "/auth-callback",
 		requireAuth: false,
 	},
 	// Admin routes — auth + admin role required
@@ -128,8 +128,12 @@ export function createProtectedRoute(options: ProtectedRouteOptions = {}) {
 			redirectToLogin(rule.redirectTo ?? redirectTo, location.href);
 		}
 
-		// If user has not been verified by admin yet, block access
-		if (user && user.emailVerified === false) {
+		// If user has not been verified by admin yet, block access (except /profile)
+		if (
+			user &&
+			user.emailVerified === false &&
+			!location.pathname.startsWith("/profile")
+		) {
 			redirectToLogin("/signin", location.href);
 		}
 
