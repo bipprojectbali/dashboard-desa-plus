@@ -1,4 +1,5 @@
 import { Elysia, t } from "elysia";
+import { prisma } from "@/utils/db";
 import { desaExternalClient } from "@/utils/desa-external-client";
 
 function extractError(err: unknown): string {
@@ -511,7 +512,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 	// Sync all demografi data
 	.post(
 		"/sync",
-		async () => {
+		async ({ request }) => {
 			try {
 				console.log("[Demografi API] Starting sync...");
 
@@ -579,6 +580,21 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 					"[Demografi API] Sync completed at:",
 					demografiCache.lastSyncedAt,
 				);
+
+				await prisma.activityLog.create({
+					data: {
+						userId: "system",
+						action: "demografi-sync",
+						detail: JSON.stringify({
+							errors: errors.length > 0 ? errors : null,
+						}),
+						ipAddress:
+							request.headers.get("x-forwarded-for") ??
+							request.headers.get("x-real-ip") ??
+							null,
+						userAgent: request.headers.get("user-agent") ?? null,
+					},
+				});
 
 				return {
 					success: true,

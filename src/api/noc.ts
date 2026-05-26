@@ -10,7 +10,7 @@ export const noc = new Elysia({ prefix: "/noc" })
 	.use(apiMiddleware)
 	.post(
 		"/sync",
-		async ({ set, user }) => {
+		async ({ set, user, request }) => {
 			console.log(
 				"[NOC Sync] Sync request received. User:",
 				user?.email || "Unknown",
@@ -35,10 +35,24 @@ export const noc = new Elysia({ prefix: "/noc" })
 					result.stdout?.toString(),
 				);
 
+				const lastSyncedAt = new Date().toISOString();
+				await prisma.activityLog.create({
+					data: {
+						userId: user.id,
+						action: "noc-sync",
+						detail: JSON.stringify({ success: true }),
+						ipAddress:
+							request.headers.get("x-forwarded-for") ??
+							request.headers.get("x-real-ip") ??
+							null,
+						userAgent: request.headers.get("user-agent") ?? null,
+					},
+				});
+
 				return {
 					success: true,
 					message: "Sinkronisasi berhasil diselesaikan",
-					lastSyncedAt: new Date().toISOString(),
+					lastSyncedAt,
 				};
 			} catch (error) {
 				console.error("[NOC Sync] Script Error:", error);

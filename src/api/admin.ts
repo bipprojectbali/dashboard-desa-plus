@@ -95,7 +95,7 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 	)
 	.post(
 		"/users/update-role",
-		async ({ body, set, user }) => {
+		async ({ body, set, user, request }) => {
 			if (user?.role !== "admin") {
 				set.status = 403;
 				return { error: "Forbidden" };
@@ -104,6 +104,10 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 				set.status = 400;
 				return { error: "Cannot change your own role" };
 			}
+			const target = await prisma.user.findUnique({
+				where: { id: body.id },
+				select: { role: true },
+			});
 			const updated = await prisma.user.update({
 				where: { id: body.id },
 				data: { role: body.role },
@@ -113,6 +117,22 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 				{ adminId: user.id, targetId: body.id, newRole: body.role },
 				"User role updated",
 			);
+			await prisma.activityLog.create({
+				data: {
+					userId: user.id,
+					action: "update-role",
+					detail: JSON.stringify({
+						targetId: body.id,
+						oldRole: target?.role,
+						newRole: body.role,
+					}),
+					ipAddress:
+						request.headers.get("x-forwarded-for") ??
+						request.headers.get("x-real-ip") ??
+						null,
+					userAgent: request.headers.get("user-agent") ?? null,
+				},
+			});
 			return { user: updated };
 		},
 		{
@@ -144,7 +164,7 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 	)
 	.post(
 		"/users/delete",
-		async ({ body, set, user }) => {
+		async ({ body, set, user, request }) => {
 			if (user?.role !== "admin") {
 				set.status = 403;
 				return { error: "Forbidden" };
@@ -158,6 +178,18 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 				{ adminId: user.id, deletedId: body.id },
 				"User deleted by admin",
 			);
+			await prisma.activityLog.create({
+				data: {
+					userId: user.id,
+					action: "delete-user",
+					detail: JSON.stringify({ targetId: body.id }),
+					ipAddress:
+						request.headers.get("x-forwarded-for") ??
+						request.headers.get("x-real-ip") ??
+						null,
+					userAgent: request.headers.get("user-agent") ?? null,
+				},
+			});
 			return { success: true };
 		},
 		{
