@@ -71,7 +71,7 @@ export const apikey = new Elysia({
 	.post(
 		"/",
 		async (ctx) => {
-			const { body, set, user } = ctx as any;
+			const { body, set, user, request } = ctx as any;
 			try {
 				const { name, expiresAt } = body;
 
@@ -99,6 +99,19 @@ export const apikey = new Elysia({
 						expiresAt: true,
 						createdAt: true,
 						updatedAt: true,
+					},
+				});
+
+				await prisma.activityLog.create({
+					data: {
+						userId: user.id,
+						action: "create-api-key",
+						detail: JSON.stringify({ apiKeyId: newApiKey.id, name }),
+						ipAddress:
+							request.headers.get("x-forwarded-for") ??
+							request.headers.get("x-real-ip") ??
+							null,
+						userAgent: request.headers.get("user-agent") ?? null,
 					},
 				});
 
@@ -231,7 +244,7 @@ export const apikey = new Elysia({
 	.post(
 		"/delete",
 		async (ctx) => {
-			const { body, set, user } = ctx as any;
+			const { body, set, user, request } = ctx as any;
 			try {
 				const { id } = body;
 
@@ -261,6 +274,19 @@ export const apikey = new Elysia({
 				});
 
 				logger.info({ id }, "Deleted API key");
+
+				await prisma.activityLog.create({
+					data: {
+						userId: user.id,
+						action: "delete-api-key",
+						detail: JSON.stringify({ apiKeyId: id, name: apiKey.name }),
+						ipAddress:
+							request.headers.get("x-forwarded-for") ??
+							request.headers.get("x-real-ip") ??
+							null,
+						userAgent: request.headers.get("user-agent") ?? null,
+					},
+				});
 
 				return { success: true };
 			} catch (error) {
