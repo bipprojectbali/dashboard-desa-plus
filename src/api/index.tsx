@@ -13,6 +13,7 @@ import { demografi } from "./demografi";
 import { division } from "./division";
 import { event } from "./event";
 import { invitationRoutes } from "./invitation";
+import { ipWhitelist } from "./ip-whitelist";
 import { jennaChat } from "./jenna";
 import { keamanan } from "./keamanan";
 import { keamananPreferences } from "./keamanan-preferences";
@@ -82,7 +83,8 @@ const api = new Elysia({
 	.use(jennaChat)
 	.use(systemStatsRoutes)
 	.use(activityLog)
-	.use(invitationRoutes);
+	.use(invitationRoutes)
+	.use(ipWhitelist);
 
 if (!isProduction) {
 	api.use(

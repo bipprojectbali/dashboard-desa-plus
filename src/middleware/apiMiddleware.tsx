@@ -3,6 +3,17 @@ import { auth } from "@/utils/auth";
 import { prisma } from "@/utils/db";
 import logger from "@/utils/logger";
 
+function getClientIp(request: Request): string {
+	const forwarded = request.headers.get("x-forwarded-for");
+	if (forwarded) {
+		const first = forwarded.split(",")[0];
+		if (first) return first.trim();
+	}
+	const realIp = request.headers.get("x-real-ip");
+	if (realIp) return realIp.trim();
+	return "unknown";
+}
+
 export function apiMiddleware(app: Elysia) {
 	return app
 		.derive(async ({ request }) => {
@@ -85,7 +96,7 @@ export function apiMiddleware(app: Elysia) {
 				return { user: null };
 			}
 		})
-		.onBeforeHandle(({ user, set, request }) => {
+		.onBeforeHandle(async ({ user, set, request }) => {
 			const url = new URL(request.url);
 			if (url.pathname.startsWith("/api/docs")) {
 				return;
@@ -100,6 +111,34 @@ export function apiMiddleware(app: Elysia) {
 				logger.warn(`[AUTH] Unauthorized: ${request.method} ${request.url}`);
 				set.status = 401;
 				return { message: "Unauthorized" };
+			}
+
+			// IP whitelist enforcement
+			try {
+				const pref = await prisma.keamananPreference.findUnique({
+					where: { userId: user.id },
+					select: { ipWhitelist: true },
+				});
+				if (pref?.ipWhitelist) {
+					const entries = await prisma.ipWhitelistEntry.findMany({
+						where: { userId: user.id },
+						select: { ip: true },
+					});
+					if (entries.length > 0) {
+						const clientIp = getClientIp(request);
+						const allowed = entries.some((e) => e.ip === clientIp);
+						if (!allowed) {
+							logger.warn(
+								{ userId: user.id, clientIp },
+								"[IP_WHITELIST] Access denied — IP not in whitelist",
+							);
+							set.status = 403;
+							return { message: "Akses ditolak: IP tidak diizinkan" };
+						}
+					}
+				}
+			} catch (err) {
+				logger.error({ err }, "[IP_WHITELIST] Error checking whitelist");
 			}
 		});
 }
