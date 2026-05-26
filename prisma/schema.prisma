@@ -40,6 +40,7 @@ model User {
   aksesPreference        AksesPreference?
   activityLogs           ActivityLog[]
   invitations            Invitation[]  @relation("InvitedByUser")
+  ipWhitelistEntries     IpWhitelistEntry[]
 
   @@map("user")
 }
@@ -106,6 +107,18 @@ model AksesPreference {
   user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("akses_preference")
+}
+
+model IpWhitelistEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  ip        String
+  label     String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, ip])
+  @@map("ip_whitelist_entry")
 }
 
 // --- KATEGORI 1: KINERJA DIVISI & AKTIVITAS ---

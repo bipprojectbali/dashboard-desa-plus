@@ -1,4 +1,5 @@
 import {
+	ActionIcon,
 	Alert,
 	Badge,
 	Box,
@@ -10,6 +11,7 @@ import {
 	Stack,
 	Switch,
 	Text,
+	TextInput,
 	ThemeIcon,
 	Title,
 	Tooltip,
@@ -25,8 +27,10 @@ import {
 	IconKey,
 	IconLock,
 	IconNetwork,
+	IconPlus,
 	IconShieldCheck,
 	IconShieldLock,
+	IconTrash,
 	IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
@@ -69,22 +73,42 @@ const KeamananSettings = () => {
 	const [ubahPasswordOpened, setUbahPasswordOpened] = useState(false);
 	const [sesiAktifOpened, setSesiAktifOpened] = useState(false);
 
+	type IpEntry = {
+		id: string;
+		ip: string;
+		label?: string | null;
+		createdAt: string;
+	};
+	const [ipEntries, setIpEntries] = useState<IpEntry[]>([]);
+	const [ipInput, setIpInput] = useState("");
+	const [ipLabel, setIpLabel] = useState("");
+	const [ipLoading, setIpLoading] = useState(false);
+	const [ipError, setIpError] = useState<string | null>(null);
+
 	useEffect(() => {
-		const fetchPrefs = async () => {
+		const fetchAll = async () => {
 			try {
-				const res = await fetch("/api/keamanan-preferences");
-				if (!res.ok) throw new Error("error");
-				const json = await res.json();
-				const data = json.data as Prefs;
-				setPrefs(data);
-				setSavedPrefs(data);
+				const [prefRes, ipRes] = await Promise.all([
+					fetch("/api/keamanan-preferences"),
+					fetch("/api/ip-whitelist"),
+				]);
+				if (prefRes.ok) {
+					const json = await prefRes.json();
+					const data = json.data as Prefs;
+					setPrefs(data);
+					setSavedPrefs(data);
+				}
+				if (ipRes.ok) {
+					const json = await ipRes.json();
+					setIpEntries(json.data as IpEntry[]);
+				}
 			} catch {
 				// keep defaults
 			} finally {
 				setLoading(false);
 			}
 		};
-		fetchPrefs();
+		fetchAll();
 	}, []);
 
 	useEffect(() => {
@@ -121,6 +145,46 @@ const KeamananSettings = () => {
 
 	const handleBatal = () => {
 		setPrefs(savedPrefs);
+	};
+
+	const handleAddIp = async () => {
+		setIpError(null);
+		const trimmed = ipInput.trim();
+		if (!trimmed) return;
+		setIpLoading(true);
+		try {
+			const res = await fetch("/api/ip-whitelist", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					ip: trimmed,
+					label: ipLabel.trim() || undefined,
+				}),
+			});
+			const json = await res.json();
+			if (!res.ok) {
+				setIpError(json.error ?? "Gagal menambahkan IP");
+			} else {
+				setIpEntries((prev) => [...prev, json.data as IpEntry]);
+				setIpInput("");
+				setIpLabel("");
+			}
+		} catch {
+			setIpError("Terjadi kesalahan, coba lagi");
+		} finally {
+			setIpLoading(false);
+		}
+	};
+
+	const handleDeleteIp = async (id: string) => {
+		try {
+			const res = await fetch(`/api/ip-whitelist/${id}`, { method: "DELETE" });
+			if (res.ok) {
+				setIpEntries((prev) => prev.filter((e) => e.id !== id));
+			}
+		} catch {
+			// silent
+		}
 	};
 
 	const { colorScheme } = useMantineColorScheme();
@@ -276,6 +340,7 @@ const KeamananSettings = () => {
 				p="xl"
 				mb="lg"
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+				bg={dark ? "#1E293B" : "white"}
 			>
 				<Group gap="sm" mb="lg">
 					<ThemeIcon
@@ -329,10 +394,93 @@ const KeamananSettings = () => {
 							description="Batasi akses hanya dari alamat IP yang telah didaftarkan"
 							icon={<IconNetwork size={18} />}
 							field="ipWhitelist"
-							badge={{ label: "Segera Hadir", color: "gray" }}
-							disabled
-							disabledTooltip="Fitur whitelist IP belum tersedia"
 						/>
+						{prefs.ipWhitelist && (
+							<Box
+								ml={52}
+								p="md"
+								style={{
+									borderRadius: 8,
+									background: dark ? "#0f172a" : "#f8fafc",
+									border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
+								}}
+							>
+								<Text fz="xs" fw={600} mb="sm" c="dimmed">
+									Daftar IP yang diizinkan
+								</Text>
+								{ipEntries.length === 0 ? (
+									<Text fz="xs" c="dimmed" mb="sm">
+										Belum ada IP. Tambahkan IP di bawah. Jika daftar kosong,
+										enforcement tidak aktif meski toggle menyala.
+									</Text>
+								) : (
+									<Stack gap={6} mb="sm">
+										{ipEntries.map((entry) => (
+											<Group
+												key={entry.id}
+												justify="space-between"
+												wrap="nowrap"
+											>
+												<Group gap={6} wrap="nowrap">
+													<Text fz="xs" ff="monospace">
+														{entry.ip}
+													</Text>
+													{entry.label && (
+														<Text fz="xs" c="dimmed">
+															— {entry.label}
+														</Text>
+													)}
+												</Group>
+												<ActionIcon
+													size="xs"
+													color="red"
+													variant="subtle"
+													onClick={() => handleDeleteIp(entry.id)}
+												>
+													<IconTrash size={12} />
+												</ActionIcon>
+											</Group>
+										))}
+									</Stack>
+								)}
+								{ipError && (
+									<Text fz="xs" c="red" mb="xs">
+										{ipError}
+									</Text>
+								)}
+								<Group gap="xs" wrap="nowrap">
+									<TextInput
+										placeholder="Contoh: 192.168.1.10"
+										value={ipInput}
+										onChange={(e) => setIpInput(e.currentTarget.value)}
+										size="xs"
+										radius="md"
+										style={{ flex: 1 }}
+										onKeyDown={(e) => {
+											if (e.key === "Enter") handleAddIp();
+										}}
+									/>
+									<TextInput
+										placeholder="Label (opsional)"
+										value={ipLabel}
+										onChange={(e) => setIpLabel(e.currentTarget.value)}
+										size="xs"
+										radius="md"
+										style={{ flex: 1 }}
+									/>
+									<ActionIcon
+										size="md"
+										radius="md"
+										variant="filled"
+										color="blue"
+										onClick={handleAddIp}
+										loading={ipLoading}
+									>
+										<IconPlus size={14} />
+									</ActionIcon>
+								</Group>
+							</Box>
+						)}
 					</>
 				)}
 			</Paper>
@@ -344,6 +492,7 @@ const KeamananSettings = () => {
 				p="xl"
 				mb="lg"
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+				bg={dark ? "#1E293B" : "white"}
 			>
 				<Group gap="sm" mb="lg">
 					<ThemeIcon
@@ -406,6 +555,7 @@ const KeamananSettings = () => {
 				p="xl"
 				mb="lg"
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+				bg={dark ? "#1E293B" : "white"}
 			>
 				<Group gap="sm" mb="lg">
 					<ThemeIcon
