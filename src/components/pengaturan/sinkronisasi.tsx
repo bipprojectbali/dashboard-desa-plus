@@ -183,6 +183,7 @@ const SinkronisasiSettings = () => {
 		isSyncing,
 		buttonLabel,
 		buttonColor,
+		backgroundColor,
 		onClearStatus,
 		dataModels,
 		sourceUrl,
@@ -190,6 +191,7 @@ const SinkronisasiSettings = () => {
 	}: {
 		title: string;
 		description: string;
+		backgroundColor: string;
 		icon: React.ReactNode;
 		iconColor: string;
 		gradientFrom: string;
@@ -210,7 +212,10 @@ const SinkronisasiSettings = () => {
 			radius="lg"
 			p="xl"
 			mb="lg"
-			style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+			style={{
+				borderColor: dark ? "#334155" : "#e2e8f0",
+				backgroundColor: backgroundColor,
+			}}
 		>
 			{/* Header */}
 			<Group gap="sm" mb="lg">
@@ -408,6 +413,7 @@ const SinkronisasiSettings = () => {
 				title={t.sinkronisasi.dataNoc}
 				description="Data kinerja divisi, kegiatan, dan diskusi dari sistem NOC"
 				icon={<IconDatabase size={20} />}
+				backgroundColor={dark ? "#1E293B" : "white"}
 				iconColor="green"
 				gradientFrom="teal"
 				gradientTo="green"
@@ -429,6 +435,7 @@ const SinkronisasiSettings = () => {
 
 			{/* Demografi Sync */}
 			<SyncCard
+				backgroundColor={dark ? "#1E293B" : "white"}
 				title={t.sinkronisasi.websiteDesa}
 				description="Data demografi penduduk, APBDes, dan sektor ekonomi dari website desa"
 				icon={<IconUsers size={20} />}

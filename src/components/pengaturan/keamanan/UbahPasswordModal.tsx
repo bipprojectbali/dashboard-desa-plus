@@ -9,6 +9,7 @@ import {
 	Text,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconCheck, IconLock, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { useActivityLogger } from "@/hooks/useActivityLogger";
@@ -20,6 +21,7 @@ interface Props {
 }
 
 export function UbahPasswordModal({ opened, onClose }: Props) {
+	const isMobile = useMediaQuery("(max-width: 48em)");
 	const [loading, setLoading] = useState(false);
 	const [result, setResult] = useState<{
 		type: "success" | "error";
@@ -92,6 +94,7 @@ export function UbahPasswordModal({ opened, onClose }: Props) {
 			}
 			radius="lg"
 			size="sm"
+			fullScreen={!!isMobile}
 		>
 			<form onSubmit={handleSubmit}>
 				<Stack gap="md">
@@ -117,18 +120,21 @@ export function UbahPasswordModal({ opened, onClose }: Props) {
 						label="Password Saat Ini"
 						placeholder="Masukkan password saat ini"
 						radius="md"
+						styles={{ input: { minHeight: "44px" } }}
 						{...form.getInputProps("currentPassword")}
 					/>
 					<PasswordInput
 						label="Password Baru"
 						placeholder="Minimal 8 karakter"
 						radius="md"
+						styles={{ input: { minHeight: "44px" } }}
 						{...form.getInputProps("newPassword")}
 					/>
 					<PasswordInput
 						label="Konfirmasi Password Baru"
 						placeholder="Ulangi password baru"
 						radius="md"
+						styles={{ input: { minHeight: "44px" } }}
 						{...form.getInputProps("confirmPassword")}
 					/>
 					<Checkbox

@@ -286,6 +286,7 @@ const NotifikasiSettings = () => {
 				p="xl"
 				mb="lg"
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+				bg={dark ? "#1E293B" : "white"}
 			>
 				<Group gap="sm" mb="lg">
 					<ThemeIcon
@@ -364,6 +365,7 @@ const NotifikasiSettings = () => {
 				p="xl"
 				mb="lg"
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+				bg={dark ? "#1E293B" : "white"}
 			>
 				<Group gap="sm" mb="lg">
 					<ThemeIcon
@@ -422,6 +424,7 @@ const NotifikasiSettings = () => {
 				p="xl"
 				mb="lg"
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+				bg={dark ? "#1E293B" : "white"}
 			>
 				<Group gap="sm" mb="lg" justify="space-between" wrap="nowrap">
 					<Group gap="sm" wrap="nowrap">

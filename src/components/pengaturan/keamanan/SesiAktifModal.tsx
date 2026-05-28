@@ -12,6 +12,7 @@ import {
 	Text,
 	Tooltip,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import {
 	IconDeviceDesktop,
 	IconDeviceMobile,
@@ -70,6 +71,7 @@ interface Props {
 }
 
 export function SesiAktifModal({ opened, onClose }: Props) {
+	const isMobile = useMediaQuery("(max-width: 48em)");
 	const [sessions, setSessions] = useState<Session[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [revoking, setRevoking] = useState<string | null>(null);
@@ -136,6 +138,7 @@ export function SesiAktifModal({ opened, onClose }: Props) {
 			}
 			radius="lg"
 			size="lg"
+			fullScreen={!!isMobile}
 		>
 			<Stack gap="md">
 				{error && (

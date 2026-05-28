@@ -15,9 +15,10 @@ import {
 	IconUserShield,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
-import { Bell, Moon, Sun, User as UserIcon } from "lucide-react";
+import { Bell, Moon, Search, Sun, User as UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
+import { GlobalSearch, useGlobalSearch } from "@/components/global-search";
 import { useTranslate } from "@/hooks/useTranslate";
 import { authStore } from "@/store/auth";
 import { i18nStore } from "@/store/i18n";
@@ -80,6 +81,8 @@ export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 					: `${day}/${month}/${year}`;
 		setTanggal(formatted);
 	}, [zonaWaktu, formatTanggal]);
+
+	const { open: searchOpen, setOpen: setSearchOpen } = useGlobalSearch();
 
 	// ── User info ──────────────────────────────────────────────────────────────
 	const isAdmin = snap.user?.role === "admin";
@@ -154,146 +157,162 @@ export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 
 	// ── Render ─────────────────────────────────────────────────────────────────
 	return (
-		<Group justify="space-between" style={{ flex: 1, minWidth: 0 }}>
-			{/* Kiri: Toggle sidebar + Breadcrumb */}
-			<Group gap="md">
-				<ActionIcon
-					onClick={onSidebarToggle}
-					variant="subtle"
-					size="lg"
-					radius="xl"
-					visibleFrom="sm"
-					aria-label="Toggle sidebar"
-				>
-					<IconLayoutSidebarLeftCollapse
-						color="white"
-						style={{ width: "70%", height: "70%" }}
-					/>
-				</ActionIcon>
-
-				<Breadcrumbs
-					visibleFrom="sm"
-					separator={
-						<Text c="white" size="xs">
-							/
-						</Text>
-					}
-				>
-					{breadcrumbItems}
-				</Breadcrumbs>
-			</Group>
-
-			{/* Kanan: Jam, info user, aksi */}
-			<Group gap="md">
-				{/* Jam & tanggal zona waktu */}
-				{waktu && (
-					<Box ta="center" visibleFrom="sm">
-						<Text c="white" size="sm" fw={600} ff="monospace">
-							{waktu}
-						</Text>
-						<Text c="white" size="xs" opacity={0.6}>
-							{tanggal} · {kotaLabel}
-						</Text>
-					</Box>
-				)}
-
-				{/* Info user */}
-				<Group gap="sm">
-					<Box
-						ta="right"
-						visibleFrom="sm"
-						style={{ maxWidth: 160, overflow: "hidden" }}
-					>
-						<Text
-							c="white"
-							size="sm"
-							fw={500}
-							style={{
-								overflow: "hidden",
-								textOverflow: "ellipsis",
-								whiteSpace: "nowrap",
-							}}
-						>
-							{displayName}
-						</Text>
-						<Text c="white" size="xs" opacity={0.75}>
-							{isAdmin ? t.common.administrator : t.common.pengguna}
-						</Text>
-					</Box>
-
-					<Avatar
-						src={snap.user?.image}
-						color="blue"
+		<>
+			<GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
+			<Group justify="space-between" style={{ flex: 1, minWidth: 0 }}>
+				{/* Kiri: Toggle sidebar + Breadcrumb */}
+				<Group gap="md">
+					<ActionIcon
+						onClick={onSidebarToggle}
+						variant="subtle"
+						size="lg"
 						radius="xl"
-						style={{ cursor: "pointer" }}
-						onClick={() => navigate({ to: "/profile" })}
-						aria-label={`Profil ${displayName}`}
+						visibleFrom="sm"
+						aria-label="Toggle sidebar"
 					>
-						{initials || (
-							<UserIcon color="white" style={{ width: "70%", height: "70%" }} />
-						)}
-					</Avatar>
+						<IconLayoutSidebarLeftCollapse
+							color="white"
+							style={{ width: "70%", height: "70%" }}
+						/>
+					</ActionIcon>
+
+					<Breadcrumbs
+						visibleFrom="sm"
+						separator={
+							<Text c="white" size="xs">
+								/
+							</Text>
+						}
+					>
+						{breadcrumbItems}
+					</Breadcrumbs>
 				</Group>
 
-				<Divider
-					orientation="vertical"
-					style={{ alignSelf: "stretch" }}
-					my="xs"
-				/>
+				{/* Kanan: Jam, info user, aksi */}
+				<Group gap="md">
+					{/* Jam & tanggal zona waktu */}
+					{waktu && (
+						<Box ta="center" visibleFrom="sm">
+							<Text c="white" size="sm" fw={600} ff="monospace">
+								{waktu}
+							</Text>
+							<Text c="white" size="xs" opacity={0.6}>
+								{tanggal} · {kotaLabel}
+							</Text>
+						</Box>
+					)}
 
-				{/* Ikon aksi */}
-				<Group gap="sm">
-					<ActionIcon
-						onClick={() => toggleColorScheme()}
-						variant="subtle"
-						size="lg"
-						radius="xl"
-						aria-label="Ganti tema"
-					>
-						{dark ? (
-							<Sun color="white" style={{ width: "70%", height: "70%" }} />
-						) : (
-							<Moon color="white" style={{ width: "70%", height: "70%" }} />
-						)}
-					</ActionIcon>
-
-					<ActionIcon
-						variant="subtle"
-						size="lg"
-						radius="xl"
-						aria-label={`Notifikasi, ${unreadCount} belum dibaca`}
-						style={{ position: "relative" }}
-					>
-						<Bell color="white" style={{ width: "70%", height: "70%" }} />
-						{unreadCount > 0 && (
-							<Badge
-								size="xs"
-								color="red"
-								variant="filled"
-								style={{ position: "absolute", top: 0, right: 0 }}
-								radius="xl"
+					{/* Info user */}
+					<Group gap="sm">
+						<Box
+							ta="right"
+							visibleFrom="sm"
+							style={{ maxWidth: 160, overflow: "hidden" }}
+						>
+							<Text
+								c="white"
+								size="sm"
+								fw={500}
+								style={{
+									overflow: "hidden",
+									textOverflow: "ellipsis",
+									whiteSpace: "nowrap",
+								}}
 							>
-								{unreadCount > 99 ? "99+" : unreadCount}
-							</Badge>
-						)}
-					</ActionIcon>
+								{displayName}
+							</Text>
+							<Text c="white" size="xs" opacity={0.75}>
+								{isAdmin ? t.common.administrator : t.common.pengguna}
+							</Text>
+						</Box>
 
-					{isAdmin && (
+						<Avatar
+							src={snap.user?.image}
+							color="blue"
+							radius="xl"
+							style={{ cursor: "pointer" }}
+							onClick={() => navigate({ to: "/profile" })}
+							aria-label={`Profil ${displayName}`}
+						>
+							{initials || (
+								<UserIcon
+									color="white"
+									style={{ width: "70%", height: "70%" }}
+								/>
+							)}
+						</Avatar>
+					</Group>
+
+					<Divider
+						orientation="vertical"
+						style={{ alignSelf: "stretch" }}
+						my="xs"
+					/>
+
+					{/* Ikon aksi */}
+					<Group gap="sm">
+						<ActionIcon
+							onClick={() => setSearchOpen(true)}
+							variant="subtle"
+							size="lg"
+							radius="xl"
+							aria-label="Pencarian global (Ctrl+K)"
+						>
+							<Search color="white" style={{ width: "70%", height: "70%" }} />
+						</ActionIcon>
+
+						<ActionIcon
+							onClick={() => toggleColorScheme()}
+							variant="subtle"
+							size="lg"
+							radius="xl"
+							aria-label="Ganti tema"
+						>
+							{dark ? (
+								<Sun color="white" style={{ width: "70%", height: "70%" }} />
+							) : (
+								<Moon color="white" style={{ width: "70%", height: "70%" }} />
+							)}
+						</ActionIcon>
+
 						<ActionIcon
 							variant="subtle"
 							size="lg"
 							radius="xl"
-							onClick={() => navigate({ to: "/admin" })}
-							aria-label="Panel admin"
+							aria-label={`Notifikasi, ${unreadCount} belum dibaca`}
+							style={{ position: "relative" }}
 						>
-							<IconUserShield
-								color="white"
-								style={{ width: "70%", height: "70%" }}
-							/>
+							<Bell color="white" style={{ width: "70%", height: "70%" }} />
+							{unreadCount > 0 && (
+								<Badge
+									size="xs"
+									color="red"
+									variant="filled"
+									style={{ position: "absolute", top: 0, right: 0 }}
+									radius="xl"
+								>
+									{unreadCount > 99 ? "99+" : unreadCount}
+								</Badge>
+							)}
 						</ActionIcon>
-					)}
+
+						{isAdmin && (
+							<ActionIcon
+								variant="subtle"
+								size="lg"
+								radius="xl"
+								onClick={() => navigate({ to: "/admin" })}
+								aria-label="Panel admin"
+							>
+								<IconUserShield
+									color="white"
+									style={{ width: "70%", height: "70%" }}
+								/>
+							</ActionIcon>
+						)}
+					</Group>
 				</Group>
 			</Group>
-		</Group>
+		</>
 	);
 }

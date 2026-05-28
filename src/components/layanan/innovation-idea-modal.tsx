@@ -13,6 +13,7 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import {
 	IconBulb,
 	IconCalendar,
@@ -80,6 +81,7 @@ export const InnovationIdeaModal = ({
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
+	const isMobile = useMediaQuery("(max-width: 48em)");
 
 	if (!idea) return null;
 
@@ -113,6 +115,7 @@ export const InnovationIdeaModal = ({
 			radius="xl"
 			padding="xl"
 			centered
+			fullScreen={!!isMobile}
 			styles={{
 				header: {
 					backgroundColor: sectionBg,

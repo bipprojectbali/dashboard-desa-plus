@@ -178,16 +178,28 @@ const UmumSettings = () => {
 		icon: React.ReactNode;
 		field: "refreshOtomatis" | "tampilkanGrid" | "animasiTransisi";
 	}) => (
-		<Group justify="space-between" wrap="nowrap" py="sm">
-			<Group gap="sm" wrap="nowrap">
-				<ThemeIcon size={36} radius="md" variant="light" color="blue">
+		<Group
+			justify="space-between"
+			wrap="nowrap"
+			align="center"
+			py="sm"
+			gap="sm"
+		>
+			<Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+				<ThemeIcon
+					size={36}
+					radius="md"
+					variant="light"
+					color="blue"
+					style={{ flexShrink: 0 }}
+				>
 					{icon}
 				</ThemeIcon>
-				<Box>
+				<Box style={{ minWidth: 0 }}>
 					<Text fw={600} fz="sm">
 						{label}
 					</Text>
-					<Text fz="xs" c="dimmed">
+					<Text fz="xs" c="dimmed" style={{ wordBreak: "break-word" }}>
 						{description}
 					</Text>
 				</Box>
@@ -197,6 +209,7 @@ const UmumSettings = () => {
 				onChange={() => updatePref(field, !prefs[field])}
 				disabled={loading}
 				size="md"
+				style={{ flexShrink: 0 }}
 			/>
 		</Group>
 	);
@@ -229,6 +242,7 @@ const UmumSettings = () => {
 				radius="lg"
 				p="xl"
 				mb="lg"
+				bg={dark ? "#1E293B" : "white"}
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
 			>
 				<Group gap="sm" mb="lg">
@@ -282,6 +296,13 @@ const UmumSettings = () => {
 										{prefs.bahasa === "en" ? "EN" : "ID"}
 									</Badge>
 								}
+								styles={{
+									input: {
+										backgroundColor: dark ? "#213654" : "#EBF2FD",
+										borderColor: dark ? "#213654" : "#EBF2FD",
+										minHeight: "44px",
+									},
+								}}
 							/>
 
 							<Select
@@ -316,6 +337,13 @@ const UmumSettings = () => {
 								}}
 								disabled={loading}
 								radius="md"
+								styles={{
+									input: {
+										backgroundColor: dark ? "#213654" : "#EBF2FD",
+										borderColor: dark ? "#213654" : "#EBF2FD",
+										minHeight: "44px",
+									},
+								}}
 							/>
 
 							<Select
@@ -350,6 +378,13 @@ const UmumSettings = () => {
 								}}
 								disabled={loading}
 								radius="md"
+								styles={{
+									input: {
+										backgroundColor: dark ? "#213654" : "#EBF2FD",
+										borderColor: dark ? "#213654" : "#EBF2FD",
+										minHeight: "44px",
+									},
+								}}
 							/>
 						</>
 					)}
@@ -362,6 +397,7 @@ const UmumSettings = () => {
 				radius="lg"
 				p="xl"
 				mb="lg"
+				bg={dark ? "#1E293B" : "white"}
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
 			>
 				<Group gap="sm" mb="lg">
@@ -400,16 +436,16 @@ const UmumSettings = () => {
 
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 
-						<Group justify="space-between" wrap="nowrap" py="sm">
-							<Group gap="sm" wrap="nowrap">
+						<Group justify="space-between" wrap="wrap" py="sm" gap="sm">
+							<Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
 								<ThemeIcon size={36} radius="md" variant="light" color="blue">
 									<IconClock size={18} />
 								</ThemeIcon>
-								<Box>
+								<Box style={{ minWidth: 0 }}>
 									<Text fw={600} fz="sm">
 										{t.umum.intervalRefresh}
 									</Text>
-									<Text fz="xs" c="dimmed">
+									<Text fz="xs" c="dimmed" style={{ wordBreak: "break-word" }}>
 										Seberapa sering data diperbarui secara otomatis
 									</Text>
 								</Box>
@@ -426,7 +462,14 @@ const UmumSettings = () => {
 								disabled={loading || !prefs.refreshOtomatis}
 								w={130}
 								radius="md"
-								size="sm"
+								size={"sm"}
+								styles={{
+									input: {
+										backgroundColor: dark ? "#213654" : "#EBF2FD",
+										borderColor: dark ? "#213654" : "#EBF2FD",
+										minHeight: "44px",
+									},
+								}}
 							/>
 						</Group>
 
