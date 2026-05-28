@@ -13,6 +13,7 @@ import {
 	Text,
 	Tooltip,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconCheck, IconKey, IconRefresh, IconX } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -36,6 +37,7 @@ interface Props {
 }
 
 export function KelolaRoleModal({ opened, onClose, onRoleChanged }: Props) {
+	const isMobile = useMediaQuery("(max-width: 48em)");
 	const [users, setUsers] = useState<UserRow[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [updating, setUpdating] = useState<string | null>(null);
@@ -102,6 +104,7 @@ export function KelolaRoleModal({ opened, onClose, onRoleChanged }: Props) {
 			}
 			radius="lg"
 			size="lg"
+			fullScreen={!!isMobile}
 		>
 			<Stack gap="md">
 				{error && (

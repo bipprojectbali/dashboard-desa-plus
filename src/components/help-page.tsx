@@ -425,88 +425,158 @@ const HelpPage = () => {
 							</HelpCard>
 						</Grid.Col>
 
-						{/* Jenna - Virtual Assistant */}
-						<Grid.Col span={{ base: 12, sm: 12, md: 12 }}>
-							<Box
-								style={{
-									borderRadius: 16,
-									overflow: "hidden",
-									border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
-									boxShadow: "0 4px 24px 0 rgb(0 0 0 / 0.08)",
-									background: dark ? "#1E293B" : "white",
-								}}
-							>
-								{/* Header */}
+						{/* Jenna - Virtual Assistant (disabled) */}
+						{false && (
+							<Grid.Col span={{ base: 12, sm: 12, md: 12 }}>
 								<Box
 									style={{
-										background:
-											"linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)",
-										padding: "16px 20px",
+										borderRadius: 16,
+										overflow: "hidden",
+										border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
+										boxShadow: "0 4px 24px 0 rgb(0 0 0 / 0.08)",
+										background: dark ? "#1E293B" : "white",
 									}}
 								>
-									<Group justify="space-between">
-										<Group gap="sm">
-											<Avatar
-												size={40}
-												radius="xl"
+									{/* Header */}
+									<Box
+										style={{
+											background:
+												"linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)",
+											padding: "16px 20px",
+										}}
+									>
+										<Group justify="space-between">
+											<Group gap="sm">
+												<Avatar
+													size={40}
+													radius="xl"
+													style={{
+														background: "rgba(255,255,255,0.2)",
+														border: "2px solid rgba(255,255,255,0.4)",
+													}}
+												>
+													<IconMessage size={20} color="white" />
+												</Avatar>
+												<Box>
+													<Text fw={700} c="white" size="sm">
+														Jenna
+													</Text>
+													<Group gap={6}>
+														<Box
+															style={{
+																width: 7,
+																height: 7,
+																borderRadius: "50%",
+																background: "#4ade80",
+																flexShrink: 0,
+															}}
+														/>
+														<Text size="xs" c="white" opacity={0.85}>
+															{t.help.virtualAssistantOnline}
+														</Text>
+													</Group>
+												</Box>
+											</Group>
+											<Badge
+												color="white"
+												variant="white"
+												size="sm"
+												style={{ color: "#6366f1", fontWeight: 600 }}
+											>
+												{t.help.aiPowered}
+											</Badge>
+										</Group>
+									</Box>
+
+									{/* Chat area */}
+									<ScrollArea
+										h={320}
+										px="lg"
+										py="md"
+										style={{ background: dark ? "#0f172a" : "#f8fafc" }}
+									>
+										{messages.map((msg) => (
+											<Box
+												key={msg.id}
 												style={{
-													background: "rgba(255,255,255,0.2)",
-													border: "2px solid rgba(255,255,255,0.4)",
+													display: "flex",
+													justifyContent:
+														msg.sender === "user" ? "flex-end" : "flex-start",
+													marginBottom: 12,
+													gap: 8,
+													alignItems: "flex-end",
 												}}
 											>
-												<IconMessage size={20} color="white" />
-											</Avatar>
-											<Box>
-												<Text fw={700} c="white" size="sm">
-													Jenna
-												</Text>
-												<Group gap={6}>
-													<Box
+												{msg.sender === "jenna" && (
+													<Avatar
+														size={28}
+														radius="xl"
 														style={{
-															width: 7,
-															height: 7,
-															borderRadius: "50%",
-															background: "#4ade80",
+															background:
+																"linear-gradient(135deg, #3b82f6, #6366f1)",
 															flexShrink: 0,
 														}}
-													/>
-													<Text size="xs" c="white" opacity={0.85}>
-														{t.help.virtualAssistantOnline}
-													</Text>
-												</Group>
+													>
+														<IconMessage size={14} color="white" />
+													</Avatar>
+												)}
+												<Box
+													style={{
+														backgroundColor:
+															msg.sender === "user"
+																? "#3B82F6"
+																: dark
+																	? "#1e293b"
+																	: "white",
+														color:
+															msg.sender === "user"
+																? "#fff"
+																: dark
+																	? "#f1f5f9"
+																	: "#1e293b",
+														padding: "10px 14px",
+														borderRadius:
+															msg.sender === "user"
+																? "18px 18px 4px 18px"
+																: "18px 18px 18px 4px",
+														maxWidth: "72%",
+														fontSize: 13,
+														lineHeight: 1.6,
+														boxShadow:
+															msg.sender === "user"
+																? "0 2px 8px rgba(59,130,246,0.3)"
+																: `0 1px 4px ${dark ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.08)"}`,
+														border:
+															msg.sender === "jenna"
+																? `1px solid ${dark ? "#334155" : "#e2e8f0"}`
+																: "none",
+													}}
+												>
+													{msg.text}
+												</Box>
+												{msg.sender === "user" && (
+													<Avatar
+														size={28}
+														radius="xl"
+														color="blue"
+														style={{ flexShrink: 0 }}
+													>
+														<Text size="xs" fw={700}>
+															A
+														</Text>
+													</Avatar>
+												)}
 											</Box>
-										</Group>
-										<Badge
-											color="white"
-											variant="white"
-											size="sm"
-											style={{ color: "#6366f1", fontWeight: 600 }}
-										>
-											{t.help.aiPowered}
-										</Badge>
-									</Group>
-								</Box>
-
-								{/* Chat area */}
-								<ScrollArea
-									h={320}
-									px="lg"
-									py="md"
-									style={{ background: dark ? "#0f172a" : "#f8fafc" }}
-								>
-									{messages.map((msg) => (
-										<Box
-											key={msg.id}
-											style={{
-												display: "flex",
-												justifyContent:
-													msg.sender === "user" ? "flex-end" : "flex-start",
-												marginBottom: 12,
-												gap: 8,
-												alignItems: "flex-end",
-											}}
-										>
-											{msg.sender === "jenna" && (
+										))}
+										{isLoading && (
+											<Box
+												style={{
+													display: "flex",
+													alignItems: "flex-end",
+													gap: 8,
+													marginBottom: 12,
+												}}
+											>
 												<Avatar
 													size={28}
 													radius="xl"
@@ -518,183 +588,115 @@ const HelpPage = () => {
 												>
 													<IconMessage size={14} color="white" />
 												</Avatar>
-											)}
-											<Box
-												style={{
-													backgroundColor:
-														msg.sender === "user"
-															? "#3B82F6"
-															: dark
-																? "#1e293b"
-																: "white",
-													color:
-														msg.sender === "user"
-															? "#fff"
-															: dark
-																? "#f1f5f9"
-																: "#1e293b",
-													padding: "10px 14px",
-													borderRadius:
-														msg.sender === "user"
-															? "18px 18px 4px 18px"
-															: "18px 18px 18px 4px",
-													maxWidth: "72%",
-													fontSize: 13,
-													lineHeight: 1.6,
-													boxShadow:
-														msg.sender === "user"
-															? "0 2px 8px rgba(59,130,246,0.3)"
-															: `0 1px 4px ${dark ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.08)"}`,
-													border:
-														msg.sender === "jenna"
-															? `1px solid ${dark ? "#334155" : "#e2e8f0"}`
-															: "none",
-												}}
-											>
-												{msg.text}
-											</Box>
-											{msg.sender === "user" && (
-												<Avatar
-													size={28}
-													radius="xl"
-													color="blue"
-													style={{ flexShrink: 0 }}
+												<Box
+													style={{
+														backgroundColor: dark ? "#1e293b" : "white",
+														border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
+														padding: "10px 16px",
+														borderRadius: "18px 18px 18px 4px",
+														display: "flex",
+														gap: 4,
+														alignItems: "center",
+													}}
 												>
-													<Text size="xs" fw={700}>
-														A
-													</Text>
-												</Avatar>
-											)}
-										</Box>
-									))}
-									{isLoading && (
+													{[0, 1, 2].map((i) => (
+														<Box
+															key={i}
+															style={{
+																width: 7,
+																height: 7,
+																borderRadius: "50%",
+																background: "#94a3b8",
+																animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
+															}}
+														/>
+													))}
+												</Box>
+											</Box>
+										)}
+										<div ref={chatBottomRef} />
+									</ScrollArea>
+
+									{/* Quick replies — hanya tampil jika hanya ada pesan awal */}
+									{messages.length === 1 && (
 										<Box
-											style={{
-												display: "flex",
-												alignItems: "flex-end",
-												gap: 8,
-												marginBottom: 12,
-											}}
+											px="lg"
+											pb="sm"
+											style={{ background: dark ? "#0f172a" : "#f8fafc" }}
 										>
-											<Avatar
-												size={28}
+											<Text size="xs" c="dimmed" mb={6} fw={500}>
+												{t.help.pertanyaanCepat}
+											</Text>
+											<Group gap={6} wrap="wrap">
+												{QUICK_REPLIES.map((q) => (
+													<Badge
+														key={q}
+														variant="outline"
+														color="blue"
+														size="sm"
+														style={{ cursor: "pointer", fontWeight: 400 }}
+														onClick={() => {
+															setInputValue(q);
+														}}
+													>
+														{q}
+													</Badge>
+												))}
+											</Group>
+										</Box>
+									)}
+
+									<Divider color={dark ? "#1e293b" : "#f1f5f9"} />
+
+									{/* Input area */}
+									<Box
+										px="lg"
+										py="md"
+										style={{ background: dark ? "#1E293B" : "white" }}
+									>
+										<Group gap="sm">
+											<TextInput
+												flex={1}
+												value={inputValue}
+												onChange={(e) => setInputValue(e.target.value)}
+												onKeyDown={handleKeyPress}
+												placeholder={t.help.ketikPesan}
 												radius="xl"
+												size="sm"
+												disabled={isLoading}
+												styles={{
+													input: {
+														background: dark ? "#0f172a" : "#f8fafc",
+														border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
+														"&:focus": { borderColor: "#3b82f6" },
+													},
+												}}
+											/>
+											<ActionIcon
+												size={36}
+												radius="xl"
+												variant="filled"
+												color="blue"
+												disabled={isLoading || inputValue.trim() === ""}
+												onClick={() => void handleSendMessage()}
+												aria-label={t.help.kirimPesan}
 												style={{
-													background:
-														"linear-gradient(135deg, #3b82f6, #6366f1)",
+													background: inputValue.trim()
+														? "linear-gradient(135deg, #3b82f6, #6366f1)"
+														: undefined,
 													flexShrink: 0,
 												}}
 											>
-												<IconMessage size={14} color="white" />
-											</Avatar>
-											<Box
-												style={{
-													backgroundColor: dark ? "#1e293b" : "white",
-													border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
-													padding: "10px 16px",
-													borderRadius: "18px 18px 18px 4px",
-													display: "flex",
-													gap: 4,
-													alignItems: "center",
-												}}
-											>
-												{[0, 1, 2].map((i) => (
-													<Box
-														key={i}
-														style={{
-															width: 7,
-															height: 7,
-															borderRadius: "50%",
-															background: "#94a3b8",
-															animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
-														}}
-													/>
-												))}
-											</Box>
-										</Box>
-									)}
-									<div ref={chatBottomRef} />
-								</ScrollArea>
-
-								{/* Quick replies — hanya tampil jika hanya ada pesan awal */}
-								{messages.length === 1 && (
-									<Box
-										px="lg"
-										pb="sm"
-										style={{ background: dark ? "#0f172a" : "#f8fafc" }}
-									>
-										<Text size="xs" c="dimmed" mb={6} fw={500}>
-											{t.help.pertanyaanCepat}
-										</Text>
-										<Group gap={6} wrap="wrap">
-											{QUICK_REPLIES.map((q) => (
-												<Badge
-													key={q}
-													variant="outline"
-													color="blue"
-													size="sm"
-													style={{ cursor: "pointer", fontWeight: 400 }}
-													onClick={() => {
-														setInputValue(q);
-													}}
-												>
-													{q}
-												</Badge>
-											))}
+												<IconSend size={16} />
+											</ActionIcon>
 										</Group>
+										<Text size="xs" c="dimmed" ta="center" mt={8}>
+											{t.help.jennaDisclaimer}
+										</Text>
 									</Box>
-								)}
-
-								<Divider color={dark ? "#1e293b" : "#f1f5f9"} />
-
-								{/* Input area */}
-								<Box
-									px="lg"
-									py="md"
-									style={{ background: dark ? "#1E293B" : "white" }}
-								>
-									<Group gap="sm">
-										<TextInput
-											flex={1}
-											value={inputValue}
-											onChange={(e) => setInputValue(e.target.value)}
-											onKeyDown={handleKeyPress}
-											placeholder={t.help.ketikPesan}
-											radius="xl"
-											size="sm"
-											disabled={isLoading}
-											styles={{
-												input: {
-													background: dark ? "#0f172a" : "#f8fafc",
-													border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
-													"&:focus": { borderColor: "#3b82f6" },
-												},
-											}}
-										/>
-										<ActionIcon
-											size={36}
-											radius="xl"
-											variant="filled"
-											color="blue"
-											disabled={isLoading || inputValue.trim() === ""}
-											onClick={() => void handleSendMessage()}
-											aria-label={t.help.kirimPesan}
-											style={{
-												background: inputValue.trim()
-													? "linear-gradient(135deg, #3b82f6, #6366f1)"
-													: undefined,
-												flexShrink: 0,
-											}}
-										>
-											<IconSend size={16} />
-										</ActionIcon>
-									</Group>
-									<Text size="xs" c="dimmed" ta="center" mt={8}>
-										{t.help.jennaDisclaimer}
-									</Text>
 								</Box>
-							</Box>
-						</Grid.Col>
+							</Grid.Col>
+						)}
 					</Grid>
 				</Box>
 			</Stack>

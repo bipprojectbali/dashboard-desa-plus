@@ -422,7 +422,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get recent activities */
+        /** Get activities (paginated, default 5 per page) */
         get: operations["getApiDivisionActivities"];
         put?: never;
         post?: never;
@@ -473,7 +473,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get recent discussions */
+        /** Get discussions (paginated, default 5 per page) */
         get: operations["getApiDivisionDiscussions"];
         put?: never;
         post?: never;
@@ -507,7 +507,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get recent complaints */
+        /** Get recent complaints (paginated, default 5 per page) */
         get: operations["getApiComplaintRecent"];
         put?: never;
         post?: never;
@@ -945,6 +945,59 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/umkm/lokal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get locally managed UMKM data from DB (bukan dari external API) */
+        get: operations["getApiUmkmLokal"];
+        put?: never;
+        /** Add a new locally managed UMKM entry */
+        post: operations["postApiUmkmLokal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/umkm/lokal/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update a locally managed UMKM entry */
+        put: operations["putApiUmkmLokalById"];
+        post?: never;
+        /** Delete a locally managed UMKM entry */
+        delete: operations["deleteApiUmkmLokalById"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/umkm/lokal/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get stats for locally managed UMKM */
+        get: operations["getApiUmkmLokalStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/umum-preferences/": {
         parameters: {
             query?: never;
@@ -956,6 +1009,58 @@ export interface paths {
         get: operations["getApiUmum-preferences"];
         /** Save umum preferences for current user */
         put: operations["putApiUmum-preferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/keamanan/laporan-lokal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get local security reports from DB (melengkapi external API) */
+        get: operations["getApiKeamananLaporan-lokal"];
+        put?: never;
+        /** Create a new local security report */
+        post: operations["postApiKeamananLaporan-lokal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/keamanan/laporan-lokal/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update security report status */
+        patch: operations["patchApiKeamananLaporan-lokalByIdStatus"];
+        trace?: never;
+    };
+    "/api/keamanan/laporan-lokal/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get stats for local security reports */
+        get: operations["getApiKeamananLaporan-lokalStats"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -1091,7 +1196,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List invitations created by this admin */
+        /** List invitations created by this admin (paginated, default 5 per page) */
         get: operations["getApiInvitationList"];
         put?: never;
         post?: never;
@@ -1129,6 +1234,58 @@ export interface paths {
         put?: never;
         /** Mark invitation as used after signup */
         post: operations["postApiInvitationByTokenAccept"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ip-whitelist/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get IP whitelist entries for current user */
+        get: operations["getApiIp-whitelist"];
+        put?: never;
+        /** Add IP to whitelist */
+        post: operations["postApiIp-whitelist"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ip-whitelist/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove IP from whitelist */
+        delete: operations["deleteApiIp-whitelistById"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/search/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Global full-text search across modules */
+        get: operations["getApiSearch"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2372,7 +2529,10 @@ export interface operations {
     };
     getApiDivisionActivities: {
         parameters: {
-            query?: never;
+            query?: {
+                page?: string;
+                limit?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -2386,12 +2546,21 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: unknown[];
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                     "multipart/form-data": {
                         data: unknown[];
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                     "text/plain": {
                         data: unknown[];
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                 };
             };
@@ -2555,7 +2724,10 @@ export interface operations {
     };
     getApiDivisionDiscussions: {
         parameters: {
-            query?: never;
+            query?: {
+                page?: string;
+                limit?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -2576,6 +2748,9 @@ export interface operations {
                             division: (string | null) | null;
                             isResolved: boolean;
                         }[];
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                     "multipart/form-data": {
                         data: {
@@ -2586,6 +2761,9 @@ export interface operations {
                             division: (string | null) | null;
                             isResolved: boolean;
                         }[];
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                     "text/plain": {
                         data: {
@@ -2596,6 +2774,9 @@ export interface operations {
                             division: (string | null) | null;
                             isResolved: boolean;
                         }[];
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                 };
             };
@@ -2677,7 +2858,10 @@ export interface operations {
     };
     getApiComplaintRecent: {
         parameters: {
-            query?: never;
+            query?: {
+                page?: string;
+                limit?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -2691,12 +2875,21 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: unknown[];
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                     "multipart/form-data": {
                         data: unknown[];
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                     "text/plain": {
                         data: unknown[];
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                 };
             };
@@ -3857,6 +4050,277 @@ export interface operations {
             };
         };
     };
+    getApiUmkmLokal: {
+        parameters: {
+            query?: {
+                limit?: string;
+                offset?: string;
+                banjarId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    postApiUmkmLokal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string;
+                    owner: string;
+                    productType?: string;
+                    description?: string;
+                    banjarId?: string;
+                };
+                "multipart/form-data": {
+                    name: string;
+                    owner: string;
+                    productType?: string;
+                    description?: string;
+                    banjarId?: string;
+                };
+                "text/plain": {
+                    name: string;
+                    owner: string;
+                    productType?: string;
+                    description?: string;
+                    banjarId?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    putApiUmkmLokalById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string;
+                    owner: string;
+                    productType?: string;
+                    description?: string;
+                    banjarId?: string;
+                };
+                "multipart/form-data": {
+                    name: string;
+                    owner: string;
+                    productType?: string;
+                    description?: string;
+                    banjarId?: string;
+                };
+                "text/plain": {
+                    name: string;
+                    owner: string;
+                    productType?: string;
+                    description?: string;
+                    banjarId?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    deleteApiUmkmLokalById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiUmkmLokalStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "getApiUmum-preferences": {
         parameters: {
             query?: never;
@@ -3952,6 +4416,235 @@ export interface operations {
                     };
                     "text/plain": {
                         data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiKeamananLaporan-lokal": {
+        parameters: {
+            query?: {
+                limit?: string;
+                offset?: string;
+                status?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "postApiKeamananLaporan-lokal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title: string;
+                    description: string;
+                    location?: string;
+                    reportedBy: string;
+                    assignedTo?: string;
+                };
+                "multipart/form-data": {
+                    title: string;
+                    description: string;
+                    location?: string;
+                    reportedBy: string;
+                    assignedTo?: string;
+                };
+                "text/plain": {
+                    title: string;
+                    description: string;
+                    location?: string;
+                    reportedBy: string;
+                    assignedTo?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "patchApiKeamananLaporan-lokalByIdStatus": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    status: "BARU" | "DIPROSES" | "SELESAI";
+                };
+                "multipart/form-data": {
+                    status: "BARU" | "DIPROSES" | "SELESAI";
+                };
+                "text/plain": {
+                    status: "BARU" | "DIPROSES" | "SELESAI";
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiKeamananLaporan-lokalStats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            total: number;
+                            baru: number;
+                            diproses: number;
+                            selesai: number;
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            total: number;
+                            baru: number;
+                            diproses: number;
+                            selesai: number;
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            total: number;
+                            baru: number;
+                            diproses: number;
+                            selesai: number;
+                        };
                     };
                 };
             };
@@ -4458,7 +5151,10 @@ export interface operations {
     };
     getApiInvitationList: {
         parameters: {
-            query?: never;
+            query?: {
+                page?: string;
+                limit?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -4472,12 +5168,21 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: unknown;
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                     "multipart/form-data": {
                         data: unknown;
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                     "text/plain": {
                         data: unknown;
+                        total: number;
+                        page: number;
+                        limit: number;
                     };
                 };
             };
@@ -4599,6 +5304,257 @@ export interface operations {
                         error: string;
                     };
                     "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiIp-whitelist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "postApiIp-whitelist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    ip: string;
+                    label?: string;
+                };
+                "multipart/form-data": {
+                    ip: string;
+                    label?: string;
+                };
+                "text/plain": {
+                    ip: string;
+                    label?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "deleteApiIp-whitelistById": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        data: unknown;
+                    };
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiSearch: {
+        parameters: {
+            query?: {
+                q?: string;
+                modules?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        results: {
+                            module: string;
+                            id: string;
+                            title: string;
+                            snippet: string;
+                            url: string;
+                        }[];
+                        total: number;
+                    } | {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        results: {
+                            module: string;
+                            id: string;
+                            title: string;
+                            snippet: string;
+                            url: string;
+                        }[];
+                        total: number;
+                    } | {
+                        error: string;
+                    };
+                    "text/plain": {
+                        results: {
+                            module: string;
+                            id: string;
+                            title: string;
+                            snippet: string;
+                            url: string;
+                        }[];
+                        total: number;
+                    } | {
                         error: string;
                     };
                 };

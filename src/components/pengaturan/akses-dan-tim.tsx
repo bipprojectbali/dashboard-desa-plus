@@ -235,6 +235,7 @@ const AksesDanTimSettings = () => {
 				p="xl"
 				mb="lg"
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+				bg={dark ? "#1E293B" : "white"}
 			>
 				<Group gap="sm" mb="lg">
 					<ThemeIcon
@@ -263,16 +264,28 @@ const AksesDanTimSettings = () => {
 					</Stack>
 				) : (
 					<>
-						<Group justify="space-between" wrap="nowrap" py="sm">
-							<Group gap="sm" wrap="nowrap">
-								<ThemeIcon size={36} radius="md" variant="light" color="violet">
+						<Group
+							justify="space-between"
+							wrap="nowrap"
+							align="center"
+							py="sm"
+							gap="sm"
+						>
+							<Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+								<ThemeIcon
+									size={36}
+									radius="md"
+									variant="light"
+									color="violet"
+									style={{ flexShrink: 0 }}
+								>
 									<IconMailPlus size={18} />
 								</ThemeIcon>
-								<Box>
+								<Box style={{ minWidth: 0 }}>
 									<Text fw={600} fz="sm">
 										{t.akses.undanganAnggota}
 									</Text>
-									<Text fz="xs" c="dimmed">
+									<Text fz="xs" c="dimmed" style={{ wordBreak: "break-word" }}>
 										Kirim undangan via email ke anggota tim baru
 									</Text>
 								</Box>
@@ -283,6 +296,7 @@ const AksesDanTimSettings = () => {
 								color="violet"
 								radius="md"
 								onClick={() => setUndanganOpened(true)}
+								style={{ flexShrink: 0 }}
 							>
 								Buka
 							</Button>
@@ -290,16 +304,28 @@ const AksesDanTimSettings = () => {
 
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 
-						<Group justify="space-between" wrap="nowrap" py="sm">
-							<Group gap="sm" wrap="nowrap">
-								<ThemeIcon size={36} radius="md" variant="light" color="violet">
+						<Group
+							justify="space-between"
+							wrap="nowrap"
+							align="center"
+							py="sm"
+							gap="sm"
+						>
+							<Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+								<ThemeIcon
+									size={36}
+									radius="md"
+									variant="light"
+									color="violet"
+									style={{ flexShrink: 0 }}
+								>
 									<IconKey size={18} />
 								</ThemeIcon>
-								<Box>
+								<Box style={{ minWidth: 0 }}>
 									<Text fw={600} fz="sm">
 										{t.akses.kelolaRole}
 									</Text>
-									<Text fz="xs" c="dimmed">
+									<Text fz="xs" c="dimmed" style={{ wordBreak: "break-word" }}>
 										Atur hak akses dan permission setiap role
 									</Text>
 								</Box>
@@ -310,6 +336,7 @@ const AksesDanTimSettings = () => {
 								color="violet"
 								radius="md"
 								onClick={() => setKelolaRoleOpened(true)}
+								style={{ flexShrink: 0 }}
 							>
 								Buka
 							</Button>
@@ -317,24 +344,47 @@ const AksesDanTimSettings = () => {
 
 						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
 
-						<Group justify="space-between" py="sm">
-							<Group gap="sm">
-								<ThemeIcon size={36} radius="md" variant="light" color="violet">
+						<Group
+							justify="space-between"
+							wrap="nowrap"
+							align="center"
+							py="sm"
+							gap="sm"
+						>
+							<Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+								<ThemeIcon
+									size={36}
+									radius="md"
+									variant="light"
+									color="violet"
+									style={{ flexShrink: 0 }}
+								>
 									<IconUsers size={18} />
 								</ThemeIcon>
-								<Box>
+								<Box style={{ minWidth: 0 }}>
 									<Text fw={600} fz="sm">
 										{t.akses.daftarAnggotaAktif}
 									</Text>
-									<Text fz="xs" c="dimmed">
+									<Text fz="xs" c="dimmed" style={{ wordBreak: "break-word" }}>
 										Total pengguna aktif saat ini
 									</Text>
 								</Box>
 							</Group>
 							{statsLoading ? (
-								<Skeleton height={28} width={80} radius="md" />
+								<Skeleton
+									height={28}
+									width={80}
+									radius="md"
+									style={{ flexShrink: 0 }}
+								/>
 							) : (
-								<Badge size="lg" color="violet" variant="light" radius="md">
+								<Badge
+									size="lg"
+									color="violet"
+									variant="light"
+									radius="md"
+									style={{ flexShrink: 0 }}
+								>
 									{totalAnggota} {t.akses.anggota}
 								</Badge>
 							)}
@@ -350,6 +400,7 @@ const AksesDanTimSettings = () => {
 				p="xl"
 				mb="lg"
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+				bg={dark ? "#1E293B" : "white"}
 			>
 				<Group gap="sm" mb="lg">
 					<ThemeIcon
@@ -426,6 +477,7 @@ const AksesDanTimSettings = () => {
 				p="xl"
 				mb="lg"
 				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+				bg={dark ? "#1E293B" : "white"}
 			>
 				<Group gap="sm" mb="lg">
 					<ThemeIcon

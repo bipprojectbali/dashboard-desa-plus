@@ -16,6 +16,7 @@ import {
 	Tooltip,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useMediaQuery } from "@mantine/hooks";
 import {
 	IconCheck,
 	IconClock,
@@ -55,6 +56,7 @@ interface Props {
 }
 
 export function UndanganModal({ opened, onClose }: Props) {
+	const isMobile = useMediaQuery("(max-width: 48em)");
 	const [generating, setGenerating] = useState(false);
 	const [result, setResult] = useState<InviteResult | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -134,6 +136,7 @@ export function UndanganModal({ opened, onClose }: Props) {
 			}
 			radius="lg"
 			size="lg"
+			fullScreen={!!isMobile}
 		>
 			<Stack gap="md">
 				{error && (
@@ -160,6 +163,7 @@ export function UndanganModal({ opened, onClose }: Props) {
 								placeholder="email@desa.go.id"
 								radius="md"
 								style={{ flex: 1 }}
+								styles={{ input: { minHeight: "44px" } }}
 								{...form.getInputProps("email")}
 							/>
 							<Select
@@ -168,6 +172,7 @@ export function UndanganModal({ opened, onClose }: Props) {
 								radius="md"
 								w={150}
 								allowDeselect={false}
+								styles={{ input: { minHeight: "44px" } }}
 								{...form.getInputProps("role")}
 							/>
 							<Button

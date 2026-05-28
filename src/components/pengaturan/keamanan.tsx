@@ -266,16 +266,28 @@ const KeamananSettings = () => {
 		color?: string;
 		buttonLabel?: string;
 	}) => (
-		<Group justify="space-between" wrap="nowrap" py="sm">
-			<Group gap="sm" wrap="nowrap">
-				<ThemeIcon size={36} radius="md" variant="light" color={color}>
+		<Group
+			justify="space-between"
+			wrap="nowrap"
+			align="center"
+			py="sm"
+			gap="sm"
+		>
+			<Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+				<ThemeIcon
+					size={36}
+					radius="md"
+					variant="light"
+					color={color}
+					style={{ flexShrink: 0 }}
+				>
 					{icon}
 				</ThemeIcon>
-				<Box>
+				<Box style={{ minWidth: 0 }}>
 					<Text fw={600} fz="sm">
 						{label}
 					</Text>
-					<Text fz="xs" c="dimmed">
+					<Text fz="xs" c="dimmed" style={{ wordBreak: "break-word" }}>
 						{description}
 					</Text>
 				</Box>
@@ -287,6 +299,7 @@ const KeamananSettings = () => {
 				radius="md"
 				onClick={onClick}
 				disabled={loading}
+				style={{ flexShrink: 0 }}
 			>
 				{buttonLabel}
 			</Button>
@@ -453,9 +466,10 @@ const KeamananSettings = () => {
 										placeholder="Contoh: 192.168.1.10"
 										value={ipInput}
 										onChange={(e) => setIpInput(e.currentTarget.value)}
-										size="xs"
+										size="sm"
 										radius="md"
 										style={{ flex: 1 }}
+										styles={{ input: { minHeight: "44px" } }}
 										onKeyDown={(e) => {
 											if (e.key === "Enter") handleAddIp();
 										}}
@@ -464,12 +478,13 @@ const KeamananSettings = () => {
 										placeholder="Label (opsional)"
 										value={ipLabel}
 										onChange={(e) => setIpLabel(e.currentTarget.value)}
-										size="xs"
+										size="sm"
 										radius="md"
 										style={{ flex: 1 }}
+										styles={{ input: { minHeight: "44px" } }}
 									/>
 									<ActionIcon
-										size="md"
+										size="lg"
 										radius="md"
 										variant="filled"
 										color="blue"
