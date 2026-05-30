@@ -749,3 +749,18 @@ model ActivityLog {
   @@index([createdAt])
   @@map("activity_log")
 }
+
+model SyncLog {
+  id              String   @id @default(cuid())
+  type            String
+  status          String
+  triggeredBy     String   @default("scheduled")
+  durationMs      Int?
+  recordsAffected Int?
+  errorMessage    String?
+  startedAt       DateTime @default(now())
+
+  @@index([type])
+  @@index([startedAt])
+  @@map("sync_log")
+}

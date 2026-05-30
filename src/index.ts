@@ -382,4 +382,8 @@ console.log(
 	`🚀 Server running at http://localhost:${PORT} in ${isProduction ? "production" : "development"} mode`,
 );
 
+// Start background sync scheduler
+const { startSyncScheduler } = await import("./jobs/sync");
+startSyncScheduler();
+
 export type ApiApp = typeof app;
