@@ -1,13 +1,16 @@
 import {
+	Alert,
 	Badge,
 	Card,
+	Center,
 	Group,
-	Loader,
+	Skeleton,
 	Stack,
 	Text,
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
+import { IconAlertCircle, IconBuildingHospital } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslate } from "@/hooks/useTranslate";
 
@@ -44,14 +47,16 @@ export const PosyanduSchedule = () => {
 	const dark = colorScheme === "dark";
 	const [items, setItems] = useState<PosyanduApiItem[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		fetch(`${DESA_API}/api/kesehatan/posyandu/find-many`)
 			.then((r) => r.json())
 			.then((res) => {
 				if (res.success) setItems((res.data as PosyanduApiItem[]).slice(0, 5));
+				else setError("Data tidak tersedia");
 			})
-			.catch(() => {})
+			.catch(() => setError("Gagal memuat jadwal posyandu"))
 			.finally(() => setLoading(false));
 	}, []);
 
@@ -71,10 +76,39 @@ export const PosyanduSchedule = () => {
 			<Title order={3} mb="md" c={dark ? "dark.0" : "#1e3a5f"}>
 				{t.sosial.jadwalPosyandu}
 			</Title>
+
 			{loading ? (
-				<Group justify="center" py="xl">
-					<Loader size="sm" color="darmasaba-blue" />
-				</Group>
+				<Stack gap="sm">
+					{Array.from({ length: 4 }).map((_, i) => (
+						<Skeleton
+							// biome-ignore lint/suspicious/noArrayIndexKey: static list
+							key={i}
+							height={60}
+							radius="md"
+						/>
+					))}
+				</Stack>
+			) : error ? (
+				<Alert
+					icon={<IconAlertCircle size={16} />}
+					color="red"
+					radius="md"
+					title="Gagal memuat data"
+				>
+					{error}
+				</Alert>
+			) : items.length === 0 ? (
+				<Center py="xl">
+					<Stack align="center" gap="xs">
+						<IconBuildingHospital
+							size={40}
+							color={dark ? "#475569" : "#CBD5E1"}
+						/>
+						<Text c="dimmed" size="sm">
+							Belum ada jadwal posyandu
+						</Text>
+					</Stack>
+				</Center>
 			) : (
 				<Stack gap="sm">
 					{items.map((item) => (

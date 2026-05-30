@@ -874,6 +874,25 @@
         "operationId": "getApiNocLatest-projects"
       }
     },
+    "/api/noc/export-activities": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "idDesa",
+            "required": true
+          }
+        ],
+        "operationId": "getApiNocExport-activities",
+        "summary": "Export kinerja divisi report as PDF",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
     "/api/noc/upcoming-events": {
       "get": {
         "parameters": [
@@ -4839,6 +4858,15 @@
         },
         "operationId": "getApiComplaintService-trends",
         "summary": "Get service letter trends for last 6 months"
+      }
+    },
+    "/api/complaint/export": {
+      "get": {
+        "operationId": "getApiComplaintExport",
+        "summary": "Export all complaints as PDF",
+        "responses": {
+          "200": {}
+        }
       }
     },
     "/api/complaint/service-weekly": {
@@ -10009,7 +10037,7 @@
     "/api/activity-log/export": {
       "get": {
         "operationId": "getApiActivity-logExport",
-        "summary": "Export activity logs as CSV",
+        "summary": "Export activity logs as PDF",
         "responses": {
           "200": {}
         }
@@ -11290,6 +11318,59 @@
         },
         "operationId": "getApiSearch",
         "summary": "Global full-text search across modules"
+      }
+    },
+    "/api/sosial/banjars": {
+      "get": {
+        "operationId": "getApiSosialBanjars",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/sosial/health-records": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "banjarId",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "tahun",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 1
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "operationId": "getApiSosialHealth-records",
+        "responses": {
+          "200": {}
+        }
       }
     }
   },

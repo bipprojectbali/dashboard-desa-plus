@@ -124,25 +124,32 @@ export const activityLog = new Elysia({ prefix: "/activity-log" })
 					},
 				});
 
-				const header = "Waktu,Aksi,Detail,IP,User Agent\n";
-				const rows = logs
-					.map((l) =>
-						[
-							new Date(l.createdAt).toISOString(),
-							`"${l.action}"`,
-							`"${(l.detail ?? "").replace(/"/g, '""')}"`,
-							l.ipAddress ?? "",
-							`"${(l.userAgent ?? "").replace(/"/g, '""')}"`,
-						].join(","),
-					)
-					.join("\n");
+				const { buildPdfTable } = await import("../utils/pdf-table");
 
-				const csv = header + rows;
+				const buffer = await buildPdfTable({
+					title: "Riwayat Log Aktivitas",
+					columns: [
+						{ header: "Waktu", key: "createdAt", width: 110 },
+						{ header: "Aksi", key: "action", width: 110 },
+						{ header: "Detail", key: "detail", width: 150 },
+						{ header: "IP Address", key: "ip", width: 85 },
+					],
+					rows: logs.map((l) => ({
+						createdAt: new Date(l.createdAt).toLocaleString("id-ID"),
+						action: l.action,
+						detail: l.detail ?? "-",
+						ip: l.ipAddress ?? "-",
+					})),
+				});
 
-				return new Response(csv, {
+				const ab = buffer.buffer.slice(
+					buffer.byteOffset,
+					buffer.byteOffset + buffer.byteLength,
+				) as ArrayBuffer;
+				return new Response(ab, {
 					headers: {
-						"Content-Type": "text/csv; charset=utf-8",
-						"Content-Disposition": `attachment; filename="activity-log-${new Date().toISOString().slice(0, 10)}.csv"`,
+						"Content-Type": "application/pdf",
+						"Content-Disposition": `attachment; filename="activity-log-${new Date().toISOString().slice(0, 10)}.pdf"`,
 					},
 				});
 			} catch (error) {
@@ -155,6 +162,6 @@ export const activityLog = new Elysia({ prefix: "/activity-log" })
 			}
 		},
 		{
-			detail: { summary: "Export activity logs as CSV" },
+			detail: { summary: "Export activity logs as PDF" },
 		},
 	);

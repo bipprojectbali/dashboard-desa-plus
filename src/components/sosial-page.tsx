@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslate } from "@/hooks/useTranslate";
 import { Beasiswa } from "./sosial/beasiswa";
 import { EventCalendar } from "./sosial/event-calendar";
+import { HealthRecords } from "./sosial/health-records";
 import { HealthStats } from "./sosial/health-stats";
 import { Pendidikan } from "./sosial/pendidikan";
 import { PosyanduSchedule } from "./sosial/posyandu-schedule";
@@ -171,6 +172,8 @@ const SosialPage = () => {
 			) : (
 				<EventCalendar data={events ?? undefined} />
 			)}
+
+			<HealthRecords />
 		</Stack>
 	);
 };

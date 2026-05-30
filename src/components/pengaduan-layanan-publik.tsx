@@ -12,7 +12,11 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
+import {
+	IconAlertCircle,
+	IconDownload,
+	IconRefresh,
+} from "@tabler/icons-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { CheckCircle, Clock, FileText, MessageCircle } from "lucide-react";
@@ -29,6 +33,7 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
+import { useAksesPrefs } from "@/hooks/useAksesPrefs";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
@@ -81,6 +86,7 @@ const getStatusColor = (status: string) => {
 
 const PengaduanLayananPublik = () => {
 	const t = useTranslate();
+	const { izinExportData } = useAksesPrefs();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const { tampilkanGrid } = useSnapshot(i18nStore);
@@ -183,6 +189,13 @@ const PengaduanLayananPublik = () => {
 		},
 	];
 
+	const handleExport = () => {
+		const a = document.createElement("a");
+		a.href = "/api/complaint/export";
+		a.download = `pengaduan-${new Date().toISOString().slice(0, 10)}.pdf`;
+		a.click();
+	};
+
 	return (
 		<Stack gap="lg">
 			<InnovationIdeaModal
@@ -190,6 +203,19 @@ const PengaduanLayananPublik = () => {
 				opened={ideaModalOpen}
 				onClose={() => setIdeaModalOpen(false)}
 			/>
+			{izinExportData && (
+				<Group justify="flex-end">
+					<Button
+						variant="light"
+						color="teal"
+						size="sm"
+						leftSection={<IconDownload size={16} />}
+						onClick={handleExport}
+					>
+						Export PDF
+					</Button>
+				</Group>
+			)}
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}
