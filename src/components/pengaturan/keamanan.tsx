@@ -36,6 +36,7 @@ import {
 import { useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
 import { useActivityLogger } from "@/hooks/useActivityLogger";
+import { useAksesPrefs } from "@/hooks/useAksesPrefs";
 import { useApprovalGuard } from "@/hooks/useApprovalGuard";
 import { useTranslate } from "@/hooks/useTranslate";
 import { authStore } from "@/store/auth";
@@ -60,6 +61,7 @@ const KeamananSettings = () => {
 	const t = useTranslate();
 	const { withApproval } = useApprovalGuard();
 	const { log } = useActivityLogger();
+	const { izinExportData } = useAksesPrefs();
 	const snap = useSnapshot(authStore);
 	const isAdmin = snap.user?.role === "admin";
 	const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
@@ -604,20 +606,24 @@ const KeamananSettings = () => {
 							icon={<IconClipboardList size={18} />}
 							field="logAktivitas"
 						/>
-						<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
-						<ActionRow
-							label={t.keamanan.downloadLog}
-							description="Unduh riwayat log aktivitas dalam format CSV untuk keperluan audit"
-							icon={<IconDownload size={18} />}
-							color="teal"
-							buttonLabel="Download"
-							onClick={() => {
-								const a = document.createElement("a");
-								a.href = "/api/activity-log/export";
-								a.download = "activity-log.csv";
-								a.click();
-							}}
-						/>
+						{izinExportData && (
+							<>
+								<Divider my="xs" color={dark ? "#1e293b" : "#f1f5f9"} />
+								<ActionRow
+									label={t.keamanan.downloadLog}
+									description="Unduh riwayat log aktivitas dalam format CSV untuk keperluan audit"
+									icon={<IconDownload size={18} />}
+									color="teal"
+									buttonLabel="Download PDF"
+									onClick={() => {
+										const a = document.createElement("a");
+										a.href = "/api/activity-log/export";
+										a.download = "activity-log.pdf";
+										a.click();
+									}}
+								/>
+							</>
+						)}
 					</>
 				)}
 			</Paper>

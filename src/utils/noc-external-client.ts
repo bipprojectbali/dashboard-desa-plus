@@ -18,6 +18,11 @@ const cleanBaseUrl = externalBaseUrl
 	.replace("/docs/json", "")
 	.replace(/\/api\/noc\/?$/, "");
 
+const nocApiKey = getEnv("NOC_API_KEY", "");
+
 export const nocExternalClient = createClient<paths>({
 	baseUrl: cleanBaseUrl,
+	headers: {
+		"x-api-key": nocApiKey,
+	},
 });

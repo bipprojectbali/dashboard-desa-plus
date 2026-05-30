@@ -199,6 +199,52 @@ export const complaint = new Elysia({
 		},
 	)
 	.get(
+		"/export",
+		async ({ set }) => {
+			try {
+				const data = await prisma.complaint.findMany({
+					orderBy: { createdAt: "desc" },
+				});
+
+				const { buildPdfTable } = await import("../utils/pdf-table");
+
+				const buffer = await buildPdfTable({
+					title: "Laporan Pengaduan Layanan Publik",
+					columns: [
+						{ header: "Judul", key: "title", width: 180 },
+						{ header: "Kategori", key: "category", width: 120 },
+						{ header: "Status", key: "status", width: 80 },
+						{ header: "Tanggal", key: "createdAt", width: 95 },
+					],
+					rows: data.map((c) => ({
+						title: c.title,
+						category: c.category,
+						status: c.status,
+						createdAt: new Date(c.createdAt).toLocaleDateString("id-ID"),
+					})),
+				});
+
+				const ab = buffer.buffer.slice(
+					buffer.byteOffset,
+					buffer.byteOffset + buffer.byteLength,
+				) as ArrayBuffer;
+				return new Response(ab, {
+					headers: {
+						"Content-Type": "application/pdf",
+						"Content-Disposition": `attachment; filename="pengaduan-${new Date().toISOString().slice(0, 10)}.pdf"`,
+					},
+				});
+			} catch (error) {
+				logger.error({ error }, "Failed to export complaints");
+				set.status = 500;
+				return { error: "Internal Server Error" };
+			}
+		},
+		{
+			detail: { summary: "Export all complaints as PDF" },
+		},
+	)
+	.get(
 		"/service-weekly",
 		async ({ set }) => {
 			try {

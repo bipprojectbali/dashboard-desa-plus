@@ -225,6 +225,148 @@ export const noc = new Elysia({ prefix: "/noc" })
 		},
 	)
 	.get(
+		"/export-activities",
+		async ({ query }) => {
+			const { idDesa } = query;
+
+			const [activities, divisions, docStats, actStats, discussions] =
+				await Promise.all([
+					// 1. Program kegiatan
+					prisma.activity.findMany({
+						where: { villageId: idDesa },
+						orderBy: { createdAt: "desc" },
+						include: { division: { select: { name: true } } },
+					}),
+					// 2. Divisi teraktif — sama persis dengan /api/division/ (tanpa filter villageId)
+					prisma.division.findMany({
+						include: { _count: { select: { activities: true } } },
+					}),
+					// 3. Jumlah dokumen per tipe
+					prisma.document.groupBy({
+						where: { villageId: idDesa },
+						by: ["type"],
+						_count: { _all: true },
+					}),
+					// 4. Progres kegiatan per status
+					prisma.activity.groupBy({
+						where: { villageId: idDesa },
+						by: ["status"],
+						_count: { _all: true },
+					}),
+					// 5. Diskusi terbaru
+					prisma.discussion.findMany({
+						where: { villageId: idDesa },
+						orderBy: { createdAt: "desc" },
+						take: 20,
+						include: {
+							sender: { select: { name: true } },
+							division: { select: { name: true } },
+						},
+					}),
+				]);
+
+			const { buildPdfReport } = await import("../utils/pdf-table");
+
+			const totalAktivitas = actStats.reduce(
+				(sum, s) => sum + s._count._all,
+				0,
+			);
+
+			const buffer = await buildPdfReport({
+				title: "Laporan Kinerja Divisi",
+				sections: [
+					{
+						heading: "Program Kegiatan Terbaru",
+						columns: [
+							{ header: "Judul Kegiatan", key: "title", width: 190 },
+							{ header: "Divisi", key: "division", width: 110 },
+							{ header: "Status", key: "status", width: 75 },
+							{ header: "Progress", key: "progress", width: 60 },
+							{ header: "Tanggal", key: "createdAt", width: 80 },
+						],
+						rows: activities.map((a) => ({
+							title: a.title,
+							division: a.division.name,
+							status: a.status,
+							progress: `${a.progress}%`,
+							createdAt: new Date(a.createdAt).toLocaleDateString("id-ID"),
+						})),
+					},
+					{
+						heading: "Divisi Teraktif",
+						columns: [
+							{ header: "Nama Divisi", key: "name", width: 350 },
+							{ header: "Jumlah Kegiatan", key: "count", width: 165 },
+						],
+						rows: divisions
+							.map((d) => ({
+								name: d.name,
+								count: d.externalActivityCount ?? d._count.activities,
+							}))
+							.sort((a, b) => Number(b.count) - Number(a.count)),
+					},
+					{
+						heading: "Progres Kegiatan",
+						columns: [
+							{ header: "Status", key: "status", width: 200 },
+							{ header: "Jumlah", key: "count", width: 100 },
+							{ header: "Persentase", key: "pct", width: 215 },
+						],
+						rows: actStats.map((s) => ({
+							status: s.status,
+							count: s._count._all,
+							pct:
+								totalAktivitas > 0
+									? `${((s._count._all / totalAktivitas) * 100).toFixed(1)}%`
+									: "0%",
+						})),
+					},
+					{
+						heading: "Jumlah Dokumen per Tipe",
+						columns: [
+							{ header: "Tipe Dokumen", key: "type", width: 350 },
+							{ header: "Jumlah", key: "count", width: 165 },
+						],
+						rows: docStats.map((d) => ({
+							type: d.type,
+							count: d._count._all,
+						})),
+					},
+					{
+						heading: "Diskusi Terbaru",
+						columns: [
+							{ header: "Pesan", key: "message", width: 200 },
+							{ header: "Pengirim", key: "sender", width: 110 },
+							{ header: "Divisi", key: "division", width: 100 },
+							{ header: "Tanggal", key: "date", width: 105 },
+						],
+						rows: discussions.map((d) => ({
+							message: d.message,
+							sender: d.sender.name ?? "-",
+							division: d.division?.name ?? "-",
+							date: new Date(d.createdAt).toLocaleDateString("id-ID"),
+						})),
+					},
+				],
+			});
+
+			const ab = buffer.buffer.slice(
+				buffer.byteOffset,
+				buffer.byteOffset + buffer.byteLength,
+			) as ArrayBuffer;
+			return new Response(ab, {
+				headers: {
+					"Content-Type": "application/pdf",
+					"Content-Disposition": `attachment; filename="kinerja-divisi-${new Date().toISOString().slice(0, 10)}.pdf"`,
+				},
+			});
+		},
+		{
+			query: t.Object({ idDesa: t.String() }),
+			detail: { summary: "Export kinerja divisi report as PDF" },
+		},
+	)
+	.get(
 		"/upcoming-events",
 		async ({ query }) => {
 			const { idDesa, limit, filter } = query;

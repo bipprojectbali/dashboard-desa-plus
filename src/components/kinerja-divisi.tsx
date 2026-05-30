@@ -1,7 +1,20 @@
-import { Alert, Button, Card, Grid, Skeleton, Stack } from "@mantine/core";
-import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
+import {
+	Alert,
+	Button,
+	Card,
+	Grid,
+	Group,
+	Skeleton,
+	Stack,
+} from "@mantine/core";
+import {
+	IconAlertCircle,
+	IconDownload,
+	IconRefresh,
+} from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
+import { useAksesPrefs } from "@/hooks/useAksesPrefs";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 import { ActivityCard } from "./kinerja-divisi/activity-card";
@@ -28,6 +41,7 @@ interface EventData {
 
 const KinerjaDivisi = () => {
 	const t = useTranslate();
+	const { izinExportData } = useAksesPrefs();
 	const [activities, setActivities] = useState<Activity[]>([]);
 	const [todayEvents, setTodayEvents] = useState<EventData[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -76,8 +90,28 @@ const KinerjaDivisi = () => {
 		{ name: t.kinerjaDivisi.notulensiRapat },
 	];
 
+	const handleExport = () => {
+		const a = document.createElement("a");
+		a.href = "/api/noc/export-activities?idDesa=desa1";
+		a.download = `kinerja-divisi-${new Date().toISOString().slice(0, 10)}.pdf`;
+		a.click();
+	};
+
 	return (
 		<Stack gap="lg">
+			{izinExportData && (
+				<Group justify="flex-end">
+					<Button
+						variant="light"
+						color="teal"
+						size="sm"
+						leftSection={<IconDownload size={16} />}
+						onClick={handleExport}
+					>
+						Export PDF
+					</Button>
+				</Group>
+			)}
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}

@@ -218,6 +218,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/noc/export-activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export kinerja divisi report as PDF */
+        get: operations["getApiNocExport-activities"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/noc/upcoming-events": {
         parameters: {
             query?: never;
@@ -577,6 +594,23 @@ export interface paths {
         };
         /** Get service letter trends for last 6 months */
         get: operations["getApiComplaintService-trends"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/complaint/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export all complaints as PDF */
+        get: operations["getApiComplaintExport"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1162,7 +1196,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Export activity logs as CSV */
+        /** Export activity logs as PDF */
         get: operations["getApiActivity-logExport"];
         put?: never;
         post?: never;
@@ -1284,6 +1318,38 @@ export interface paths {
         };
         /** Global full-text search across modules */
         get: operations["getApiSearch"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sosial/banjars": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiSosialBanjars"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sosial/health-records": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiSosialHealth-records"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1706,6 +1772,25 @@ export interface operations {
                         }[];
                     };
                 };
+            };
+        };
+    };
+    "getApiNocExport-activities": {
+        parameters: {
+            query: {
+                idDesa: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -3080,6 +3165,23 @@ export interface operations {
                         error: string;
                     };
                 };
+            };
+        };
+    };
+    getApiComplaintExport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -5558,6 +5660,45 @@ export interface operations {
                         error: string;
                     };
                 };
+            };
+        };
+    };
+    getApiSosialBanjars: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "getApiSosialHealth-records": {
+        parameters: {
+            query?: {
+                banjarId?: string;
+                tahun?: string;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
