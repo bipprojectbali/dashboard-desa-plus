@@ -23,6 +23,7 @@ import { profile } from "./profile";
 import { resident } from "./resident";
 import { searchRoutes } from "./search";
 import { sosial } from "./sosial";
+import { syncLog } from "./sync-log";
 import { systemStatsRoutes } from "./system-stats";
 import { umkm } from "./umkm";
 import { umumPreferences } from "./umum-preferences";
@@ -88,7 +89,8 @@ const api = new Elysia({
 	.use(invitationRoutes)
 	.use(ipWhitelist)
 	.use(searchRoutes)
-	.use(sosial);
+	.use(sosial)
+	.use(syncLog);
 
 if (!isProduction) {
 	api.use(

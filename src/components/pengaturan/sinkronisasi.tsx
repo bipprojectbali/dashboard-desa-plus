@@ -5,8 +5,12 @@ import {
 	Button,
 	Divider,
 	Group,
+	Loader,
 	Paper,
+	ScrollArea,
+	Select,
 	Stack,
+	Table,
 	Text,
 	ThemeIcon,
 	Title,
@@ -20,11 +24,12 @@ import {
 	IconClock,
 	IconCloudUpload,
 	IconDatabase,
+	IconHistory,
 	IconRefresh,
 	IconUsers,
 } from "@tabler/icons-react";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
 import { useTranslate } from "@/hooks/useTranslate";
 import { authStore } from "@/store/auth";
@@ -34,6 +39,17 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 dayjs.locale("id");
+
+type SyncLogEntry = {
+	id: string;
+	type: string;
+	status: string;
+	triggeredBy: string;
+	durationMs: number | null;
+	recordsAffected: number | null;
+	errorMessage: string | null;
+	startedAt: string;
+};
 
 const SinkronisasiSettings = () => {
 	const t = useTranslate();
@@ -53,6 +69,28 @@ const SinkronisasiSettings = () => {
 		type: "success" | "error" | null;
 		message: string;
 	}>({ type: null, message: "" });
+
+	const [syncLogs, setSyncLogs] = useState<SyncLogEntry[]>([]);
+	const [logsLoading, setLogsLoading] = useState(false);
+	const [logsType, setLogsType] = useState<string | null>(null);
+
+	const fetchSyncLogs = useCallback(async (type?: string | null) => {
+		setLogsLoading(true);
+		try {
+			const params: Record<string, string> = { limit: "30" };
+			if (type) params.type = type;
+			const qs = new URLSearchParams(params).toString();
+			const res = await fetch(`/api/admin/sync/logs?${qs}`);
+			if (res.ok) {
+				const json = await res.json();
+				setSyncLogs(json.data ?? []);
+			}
+		} catch {
+			// silent
+		} finally {
+			setLogsLoading(false);
+		}
+	}, []);
 
 	const fetchLastSync = async () => {
 		const { data } = await apiClient.GET("/api/noc/last-sync", {
@@ -78,7 +116,12 @@ const SinkronisasiSettings = () => {
 	useEffect(() => {
 		fetchLastSync();
 		fetchDemografiLastSync();
-	}, []);
+		fetchSyncLogs();
+	}, [fetchSyncLogs]);
+
+	useEffect(() => {
+		fetchSyncLogs(logsType);
+	}, [logsType, fetchSyncLogs]);
 
 	const handleSync = async () => {
 		setLoading(true);
@@ -457,6 +500,148 @@ const SinkronisasiSettings = () => {
 				sourceUrl="desa-darmasaba-stg.wibudev.com"
 				sourceName={t.sinkronisasi.desaNama}
 			/>
+
+			{/* Riwayat Sinkronisasi */}
+			<Paper
+				withBorder
+				radius="lg"
+				p="xl"
+				style={{ borderColor: dark ? "#334155" : "#e2e8f0" }}
+				bg={dark ? "#1E293B" : "white"}
+			>
+				<Group justify="space-between" mb="md">
+					<Group gap="sm">
+						<ThemeIcon size={36} radius="md" variant="light" color="gray">
+							<IconHistory size={18} />
+						</ThemeIcon>
+						<Box>
+							<Title order={4} fw={700}>
+								Riwayat Sinkronisasi
+							</Title>
+							<Text fz="xs" c="dimmed">
+								30 entri terakhir dari scheduler otomatis & manual
+							</Text>
+						</Box>
+					</Group>
+					<Group gap="xs">
+						<Select
+							size="xs"
+							radius="md"
+							placeholder="Semua tipe"
+							clearable
+							data={[
+								{ value: "noc", label: "NOC" },
+								{ value: "demografi", label: "Demografi" },
+							]}
+							value={logsType}
+							onChange={setLogsType}
+							w={130}
+						/>
+						<Button
+							size="xs"
+							variant="light"
+							radius="md"
+							leftSection={<IconRefresh size={13} />}
+							onClick={() => fetchSyncLogs(logsType)}
+							loading={logsLoading}
+						>
+							Refresh
+						</Button>
+					</Group>
+				</Group>
+
+				{logsLoading ? (
+					<Group justify="center" py="xl">
+						<Loader size="sm" />
+					</Group>
+				) : syncLogs.length === 0 ? (
+					<Text fz="sm" c="dimmed" ta="center" py="xl">
+						Belum ada riwayat sinkronisasi.
+					</Text>
+				) : (
+					<ScrollArea>
+						<Table
+							striped
+							highlightOnHover
+							fz="xs"
+							withTableBorder
+							withColumnBorders
+						>
+							<Table.Thead>
+								<Table.Tr>
+									<Table.Th>Tipe</Table.Th>
+									<Table.Th>Status</Table.Th>
+									<Table.Th>Dipicu</Table.Th>
+									<Table.Th>Durasi</Table.Th>
+									<Table.Th>Records</Table.Th>
+									<Table.Th>Waktu Mulai</Table.Th>
+									<Table.Th>Error</Table.Th>
+								</Table.Tr>
+							</Table.Thead>
+							<Table.Tbody>
+								{syncLogs.map((log) => (
+									<Table.Tr key={log.id}>
+										<Table.Td>
+											<Badge
+												size="xs"
+												color={log.type === "noc" ? "teal" : "blue"}
+												variant="light"
+											>
+												{log.type.toUpperCase()}
+											</Badge>
+										</Table.Td>
+										<Table.Td>
+											<Badge
+												size="xs"
+												color={
+													log.status === "success"
+														? "green"
+														: log.status === "error"
+															? "red"
+															: "yellow"
+												}
+												variant="light"
+											>
+												{log.status}
+											</Badge>
+										</Table.Td>
+										<Table.Td>
+											<Badge size="xs" color="gray" variant="outline">
+												{log.triggeredBy}
+											</Badge>
+										</Table.Td>
+										<Table.Td>
+											{log.durationMs != null
+												? log.durationMs < 1000
+													? `${log.durationMs}ms`
+													: `${(log.durationMs / 1000).toFixed(1)}s`
+												: "-"}
+										</Table.Td>
+										<Table.Td>{log.recordsAffected ?? "-"}</Table.Td>
+										<Table.Td style={{ whiteSpace: "nowrap" }}>
+											{dayjs(log.startedAt).format("DD/MM/YY HH:mm:ss")}
+										</Table.Td>
+										<Table.Td>
+											{log.errorMessage ? (
+												<Text
+													fz="xs"
+													c="red"
+													style={{ maxWidth: 200 }}
+													lineClamp={2}
+												>
+													{log.errorMessage}
+												</Text>
+											) : (
+												"-"
+											)}
+										</Table.Td>
+									</Table.Tr>
+								))}
+							</Table.Tbody>
+						</Table>
+					</ScrollArea>
+				)}
+			</Paper>
 		</Box>
 	);
 };
