@@ -26,6 +26,7 @@ import {
 	IconMoon,
 	IconSettings,
 	IconShieldCheck,
+	IconShieldLock,
 	IconSun,
 	IconUser,
 	IconUsers,
@@ -86,6 +87,12 @@ function DashboardLayout() {
 			label: "Jenna Analytics",
 			to: "/admin/jenna-analytics",
 			description: "Statistik penggunaan asisten virtual Jenna",
+		},
+		{
+			icon: IconShieldLock,
+			label: "Role & Permission",
+			to: "/admin/roles",
+			description: "Konfigurasi hak akses per role pengguna",
 		},
 		{
 			icon: IconSettings,

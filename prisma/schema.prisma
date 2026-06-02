@@ -784,3 +784,16 @@ model JennaUsageLog {
   @@index([userId, createdAt])
   @@map("jenna_usage_log")
 }
+
+model RolePermission {
+  id        String   @id @default(cuid())
+  role      String
+  feature   String
+  allowed   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([role, feature])
+  @@index([role])
+  @@map("role_permission")
+}

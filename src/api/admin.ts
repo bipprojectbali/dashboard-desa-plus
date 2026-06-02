@@ -3,6 +3,7 @@ import { apiMiddleware } from "../middleware/apiMiddleware";
 import { cache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
+import { FEATURES, ROLES, seedDefaultPermissions } from "../utils/permission";
 
 export const adminApi = new Elysia({ prefix: "/admin" })
 	.use(apiMiddleware)
@@ -441,5 +442,70 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 				to: t.Optional(t.String()),
 			}),
 			detail: { summary: "Export activity logs as PDF (admin only)" },
+		},
+	)
+	.get(
+		"/roles/permissions",
+		async ({ set, user }) => {
+			if (user?.role !== "admin") {
+				set.status = 403;
+				return { error: "Forbidden" };
+			}
+
+			await seedDefaultPermissions();
+
+			const records = await prisma.rolePermission.findMany({
+				select: { role: true, feature: true, allowed: true },
+				orderBy: [{ role: "asc" }, { feature: "asc" }],
+			});
+
+			// Build matrix: { [role]: { [feature]: boolean } }
+			const matrix: Record<string, Record<string, boolean>> = {};
+			for (const r of ROLES) {
+				matrix[r] = {};
+				for (const f of FEATURES) {
+					matrix[r][f.key] = false;
+				}
+			}
+			for (const rec of records) {
+				if (matrix[rec.role]) {
+					matrix[rec.role][rec.feature] = rec.allowed;
+				}
+			}
+
+			return { matrix, features: FEATURES, roles: ROLES };
+		},
+		{ detail: { summary: "Get role permission matrix (admin only)" } },
+	)
+	.put(
+		"/roles/permissions",
+		async ({ body, set, user }) => {
+			if (user?.role !== "admin") {
+				set.status = 403;
+				return { error: "Forbidden" };
+			}
+
+			const ops = body.permissions.map(({ role, feature, allowed }) =>
+				prisma.rolePermission.upsert({
+					where: { role_feature: { role, feature } },
+					create: { role, feature, allowed },
+					update: { allowed },
+				}),
+			);
+			await prisma.$transaction(ops);
+
+			return { success: true, updated: body.permissions.length };
+		},
+		{
+			body: t.Object({
+				permissions: t.Array(
+					t.Object({
+						role: t.String(),
+						feature: t.String(),
+						allowed: t.Boolean(),
+					}),
+				),
+			}),
+			detail: { summary: "Update role permission matrix (admin only)" },
 		},
 	);
