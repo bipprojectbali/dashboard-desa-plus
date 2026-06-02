@@ -37,6 +37,7 @@ import { Route as PengaturanAksesDanTimRouteImport } from './routes/pengaturan/a
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminHelpRouteImport } from './routes/admin/help'
+import { Route as AdminAuditLogRouteImport } from './routes/admin/audit-log'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
 
 const SosialRoute = SosialRouteImport.update({
@@ -179,6 +180,11 @@ const AdminHelpRoute = AdminHelpRouteImport.update({
   path: '/help',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminAuditLogRoute = AdminAuditLogRouteImport.update({
+  id: '/audit-log',
+  path: '/audit-log',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminApikeyRoute = AdminApikeyRouteImport.update({
   id: '/apikey',
   path: '/apikey',
@@ -202,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/sosial': typeof SosialRoute
   '/admin/apikey': typeof AdminApikeyRoute
+  '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -231,6 +238,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/sosial': typeof SosialRoute
   '/admin/apikey': typeof AdminApikeyRoute
+  '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -263,6 +271,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/sosial': typeof SosialRoute
   '/admin/apikey': typeof AdminApikeyRoute
+  '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sosial'
     | '/admin/apikey'
+    | '/admin/audit-log'
     | '/admin/help'
     | '/admin/settings'
     | '/admin/users'
@@ -325,6 +335,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sosial'
     | '/admin/apikey'
+    | '/admin/audit-log'
     | '/admin/help'
     | '/admin/settings'
     | '/admin/users'
@@ -356,6 +367,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sosial'
     | '/admin/apikey'
+    | '/admin/audit-log'
     | '/admin/help'
     | '/admin/settings'
     | '/admin/users'
@@ -589,6 +601,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminHelpRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/audit-log': {
+      id: '/admin/audit-log'
+      path: '/audit-log'
+      fullPath: '/admin/audit-log'
+      preLoaderRoute: typeof AdminAuditLogRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/apikey': {
       id: '/admin/apikey'
       path: '/apikey'
@@ -601,6 +620,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteRouteChildren {
   AdminApikeyRoute: typeof AdminApikeyRoute
+  AdminAuditLogRoute: typeof AdminAuditLogRoute
   AdminHelpRoute: typeof AdminHelpRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -609,6 +629,7 @@ interface AdminRouteRouteChildren {
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminApikeyRoute: AdminApikeyRoute,
+  AdminAuditLogRoute: AdminAuditLogRoute,
   AdminHelpRoute: AdminHelpRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,

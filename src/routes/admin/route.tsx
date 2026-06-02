@@ -24,6 +24,7 @@ import {
 	IconLogout,
 	IconMoon,
 	IconSettings,
+	IconShieldCheck,
 	IconSun,
 	IconUser,
 	IconUsers,
@@ -72,6 +73,12 @@ function DashboardLayout() {
 			label: "API Key",
 			to: "/admin/apikey",
 			description: "Manajemen kunci akses API",
+		},
+		{
+			icon: IconShieldCheck,
+			label: "Audit Log",
+			to: "/admin/audit-log",
+			description: "Riwayat aktivitas semua pengguna",
 		},
 		{
 			icon: IconSettings,
