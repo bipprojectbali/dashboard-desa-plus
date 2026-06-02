@@ -1,4 +1,5 @@
 import Elysia, { t } from "elysia";
+import { cache, TTL, withCache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
 
@@ -56,6 +57,7 @@ export const umkm = new Elysia({
 		"/lokal",
 		async ({ body, set }) => {
 			try {
+				cache.delete("umkm:stats");
 				const item = await prisma.umkm.create({
 					data: {
 						name: body.name,
@@ -91,6 +93,7 @@ export const umkm = new Elysia({
 		"/lokal/:id",
 		async ({ params, body, set }) => {
 			try {
+				cache.delete("umkm:stats");
 				const item = await prisma.umkm.update({
 					where: { id: params.id },
 					data: {
@@ -128,6 +131,7 @@ export const umkm = new Elysia({
 		"/lokal/:id",
 		async ({ params, set }) => {
 			try {
+				cache.delete("umkm:stats");
 				await prisma.umkm.delete({ where: { id: params.id } });
 				return { data: { deleted: true } };
 			} catch (error) {
@@ -149,14 +153,17 @@ export const umkm = new Elysia({
 		"/lokal/stats",
 		async ({ set }) => {
 			try {
-				const [total, perBanjar] = await Promise.all([
-					prisma.umkm.count(),
-					prisma.umkm.groupBy({
-						by: ["banjarId"],
-						_count: { _all: true },
-					}),
-				]);
-				return { data: { total, perBanjar } };
+				const data = await withCache("umkm:stats", TTL.UMKM, async () => {
+					const [total, perBanjar] = await Promise.all([
+						prisma.umkm.count(),
+						prisma.umkm.groupBy({
+							by: ["banjarId"],
+							_count: { _all: true },
+						}),
+					]);
+					return { total, perBanjar };
+				});
+				return { data };
 			} catch (error) {
 				logger.error({ error }, "Failed to fetch local UMKM stats");
 				set.status = 500;

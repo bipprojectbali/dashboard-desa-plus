@@ -1,5 +1,6 @@
 import Elysia, { t } from "elysia";
 import { apiMiddleware } from "../middleware/apiMiddleware";
+import { cache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
 
@@ -245,6 +246,29 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 			}),
 			detail: { summary: "List all activity logs (admin only)" },
 		},
+	)
+	.get(
+		"/cache/stats",
+		({ set, user }) => {
+			if (user?.role !== "admin") {
+				set.status = 403;
+				return { error: "Forbidden" };
+			}
+			return cache.stats();
+		},
+		{ detail: { summary: "Get in-memory cache stats (admin only)" } },
+	)
+	.delete(
+		"/cache/flush",
+		({ set, user }) => {
+			if (user?.role !== "admin") {
+				set.status = 403;
+				return { error: "Forbidden" };
+			}
+			const flushed = cache.flush();
+			return { flushed };
+		},
+		{ detail: { summary: "Flush all in-memory cache entries (admin only)" } },
 	)
 	.get(
 		"/activity-logs/export",
