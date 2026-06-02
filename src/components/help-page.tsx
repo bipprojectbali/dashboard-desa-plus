@@ -549,115 +549,169 @@ const HelpPage = () => {
 								title={t.help.kontakDukungan}
 								h="100%"
 							>
-								<Grid gutter="md">
+								<Grid gutter={0}>
 									{/* Info Kontak Desa */}
-									<Grid.Col span={{ base: 12, sm: 4 }}>
-										<Stack gap="md">
-											<Text size="sm" fw={700} c="dimmed" tt="uppercase">
+									<Grid.Col
+										span={{ base: 12, sm: 4 }}
+										style={{
+											borderRight: `1px solid ${dark ? "#263345" : "#f0f4f8"}`,
+											paddingRight: 20,
+										}}
+									>
+										<Box
+											mb="md"
+											px="xs"
+											py={5}
+											style={{
+												background: dark
+													? "rgba(37,99,235,0.1)"
+													: "rgba(30,58,95,0.06)",
+												borderRadius: 6,
+											}}
+										>
+											<Text
+												size="xs"
+												fw={700}
+												tt="uppercase"
+												c={dark ? "blue.3" : "blue.8"}
+												style={{ letterSpacing: 1 }}
+											>
 												{t.help.infoKontak}
 											</Text>
+										</Box>
 
-											<Group gap="xs" align="flex-start">
-												<ThemeIcon
-													size={32}
-													radius="md"
-													color="green"
-													variant="light"
+										<Stack gap={0}>
+											{[
+												{
+													color: "green" as const,
+													icon: <IconPhone size={14} />,
+													label: "WhatsApp",
+													value: supportConfig.whatsapp.label,
+													href: `https://wa.me/${supportConfig.whatsapp.number}`,
+													linkColor: "#16a34a",
+													external: true,
+												},
+												{
+													color: "blue" as const,
+													icon: <IconMail size={14} />,
+													label: "Email",
+													value: supportConfig.email,
+													href: `mailto:${supportConfig.email}`,
+													linkColor: "#2563eb",
+													external: false,
+												},
+												{
+													color: "orange" as const,
+													icon: <IconClock size={14} />,
+													label: t.help.jamOperasionalLabel,
+													value: supportConfig.jamOperasional,
+												},
+												{
+													color: "violet" as const,
+													icon: <IconMessage size={14} />,
+													label: t.help.waktuResponLabel,
+													value: t.help.waktuResponValue,
+												},
+											].map((item) => (
+												<Box
+													key={item.label}
+													py={10}
+													style={{
+														borderBottom: `1px solid ${dark ? "#1e293b" : "#f1f5f9"}`,
+													}}
 												>
-													<IconPhone size={16} />
-												</ThemeIcon>
-												<Box>
-													<Text size="xs" c="dimmed">
-														WhatsApp
-													</Text>
-													<Text
-														size="sm"
-														fw={500}
-														component="a"
-														href={`https://wa.me/${supportConfig.whatsapp.number}`}
-														target="_blank"
-														rel="noreferrer"
-														style={{ color: "#16a34a", textDecoration: "none" }}
-													>
-														{supportConfig.whatsapp.label}
-													</Text>
+													<Group gap={6} mb={3} wrap="nowrap">
+														<ThemeIcon
+															size={20}
+															radius="sm"
+															color={item.color}
+															variant="light"
+														>
+															{item.icon}
+														</ThemeIcon>
+														<Text size="xs" c="dimmed" fw={500}>
+															{item.label}
+														</Text>
+													</Group>
+													{"href" in item && item.href ? (
+														<Text
+															size="sm"
+															fw={600}
+															component="a"
+															href={item.href}
+															target={
+																"external" in item && item.external
+																	? "_blank"
+																	: undefined
+															}
+															rel={
+																"external" in item && item.external
+																	? "noreferrer"
+																	: undefined
+															}
+															style={{
+																color:
+																	"linkColor" in item
+																		? item.linkColor
+																		: undefined,
+																textDecoration: "none",
+																paddingLeft: 26,
+																display: "block",
+															}}
+														>
+															{item.value}
+														</Text>
+													) : (
+														<Text
+															size="sm"
+															fw={600}
+															style={{ paddingLeft: 26 }}
+														>
+															{item.value}
+														</Text>
+													)}
 												</Box>
-											</Group>
-
-											<Group gap="xs" align="flex-start">
-												<ThemeIcon
-													size={32}
-													radius="md"
-													color="blue"
-													variant="light"
-												>
-													<IconMail size={16} />
-												</ThemeIcon>
-												<Box>
-													<Text size="xs" c="dimmed">
-														Email
-													</Text>
-													<Text
-														size="sm"
-														fw={500}
-														component="a"
-														href={`mailto:${supportConfig.email}`}
-														style={{ color: "#2563eb", textDecoration: "none" }}
-													>
-														{supportConfig.email}
-													</Text>
-												</Box>
-											</Group>
-
-											<Group gap="xs" align="flex-start">
-												<ThemeIcon
-													size={32}
-													radius="md"
-													color="orange"
-													variant="light"
-												>
-													<IconClock size={16} />
-												</ThemeIcon>
-												<Box>
-													<Text size="xs" c="dimmed">
-														{t.help.jamOperasionalLabel}
-													</Text>
-													<Text size="sm" fw={500}>
-														{supportConfig.jamOperasional}
-													</Text>
-												</Box>
-											</Group>
-
-											<Group gap="xs" align="flex-start">
-												<ThemeIcon
-													size={32}
-													radius="md"
-													color="violet"
-													variant="light"
-												>
-													<IconMessage size={16} />
-												</ThemeIcon>
-												<Box>
-													<Text size="xs" c="dimmed">
-														{t.help.waktuResponLabel}
-													</Text>
-													<Text size="sm" fw={500}>
-														{t.help.waktuResponValue}
-													</Text>
-												</Box>
-											</Group>
+											))}
 										</Stack>
 									</Grid.Col>
 
 									{/* Form Tiket */}
-									<Grid.Col span={{ base: 12, sm: 8 }}>
-										<Stack gap="sm">
+									<Grid.Col
+										span={{ base: 12, sm: 8 }}
+										pl={{ base: 0, sm: "lg" }}
+										pt={{ base: "md", sm: 0 }}
+									>
+										<Box
+											mb="sm"
+											px="xs"
+											py={5}
+											style={{
+												background: dark
+													? "rgba(37,99,235,0.1)"
+													: "rgba(30,58,95,0.06)",
+												borderRadius: 6,
+											}}
+										>
+											<Text
+												size="xs"
+												fw={700}
+												tt="uppercase"
+												c={dark ? "blue.3" : "blue.8"}
+												style={{ letterSpacing: 1 }}
+											>
+												Kirim Tiket Dukungan
+											</Text>
+										</Box>
+
+										<Stack gap="xs">
 											{tiketStatus === "ok" && (
 												<Alert
 													color="green"
-													icon={<IconCheck size={16} />}
+													icon={<IconCheck size={14} />}
 													withCloseButton
 													onClose={() => setTiketStatus("idle")}
+													py="xs"
+													radius="md"
 												>
 													{t.help.tiketTerkirim}
 												</Alert>
@@ -665,15 +719,17 @@ const HelpPage = () => {
 											{tiketStatus === "error" && (
 												<Alert
 													color="red"
-													icon={<IconX size={16} />}
+													icon={<IconX size={14} />}
 													withCloseButton
 													onClose={() => setTiketStatus("idle")}
+													py="xs"
+													radius="md"
 												>
 													{t.help.tiketGagal}
 												</Alert>
 											)}
 
-											<Grid gutter="sm">
+											<Grid gutter="xs">
 												<Grid.Col span={6}>
 													<TextInput
 														label={t.help.formNama}
@@ -697,7 +753,7 @@ const HelpPage = () => {
 
 											<Select
 												label={t.help.formKategori}
-												placeholder="Pilih kategori"
+												placeholder="Pilih kategori masalah"
 												data={KATEGORI_OPTIONS}
 												value={tiketKategori}
 												onChange={setTiketKategori}
@@ -706,7 +762,7 @@ const HelpPage = () => {
 
 											<Textarea
 												label={t.help.formDeskripsi}
-												placeholder="Jelaskan masalah yang Anda alami..."
+												placeholder="Jelaskan masalah yang Anda alami secara detail..."
 												minRows={3}
 												maxRows={5}
 												value={tiketDeskripsi}
@@ -714,49 +770,48 @@ const HelpPage = () => {
 												size="sm"
 											/>
 
-											<Box>
-												<Text size="sm" fw={500} mb={4}>
-													{t.help.formScreenshot}
-												</Text>
-												<Group gap="sm" align="center">
-													<FileButton
-														onChange={(file) => {
-															if (file && file.size > MAX_SCREENSHOT_BYTES)
-																return;
-															setTiketFile(file);
-														}}
-														accept="image/png,image/jpeg"
-													>
-														{(props) => (
-															<Button
-																{...props}
-																variant="light"
-																size="xs"
-																leftSection={<IconPaperclip size={14} />}
-															>
-																{tiketFile ? tiketFile.name : "Pilih File"}
-															</Button>
-														)}
-													</FileButton>
-													{tiketFile && (
-														<ActionIcon
-															size="sm"
-															variant="subtle"
-															color="red"
-															onClick={() => setTiketFile(null)}
-															aria-label="Hapus file"
+											<Group gap="xs" align="center" wrap="nowrap">
+												<FileButton
+													onChange={(file) => {
+														if (file && file.size > MAX_SCREENSHOT_BYTES)
+															return;
+														setTiketFile(file);
+													}}
+													accept="image/png,image/jpeg"
+												>
+													{(props) => (
+														<Button
+															{...props}
+															variant="default"
+															size="xs"
+															leftSection={<IconPaperclip size={13} />}
+															style={{ flexShrink: 0 }}
 														>
-															<IconX size={12} />
-														</ActionIcon>
+															{tiketFile
+																? tiketFile.name
+																: t.help.formScreenshot}
+														</Button>
 													)}
-													<Text size="xs" c="dimmed">
-														{t.help.formScreenshotHint}
-													</Text>
-												</Group>
-											</Box>
+												</FileButton>
+												{tiketFile && (
+													<ActionIcon
+														size="sm"
+														variant="subtle"
+														color="red"
+														onClick={() => setTiketFile(null)}
+														aria-label="Hapus file"
+													>
+														<IconX size={12} />
+													</ActionIcon>
+												)}
+												<Text size="xs" c="dimmed">
+													{t.help.formScreenshotHint}
+												</Text>
+											</Group>
 
 											<Button
-												leftSection={<IconSend size={16} />}
+												fullWidth
+												leftSection={<IconSend size={15} />}
 												loading={tiketSending}
 												disabled={
 													!tiketNama ||
@@ -766,6 +821,7 @@ const HelpPage = () => {
 												}
 												onClick={() => void handleKirimTiket()}
 												size="sm"
+												mt={4}
 												style={{
 													background:
 														"linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%)",
