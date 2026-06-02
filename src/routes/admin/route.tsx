@@ -17,6 +17,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import {
+	IconActivity,
 	IconChevronRight,
 	IconHelpCircle,
 	IconHome,
@@ -86,6 +87,12 @@ function DashboardLayout() {
 			label: "Role & Permission",
 			to: "/admin/roles",
 			description: "Konfigurasi hak akses per role pengguna",
+		},
+		{
+			icon: IconActivity,
+			label: "System Health",
+			to: "/admin/system-health",
+			description: "Status konektivitas dan latency komponen sistem",
 		},
 		{
 			icon: IconSettings,

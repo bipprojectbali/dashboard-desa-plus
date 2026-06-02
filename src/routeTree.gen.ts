@@ -35,6 +35,7 @@ import { Route as PengaturanNotifikasiRouteImport } from './routes/pengaturan/no
 import { Route as PengaturanKeamananRouteImport } from './routes/pengaturan/keamanan'
 import { Route as PengaturanAksesDanTimRouteImport } from './routes/pengaturan/akses-dan-tim'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminSystemHealthRouteImport } from './routes/admin/system-health'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminRolesRouteImport } from './routes/admin/roles'
 import { Route as AdminHelpRouteImport } from './routes/admin/help'
@@ -171,6 +172,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminSystemHealthRoute = AdminSystemHealthRouteImport.update({
+  id: '/system-health',
+  path: '/system-health',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -218,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/admin/help': typeof AdminHelpRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/system-health': typeof AdminSystemHealthRoute
   '/admin/users': typeof AdminUsersRoute
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
   '/pengaturan/keamanan': typeof PengaturanKeamananRoute
@@ -249,6 +256,7 @@ export interface FileRoutesByTo {
   '/admin/help': typeof AdminHelpRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/system-health': typeof AdminSystemHealthRoute
   '/admin/users': typeof AdminUsersRoute
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
   '/pengaturan/keamanan': typeof PengaturanKeamananRoute
@@ -283,6 +291,7 @@ export interface FileRoutesById {
   '/admin/help': typeof AdminHelpRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/system-health': typeof AdminSystemHealthRoute
   '/admin/users': typeof AdminUsersRoute
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
   '/pengaturan/keamanan': typeof PengaturanKeamananRoute
@@ -318,6 +327,7 @@ export interface FileRouteTypes {
     | '/admin/help'
     | '/admin/roles'
     | '/admin/settings'
+    | '/admin/system-health'
     | '/admin/users'
     | '/pengaturan/akses-dan-tim'
     | '/pengaturan/keamanan'
@@ -349,6 +359,7 @@ export interface FileRouteTypes {
     | '/admin/help'
     | '/admin/roles'
     | '/admin/settings'
+    | '/admin/system-health'
     | '/admin/users'
     | '/pengaturan/akses-dan-tim'
     | '/pengaturan/keamanan'
@@ -382,6 +393,7 @@ export interface FileRouteTypes {
     | '/admin/help'
     | '/admin/roles'
     | '/admin/settings'
+    | '/admin/system-health'
     | '/admin/users'
     | '/pengaturan/akses-dan-tim'
     | '/pengaturan/keamanan'
@@ -599,6 +611,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/system-health': {
+      id: '/admin/system-health'
+      path: '/system-health'
+      fullPath: '/admin/system-health'
+      preLoaderRoute: typeof AdminSystemHealthRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/settings'
@@ -643,6 +662,7 @@ interface AdminRouteRouteChildren {
   AdminHelpRoute: typeof AdminHelpRoute
   AdminRolesRoute: typeof AdminRolesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSystemHealthRoute: typeof AdminSystemHealthRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -653,6 +673,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminHelpRoute: AdminHelpRoute,
   AdminRolesRoute: AdminRolesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminSystemHealthRoute: AdminSystemHealthRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
