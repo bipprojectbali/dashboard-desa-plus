@@ -119,9 +119,9 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
 			<Text size="sm" c="dimmed">
 				{label}
 			</Text>
-			<Text size="sm" fw={500}>
+			<Box component="span" style={{ fontSize: "var(--mantine-font-size-sm)", fontWeight: 500 }}>
 				{value}
-			</Text>
+			</Box>
 		</Group>
 	);
 }

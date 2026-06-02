@@ -119,6 +119,7 @@ function SystemHealthPage() {
 	const [loading, setLoading] = useState(true);
 	const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 	const [history, setHistory] = useState<LatencyPoint[]>([]);
+	const [chartReady, setChartReady] = useState(false);
 	const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
 	const fetchHealth = useCallback(async () => {
@@ -155,6 +156,12 @@ function SystemHealthPage() {
 			if (intervalRef.current) clearInterval(intervalRef.current);
 		};
 	}, [fetchHealth]);
+
+	// Defer chart render sampai setelah layout selesai agar Recharts bisa ukur container
+	useEffect(() => {
+		const id = requestAnimationFrame(() => setChartReady(true));
+		return () => cancelAnimationFrame(id);
+	}, []);
 
 	const formatSyncTime = (iso: string) =>
 		new Date(iso).toLocaleString("id-ID", {
@@ -278,7 +285,7 @@ function SystemHealthPage() {
 					</Text>
 				</Group>
 
-				{history.length < 2 ? (
+				{!chartReady || history.length < 2 ? (
 					<Stack align="center" py="xl" gap="xs">
 						<IconActivity
 							size={40}
@@ -293,7 +300,7 @@ function SystemHealthPage() {
 						</Text>
 					</Stack>
 				) : (
-					<Box style={{ minWidth: 0, width: "100%" }}>
+					<Box style={{ minWidth: 0, width: "100%", overflow: "hidden" }}>
 						<AreaChart
 							h={220}
 							data={history}
