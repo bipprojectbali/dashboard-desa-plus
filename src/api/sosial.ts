@@ -1,5 +1,5 @@
-import { Prisma } from "generated/prisma";
 import { Elysia, t } from "elysia";
+import type { Prisma } from "generated/prisma";
 import { prisma } from "@/utils/db";
 
 export const sosial = new Elysia({ prefix: "/sosial" })
