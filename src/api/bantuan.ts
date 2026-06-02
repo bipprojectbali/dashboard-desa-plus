@@ -1,5 +1,4 @@
 import Elysia, { t } from "elysia";
-import { supportConfig } from "../config/support";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
 import { sendSupportTicketEmail } from "../utils/mailer";
@@ -58,7 +57,7 @@ export const bantuanApi = new Elysia({ prefix: "/bantuan" })
 					deskripsi,
 					screenshotBase64: screenshotBase64 ?? undefined,
 					screenshotMime: screenshotMime ?? undefined,
-					adminEmail: supportConfig.adminEmail,
+					adminEmail: process.env.ADMIN_EMAIL ?? "admin@darmasaba.desa.id",
 				});
 				logger.info({ nama, email, kategori }, "Support ticket sent");
 				return { ok: true };

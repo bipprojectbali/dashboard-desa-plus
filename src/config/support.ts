@@ -5,5 +5,4 @@ export const supportConfig = {
 		label: "+62 896 4703 7426",
 	},
 	jamOperasional: "Senin – Jumat, 08.00 – 16.00 WITA",
-	adminEmail: process.env.ADMIN_EMAIL ?? "admin@darmasaba.desa.id",
 };
