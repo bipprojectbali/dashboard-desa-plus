@@ -1,3 +1,4 @@
+import { AreaChart } from "@mantine/charts";
 import {
 	ActionIcon,
 	Badge,
@@ -12,7 +13,6 @@ import {
 	Title,
 	Tooltip,
 } from "@mantine/core";
-import { AreaChart } from "@mantine/charts";
 import {
 	IconActivity,
 	IconCloudCheck,
@@ -63,7 +63,12 @@ function StatusBadge({ ok }: { ok: boolean }) {
 }
 
 function LatencyText({ ms }: { ms: number | null }) {
-	if (ms === null) return <Text size="xs" c="dimmed">Timeout</Text>;
+	if (ms === null)
+		return (
+			<Text size="xs" c="dimmed">
+				Timeout
+			</Text>
+		);
 	const color = ms < 200 ? "green" : ms < 800 ? "orange" : "red";
 	return (
 		<Text size="xs" c={color} fw={500}>
@@ -210,8 +215,8 @@ function SystemHealthPage() {
 					</Text>
 					{lastUpdated && (
 						<Text size="xs" c="dimmed">
-							Diperbarui:{" "}
-							{lastUpdated.toLocaleTimeString("id-ID")} · auto-refresh 30s
+							Diperbarui: {lastUpdated.toLocaleTimeString("id-ID")} ·
+							auto-refresh 30s
 						</Text>
 					)}
 				</Stack>

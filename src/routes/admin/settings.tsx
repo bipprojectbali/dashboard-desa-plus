@@ -1,4 +1,21 @@
 import {
+	closestCenter,
+	DndContext,
+	type DragEndEvent,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
+import {
+	arrayMove,
+	SortableContext,
+	sortableKeyboardCoordinates,
+	useSortable,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
 	Alert,
 	Badge,
 	Box,
@@ -40,23 +57,6 @@ import {
 	IconTrash,
 	IconUsers,
 } from "@tabler/icons-react";
-import {
-	closestCenter,
-	DndContext,
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-	type DragEndEvent,
-} from "@dnd-kit/core";
-import {
-	arrayMove,
-	SortableContext,
-	sortableKeyboardCoordinates,
-	useSortable,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { protectedRouteMiddleware } from "../../middleware/authMiddleware";
@@ -119,7 +119,10 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
 			<Text size="sm" c="dimmed">
 				{label}
 			</Text>
-			<Box component="span" style={{ fontSize: "var(--mantine-font-size-sm)", fontWeight: 500 }}>
+			<Box
+				component="span"
+				style={{ fontSize: "var(--mantine-font-size-sm)", fontWeight: 500 }}
+			>
 				{value}
 			</Box>
 		</Group>
@@ -159,7 +162,11 @@ function SortableFaqRow({
 				<Box
 					{...attributes}
 					{...listeners}
-					style={{ cursor: "grab", display: "inline-flex", color: "var(--mantine-color-dimmed)" }}
+					style={{
+						cursor: "grab",
+						display: "inline-flex",
+						color: "var(--mantine-color-dimmed)",
+					}}
 				>
 					<IconGripVertical size={16} />
 				</Box>

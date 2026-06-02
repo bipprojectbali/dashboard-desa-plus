@@ -1,20 +1,25 @@
 import {
 	Accordion,
 	ActionIcon,
+	Alert,
 	AspectRatio,
 	Avatar,
 	Badge,
 	Box,
+	Button,
 	Container,
 	Divider,
+	FileButton,
 	Grid,
 	Group,
 	Loader,
 	Modal,
 	ScrollArea,
+	Select,
 	SimpleGrid,
 	Stack,
 	Text,
+	Textarea,
 	TextInput,
 	ThemeIcon,
 	Title,
@@ -22,13 +27,19 @@ import {
 } from "@mantine/core";
 import {
 	IconBook,
+	IconCheck,
+	IconClock,
 	IconFileText,
 	IconHeadphones,
 	IconHelpCircle,
+	IconMail,
 	IconMessage,
+	IconPaperclip,
+	IconPhone,
 	IconPlayerPlay,
 	IconSend,
 	IconVideo,
+	IconX,
 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { HelpCard } from "@/components/ui/help-card";
@@ -43,11 +54,21 @@ interface FaqItem {
 	order: number;
 }
 
+const KATEGORI_OPTIONS = [
+	"Akses & Login",
+	"Data & Sinkronisasi",
+	"Fitur & Navigasi",
+	"Laporan & Ekspor",
+	"Lainnya",
+];
+
+const MAX_SCREENSHOT_BYTES = 2 * 1024 * 1024;
+
 const HelpPage = () => {
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
-	// Sample data for sections
+
 	const guideItems = [
 		{
 			title: t.help.guideCaraLoginTitle,
@@ -138,7 +159,6 @@ const HelpPage = () => {
 		{ value: "24/7", label: t.help.supportAktif },
 	];
 
-	// State for chat functionality
 	const [messages, setMessages] = useState([
 		{
 			id: 1,
@@ -149,6 +169,17 @@ const HelpPage = () => {
 	const [inputValue, setInputValue] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const chatBottomRef = useRef<HTMLDivElement>(null);
+
+	// --- Tiket state ---
+	const [tiketNama, setTiketNama] = useState("");
+	const [tiketEmail, setTiketEmail] = useState("");
+	const [tiketKategori, setTiketKategori] = useState<string | null>(null);
+	const [tiketDeskripsi, setTiketDeskripsi] = useState("");
+	const [tiketFile, setTiketFile] = useState<File | null>(null);
+	const [tiketSending, setTiketSending] = useState(false);
+	const [tiketStatus, setTiketStatus] = useState<"idle" | "ok" | "error">(
+		"idle",
+	);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: scroll on every message/loading change
 	useEffect(() => {
@@ -242,6 +273,62 @@ const HelpPage = () => {
 		}
 	};
 
+	const handleKirimTiket = async () => {
+		if (!tiketNama || !tiketEmail || !tiketKategori || !tiketDeskripsi) return;
+
+		setTiketSending(true);
+		setTiketStatus("idle");
+
+		let screenshotBase64: string | undefined;
+		let screenshotMime: string | undefined;
+
+		if (tiketFile) {
+			const buf = await tiketFile.arrayBuffer();
+			const bytes = new Uint8Array(buf);
+			let bin = "";
+			for (let i = 0; i < bytes.length; i++) {
+				bin += String.fromCharCode(bytes[i] as number);
+			}
+			screenshotBase64 = btoa(bin);
+			screenshotMime = tiketFile.type;
+		}
+
+		try {
+			const res = await fetch("/api/bantuan/kirim-tiket", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					nama: tiketNama,
+					email: tiketEmail,
+					kategori: tiketKategori,
+					deskripsi: tiketDeskripsi,
+					screenshotBase64,
+					screenshotMime,
+				}),
+			});
+			if (res.ok) {
+				setTiketStatus("ok");
+				setTiketNama("");
+				setTiketEmail("");
+				setTiketKategori(null);
+				setTiketDeskripsi("");
+				setTiketFile(null);
+			} else {
+				setTiketStatus("error");
+			}
+		} catch {
+			setTiketStatus("error");
+		} finally {
+			setTiketSending(false);
+		}
+	};
+
+	const cardStyle = {
+		borderColor: dark ? "#334155" : "white",
+		boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+		transition: "transform 0.15s ease, box-shadow 0.15s ease",
+	};
+
 	return (
 		<Container size="lg" py="xl">
 			<Title order={1} mb="xl" ta="center">
@@ -260,9 +347,7 @@ const HelpPage = () => {
 						p="lg"
 						style={{
 							textAlign: "center",
-							borderColor: dark ? "#334155" : "white",
-							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
-							transition: "transform 0.15s ease, box-shadow 0.15s ease",
+							...cardStyle,
 						}}
 						h="100%"
 					>
@@ -282,11 +367,7 @@ const HelpPage = () => {
 						{/* Panduan Memulai */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{
-									borderColor: dark ? "#334155" : "white",
-									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
-									transition: "transform 0.15s ease, box-shadow 0.15s ease",
-								}}
+								style={cardStyle}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconBook size={24} color="white" />}
 								title={t.help.panduanMemulai}
@@ -316,11 +397,7 @@ const HelpPage = () => {
 						{/* Video Tutorial */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{
-									borderColor: dark ? "#334155" : "white",
-									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
-									transition: "transform 0.15s ease, box-shadow 0.15s ease",
-								}}
+								style={cardStyle}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconVideo size={24} color="white" />}
 								title={t.help.videoTutorial}
@@ -350,11 +427,7 @@ const HelpPage = () => {
 						{/* FAQ */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{
-									borderColor: dark ? "#334155" : "white",
-									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
-									transition: "transform 0.15s ease, box-shadow 0.15s ease",
-								}}
+								style={cardStyle}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconHelpCircle size={24} color="white" />}
 								title={t.help.faq}
@@ -368,43 +441,15 @@ const HelpPage = () => {
 									<Text size="sm" c="dimmed" ta="center" py="md">
 										Belum ada FAQ tersedia
 									</Text>
-								) : faqCategories.length === 1 ? (
-									<Accordion variant="separated">
-										{(faqByCategory[faqCategories[0] ?? ""] ?? []).map((item) => (
-											<Accordion.Item
-												style={{
-													backgroundColor: dark ? "#263852ff" : "#F1F5F9",
-												}}
-												key={item.id}
-												value={item.id}
-											>
-												<Accordion.Control>{item.question}</Accordion.Control>
-												<Accordion.Panel>
-													<Text size="sm">{item.answer}</Text>
-												</Accordion.Panel>
-											</Accordion.Item>
-										))}
-									</Accordion>
 								) : (
-									<Stack gap="sm">
-										{faqCategories.map((cat) => (
-											<Box key={cat}>
-												<Text
-													size="xs"
-													fw={700}
-													tt="uppercase"
-													c="dimmed"
-													mb="xs"
-												>
-													{cat}
-												</Text>
-												<Accordion variant="separated">
-													{(faqByCategory[cat] ?? []).map((item) => (
+									<ScrollArea h={380} type="auto" offsetScrollbars>
+										{faqCategories.length === 1 ? (
+											<Accordion variant="separated">
+												{(faqByCategory[faqCategories[0] ?? ""] ?? []).map(
+													(item) => (
 														<Accordion.Item
 															style={{
-																backgroundColor: dark
-																	? "#263852ff"
-																	: "#F1F5F9",
+																backgroundColor: dark ? "#263852ff" : "#F1F5F9",
 															}}
 															key={item.id}
 															value={item.id}
@@ -416,11 +461,47 @@ const HelpPage = () => {
 																<Text size="sm">{item.answer}</Text>
 															</Accordion.Panel>
 														</Accordion.Item>
-													))}
-												</Accordion>
-											</Box>
-										))}
-									</Stack>
+													),
+												)}
+											</Accordion>
+										) : (
+											<Stack gap="sm">
+												{faqCategories.map((cat) => (
+													<Box key={cat}>
+														<Text
+															size="xs"
+															fw={700}
+															tt="uppercase"
+															c="dimmed"
+															mb="xs"
+														>
+															{cat}
+														</Text>
+														<Accordion variant="separated">
+															{(faqByCategory[cat] ?? []).map((item) => (
+																<Accordion.Item
+																	style={{
+																		backgroundColor: dark
+																			? "#263852ff"
+																			: "#F1F5F9",
+																	}}
+																	key={item.id}
+																	value={item.id}
+																>
+																	<Accordion.Control>
+																		{item.question}
+																	</Accordion.Control>
+																	<Accordion.Panel>
+																		<Text size="sm">{item.answer}</Text>
+																	</Accordion.Panel>
+																</Accordion.Item>
+															))}
+														</Accordion>
+													</Box>
+												))}
+											</Stack>
+										)}
+									</ScrollArea>
 								)}
 							</HelpCard>
 						</Grid.Col>
@@ -429,57 +510,10 @@ const HelpPage = () => {
 
 				<Box>
 					<Grid>
-						{/* Hubungi Support */}
-						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
-							<HelpCard
-								style={{
-									borderColor: dark ? "#334155" : "white",
-									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
-									transition: "transform 0.15s ease, box-shadow 0.15s ease",
-								}}
-								bg={dark ? "#1E293B" : "white"}
-								icon={<IconHeadphones size={24} color="white" />}
-								title={t.help.hubungiSupport}
-								h="100%"
-							>
-								<Box>
-									<Text fw={500}>{t.help.emailLabel}</Text>
-									<Text size="sm" color="dimmed" mb="md">
-										<a href={`mailto:${supportConfig.email}`}>
-											{supportConfig.email}
-										</a>
-									</Text>
-
-									<Text fw={500}>{t.help.whatsappLabel}</Text>
-									<Text size="sm" color="dimmed" mb="md">
-										<a href={`https://wa.me/${supportConfig.whatsapp.number}`}>
-											{supportConfig.whatsapp.label}
-										</a>
-									</Text>
-
-									<Text fw={500}>{t.help.jamKerjaLabel}</Text>
-									<Text size="sm" color="dimmed">
-										{t.help.jamKerjaValue}
-									</Text>
-
-									<Text fw={500} mt="md">
-										{t.help.waktuResponLabel}
-									</Text>
-									<Text size="sm" color="dimmed">
-										{t.help.waktuResponValue}
-									</Text>
-								</Box>
-							</HelpCard>
-						</Grid.Col>
-
 						{/* Dokumentasi */}
 						<Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
 							<HelpCard
-								style={{
-									borderColor: dark ? "#334155" : "white",
-									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
-									transition: "transform 0.15s ease, box-shadow 0.15s ease",
-								}}
+								style={cardStyle}
 								bg={dark ? "#1E293B" : "white"}
 								icon={<IconFileText size={24} color="white" />}
 								title={t.help.dokumentasi}
@@ -506,278 +540,244 @@ const HelpPage = () => {
 							</HelpCard>
 						</Grid.Col>
 
-						{/* Jenna - Virtual Assistant (disabled) */}
-						{false && (
-							<Grid.Col span={{ base: 12, sm: 12, md: 12 }}>
-								<Box
-									style={{
-										borderRadius: 16,
-										overflow: "hidden",
-										border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
-										boxShadow: "0 4px 24px 0 rgb(0 0 0 / 0.08)",
-										background: dark ? "#1E293B" : "white",
-									}}
-								>
-									{/* Header */}
-									<Box
-										style={{
-											background:
-												"linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)",
-											padding: "16px 20px",
-										}}
-									>
-										<Group justify="space-between">
-											<Group gap="sm">
-												<Avatar
-													size={40}
-													radius="xl"
-													style={{
-														background: "rgba(255,255,255,0.2)",
-														border: "2px solid rgba(255,255,255,0.4)",
-													}}
-												>
-													<IconMessage size={20} color="white" />
-												</Avatar>
-												<Box>
-													<Text fw={700} c="white" size="sm">
-														Jenna
-													</Text>
-													<Group gap={6}>
-														<Box
-															style={{
-																width: 7,
-																height: 7,
-																borderRadius: "50%",
-																background: "#4ade80",
-																flexShrink: 0,
-															}}
-														/>
-														<Text size="xs" c="white" opacity={0.85}>
-															{t.help.virtualAssistantOnline}
-														</Text>
-													</Group>
-												</Box>
-											</Group>
-											<Badge
-												color="white"
-												variant="white"
-												size="sm"
-												style={{ color: "#6366f1", fontWeight: 600 }}
-											>
-												{t.help.aiPowered}
-											</Badge>
-										</Group>
-									</Box>
-
-									{/* Chat area */}
-									<ScrollArea
-										h={320}
-										px="lg"
-										py="md"
-										style={{ background: dark ? "#0f172a" : "#f8fafc" }}
-									>
-										{messages.map((msg) => (
-											<Box
-												key={msg.id}
-												style={{
-													display: "flex",
-													justifyContent:
-														msg.sender === "user" ? "flex-end" : "flex-start",
-													marginBottom: 12,
-													gap: 8,
-													alignItems: "flex-end",
-												}}
-											>
-												{msg.sender === "jenna" && (
-													<Avatar
-														size={28}
-														radius="xl"
-														style={{
-															background:
-																"linear-gradient(135deg, #3b82f6, #6366f1)",
-															flexShrink: 0,
-														}}
-													>
-														<IconMessage size={14} color="white" />
-													</Avatar>
-												)}
-												<Box
-													style={{
-														backgroundColor:
-															msg.sender === "user"
-																? "#3B82F6"
-																: dark
-																	? "#1e293b"
-																	: "white",
-														color:
-															msg.sender === "user"
-																? "#fff"
-																: dark
-																	? "#f1f5f9"
-																	: "#1e293b",
-														padding: "10px 14px",
-														borderRadius:
-															msg.sender === "user"
-																? "18px 18px 4px 18px"
-																: "18px 18px 18px 4px",
-														maxWidth: "72%",
-														fontSize: 13,
-														lineHeight: 1.6,
-														boxShadow:
-															msg.sender === "user"
-																? "0 2px 8px rgba(59,130,246,0.3)"
-																: `0 1px 4px ${dark ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.08)"}`,
-														border:
-															msg.sender === "jenna"
-																? `1px solid ${dark ? "#334155" : "#e2e8f0"}`
-																: "none",
-													}}
-												>
-													{msg.text}
-												</Box>
-												{msg.sender === "user" && (
-													<Avatar
-														size={28}
-														radius="xl"
-														color="blue"
-														style={{ flexShrink: 0 }}
-													>
-														<Text size="xs" fw={700}>
-															A
-														</Text>
-													</Avatar>
-												)}
-											</Box>
-										))}
-										{isLoading && (
-											<Box
-												style={{
-													display: "flex",
-													alignItems: "flex-end",
-													gap: 8,
-													marginBottom: 12,
-												}}
-											>
-												<Avatar
-													size={28}
-													radius="xl"
-													style={{
-														background:
-															"linear-gradient(135deg, #3b82f6, #6366f1)",
-														flexShrink: 0,
-													}}
-												>
-													<IconMessage size={14} color="white" />
-												</Avatar>
-												<Box
-													style={{
-														backgroundColor: dark ? "#1e293b" : "white",
-														border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
-														padding: "10px 16px",
-														borderRadius: "18px 18px 18px 4px",
-														display: "flex",
-														gap: 4,
-														alignItems: "center",
-													}}
-												>
-													{[0, 1, 2].map((i) => (
-														<Box
-															key={i}
-															style={{
-																width: 7,
-																height: 7,
-																borderRadius: "50%",
-																background: "#94a3b8",
-																animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
-															}}
-														/>
-													))}
-												</Box>
-											</Box>
-										)}
-										<div ref={chatBottomRef} />
-									</ScrollArea>
-
-									{/* Quick replies — hanya tampil jika hanya ada pesan awal */}
-									{messages.length === 1 && (
-										<Box
-											px="lg"
-											pb="sm"
-											style={{ background: dark ? "#0f172a" : "#f8fafc" }}
-										>
-											<Text size="xs" c="dimmed" mb={6} fw={500}>
-												{t.help.pertanyaanCepat}
+						{/* Kontak Dukungan */}
+						<Grid.Col span={{ base: 12, sm: 12, md: 8 }}>
+							<HelpCard
+								style={cardStyle}
+								bg={dark ? "#1E293B" : "white"}
+								icon={<IconHeadphones size={24} color="white" />}
+								title={t.help.kontakDukungan}
+								h="100%"
+							>
+								<Grid gutter="md">
+									{/* Info Kontak Desa */}
+									<Grid.Col span={{ base: 12, sm: 4 }}>
+										<Stack gap="md">
+											<Text size="sm" fw={700} c="dimmed" tt="uppercase">
+												{t.help.infoKontak}
 											</Text>
-											<Group gap={6} wrap="wrap">
-												{QUICK_REPLIES.map((q) => (
-													<Badge
-														key={q}
-														variant="outline"
-														color="blue"
+
+											<Group gap="xs" align="flex-start">
+												<ThemeIcon
+													size={32}
+													radius="md"
+													color="green"
+													variant="light"
+												>
+													<IconPhone size={16} />
+												</ThemeIcon>
+												<Box>
+													<Text size="xs" c="dimmed">
+														WhatsApp
+													</Text>
+													<Text
 														size="sm"
-														style={{ cursor: "pointer", fontWeight: 400 }}
-														onClick={() => {
-															setInputValue(q);
-														}}
+														fw={500}
+														component="a"
+														href={`https://wa.me/${supportConfig.whatsapp.number}`}
+														target="_blank"
+														rel="noreferrer"
+														style={{ color: "#16a34a", textDecoration: "none" }}
 													>
-														{q}
-													</Badge>
-												))}
+														{supportConfig.whatsapp.label}
+													</Text>
+												</Box>
 											</Group>
-										</Box>
-									)}
 
-									<Divider color={dark ? "#1e293b" : "#f1f5f9"} />
+											<Group gap="xs" align="flex-start">
+												<ThemeIcon
+													size={32}
+													radius="md"
+													color="blue"
+													variant="light"
+												>
+													<IconMail size={16} />
+												</ThemeIcon>
+												<Box>
+													<Text size="xs" c="dimmed">
+														Email
+													</Text>
+													<Text
+														size="sm"
+														fw={500}
+														component="a"
+														href={`mailto:${supportConfig.email}`}
+														style={{ color: "#2563eb", textDecoration: "none" }}
+													>
+														{supportConfig.email}
+													</Text>
+												</Box>
+											</Group>
 
-									{/* Input area */}
-									<Box
-										px="lg"
-										py="md"
-										style={{ background: dark ? "#1E293B" : "white" }}
-									>
-										<Group gap="sm">
-											<TextInput
-												flex={1}
-												value={inputValue}
-												onChange={(e) => setInputValue(e.target.value)}
-												onKeyDown={handleKeyPress}
-												placeholder={t.help.ketikPesan}
-												radius="xl"
+											<Group gap="xs" align="flex-start">
+												<ThemeIcon
+													size={32}
+													radius="md"
+													color="orange"
+													variant="light"
+												>
+													<IconClock size={16} />
+												</ThemeIcon>
+												<Box>
+													<Text size="xs" c="dimmed">
+														{t.help.jamOperasionalLabel}
+													</Text>
+													<Text size="sm" fw={500}>
+														{supportConfig.jamOperasional}
+													</Text>
+												</Box>
+											</Group>
+
+											<Group gap="xs" align="flex-start">
+												<ThemeIcon
+													size={32}
+													radius="md"
+													color="violet"
+													variant="light"
+												>
+													<IconMessage size={16} />
+												</ThemeIcon>
+												<Box>
+													<Text size="xs" c="dimmed">
+														{t.help.waktuResponLabel}
+													</Text>
+													<Text size="sm" fw={500}>
+														{t.help.waktuResponValue}
+													</Text>
+												</Box>
+											</Group>
+										</Stack>
+									</Grid.Col>
+
+									{/* Form Tiket */}
+									<Grid.Col span={{ base: 12, sm: 8 }}>
+										<Stack gap="sm">
+											{tiketStatus === "ok" && (
+												<Alert
+													color="green"
+													icon={<IconCheck size={16} />}
+													withCloseButton
+													onClose={() => setTiketStatus("idle")}
+												>
+													{t.help.tiketTerkirim}
+												</Alert>
+											)}
+											{tiketStatus === "error" && (
+												<Alert
+													color="red"
+													icon={<IconX size={16} />}
+													withCloseButton
+													onClose={() => setTiketStatus("idle")}
+												>
+													{t.help.tiketGagal}
+												</Alert>
+											)}
+
+											<Grid gutter="sm">
+												<Grid.Col span={6}>
+													<TextInput
+														label={t.help.formNama}
+														placeholder="Nama Anda"
+														value={tiketNama}
+														onChange={(e) => setTiketNama(e.target.value)}
+														size="sm"
+													/>
+												</Grid.Col>
+												<Grid.Col span={6}>
+													<TextInput
+														label={t.help.formEmail}
+														placeholder="email@contoh.com"
+														type="email"
+														value={tiketEmail}
+														onChange={(e) => setTiketEmail(e.target.value)}
+														size="sm"
+													/>
+												</Grid.Col>
+											</Grid>
+
+											<Select
+												label={t.help.formKategori}
+												placeholder="Pilih kategori"
+												data={KATEGORI_OPTIONS}
+												value={tiketKategori}
+												onChange={setTiketKategori}
 												size="sm"
-												disabled={isLoading}
-												styles={{
-													input: {
-														background: dark ? "#0f172a" : "#f8fafc",
-														border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
-														"&:focus": { borderColor: "#3b82f6" },
-													},
-												}}
 											/>
-											<ActionIcon
-												size={36}
-												radius="xl"
-												variant="filled"
-												color="blue"
-												disabled={isLoading || inputValue.trim() === ""}
-												onClick={() => void handleSendMessage()}
-												aria-label={t.help.kirimPesan}
+
+											<Textarea
+												label={t.help.formDeskripsi}
+												placeholder="Jelaskan masalah yang Anda alami..."
+												minRows={3}
+												maxRows={5}
+												value={tiketDeskripsi}
+												onChange={(e) => setTiketDeskripsi(e.target.value)}
+												size="sm"
+											/>
+
+											<Box>
+												<Text size="sm" fw={500} mb={4}>
+													{t.help.formScreenshot}
+												</Text>
+												<Group gap="sm" align="center">
+													<FileButton
+														onChange={(file) => {
+															if (file && file.size > MAX_SCREENSHOT_BYTES)
+																return;
+															setTiketFile(file);
+														}}
+														accept="image/png,image/jpeg"
+													>
+														{(props) => (
+															<Button
+																{...props}
+																variant="light"
+																size="xs"
+																leftSection={<IconPaperclip size={14} />}
+															>
+																{tiketFile ? tiketFile.name : "Pilih File"}
+															</Button>
+														)}
+													</FileButton>
+													{tiketFile && (
+														<ActionIcon
+															size="sm"
+															variant="subtle"
+															color="red"
+															onClick={() => setTiketFile(null)}
+															aria-label="Hapus file"
+														>
+															<IconX size={12} />
+														</ActionIcon>
+													)}
+													<Text size="xs" c="dimmed">
+														{t.help.formScreenshotHint}
+													</Text>
+												</Group>
+											</Box>
+
+											<Button
+												leftSection={<IconSend size={16} />}
+												loading={tiketSending}
+												disabled={
+													!tiketNama ||
+													!tiketEmail ||
+													!tiketKategori ||
+													tiketDeskripsi.length < 10
+												}
+												onClick={() => void handleKirimTiket()}
+												size="sm"
 												style={{
-													background: inputValue.trim()
-														? "linear-gradient(135deg, #3b82f6, #6366f1)"
-														: undefined,
-													flexShrink: 0,
+													background:
+														"linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%)",
 												}}
 											>
-												<IconSend size={16} />
-											</ActionIcon>
-										</Group>
-										<Text size="xs" c="dimmed" ta="center" mt={8}>
-											{t.help.jennaDisclaimer}
-										</Text>
-									</Box>
-								</Box>
-							</Grid.Col>
-						)}
+												{t.help.kirimTiket}
+											</Button>
+										</Stack>
+									</Grid.Col>
+								</Grid>
+							</HelpCard>
+						</Grid.Col>
 					</Grid>
 				</Box>
 			</Stack>

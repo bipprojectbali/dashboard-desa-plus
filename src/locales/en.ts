@@ -456,6 +456,20 @@ const en: TranslationKeys = {
 		docIntegrasiContent: `1. Authentication: Use JWT token or session cookie. Get the token via POST /api/auth/login with email & password.\n2. Base URL per environment:\n   - Staging: https://dashboard-desa-plus-stg.wibudev.com/api\n   - Production: https://dashboard-desa-plus.wibudev.com/api\n3. Required headers:\n   - Content-Type: application/json\n   - Authorization: Bearer <token>\n4. Example request from external system:\n   curl -X POST https://dashboard-desa-plus-stg.wibudev.com/api/complaint \\\n     -H "Content-Type: application/json" \\\n     -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..." \\\n     -d '{"title": "Damaged Road Report", "description": "Road in Banjar Kaja has potholes"}'`,
 		docFormatContent: `Date       : ISO 8601 (YYYY-MM-DD), example: 2026-05-08\nTime       : HH:mm:ss WIB, example: 14:30:00 WIB\nCurrency   : IDR without decimals, example: 15000000\nCoordinates: Decimal Latitude/Longitude, example: -8.12345, 115.12345\nStatus Enum:\n  - AKTIF / NONAKTIF\n  - NORMAL / ALERT / STUNTING`,
 		docBestContent: `• Use pagination (?page=&limit=) to fetch large datasets\n• Avoid polling intervals < 30 seconds to reduce server load\n• Cache responses client-side for data that rarely changes\n• Use period filters (startDate/endDate) for large queries\n• Never expose API keys in the frontend — always use tokens from the server`,
+		kontakDukungan: "Contact Support",
+		formNama: "Full Name",
+		formEmail: "Email",
+		formKategori: "Problem Category",
+		formDeskripsi: "Problem Description",
+		formScreenshot: "Screenshot (optional)",
+		formScreenshotHint: "Max 2MB, PNG/JPG format",
+		kirimTiket: "Send Ticket",
+		tiketTerkirim:
+			"Ticket sent successfully! Our team will contact you shortly.",
+		tiketGagal: "Failed to send ticket. Please try again later.",
+		infoKontak: "Village Contact Info",
+		jamOperasionalLabel: "Operating Hours",
+		bantuanShortcut: "? Help",
 	},
 };
 
