@@ -108,7 +108,8 @@ test.describe("Pengaduan & Layanan Publik", () => {
 		let callCount = 0;
 		await page.route("**/api/complaint/recent*", async (route) => {
 			callCount++;
-			const data = callCount === 1 ? [MOCK_COMPLAINT] : [newComplaint, MOCK_COMPLAINT];
+			const data =
+				callCount === 1 ? [MOCK_COMPLAINT] : [newComplaint, MOCK_COMPLAINT];
 			await route.fulfill({
 				status: 200,
 				contentType: "application/json",

@@ -363,6 +363,236 @@
         }
       }
     },
+    "/api/admin/activity-logs": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "userId",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "action",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "from",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "to",
+            "required": false
+          }
+        ],
+        "operationId": "getApiAdminActivity-logs",
+        "summary": "List all activity logs (admin only)",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/cache/stats": {
+      "get": {
+        "operationId": "getApiAdminCacheStats",
+        "summary": "Get in-memory cache stats (admin only)",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/cache/flush": {
+      "delete": {
+        "operationId": "deleteApiAdminCacheFlush",
+        "summary": "Flush all in-memory cache entries (admin only)",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/activity-logs/export": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "userId",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "action",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "from",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "to",
+            "required": false
+          }
+        ],
+        "operationId": "getApiAdminActivity-logsExport",
+        "summary": "Export activity logs as PDF (admin only)",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/roles/permissions": {
+      "get": {
+        "operationId": "getApiAdminRolesPermissions",
+        "summary": "Get role permission matrix (admin only)",
+        "responses": {
+          "200": {}
+        }
+      },
+      "put": {
+        "parameters": [],
+        "operationId": "putApiAdminRolesPermissions",
+        "summary": "Update role permission matrix (admin only)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "permissions"
+                ],
+                "properties": {
+                  "permissions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "role",
+                        "feature",
+                        "allowed"
+                      ],
+                      "properties": {
+                        "role": {
+                          "type": "string"
+                        },
+                        "feature": {
+                          "type": "string"
+                        },
+                        "allowed": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "permissions"
+                ],
+                "properties": {
+                  "permissions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "role",
+                        "feature",
+                        "allowed"
+                      ],
+                      "properties": {
+                        "role": {
+                          "type": "string"
+                        },
+                        "feature": {
+                          "type": "string"
+                        },
+                        "allowed": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "permissions"
+                ],
+                "properties": {
+                  "permissions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "role",
+                        "feature",
+                        "allowed"
+                      ],
+                      "properties": {
+                        "role": {
+                          "type": "string"
+                        },
+                        "feature": {
+                          "type": "string"
+                        },
+                        "allowed": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
     "/api/noc/sync": {
       "post": {
         "responses": {
@@ -11394,6 +11624,354 @@
           }
         ],
         "operationId": "getApiAdminSyncLogs",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/bantuan/faq": {
+      "get": {
+        "operationId": "getApiBantuanFaq",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/faq/": {
+      "get": {
+        "operationId": "getApiAdminFaq",
+        "responses": {
+          "200": {}
+        }
+      },
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAdminFaq",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "question",
+                  "answer",
+                  "category"
+                ],
+                "properties": {
+                  "question": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "answer": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "category": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "isPublished": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "question",
+                  "answer",
+                  "category"
+                ],
+                "properties": {
+                  "question": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "answer": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "category": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "isPublished": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "question",
+                  "answer",
+                  "category"
+                ],
+                "properties": {
+                  "question": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "answer": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "category": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "isPublished": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/faq/{id}": {
+      "put": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "operationId": "putApiAdminFaqById",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "question",
+                  "answer",
+                  "category",
+                  "isPublished"
+                ],
+                "properties": {
+                  "question": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "answer": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "category": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "isPublished": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "question",
+                  "answer",
+                  "category",
+                  "isPublished"
+                ],
+                "properties": {
+                  "question": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "answer": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "category": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "isPublished": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "question",
+                  "answer",
+                  "category",
+                  "isPublished"
+                ],
+                "properties": {
+                  "question": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "answer": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "category": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "isPublished": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "operationId": "deleteApiAdminFaqById",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/faq/{id}/toggle": {
+      "patch": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "operationId": "patchApiAdminFaqByIdToggle",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/faq/reorder": {
+      "put": {
+        "parameters": [],
+        "operationId": "putApiAdminFaqReorder",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "items"
+                ],
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "order"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "order": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "items"
+                ],
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "order"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "order": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "items"
+                ],
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "order"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "order": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {}
         }

@@ -64,9 +64,9 @@ test.describe("Jenna Virtual Assistant Chat", () => {
 		);
 		await sendButton.first().click();
 
-		await expect(
-			page.locator(`text=${STUB_REPLY}`).first(),
-		).toBeVisible({ timeout: 10000 });
+		await expect(page.locator(`text=${STUB_REPLY}`).first()).toBeVisible({
+			timeout: 10000,
+		});
 	});
 
 	test("pesan user muncul di chat setelah dikirim", async ({ page }) => {
@@ -107,9 +107,9 @@ test.describe("Jenna Virtual Assistant Chat", () => {
 		const jennaGreeting = page.locator(
 			'[class*="chat"], [class*="message"], [data-sender="jenna"]',
 		);
-		const greetingText = page.locator("text=Halo").or(
-			page.locator("text=Selamat datang"),
-		);
+		const greetingText = page
+			.locator("text=Halo")
+			.or(page.locator("text=Selamat datang"));
 		await expect(greetingText.first().or(jennaGreeting.first())).toBeVisible({
 			timeout: 10000,
 		});

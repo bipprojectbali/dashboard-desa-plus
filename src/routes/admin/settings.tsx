@@ -100,14 +100,14 @@ function StatCard({
 				<ThemeIcon size={40} radius="md" color={color} variant="light">
 					{icon}
 				</ThemeIcon>
-				<div>
-					<Text size="xs" c="dimmed" tt="uppercase" fw={600}>
+				<Box>
+					<Text fz="xs" c="dimmed" tt="uppercase" fw={600}>
 						{label}
 					</Text>
-					<Text size="lg" fw={700}>
+					<Text component="div" fz="lg" fw={700}>
 						{value}
 					</Text>
-				</div>
+				</Box>
 			</Group>
 		</Card>
 	);

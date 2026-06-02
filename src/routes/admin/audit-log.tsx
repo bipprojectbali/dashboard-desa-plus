@@ -198,7 +198,10 @@ function AuditLogComponent() {
 						placeholder="Pilih rentang"
 						value={dateRange}
 						onChange={(v) => {
-							setDateRange(v);
+							setDateRange([
+								v[0] ? new Date(v[0]) : null,
+								v[1] ? new Date(v[1]) : null,
+							]);
 							setPage(1);
 						}}
 						clearable

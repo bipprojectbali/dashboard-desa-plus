@@ -106,17 +106,18 @@ test.describe("Sinkronisasi NOC", () => {
 	}) => {
 		await page.goto("/pengaturan/sinkronisasi");
 
-		await expect(
-			page.locator("text=Riwayat Sinkronisasi").first(),
-		).toBeVisible({ timeout: 10000 });
+		await expect(page.locator("text=Riwayat Sinkronisasi").first()).toBeVisible(
+			{ timeout: 10000 },
+		);
 
-		const logRow = page
-			.locator("table tbody tr, .mantine-Table-tr")
-			.first();
+		const logRow = page.locator("table tbody tr, .mantine-Table-tr").first();
 		await expect(logRow).toBeVisible({ timeout: 8000 });
 
 		await expect(
-			page.locator("text=noc, text=success").or(page.locator("td:has-text('noc')")).first(),
+			page
+				.locator("text=noc, text=success")
+				.or(page.locator("td:has-text('noc')"))
+				.first(),
 		).toBeVisible();
 	});
 

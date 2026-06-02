@@ -2,6 +2,7 @@ import { Elysia, t } from "elysia";
 import { cache, TTL, withCache } from "@/utils/cache";
 import { prisma } from "@/utils/db";
 import { desaExternalClient } from "@/utils/desa-external-client";
+import { apiMiddleware } from "../middleware/apiMiddleware";
 
 function extractError(err: unknown): string {
 	if (!err) return "Unknown error";
@@ -12,7 +13,7 @@ function extractError(err: unknown): string {
 
 let lastSyncedAt: string | null = null;
 
-export const demografi = new Elysia({ prefix: "/demografi" })
+export const demografi = new Elysia({ prefix: "/demografi" }).use(apiMiddleware)
 	.get(
 		"/summary",
 		async () => {
@@ -370,7 +371,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 
 	.post(
 		"/sync",
-		async ({ request }) => {
+		async ({ request, user }) => {
 			try {
 				console.log("[Demografi API] Starting sync...");
 
@@ -446,20 +447,22 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 				lastSyncedAt = new Date().toISOString();
 				console.log("[Demografi API] Sync completed at:", lastSyncedAt);
 
-				await prisma.activityLog.create({
-					data: {
-						userId: "system",
-						action: "demografi-sync",
-						detail: JSON.stringify({
-							errors: errors.length > 0 ? errors : null,
-						}),
-						ipAddress:
-							request.headers.get("x-forwarded-for") ??
-							request.headers.get("x-real-ip") ??
-							null,
-						userAgent: request.headers.get("user-agent") ?? null,
-					},
-				});
+				if (user?.id) {
+					await prisma.activityLog.create({
+						data: {
+							userId: user.id,
+							action: "demografi-sync",
+							detail: JSON.stringify({
+								errors: errors.length > 0 ? errors : null,
+							}),
+							ipAddress:
+								request.headers.get("x-forwarded-for") ??
+								request.headers.get("x-real-ip") ??
+								null,
+							userAgent: request.headers.get("user-agent") ?? null,
+						},
+					});
+				}
 
 				return {
 					success: true,
