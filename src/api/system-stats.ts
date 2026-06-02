@@ -90,7 +90,10 @@ export const systemStatsRoutes = new Elysia()
 					},
 				});
 			} catch (e) {
-				logger.warn({ e }, "Failed to write health check failure to ActivityLog");
+				logger.warn(
+					{ e },
+					"Failed to write health check failure to ActivityLog",
+				);
 			}
 		}
 

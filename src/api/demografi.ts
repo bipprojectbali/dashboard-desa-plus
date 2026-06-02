@@ -13,7 +13,8 @@ function extractError(err: unknown): string {
 
 let lastSyncedAt: string | null = null;
 
-export const demografi = new Elysia({ prefix: "/demografi" }).use(apiMiddleware)
+export const demografi = new Elysia({ prefix: "/demografi" })
+	.use(apiMiddleware)
 	.get(
 		"/summary",
 		async () => {

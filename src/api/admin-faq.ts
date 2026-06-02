@@ -171,9 +171,7 @@ export const adminFaqApi = new Elysia({ prefix: "/admin/faq" })
 		},
 		{
 			body: t.Object({
-				items: t.Array(
-					t.Object({ id: t.String(), order: t.Number() }),
-				),
+				items: t.Array(t.Object({ id: t.String(), order: t.Number() })),
 			}),
 		},
 	);

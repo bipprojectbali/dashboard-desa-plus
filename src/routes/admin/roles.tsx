@@ -165,8 +165,8 @@ function RolesPage() {
 						</Title>
 					</Group>
 					<Text size="sm" c="dimmed">
-						Konfigurasi akses menu per role. Admin mendapat akses penuh
-						termasuk Sinkronisasi. Pengguna hanya bisa melihat data.
+						Konfigurasi akses menu per role. Admin mendapat akses penuh termasuk
+						Sinkronisasi. Pengguna hanya bisa melihat data.
 					</Text>
 				</Box>
 

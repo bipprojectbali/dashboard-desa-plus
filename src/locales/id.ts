@@ -445,6 +445,19 @@ export type TranslationKeys = {
 		docIntegrasiContent: string;
 		docFormatContent: string;
 		docBestContent: string;
+		kontakDukungan: string;
+		formNama: string;
+		formEmail: string;
+		formKategori: string;
+		formDeskripsi: string;
+		formScreenshot: string;
+		formScreenshotHint: string;
+		kirimTiket: string;
+		tiketTerkirim: string;
+		tiketGagal: string;
+		infoKontak: string;
+		jamOperasionalLabel: string;
+		bantuanShortcut: string;
 	};
 };
 
@@ -907,6 +920,20 @@ const id: TranslationKeys = {
 		docIntegrasiContent: `1. Autentikasi: Gunakan JWT token atau session cookie. Dapatkan token via POST /api/auth/login dengan email & password.\n2. Base URL per environment:\n   - Staging: https://dashboard-desa-plus-stg.wibudev.com/api\n   - Production: https://dashboard-desa-plus.wibudev.com/api\n3. Header wajib:\n   - Content-Type: application/json\n   - Authorization: Bearer <token>\n4. Contoh request dari sistem luar:\n   curl -X POST https://dashboard-desa-plus-stg.wibudev.com/api/complaint \\\n     -H "Content-Type: application/json" \\\n     -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..." \\\n     -d '{"title": "Aduan Jalan Rusak", "description": "Jalan di Banjar Kaja berlubang"}'`,
 		docFormatContent: `Tanggal    : ISO 8601 (YYYY-MM-DD), contoh: 2026-05-08\nWaktu      : HH:mm:ss WIB, contoh: 14:30:00 WIB\nMata Uang  : IDR tanpa desimal, contoh: 15000000\nKoordinat  : Latitude/Longitude desimal, contoh: -8.12345, 115.12345\nStatus Enum:\n  - AKTIF / NONAKTIF\n  - NORMAL / ALERT / STUNTING`,
 		docBestContent: `• Gunakan pagination (?page=&limit=) untuk mengambil data besar\n• Hindari polling interval < 30 detik untuk mengurangi beban server\n• Cache response di client-side untuk data yang jarang berubah\n• Gunakan filter periode (startDate/endDate) untuk query besar\n• Jangan expose API key di frontend — selalu gunakan token dari server`,
+		kontakDukungan: "Kontak Dukungan",
+		formNama: "Nama Lengkap",
+		formEmail: "Email",
+		formKategori: "Kategori Masalah",
+		formDeskripsi: "Deskripsi Masalah",
+		formScreenshot: "Screenshot (opsional)",
+		formScreenshotHint: "Maks. 2MB, format PNG/JPG",
+		kirimTiket: "Kirim Tiket",
+		tiketTerkirim:
+			"Tiket berhasil dikirim! Tim kami akan menghubungi Anda segera.",
+		tiketGagal: "Gagal mengirim tiket. Coba lagi nanti.",
+		infoKontak: "Info Kontak Desa",
+		jamOperasionalLabel: "Jam Operasional",
+		bantuanShortcut: "? Bantuan",
 	},
 };
 
