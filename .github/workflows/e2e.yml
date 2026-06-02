@@ -1,0 +1,109 @@
+name: E2E Tests
+
+on:
+  push:
+    branches:
+      - stg
+      - main
+  pull_request:
+    branches:
+      - stg
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: bun x prisma generate
+        env:
+          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy?schema=public"
+
+      - name: Build frontend
+        run: bun run build
+        env:
+          VITE_DESA_API_URL: "http://localhost:3000"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  e2e:
+    name: E2E Tests (Playwright)
+    runs-on: ubuntu-latest
+    needs: build
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: dashboard_desa_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: "postgresql://testuser:testpass@localhost:5432/dashboard_desa_test?schema=public"
+      BETTER_AUTH_SECRET: "test-secret-key-for-e2e-testing-only-32chars"
+      ADMIN_EMAIL: "admin@example.com"
+      ADMIN_PASSWORD: "admin123"
+      PORT: 3000
+      NODE_ENV: test
+      VITE_DESA_API_URL: "http://localhost:3000"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Run Prisma migrations
+        run: bun x prisma migrate deploy
+
+      - name: Seed test data
+        run: bun run seed:auth
+
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: bunx playwright test
+        env:
+          CI: "true"
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
