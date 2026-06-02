@@ -1,39 +1,39 @@
 import { prisma } from "./db";
 
-export type AppRole = "admin" | "petugas" | "viewer";
+export type AppRole = "admin" | "user";
 
 export const FEATURES = [
-	{ key: "view-dashboard", label: "Lihat Dashboard" },
-	{ key: "view-demografi", label: "Lihat Demografi" },
-	{ key: "crud-division", label: "CRUD Divisi & Kegiatan" },
-	{ key: "crud-complaint", label: "CRUD Pengaduan" },
-	{ key: "crud-umkm", label: "CRUD UMKM" },
-	{ key: "crud-resident", label: "CRUD Data Penduduk" },
-	{ key: "crud-event", label: "CRUD Event/Agenda" },
-	{ key: "export-pdf", label: "Export PDF" },
-	{ key: "sync-noc", label: "Sinkronisasi NOC" },
-	{ key: "view-keamanan", label: "Laporan Keamanan" },
-	{ key: "manage-budget", label: "Kelola Anggaran APBDes" },
+	{ key: "view-dashboard", label: "Beranda / Dashboard" },
+	{ key: "view-kinerja-divisi", label: "Kinerja Divisi" },
+	{ key: "view-pengaduan", label: "Pengaduan & Layanan Publik" },
+	{ key: "view-jenna-analytic", label: "Jenna Analytic" },
+	{ key: "view-demografi", label: "Demografi & Pekerjaan" },
+	{ key: "view-keuangan", label: "Keuangan & Anggaran" },
+	{ key: "view-bumdes", label: "BUMDes" },
+	{ key: "view-sosial", label: "Sosial" },
+	{ key: "view-keamanan", label: "Keamanan" },
+	{ key: "sync-noc", label: "Sinkronisasi Data (NOC)" },
 ] as const;
 
 export type FeatureKey = (typeof FEATURES)[number]["key"];
 
-export const ROLES: AppRole[] = ["admin", "petugas", "viewer"];
+export const ROLES: AppRole[] = ["admin", "user"];
+
+const VIEW_FEATURES: FeatureKey[] = [
+	"view-dashboard",
+	"view-kinerja-divisi",
+	"view-pengaduan",
+	"view-jenna-analytic",
+	"view-demografi",
+	"view-keuangan",
+	"view-bumdes",
+	"view-sosial",
+	"view-keamanan",
+];
 
 const DEFAULT_PERMISSIONS: Record<AppRole, FeatureKey[]> = {
-	admin: FEATURES.map((f) => f.key),
-	petugas: [
-		"view-dashboard",
-		"view-demografi",
-		"crud-division",
-		"crud-complaint",
-		"crud-umkm",
-		"crud-resident",
-		"crud-event",
-		"export-pdf",
-		"view-keamanan",
-	],
-	viewer: ["view-dashboard", "view-demografi", "view-keamanan"],
+	admin: [...VIEW_FEATURES, "sync-noc"],
+	user: VIEW_FEATURES,
 };
 
 export async function checkPermission(

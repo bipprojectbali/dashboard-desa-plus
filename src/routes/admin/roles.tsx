@@ -37,8 +37,7 @@ type PermissionMatrix = Record<string, Record<string, boolean>>;
 
 const ROLE_LABELS: Record<string, { label: string; color: string }> = {
 	admin: { label: "ADMIN", color: "red" },
-	petugas: { label: "PETUGAS", color: "blue" },
-	viewer: { label: "VIEWER", color: "gray" },
+	user: { label: "PENGGUNA", color: "blue" },
 };
 
 function RolesPage() {
@@ -166,8 +165,8 @@ function RolesPage() {
 						</Title>
 					</Group>
 					<Text size="sm" c="dimmed">
-						Konfigurasi hak akses fitur per role pengguna. Admin selalu memiliki
-						akses penuh.
+						Konfigurasi akses menu per role. Admin mendapat akses penuh
+						termasuk Sinkronisasi. Pengguna hanya bisa melihat data.
 					</Text>
 				</Box>
 
@@ -315,9 +314,9 @@ function RolesPage() {
 			</Card>
 
 			<Text size="xs" c="dimmed">
-				* Role <strong>ADMIN</strong> selalu memiliki akses ke semua fitur dan
-				tidak dapat diubah. Perubahan permission hanya berlaku untuk role{" "}
-				<strong>PETUGAS</strong> dan <strong>VIEWER</strong>.
+				* Role <strong>ADMIN</strong> selalu memiliki akses ke semua menu
+				termasuk Sinkronisasi dan tidak dapat diubah. Role{" "}
+				<strong>PENGGUNA</strong> secara default hanya dapat melihat data.
 			</Text>
 		</Stack>
 	);
