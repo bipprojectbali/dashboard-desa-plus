@@ -34,9 +34,7 @@ export async function buildPdfTable(opts: PdfTableOptions): Promise<Buffer> {
 	});
 }
 
-export async function buildPdfReport(
-	opts: PdfReportOptions,
-): Promise<Buffer> {
+export async function buildPdfReport(opts: PdfReportOptions): Promise<Buffer> {
 	const { title, subtitle, sections } = opts;
 
 	const doc = new PDFDocument({ margin: 40, size: "A4" });

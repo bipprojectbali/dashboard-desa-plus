@@ -11372,6 +11372,32 @@
           "200": {}
         }
       }
+    },
+    "/api/admin/sync/logs": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "type",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "operationId": "getApiAdminSyncLogs",
+        "responses": {
+          "200": {}
+        }
+      }
     }
   },
   "components": {
