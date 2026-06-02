@@ -297,6 +297,8 @@ model Complaint {
   @@index([status])
   @@index([category])
   @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([assignedTo])
   @@map("complaint")
 }
 
@@ -747,6 +749,7 @@ model ActivityLog {
 
   @@index([userId])
   @@index([createdAt])
+  @@index([userId, createdAt])
   @@map("activity_log")
 }
 
