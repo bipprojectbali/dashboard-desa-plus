@@ -248,6 +248,107 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 		},
 	)
 	.get(
+		"/jenna/stats",
+		async ({ query, set, user }) => {
+			if (user?.role !== "admin") {
+				set.status = 403;
+				return { error: "Forbidden" };
+			}
+
+			const now = new Date();
+			const month = query.month ? Number(query.month) : now.getMonth() + 1;
+			const year = query.year ? Number(query.year) : now.getFullYear();
+
+			const startOfMonth = new Date(year, month - 1, 1);
+			const endOfMonth = new Date(year, month, 0, 23, 59, 59, 999);
+
+			const [monthLogs, topUsers] = await Promise.all([
+				prisma.jennaUsageLog.findMany({
+					where: { createdAt: { gte: startOfMonth, lte: endOfMonth } },
+					select: { cost: true, responseTimeMs: true, createdAt: true },
+				}),
+				prisma.jennaUsageLog.groupBy({
+					by: ["userId"],
+					where: { createdAt: { gte: startOfMonth, lte: endOfMonth } },
+					_sum: { cost: true, inputTokens: true, outputTokens: true },
+					_count: { id: true },
+					orderBy: { _sum: { cost: "desc" } },
+					take: 10,
+				}),
+			]);
+
+			const totalCost = monthLogs.reduce((s, l) => s + l.cost, 0);
+			const avgResponseTime =
+				monthLogs.length > 0
+					? monthLogs
+							.filter((l) => l.responseTimeMs != null)
+							.reduce((s, l) => s + (l.responseTimeMs ?? 0), 0) /
+						Math.max(
+							1,
+							monthLogs.filter((l) => l.responseTimeMs != null).length,
+						)
+					: 0;
+
+			const dailyMap: Record<string, { cost: number; count: number }> = {};
+			for (const l of monthLogs) {
+				const day = l.createdAt.toISOString().split("T")[0];
+				if (!dailyMap[day]) dailyMap[day] = { cost: 0, count: 0 };
+				dailyMap[day].cost += l.cost;
+				dailyMap[day].count += 1;
+			}
+			const dailyUsage = Object.entries(dailyMap)
+				.sort(([a], [b]) => a.localeCompare(b))
+				.map(([date, v]) => ({ date, cost: v.cost, count: v.count }));
+
+			const userIds = topUsers
+				.map((u) => u.userId)
+				.filter((id): id is string => id != null);
+			const users =
+				userIds.length > 0
+					? await prisma.user.findMany({
+							where: { id: { in: userIds } },
+							select: { id: true, name: true, email: true },
+						})
+					: [];
+			const userMap = Object.fromEntries(users.map((u) => [u.id, u]));
+
+			const topUserList = topUsers.map((u) => ({
+				userId: u.userId,
+				name: u.userId ? (userMap[u.userId]?.name ?? "-") : "Anonim",
+				email: u.userId ? (userMap[u.userId]?.email ?? "-") : "-",
+				totalCost: u._sum.cost ?? 0,
+				totalInputTokens: u._sum.inputTokens ?? 0,
+				totalOutputTokens: u._sum.outputTokens ?? 0,
+				requestCount: u._count.id,
+			}));
+
+			const dailyCostLimit = Number(process.env.JENNA_DAILY_COST_LIMIT ?? "0");
+			const today = new Date().toISOString().split("T")[0];
+			const todayCost = dailyMap[today]?.cost ?? 0;
+			const dailyLimitExceeded =
+				dailyCostLimit > 0 && todayCost > dailyCostLimit;
+
+			return {
+				month,
+				year,
+				totalCost,
+				avgResponseTime: Math.round(avgResponseTime),
+				dailyUsage,
+				topUsers: topUserList,
+				dailyCostLimit,
+				todayCost,
+				dailyLimitExceeded,
+			};
+		},
+		{
+			query: t.Object({
+				month: t.Optional(t.String()),
+				year: t.Optional(t.String()),
+			}),
+			detail: { summary: "Jenna usage analytics per bulan (admin only)" },
+		},
+	)
+	.get(
 		"/cache/stats",
 		({ set, user }) => {
 			if (user?.role !== "admin") {
@@ -298,26 +399,37 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 				include: { user: { select: { name: true, email: true } } },
 			});
 
-			const csvEscape = (s: string) => `"${s.replace(/"/g, '""')}"`;
-			const header = "Waktu,User,Email,Action,Detail,IP Address\n";
-			const rows = logs
-				.map((l) =>
-					[
-						csvEscape(l.createdAt.toISOString()),
-						csvEscape(l.user?.name ?? "-"),
-						csvEscape(l.user?.email ?? "-"),
-						csvEscape(l.action),
-						csvEscape(l.detail ?? ""),
-						csvEscape(l.ipAddress ?? "-"),
-					].join(","),
-				)
-				.join("\n");
+			const { buildPdfTable } = await import("../utils/pdf-table");
 
+			const buffer = await buildPdfTable({
+				title: "Audit Log Sistem",
+				columns: [
+					{ header: "Waktu", key: "createdAt", width: 100 },
+					{ header: "User", key: "name", width: 90 },
+					{ header: "Email", key: "email", width: 110 },
+					{ header: "Action", key: "action", width: 80 },
+					{ header: "Detail", key: "detail", width: 85 },
+					{ header: "IP Address", key: "ip", width: 50 },
+				],
+				rows: logs.map((l) => ({
+					createdAt: new Date(l.createdAt).toLocaleString("id-ID"),
+					name: l.user?.name ?? "-",
+					email: l.user?.email ?? "-",
+					action: l.action,
+					detail: l.detail ?? "-",
+					ip: l.ipAddress ?? "-",
+				})),
+			});
+
+			const ab = buffer.buffer.slice(
+				buffer.byteOffset,
+				buffer.byteOffset + buffer.byteLength,
+			) as ArrayBuffer;
 			const date = new Date().toISOString().split("T")[0];
-			return new Response(header + rows, {
+			return new Response(ab, {
 				headers: {
-					"Content-Type": "text/csv; charset=utf-8",
-					"Content-Disposition": `attachment; filename="audit-log-${date}.csv"`,
+					"Content-Type": "application/pdf",
+					"Content-Disposition": `attachment; filename="audit-log-${date}.pdf"`,
 				},
 			});
 		},
@@ -328,6 +440,6 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 				from: t.Optional(t.String()),
 				to: t.Optional(t.String()),
 			}),
-			detail: { summary: "Export activity logs as CSV (admin only)" },
+			detail: { summary: "Export activity logs as PDF (admin only)" },
 		},
 	);
