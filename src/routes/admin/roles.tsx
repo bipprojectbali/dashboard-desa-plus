@@ -16,16 +16,16 @@ import {
 	Title,
 	Tooltip,
 } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import {
 	IconAlertCircle,
 	IconCheck,
 	IconDeviceFloppy,
 	IconRefresh,
 	IconShieldLock,
+	IconX,
 } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/admin/roles")({
 	component: RolesPage,
@@ -48,7 +48,10 @@ function RolesPage() {
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [saveSuccess, setSaveSuccess] = useState(false);
+	const [saveError, setSaveError] = useState<string | null>(null);
 	const [dirty, setDirty] = useState(false);
+	const successTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const fetchPermissions = useCallback(async () => {
 		setLoading(true);
@@ -90,6 +93,8 @@ function RolesPage() {
 
 	const handleSave = async () => {
 		setSaving(true);
+		setSaveError(null);
+		setSaveSuccess(false);
 		try {
 			const permissions: { role: string; feature: string; allowed: boolean }[] =
 				[];
@@ -113,18 +118,11 @@ function RolesPage() {
 			if (!res.ok) throw new Error("Gagal menyimpan permission");
 
 			setDirty(false);
-			notifications.show({
-				title: "Tersimpan",
-				message: "Konfigurasi permission berhasil diperbarui",
-				color: "green",
-				icon: <IconCheck size={16} />,
-			});
+			setSaveSuccess(true);
+			if (successTimer.current) clearTimeout(successTimer.current);
+			successTimer.current = setTimeout(() => setSaveSuccess(false), 4000);
 		} catch (err) {
-			notifications.show({
-				title: "Gagal menyimpan",
-				message: err instanceof Error ? err.message : "Terjadi kesalahan",
-				color: "red",
-			});
+			setSaveError(err instanceof Error ? err.message : "Terjadi kesalahan");
 		} finally {
 			setSaving(false);
 		}
@@ -197,7 +195,31 @@ function RolesPage() {
 				</Group>
 			</Group>
 
-			{dirty && (
+			{saveSuccess && (
+				<Alert
+					icon={<IconCheck size={16} />}
+					color="green"
+					variant="light"
+					withCloseButton
+					onClose={() => setSaveSuccess(false)}
+				>
+					Konfigurasi permission berhasil diperbarui.
+				</Alert>
+			)}
+
+			{saveError && (
+				<Alert
+					icon={<IconX size={16} />}
+					color="red"
+					variant="light"
+					withCloseButton
+					onClose={() => setSaveError(null)}
+				>
+					{saveError}
+				</Alert>
+			)}
+
+			{dirty && !saveSuccess && (
 				<Alert color="yellow" variant="light">
 					Ada perubahan yang belum disimpan. Klik{" "}
 					<strong>Simpan Perubahan</strong> untuk menerapkan.
