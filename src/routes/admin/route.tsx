@@ -17,7 +17,6 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import {
-	IconBrain,
 	IconChevronRight,
 	IconHelpCircle,
 	IconHome,
@@ -81,12 +80,6 @@ function DashboardLayout() {
 			label: "Audit Log",
 			to: "/admin/audit-log",
 			description: "Riwayat aktivitas semua pengguna",
-		},
-		{
-			icon: IconBrain,
-			label: "Jenna Analytics",
-			to: "/admin/jenna-analytics",
-			description: "Statistik penggunaan asisten virtual Jenna",
 		},
 		{
 			icon: IconShieldLock,

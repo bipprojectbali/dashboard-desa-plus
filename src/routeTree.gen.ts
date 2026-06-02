@@ -37,7 +37,6 @@ import { Route as PengaturanAksesDanTimRouteImport } from './routes/pengaturan/a
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminRolesRouteImport } from './routes/admin/roles'
-import { Route as AdminJennaAnalyticsRouteImport } from './routes/admin/jenna-analytics'
 import { Route as AdminHelpRouteImport } from './routes/admin/help'
 import { Route as AdminAuditLogRouteImport } from './routes/admin/audit-log'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
@@ -182,11 +181,6 @@ const AdminRolesRoute = AdminRolesRouteImport.update({
   path: '/roles',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const AdminJennaAnalyticsRoute = AdminJennaAnalyticsRouteImport.update({
-  id: '/jenna-analytics',
-  path: '/jenna-analytics',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
 const AdminHelpRoute = AdminHelpRouteImport.update({
   id: '/help',
   path: '/help',
@@ -222,7 +216,6 @@ export interface FileRoutesByFullPath {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
-  '/admin/jenna-analytics': typeof AdminJennaAnalyticsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -254,7 +247,6 @@ export interface FileRoutesByTo {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
-  '/admin/jenna-analytics': typeof AdminJennaAnalyticsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -289,7 +281,6 @@ export interface FileRoutesById {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
-  '/admin/jenna-analytics': typeof AdminJennaAnalyticsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -325,7 +316,6 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
-    | '/admin/jenna-analytics'
     | '/admin/roles'
     | '/admin/settings'
     | '/admin/users'
@@ -357,7 +347,6 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
-    | '/admin/jenna-analytics'
     | '/admin/roles'
     | '/admin/settings'
     | '/admin/users'
@@ -391,7 +380,6 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
-    | '/admin/jenna-analytics'
     | '/admin/roles'
     | '/admin/settings'
     | '/admin/users'
@@ -625,13 +613,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRolesRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/admin/jenna-analytics': {
-      id: '/admin/jenna-analytics'
-      path: '/jenna-analytics'
-      fullPath: '/admin/jenna-analytics'
-      preLoaderRoute: typeof AdminJennaAnalyticsRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
     '/admin/help': {
       id: '/admin/help'
       path: '/help'
@@ -660,7 +641,6 @@ interface AdminRouteRouteChildren {
   AdminApikeyRoute: typeof AdminApikeyRoute
   AdminAuditLogRoute: typeof AdminAuditLogRoute
   AdminHelpRoute: typeof AdminHelpRoute
-  AdminJennaAnalyticsRoute: typeof AdminJennaAnalyticsRoute
   AdminRolesRoute: typeof AdminRolesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -671,7 +651,6 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminApikeyRoute: AdminApikeyRoute,
   AdminAuditLogRoute: AdminAuditLogRoute,
   AdminHelpRoute: AdminHelpRoute,
-  AdminJennaAnalyticsRoute: AdminJennaAnalyticsRoute,
   AdminRolesRoute: AdminRolesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,
