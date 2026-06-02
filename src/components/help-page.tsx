@@ -35,6 +35,14 @@ import { HelpCard } from "@/components/ui/help-card";
 import { supportConfig } from "@/config/support";
 import { useTranslate } from "@/hooks/useTranslate";
 
+interface FaqItem {
+	id: string;
+	question: string;
+	answer: string;
+	category: string;
+	order: number;
+}
+
 const HelpPage = () => {
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
@@ -94,35 +102,8 @@ const HelpPage = () => {
 		(typeof videoItems)[0] | null
 	>(null);
 
-	interface FaqItem {
-		id: string;
-		question: string;
-		answer: string;
-		category: string;
-		order: number;
-	}
 	const [faqItems, setFaqItems] = useState<FaqItem[]>([]);
 	const [faqLoading, setFaqLoading] = useState(true);
-
-	useEffect(() => {
-		fetch("/api/bantuan/faq")
-			.then((r) => r.json())
-			.then((json: { data?: FaqItem[] }) => {
-				setFaqItems(json.data ?? []);
-			})
-			.catch(() => {})
-			.finally(() => setFaqLoading(false));
-	}, []);
-
-	const faqByCategory = faqItems.reduce<Record<string, FaqItem[]>>(
-		(acc, faq) => {
-			if (!acc[faq.category]) acc[faq.category] = [];
-			acc[faq.category].push(faq);
-			return acc;
-		},
-		{},
-	);
-	const faqCategories = Object.keys(faqByCategory);
 
 	const documentationItems = [
 		{
@@ -173,6 +154,36 @@ const HelpPage = () => {
 	useEffect(() => {
 		chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, [messages, isLoading]);
+
+	useEffect(() => {
+		let cancelled = false;
+		fetch("/api/bantuan/faq")
+			.then((r) => r.json())
+			.then((json: { data?: FaqItem[] }) => {
+				if (!cancelled) setFaqItems(json.data ?? []);
+			})
+			.catch(() => {})
+			.finally(() => {
+				if (!cancelled) setFaqLoading(false);
+			});
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
+	const faqByCategory = faqItems.reduce<Record<string, FaqItem[]>>(
+		(acc, faq) => {
+			const bucket = acc[faq.category];
+			if (bucket) {
+				bucket.push(faq);
+			} else {
+				acc[faq.category] = [faq];
+			}
+			return acc;
+		},
+		{},
+	);
+	const faqCategories = Object.keys(faqByCategory);
 
 	const QUICK_REPLIES = [
 		t.help.quickLogin,
@@ -359,7 +370,7 @@ const HelpPage = () => {
 									</Text>
 								) : faqCategories.length === 1 ? (
 									<Accordion variant="separated">
-										{faqByCategory[faqCategories[0]].map((item) => (
+										{(faqByCategory[faqCategories[0] ?? ""] ?? []).map((item) => (
 											<Accordion.Item
 												style={{
 													backgroundColor: dark ? "#263852ff" : "#F1F5F9",
@@ -388,7 +399,7 @@ const HelpPage = () => {
 													{cat}
 												</Text>
 												<Accordion variant="separated">
-													{faqByCategory[cat].map((item) => (
+													{(faqByCategory[cat] ?? []).map((item) => (
 														<Accordion.Item
 															style={{
 																backgroundColor: dark

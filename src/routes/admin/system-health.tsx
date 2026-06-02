@@ -293,27 +293,29 @@ function SystemHealthPage() {
 						</Text>
 					</Stack>
 				) : (
-					<AreaChart
-						h={220}
-						data={history}
-						dataKey="time"
-						series={[
-							{ name: "db", color: "orange.6", label: "Database (ms)" },
-							{ name: "desaApi", color: "blue.5", label: "Desa API (ms)" },
-							{ name: "nocApi", color: "green.5", label: "NOC API (ms)" },
-						]}
-						connectNulls={false}
-						withDots={history.length <= 10}
-						withLegend
-						curveType="monotone"
-						gridAxis="xy"
-						tooltipAnimationDuration={150}
-						yAxisProps={{ tickCount: 5 }}
-						xAxisProps={{
-							tick: { fontSize: 11 },
-							interval: Math.max(0, Math.floor(history.length / 6) - 1),
-						}}
-					/>
+					<Box style={{ minWidth: 0, width: "100%" }}>
+						<AreaChart
+							h={220}
+							data={history}
+							dataKey="time"
+							series={[
+								{ name: "db", color: "orange.6", label: "Database (ms)" },
+								{ name: "desaApi", color: "blue.5", label: "Desa API (ms)" },
+								{ name: "nocApi", color: "green.5", label: "NOC API (ms)" },
+							]}
+							connectNulls={false}
+							withDots={history.length <= 10}
+							withLegend
+							curveType="monotone"
+							gridAxis="xy"
+							tooltipAnimationDuration={150}
+							yAxisProps={{ tickCount: 5 }}
+							xAxisProps={{
+								tick: { fontSize: 11 },
+								interval: Math.max(0, Math.floor(history.length / 6) - 1),
+							}}
+						/>
+					</Box>
 				)}
 			</Card>
 		</Container>
