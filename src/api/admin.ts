@@ -196,4 +196,114 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 			body: t.Object({ id: t.String() }),
 			detail: { summary: "Delete user (admin only)" },
 		},
+	)
+	.get(
+		"/activity-logs",
+		async ({ query, user, set }) => {
+			if (user?.role !== "admin") {
+				set.status = 403;
+				return { error: "Forbidden" };
+			}
+
+			const page = Math.max(1, Number(query.page ?? 1));
+			const limit = 50;
+			const skip = (page - 1) * limit;
+
+			const where = {
+				...(query.userId ? { userId: query.userId } : {}),
+				...(query.action ? { action: { in: query.action.split(",") } } : {}),
+				...(query.from || query.to
+					? {
+							createdAt: {
+								...(query.from ? { gte: new Date(query.from) } : {}),
+								...(query.to ? { lte: new Date(query.to) } : {}),
+							},
+						}
+					: {}),
+			};
+
+			const [logs, total] = await Promise.all([
+				prisma.activityLog.findMany({
+					where,
+					skip,
+					take: limit,
+					orderBy: { createdAt: "desc" },
+					include: { user: { select: { name: true, email: true } } },
+				}),
+				prisma.activityLog.count({ where }),
+			]);
+
+			return { data: logs, total, page, limit };
+		},
+		{
+			query: t.Object({
+				page: t.Optional(t.String()),
+				userId: t.Optional(t.String()),
+				action: t.Optional(t.String()),
+				from: t.Optional(t.String()),
+				to: t.Optional(t.String()),
+			}),
+			detail: { summary: "List all activity logs (admin only)" },
+		},
+	)
+	.get(
+		"/activity-logs/export",
+		async ({ query, user, set }) => {
+			if (user?.role !== "admin") {
+				set.status = 403;
+				return { error: "Forbidden" };
+			}
+
+			const where = {
+				...(query.userId ? { userId: query.userId } : {}),
+				...(query.action ? { action: { in: query.action.split(",") } } : {}),
+				...(query.from || query.to
+					? {
+							createdAt: {
+								...(query.from ? { gte: new Date(query.from) } : {}),
+								...(query.to ? { lte: new Date(query.to) } : {}),
+							},
+						}
+					: {}),
+			};
+
+			const logs = await prisma.activityLog.findMany({
+				where,
+				orderBy: { createdAt: "desc" },
+				take: 5000,
+				include: { user: { select: { name: true, email: true } } },
+			});
+
+			const csvEscape = (s: string) => `"${s.replace(/"/g, '""')}"`;
+			const header = "Waktu,User,Email,Action,Detail,IP Address\n";
+			const rows = logs
+				.map((l) =>
+					[
+						csvEscape(l.createdAt.toISOString()),
+						csvEscape(l.user?.name ?? "-"),
+						csvEscape(l.user?.email ?? "-"),
+						csvEscape(l.action),
+						csvEscape(l.detail ?? ""),
+						csvEscape(l.ipAddress ?? "-"),
+					].join(","),
+				)
+				.join("\n");
+
+			const date = new Date().toISOString().split("T")[0];
+			return new Response(header + rows, {
+				headers: {
+					"Content-Type": "text/csv; charset=utf-8",
+					"Content-Disposition": `attachment; filename="audit-log-${date}.csv"`,
+				},
+			});
+		},
+		{
+			query: t.Object({
+				userId: t.Optional(t.String()),
+				action: t.Optional(t.String()),
+				from: t.Optional(t.String()),
+				to: t.Optional(t.String()),
+			}),
+			detail: { summary: "Export activity logs as CSV (admin only)" },
+		},
 	);
