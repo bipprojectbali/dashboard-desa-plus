@@ -655,18 +655,13 @@ const HelpPage = () => {
 																		? item.linkColor
 																		: undefined,
 																textDecoration: "none",
-																paddingLeft: 26,
 																display: "block",
 															}}
 														>
 															{item.value}
 														</Text>
 													) : (
-														<Text
-															size="sm"
-															fw={600}
-															style={{ paddingLeft: 26 }}
-														>
+														<Text size="sm" fw={600}>
 															{item.value}
 														</Text>
 													)}
