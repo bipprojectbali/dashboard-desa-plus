@@ -9,6 +9,7 @@ import {
 	Divider,
 	Grid,
 	Group,
+	Loader,
 	Modal,
 	ScrollArea,
 	SimpleGrid,
@@ -93,12 +94,35 @@ const HelpPage = () => {
 		(typeof videoItems)[0] | null
 	>(null);
 
-	const faqItems = [
-		{ question: t.help.faqQ1, answer: t.help.faqA1 },
-		{ question: t.help.faqQ2, answer: t.help.faqA2 },
-		{ question: t.help.faqQ3, answer: t.help.faqA3 },
-		{ question: t.help.faqQ4, answer: t.help.faqA4 },
-	];
+	interface FaqItem {
+		id: string;
+		question: string;
+		answer: string;
+		category: string;
+		order: number;
+	}
+	const [faqItems, setFaqItems] = useState<FaqItem[]>([]);
+	const [faqLoading, setFaqLoading] = useState(true);
+
+	useEffect(() => {
+		fetch("/api/bantuan/faq")
+			.then((r) => r.json())
+			.then((json: { data?: FaqItem[] }) => {
+				setFaqItems(json.data ?? []);
+			})
+			.catch(() => {})
+			.finally(() => setFaqLoading(false));
+	}, []);
+
+	const faqByCategory = faqItems.reduce<Record<string, FaqItem[]>>(
+		(acc, faq) => {
+			if (!acc[faq.category]) acc[faq.category] = [];
+			acc[faq.category].push(faq);
+			return acc;
+		},
+		{},
+	);
+	const faqCategories = Object.keys(faqByCategory);
 
 	const documentationItems = [
 		{
@@ -325,22 +349,68 @@ const HelpPage = () => {
 								title={t.help.faq}
 								h="100%"
 							>
-								<Accordion variant="separated">
-									{faqItems.map((item) => (
-										<Accordion.Item
-											style={{
-												backgroundColor: dark ? "#263852ff" : "#F1F5F9",
-											}}
-											key={item.question}
-											value={item.question}
-										>
-											<Accordion.Control>{item.question}</Accordion.Control>
-											<Accordion.Panel>
-												<Text size="sm">{item.answer}</Text>
-											</Accordion.Panel>
-										</Accordion.Item>
-									))}
-								</Accordion>
+								{faqLoading ? (
+									<Stack align="center" py="md">
+										<Loader size="sm" />
+									</Stack>
+								) : faqItems.length === 0 ? (
+									<Text size="sm" c="dimmed" ta="center" py="md">
+										Belum ada FAQ tersedia
+									</Text>
+								) : faqCategories.length === 1 ? (
+									<Accordion variant="separated">
+										{faqByCategory[faqCategories[0]].map((item) => (
+											<Accordion.Item
+												style={{
+													backgroundColor: dark ? "#263852ff" : "#F1F5F9",
+												}}
+												key={item.id}
+												value={item.id}
+											>
+												<Accordion.Control>{item.question}</Accordion.Control>
+												<Accordion.Panel>
+													<Text size="sm">{item.answer}</Text>
+												</Accordion.Panel>
+											</Accordion.Item>
+										))}
+									</Accordion>
+								) : (
+									<Stack gap="sm">
+										{faqCategories.map((cat) => (
+											<Box key={cat}>
+												<Text
+													size="xs"
+													fw={700}
+													tt="uppercase"
+													c="dimmed"
+													mb="xs"
+												>
+													{cat}
+												</Text>
+												<Accordion variant="separated">
+													{faqByCategory[cat].map((item) => (
+														<Accordion.Item
+															style={{
+																backgroundColor: dark
+																	? "#263852ff"
+																	: "#F1F5F9",
+															}}
+															key={item.id}
+															value={item.id}
+														>
+															<Accordion.Control>
+																{item.question}
+															</Accordion.Control>
+															<Accordion.Panel>
+																<Text size="sm">{item.answer}</Text>
+															</Accordion.Panel>
+														</Accordion.Item>
+													))}
+												</Accordion>
+											</Box>
+										))}
+									</Stack>
+								)}
 							</HelpCard>
 						</Grid.Col>
 					</Grid>

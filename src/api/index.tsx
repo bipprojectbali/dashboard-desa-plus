@@ -5,6 +5,8 @@ import { apiMiddleware } from "../middleware/apiMiddleware";
 import { auth } from "../utils/auth";
 import { activityLog } from "./activity-log";
 import { adminApi } from "./admin";
+import { adminFaqApi } from "./admin-faq";
+import { bantuanApi } from "./bantuan";
 import { aksesPreferences } from "./akses-preferences";
 import { apikey } from "./apikey";
 import { complaint } from "./complaint";
@@ -90,7 +92,9 @@ const api = new Elysia({
 	.use(ipWhitelist)
 	.use(searchRoutes)
 	.use(sosial)
-	.use(syncLog);
+	.use(syncLog)
+	.use(bantuanApi)
+	.use(adminFaqApi);
 
 if (!isProduction) {
 	api.use(
