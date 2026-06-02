@@ -1,6 +1,6 @@
 import { $ } from "bun";
-import { demografiCache } from "@/api/demografi";
 import { prisma } from "@/utils/db";
+import { TTL, cache } from "@/utils/cache";
 import { desaExternalClient } from "@/utils/desa-external-client";
 import logger from "@/utils/logger";
 
@@ -100,19 +100,17 @@ async function runDemografiSync(): Promise<void> {
 			apbdes,
 		].filter((r) => r.error).length;
 
-		demografiCache.data = {
-			summary: summary.data?.data ?? null,
-			banjar: banjar.data?.data ?? null,
-			age: age.data?.data ?? null,
-			occupation: occupation.data?.data ?? null,
-			religion: religion.data?.data ?? null,
-			births: births.data?.data ?? null,
-			deaths: deaths.data?.data ?? null,
-			migration: migration.data?.data ?? null,
-			sectors: sectors.data?.data ?? null,
-			apbdes: apbdes.data?.data ?? apbdes.data ?? null,
-		};
-		demografiCache.lastSyncedAt = new Date().toISOString();
+		const apbdesData = apbdes.data?.data ?? apbdes.data ?? null;
+		if (!summary.error && summary.data?.data != null) cache.set("demografi:summary", summary.data.data, TTL.DEMOGRAFI);
+		if (!banjar.error && banjar.data?.data != null) cache.set("demografi:banjar", banjar.data.data, TTL.DEMOGRAFI);
+		if (!age.error && age.data?.data != null) cache.set("demografi:age", age.data.data, TTL.DEMOGRAFI);
+		if (!occupation.error && occupation.data?.data != null) cache.set("demografi:occupation", occupation.data.data, TTL.DEMOGRAFI);
+		if (!religion.error && religion.data?.data != null) cache.set("demografi:religion", religion.data.data, TTL.DEMOGRAFI);
+		if (!births.error && births.data?.data != null) cache.set("demografi:births", births.data.data, TTL.DEMOGRAFI);
+		if (!deaths.error && deaths.data?.data != null) cache.set("demografi:deaths", deaths.data.data, TTL.DEMOGRAFI);
+		if (!migration.error && migration.data?.data != null) cache.set("demografi:migration", migration.data.data, TTL.DEMOGRAFI);
+		if (!sectors.error && sectors.data?.data != null) cache.set("demografi:sectors", sectors.data.data, TTL.DEMOGRAFI);
+		if (!apbdes.error && apbdesData != null) cache.set("apbdes:cmk-apbdes-001", apbdesData, TTL.APBDES);
 
 		const durationMs = Date.now() - startedAt.getTime();
 		const recordsAffected = 10 - failed;
