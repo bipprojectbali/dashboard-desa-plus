@@ -1,4 +1,5 @@
 import { Elysia, t } from "elysia";
+import { cache, TTL, withCache } from "@/utils/cache";
 import { prisma } from "@/utils/db";
 import { desaExternalClient } from "@/utils/desa-external-client";
 
@@ -9,56 +10,32 @@ function extractError(err: unknown): string {
 	return String(e.error || e.message || JSON.stringify(err));
 }
 
-// In-memory cache for demografi data
-export const demografiCache = {
-	data: {} as Record<string, any>,
-	lastSyncedAt: null as string | null,
-};
+let lastSyncedAt: string | null = null;
 
-/**
- * Demografi API Routes
- * Proxy endpoints to fetch data from external Desa API
- * Avoids CORS issues by routing through backend
- */
 export const demografi = new Elysia({ prefix: "/demografi" })
-	// Get dashboard summary
 	.get(
 		"/summary",
 		async () => {
 			try {
-				if (demografiCache.data.summary) {
-					return {
-						success: true,
-						data: demografiCache.data.summary,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				const response = await desaExternalClient.GET(
-					"/api/kependudukan/dashboard/summary",
+				const data = await withCache(
+					"demografi:summary",
+					TTL.DEMOGRAFI,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/kependudukan/dashboard/summary",
+						);
+						if (response.error) throw new Error(extractError(response.error));
+						return response.data?.data ?? null;
+					},
 				);
-
-				if (response.error) {
-					return {
-						success: false,
-						error: extractError(response.error),
-						data: null,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				return {
-					success: true,
-					data: response.data?.data || null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
-				};
+				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Summary error:", error);
 				return {
 					success: false,
-					error: "Failed to fetch summary data",
+					error: extractError(error),
 					data: null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
+					lastSyncedAt,
 				};
 			}
 		},
@@ -74,44 +51,29 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	)
 
-	// Get banjar data
 	.get(
 		"/banjar",
 		async () => {
 			try {
-				if (demografiCache.data.banjar) {
-					return {
-						success: true,
-						data: demografiCache.data.banjar,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				const response = await desaExternalClient.GET(
-					"/api/kependudukan/databanjar/find-many",
+				const data = await withCache(
+					"demografi:banjar",
+					TTL.DEMOGRAFI,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/kependudukan/databanjar/find-many",
+						);
+						if (response.error) throw new Error(extractError(response.error));
+						return response.data?.data ?? null;
+					},
 				);
-
-				if (response.error) {
-					return {
-						success: false,
-						error: extractError(response.error),
-						data: null,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				return {
-					success: true,
-					data: response.data?.data || null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
-				};
+				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Banjar error:", error);
 				return {
 					success: false,
-					error: "Failed to fetch banjar data",
+					error: extractError(error),
 					data: null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
+					lastSyncedAt,
 				};
 			}
 		},
@@ -127,44 +89,29 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	)
 
-	// Get age distribution
 	.get(
 		"/age",
 		async () => {
 			try {
-				if (demografiCache.data.age) {
-					return {
-						success: true,
-						data: demografiCache.data.age,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				const response = await desaExternalClient.GET(
-					"/api/kependudukan/distribusiumur/find-many",
+				const data = await withCache(
+					"demografi:age",
+					TTL.DEMOGRAFI,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/kependudukan/distribusiumur/find-many",
+						);
+						if (response.error) throw new Error(extractError(response.error));
+						return response.data?.data ?? null;
+					},
 				);
-
-				if (response.error) {
-					return {
-						success: false,
-						error: extractError(response.error),
-						data: null,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				return {
-					success: true,
-					data: response.data?.data || null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
-				};
+				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Age error:", error);
 				return {
 					success: false,
-					error: "Failed to fetch age data",
+					error: extractError(error),
 					data: null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
+					lastSyncedAt,
 				};
 			}
 		},
@@ -180,44 +127,29 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	)
 
-	// Get occupation data
 	.get(
 		"/occupation",
 		async () => {
 			try {
-				if (demografiCache.data.occupation) {
-					return {
-						success: true,
-						data: demografiCache.data.occupation,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				const response = await desaExternalClient.GET(
-					"/api/ekonomi/demografipekerjaan/find-many",
+				const data = await withCache(
+					"demografi:occupation",
+					TTL.DEMOGRAFI,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/ekonomi/demografipekerjaan/find-many",
+						);
+						if (response.error) throw new Error(extractError(response.error));
+						return response.data?.data ?? null;
+					},
 				);
-
-				if (response.error) {
-					return {
-						success: false,
-						error: extractError(response.error),
-						data: null,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				return {
-					success: true,
-					data: response.data?.data || null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
-				};
+				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Occupation error:", error);
 				return {
 					success: false,
-					error: "Failed to fetch occupation data",
+					error: extractError(error),
 					data: null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
+					lastSyncedAt,
 				};
 			}
 		},
@@ -233,44 +165,29 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	)
 
-	// Get religion distribution
 	.get(
 		"/religion",
 		async () => {
 			try {
-				if (demografiCache.data.religion) {
-					return {
-						success: true,
-						data: demografiCache.data.religion,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				const response = await desaExternalClient.GET(
-					"/api/kependudukan/distribusiagama/find-many",
+				const data = await withCache(
+					"demografi:religion",
+					TTL.DEMOGRAFI,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/kependudukan/distribusiagama/find-many",
+						);
+						if (response.error) throw new Error(extractError(response.error));
+						return response.data?.data ?? null;
+					},
 				);
-
-				if (response.error) {
-					return {
-						success: false,
-						error: extractError(response.error),
-						data: null,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				return {
-					success: true,
-					data: response.data?.data || null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
-				};
+				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Religion error:", error);
 				return {
 					success: false,
-					error: "Failed to fetch religion data",
+					error: extractError(error),
 					data: null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
+					lastSyncedAt,
 				};
 			}
 		},
@@ -286,44 +203,29 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	)
 
-	// Get births data
 	.get(
 		"/births",
 		async () => {
 			try {
-				if (demografiCache.data.births) {
-					return {
-						success: true,
-						data: demografiCache.data.births,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				const response = await desaExternalClient.GET(
-					"/api/kesehatan/kelahiran/findMany",
+				const data = await withCache(
+					"demografi:births",
+					TTL.DEMOGRAFI,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/kesehatan/kelahiran/findMany",
+						);
+						if (response.error) throw new Error(extractError(response.error));
+						return response.data?.data ?? null;
+					},
 				);
-
-				if (response.error) {
-					return {
-						success: false,
-						error: extractError(response.error),
-						data: null,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				return {
-					success: true,
-					data: response.data?.data || null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
-				};
+				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Births error:", error);
 				return {
 					success: false,
-					error: "Failed to fetch births data",
+					error: extractError(error),
 					data: null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
+					lastSyncedAt,
 				};
 			}
 		},
@@ -339,44 +241,29 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	)
 
-	// Get deaths data
 	.get(
 		"/deaths",
 		async () => {
 			try {
-				if (demografiCache.data.deaths) {
-					return {
-						success: true,
-						data: demografiCache.data.deaths,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				const response = await desaExternalClient.GET(
-					"/api/kesehatan/kematian/findMany",
+				const data = await withCache(
+					"demografi:deaths",
+					TTL.DEMOGRAFI,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/kesehatan/kematian/findMany",
+						);
+						if (response.error) throw new Error(extractError(response.error));
+						return response.data?.data ?? null;
+					},
 				);
-
-				if (response.error) {
-					return {
-						success: false,
-						error: extractError(response.error),
-						data: null,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				return {
-					success: true,
-					data: response.data?.data || null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
-				};
+				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Deaths error:", error);
 				return {
 					success: false,
-					error: "Failed to fetch deaths data",
+					error: extractError(error),
 					data: null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
+					lastSyncedAt,
 				};
 			}
 		},
@@ -392,44 +279,29 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	)
 
-	// Get migration data
 	.get(
 		"/migration",
 		async () => {
 			try {
-				if (demografiCache.data.migration) {
-					return {
-						success: true,
-						data: demografiCache.data.migration,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				const response = await desaExternalClient.GET(
-					"/api/kependudukan/migrasipenduduk/find-many",
+				const data = await withCache(
+					"demografi:migration",
+					TTL.DEMOGRAFI,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/kependudukan/migrasipenduduk/find-many",
+						);
+						if (response.error) throw new Error(extractError(response.error));
+						return response.data?.data ?? null;
+					},
 				);
-
-				if (response.error) {
-					return {
-						success: false,
-						error: extractError(response.error),
-						data: null,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				return {
-					success: true,
-					data: response.data?.data || null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
-				};
+				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Migration error:", error);
 				return {
 					success: false,
-					error: "Failed to fetch migration data",
+					error: extractError(error),
 					data: null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
+					lastSyncedAt,
 				};
 			}
 		},
@@ -445,55 +317,42 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	)
 
-	// Get sector data
 	.get(
 		"/sectors",
 		async () => {
 			try {
-				if (demografiCache.data.sectors) {
-					return {
-						success: true,
-						data: demografiCache.data.sectors,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				console.log("[Demografi API] Fetching sectors from external API...");
-				const response = await desaExternalClient.GET(
-					"/api/ekonomi/sektourunggulandesa/find-many",
+				const data = await withCache(
+					"demografi:sectors",
+					TTL.DEMOGRAFI,
+					async () => {
+						console.log(
+							"[Demografi API] Fetching sectors from external API...",
+						);
+						const response = await desaExternalClient.GET(
+							"/api/ekonomi/sektourunggulandesa/find-many",
+						);
+						if (response.error) {
+							console.error(
+								"[Demografi API] External sectors error:",
+								response.error,
+							);
+							throw new Error(extractError(response.error));
+						}
+						const items = response.data?.data || [];
+						console.log(
+							`[Demografi API] Sectors fetched successfully: ${Array.isArray(items) ? items.length : 0} items`,
+						);
+						return items;
+					},
 				);
-
-				if (response.error) {
-					console.error(
-						"[Demografi API] External sectors error:",
-						response.error,
-					);
-					return {
-						success: false,
-						error: extractError(response.error),
-						data: null,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				// Log sample of data to help debugging
-				const data = response.data?.data || [];
-				console.log(
-					`[Demografi API] Sectors fetched successfully: ${Array.isArray(data) ? data.length : 0} items`,
-				);
-
-				return {
-					success: true,
-					data: data,
-					lastSyncedAt: demografiCache.lastSyncedAt,
-				};
+				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Sectors error:", error);
 				return {
 					success: false,
-					error: "Failed to fetch sector data",
+					error: extractError(error),
 					data: null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
+					lastSyncedAt,
 				};
 			}
 		},
@@ -509,14 +368,12 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	)
 
-	// Sync all demografi data
 	.post(
 		"/sync",
 		async ({ request }) => {
 			try {
 				console.log("[Demografi API] Starting sync...");
 
-				// Fetch all data in parallel
 				const [
 					summary,
 					banjar,
@@ -543,7 +400,6 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 					}),
 				]);
 
-				// Check for errors
 				const errors = [];
 				if (summary.error) errors.push("summary");
 				if (banjar.error) errors.push("banjar");
@@ -560,26 +416,35 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 					console.warn("[Demografi API] Some endpoints failed:", errors);
 				}
 
-				// Cache the data
-				demografiCache.data = {
-					summary: summary.data?.data || null,
-					banjar: banjar.data?.data || null,
-					age: age.data?.data || null,
-					occupation: occupation.data?.data || null,
-					religion: religion.data?.data || null,
-					births: births.data?.data || null,
-					deaths: deaths.data?.data || null,
-					migration: migration.data?.data || null,
-					sectors: sectors.data?.data || null,
-					apbdes: apbdes.data?.data || apbdes.data || null,
-				};
+				// Populate cache for each key with TTL
+				if (!summary.error && summary.data?.data != null)
+					cache.set("demografi:summary", summary.data.data, TTL.DEMOGRAFI);
+				if (!banjar.error && banjar.data?.data != null)
+					cache.set("demografi:banjar", banjar.data.data, TTL.DEMOGRAFI);
+				if (!age.error && age.data?.data != null)
+					cache.set("demografi:age", age.data.data, TTL.DEMOGRAFI);
+				if (!occupation.error && occupation.data?.data != null)
+					cache.set(
+						"demografi:occupation",
+						occupation.data.data,
+						TTL.DEMOGRAFI,
+					);
+				if (!religion.error && religion.data?.data != null)
+					cache.set("demografi:religion", religion.data.data, TTL.DEMOGRAFI);
+				if (!births.error && births.data?.data != null)
+					cache.set("demografi:births", births.data.data, TTL.DEMOGRAFI);
+				if (!deaths.error && deaths.data?.data != null)
+					cache.set("demografi:deaths", deaths.data.data, TTL.DEMOGRAFI);
+				if (!migration.error && migration.data?.data != null)
+					cache.set("demografi:migration", migration.data.data, TTL.DEMOGRAFI);
+				if (!sectors.error && sectors.data?.data != null)
+					cache.set("demografi:sectors", sectors.data.data, TTL.DEMOGRAFI);
+				const apbdesData = apbdes.data?.data || apbdes.data || null;
+				if (!apbdes.error && apbdesData != null)
+					cache.set("apbdes:cmk-apbdes-001", apbdesData, TTL.APBDES);
 
-				demografiCache.lastSyncedAt = new Date().toISOString();
-
-				console.log(
-					"[Demografi API] Sync completed at:",
-					demografiCache.lastSyncedAt,
-				);
+				lastSyncedAt = new Date().toISOString();
+				console.log("[Demografi API] Sync completed at:", lastSyncedAt);
 
 				await prisma.activityLog.create({
 					data: {
@@ -599,7 +464,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 				return {
 					success: true,
 					message: "Sinkronisasi data desa berhasil",
-					lastSyncedAt: demografiCache.lastSyncedAt,
+					lastSyncedAt,
 					errors: errors.length > 0 ? errors : undefined,
 				};
 			} catch (error) {
@@ -624,76 +489,46 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	)
 
-	// Get last sync time
-	.get(
-		"/last-sync",
-		() => {
-			return {
-				lastSyncedAt: demografiCache.lastSyncedAt,
-			};
+	.get("/last-sync", () => ({ lastSyncedAt }), {
+		response: {
+			200: t.Object({
+				lastSyncedAt: t.Nullable(t.String()),
+			}),
 		},
-		{
-			response: {
-				200: t.Object({
-					lastSyncedAt: t.Nullable(t.String()),
-				}),
-			},
-		},
-	)
+	})
 
-	// Get detailed APBDes data by ID
 	.get(
 		"/apbdes/:id",
 		async ({ params: { id } }) => {
 			try {
-				// Use cache if it matches the ID and exists
-				if (
-					demografiCache.data.apbdes &&
-					(demografiCache.data.apbdes.id === id || id === "cmk-apbdes-001")
-				) {
-					console.log("[Demografi API] Returning cached APBDes detail");
-					return {
-						success: true,
-						data: demografiCache.data.apbdes,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				console.log(`[Demografi API] Fetching APBDes detail for ID: ${id}`);
-				const response = await desaExternalClient.GET(
-					"/api/landingpage/apbdes/{id}",
-					{ params: { path: { id } } },
-				);
-
-				if (response.error) {
-					console.error("[Demografi API] APBDes detail error:", response.error);
-					return {
-						success: false,
-						error: extractError(response.error),
-						data: null,
-						lastSyncedAt: demografiCache.lastSyncedAt,
-					};
-				}
-
-				return {
-					success: true,
-					data: response.data || null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
-				};
+				const data = await withCache(`apbdes:${id}`, TTL.APBDES, async () => {
+					console.log(`[Demografi API] Fetching APBDes detail for ID: ${id}`);
+					const response = await desaExternalClient.GET(
+						"/api/landingpage/apbdes/{id}",
+						{ params: { path: { id } } },
+					);
+					if (response.error) {
+						console.error(
+							"[Demografi API] APBDes detail error:",
+							response.error,
+						);
+						throw new Error(extractError(response.error));
+					}
+					return response.data ?? null;
+				});
+				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] APBDes detail error:", error);
 				return {
 					success: false,
 					error: extractError(error),
 					data: null,
-					lastSyncedAt: demografiCache.lastSyncedAt,
+					lastSyncedAt,
 				};
 			}
 		},
 		{
-			params: t.Object({
-				id: t.String(),
-			}),
+			params: t.Object({ id: t.String() }),
 			response: {
 				200: t.Object({
 					success: t.Boolean(),

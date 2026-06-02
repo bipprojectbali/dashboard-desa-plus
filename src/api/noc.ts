@@ -1,10 +1,10 @@
 import { $ } from "bun";
 import { Elysia, t } from "elysia";
 import { apiMiddleware } from "../middleware/apiMiddleware";
+import { cache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import { desaExternalClient } from "../utils/desa-external-client";
 import { nocExternalClient } from "../utils/noc-external-client";
-import { demografiCache } from "./demografi";
 
 export const noc = new Elysia({ prefix: "/noc" })
 	.use(apiMiddleware)
@@ -601,9 +601,10 @@ export const noc = new Elysia({ prefix: "/noc" })
 				let apbdesData: any = null;
 
 				// 1. Check Cache first if ID matches
-				if (idDesa === "cmk-apbdes-001" && demografiCache.data.apbdes) {
+				const cachedApbdes = cache.get<any>("apbdes:cmk-apbdes-001");
+				if (idDesa === "cmk-apbdes-001" && cachedApbdes) {
 					console.log("[APBDes API] Returning cached APBDes data");
-					apbdesData = demografiCache.data.apbdes;
+					apbdesData = cachedApbdes;
 				} else {
 					// 2. Coba tarik data dari External Desa Website API
 					console.log("[APBDes API] Fetching live data for ID:", idDesa);

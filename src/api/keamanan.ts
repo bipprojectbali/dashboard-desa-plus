@@ -1,4 +1,5 @@
 import Elysia, { t } from "elysia";
+import { cache, TTL, withCache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
 
@@ -62,6 +63,7 @@ export const keamanan = new Elysia({
 		"/laporan-lokal",
 		async ({ body, set }) => {
 			try {
+				cache.delete("keamanan:stats");
 				const reportNumber = `RPT-${Date.now()}`;
 
 				const report = await prisma.securityReport.create({
@@ -102,6 +104,7 @@ export const keamanan = new Elysia({
 		"/laporan-lokal/:id/status",
 		async ({ params, body, set }) => {
 			try {
+				cache.delete("keamanan:stats");
 				const report = await prisma.securityReport.update({
 					where: { id: params.id },
 					data: { status: body.status },
@@ -133,13 +136,20 @@ export const keamanan = new Elysia({
 		"/laporan-lokal/stats",
 		async ({ set }) => {
 			try {
-				const [total, baru, diproses, selesai] = await Promise.all([
-					prisma.securityReport.count(),
-					prisma.securityReport.count({ where: { status: "BARU" } }),
-					prisma.securityReport.count({ where: { status: "DIPROSES" } }),
-					prisma.securityReport.count({ where: { status: "SELESAI" } }),
-				]);
-				return { data: { total, baru, diproses, selesai } };
+				const data = await withCache(
+					"keamanan:stats",
+					TTL.KEAMANAN,
+					async () => {
+						const [total, baru, diproses, selesai] = await Promise.all([
+							prisma.securityReport.count(),
+							prisma.securityReport.count({ where: { status: "BARU" } }),
+							prisma.securityReport.count({ where: { status: "DIPROSES" } }),
+							prisma.securityReport.count({ where: { status: "SELESAI" } }),
+						]);
+						return { total, baru, diproses, selesai };
+					},
+				);
+				return { data };
 			} catch (error) {
 				logger.error({ error }, "Failed to fetch security report stats");
 				set.status = 500;
