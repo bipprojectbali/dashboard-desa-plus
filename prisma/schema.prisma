@@ -41,6 +41,7 @@ model User {
   activityLogs           ActivityLog[]
   invitations            Invitation[]  @relation("InvitedByUser")
   ipWhitelistEntries     IpWhitelistEntry[]
+  jennaUsageLogs         JennaUsageLog[]
 
   @@map("user")
 }
@@ -766,4 +767,20 @@ model SyncLog {
   @@index([type])
   @@index([startedAt])
   @@map("sync_log")
+}
+
+model JennaUsageLog {
+  id             String   @id @default(cuid())
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  inputTokens    Int      @default(0)
+  outputTokens   Int      @default(0)
+  cost           Float    @default(0)
+  responseTimeMs Int?
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([userId, createdAt])
+  @@map("jenna_usage_log")
 }

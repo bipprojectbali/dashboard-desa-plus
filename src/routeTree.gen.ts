@@ -36,6 +36,7 @@ import { Route as PengaturanKeamananRouteImport } from './routes/pengaturan/keam
 import { Route as PengaturanAksesDanTimRouteImport } from './routes/pengaturan/akses-dan-tim'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminJennaAnalyticsRouteImport } from './routes/admin/jenna-analytics'
 import { Route as AdminHelpRouteImport } from './routes/admin/help'
 import { Route as AdminAuditLogRouteImport } from './routes/admin/audit-log'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
@@ -175,6 +176,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminJennaAnalyticsRoute = AdminJennaAnalyticsRouteImport.update({
+  id: '/jenna-analytics',
+  path: '/jenna-analytics',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminHelpRoute = AdminHelpRouteImport.update({
   id: '/help',
   path: '/help',
@@ -210,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
+  '/admin/jenna-analytics': typeof AdminJennaAnalyticsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
@@ -240,6 +247,7 @@ export interface FileRoutesByTo {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
+  '/admin/jenna-analytics': typeof AdminJennaAnalyticsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
@@ -273,6 +281,7 @@ export interface FileRoutesById {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
+  '/admin/jenna-analytics': typeof AdminJennaAnalyticsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/pengaturan/akses-dan-tim': typeof PengaturanAksesDanTimRoute
@@ -307,6 +316,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
+    | '/admin/jenna-analytics'
     | '/admin/settings'
     | '/admin/users'
     | '/pengaturan/akses-dan-tim'
@@ -337,6 +347,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
+    | '/admin/jenna-analytics'
     | '/admin/settings'
     | '/admin/users'
     | '/pengaturan/akses-dan-tim'
@@ -369,6 +380,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
+    | '/admin/jenna-analytics'
     | '/admin/settings'
     | '/admin/users'
     | '/pengaturan/akses-dan-tim'
@@ -594,6 +606,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/jenna-analytics': {
+      id: '/admin/jenna-analytics'
+      path: '/jenna-analytics'
+      fullPath: '/admin/jenna-analytics'
+      preLoaderRoute: typeof AdminJennaAnalyticsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/help': {
       id: '/admin/help'
       path: '/help'
@@ -622,6 +641,7 @@ interface AdminRouteRouteChildren {
   AdminApikeyRoute: typeof AdminApikeyRoute
   AdminAuditLogRoute: typeof AdminAuditLogRoute
   AdminHelpRoute: typeof AdminHelpRoute
+  AdminJennaAnalyticsRoute: typeof AdminJennaAnalyticsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -631,6 +651,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminApikeyRoute: AdminApikeyRoute,
   AdminAuditLogRoute: AdminAuditLogRoute,
   AdminHelpRoute: AdminHelpRoute,
+  AdminJennaAnalyticsRoute: AdminJennaAnalyticsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
