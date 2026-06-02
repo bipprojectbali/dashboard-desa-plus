@@ -779,3 +779,18 @@ model RolePermission {
   @@index([role])
   @@map("role_permission")
 }
+
+model Faq {
+  id          String   @id @default(cuid())
+  question    String
+  answer      String
+  category    String   @default("Umum")
+  order       Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([isPublished, order])
+  @@map("faq")
+}
