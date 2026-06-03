@@ -209,36 +209,33 @@ const KeamananPage = () => {
 										}}
 										h="100%"
 									>
-										<Group justify="space-between" align="center">
-											<Stack gap={0}>
-												<Text size="sm" c={dark ? "dark.3" : "dimmed"}>
+										<Group justify="space-between" align="center" wrap="nowrap">
+											<Stack gap={4}>
+												<Text size="sm" fw={500} c={dark ? "dark.1" : "dimmed"}>
+													{kpi.title}
+												</Text>
+												{loading ? (
+													<Skeleton height={32} width={60} radius="sm" />
+												) : (
+													<Text
+														size="xl"
+														fw={700}
+														lh={1}
+														c={dark ? "dark.0" : "black"}
+													>
+														{kpi.value}
+													</Text>
+												)}
+												<Text size="xs" c={dark ? "dark.3" : "dimmed"}>
 													{kpi.subtitle}
 												</Text>
-												<Group gap="xs" align="center">
-													<Skeleton
-														visible={loading}
-														width={40}
-														height={28}
-														radius="sm"
-													>
-														<Text
-															size="xl"
-															fw={700}
-															c={dark ? "dark.0" : "black"}
-														>
-															{kpi.value}
-														</Text>
-													</Skeleton>
-													<Text size="sm" c={dark ? "white" : "dimmed"}>
-														{kpi.title}
-													</Text>
-												</Group>
 											</Stack>
 											<ThemeIcon
 												variant="light"
 												color={kpi.color}
-												size="xl"
+												size={52}
 												radius="xl"
+												style={{ flexShrink: 0 }}
 											>
 												{kpi.icon}
 											</ThemeIcon>
@@ -310,7 +307,7 @@ const KeamananPage = () => {
 										bg={dark ? "#263852ff" : "#F1F5F9"}
 										style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
 									>
-										<Group justify="space-between">
+										<Group justify="space-between" align="center">
 											<Stack gap={0}>
 												<Group gap="xs">
 													<Text fw={500} c={dark ? "dark.0" : "black"}>
@@ -330,8 +327,8 @@ const KeamananPage = () => {
 													{cctv.lokasi}
 												</Text>
 											</Stack>
-											<Group gap="xs">
-												<IconClock size={16} stroke={1.5} />
+											<Group gap={4} align="center">
+												<IconClock size={14} stroke={1.5} />
 												<Text size="sm" c={dark ? "white" : "dimmed"}>
 													{new Date(cctv.lastActive).toLocaleDateString(
 														"id-ID",
@@ -429,15 +426,15 @@ const KeamananPage = () => {
 										</Badge>
 									</Group>
 
-									<Group justify="space-between">
-										<Group gap="xs">
-											<IconMapPin size={16} stroke={1.5} />
+									<Group justify="space-between" align="center">
+										<Group gap={4} align="center">
+											<IconMapPin size={14} stroke={1.5} />
 											<Text size="sm" c={dark ? "white" : "dimmed"}>
 												{report.lokasi}
 											</Text>
 										</Group>
-										<Group gap="xs">
-											<IconClock size={16} stroke={1.5} />
+										<Group gap={4} align="center">
+											<IconClock size={14} stroke={1.5} />
 											<Text size="sm" c={dark ? "white" : "dimmed"}>
 												{new Date(report.tanggalWaktu).toLocaleDateString(
 													"id-ID",

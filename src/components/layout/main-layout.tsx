@@ -16,7 +16,15 @@ import { useSidebarFullscreen } from "@/hooks/use-sidebar-fullscreen";
 import { useSystemMonitor } from "@/hooks/useSystemMonitor";
 import { useTranslate } from "@/hooks/useTranslate";
 import { setAksesPrefs } from "@/store/akses";
-import { i18nStore } from "@/store/i18n";
+import { authStore } from "@/store/auth";
+import {
+	type FormatTanggal,
+	i18nStore,
+	setDashboardPrefs,
+	setFormatTanggal,
+	setLang,
+	setZonaWaktu,
+} from "@/store/i18n";
 
 interface MainLayoutProps {
 	children: React.ReactNode;
@@ -103,8 +111,30 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 	} = useSidebarFullscreen();
 	const { colorScheme } = useMantineColorScheme();
 	const { animasiTransisi } = useSnapshot(i18nStore);
+	const { user } = useSnapshot(authStore);
 	const t = useTranslate();
 	useSystemMonitor();
+
+	// Non-admin users inherit display preferences from admin's global settings
+	useEffect(() => {
+		if (!user || user.role === "admin") return;
+		fetch("/api/umum-preferences")
+			.then((r) => (r.ok ? r.json() : null))
+			.then((json) => {
+				if (!json?.data) return;
+				const d = json.data;
+				setLang(d.bahasa === "en" ? "en" : "id");
+				setZonaWaktu(d.zonaWaktu);
+				setFormatTanggal(d.formatTanggal as FormatTanggal);
+				setDashboardPrefs({
+					refreshOtomatis: d.refreshOtomatis,
+					intervalRefresh: d.intervalRefresh,
+					tampilkanGrid: d.tampilkanGrid,
+					animasiTransisi: d.animasiTransisi,
+				});
+			})
+			.catch(() => {});
+	}, [user?.role]);
 
 	useEffect(() => {
 		fetch("/api/akses-preferences")
@@ -162,7 +192,7 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 					{children}
 				</PageTransition>
 
-				{/* Floating bantuan button */}
+				{/* Floating bantuan button
 				<Tooltip label={t.help.bantuanShortcut} position="left" withArrow>
 					<UnstyledButton
 						component={Link}
@@ -200,7 +230,7 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 					>
 						{t.help.bantuanShortcut}
 					</UnstyledButton>
-				</Tooltip>
+				</Tooltip> */}
 			</AppShell.Main>
 		</AppShell>
 	);

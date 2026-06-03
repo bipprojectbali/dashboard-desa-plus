@@ -38,6 +38,7 @@ import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSystemHealthRouteImport } from './routes/admin/system-health'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminRolesRouteImport } from './routes/admin/roles'
+import { Route as AdminPreferencesRouteImport } from './routes/admin/preferences'
 import { Route as AdminHelpRouteImport } from './routes/admin/help'
 import { Route as AdminAuditLogRouteImport } from './routes/admin/audit-log'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
@@ -187,6 +188,11 @@ const AdminRolesRoute = AdminRolesRouteImport.update({
   path: '/roles',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminPreferencesRoute = AdminPreferencesRouteImport.update({
+  id: '/preferences',
+  path: '/preferences',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminHelpRoute = AdminHelpRouteImport.update({
   id: '/help',
   path: '/help',
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
+  '/admin/preferences': typeof AdminPreferencesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/system-health': typeof AdminSystemHealthRoute
@@ -254,6 +261,7 @@ export interface FileRoutesByTo {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
+  '/admin/preferences': typeof AdminPreferencesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/system-health': typeof AdminSystemHealthRoute
@@ -289,6 +297,7 @@ export interface FileRoutesById {
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
+  '/admin/preferences': typeof AdminPreferencesRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/system-health': typeof AdminSystemHealthRoute
@@ -325,6 +334,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
+    | '/admin/preferences'
     | '/admin/roles'
     | '/admin/settings'
     | '/admin/system-health'
@@ -357,6 +367,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
+    | '/admin/preferences'
     | '/admin/roles'
     | '/admin/settings'
     | '/admin/system-health'
@@ -391,6 +402,7 @@ export interface FileRouteTypes {
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
+    | '/admin/preferences'
     | '/admin/roles'
     | '/admin/settings'
     | '/admin/system-health'
@@ -632,6 +644,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRolesRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/preferences': {
+      id: '/admin/preferences'
+      path: '/preferences'
+      fullPath: '/admin/preferences'
+      preLoaderRoute: typeof AdminPreferencesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/help': {
       id: '/admin/help'
       path: '/help'
@@ -660,6 +679,7 @@ interface AdminRouteRouteChildren {
   AdminApikeyRoute: typeof AdminApikeyRoute
   AdminAuditLogRoute: typeof AdminAuditLogRoute
   AdminHelpRoute: typeof AdminHelpRoute
+  AdminPreferencesRoute: typeof AdminPreferencesRoute
   AdminRolesRoute: typeof AdminRolesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSystemHealthRoute: typeof AdminSystemHealthRoute
@@ -671,6 +691,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminApikeyRoute: AdminApikeyRoute,
   AdminAuditLogRoute: AdminAuditLogRoute,
   AdminHelpRoute: AdminHelpRoute,
+  AdminPreferencesRoute: AdminPreferencesRoute,
   AdminRolesRoute: AdminRolesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSystemHealthRoute: AdminSystemHealthRoute,
