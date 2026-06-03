@@ -178,12 +178,12 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogHeader className="sr-only">
+			{/* <DialogHeader className="sr-only">
 				<DialogTitle>Pencarian Global</DialogTitle>
 				<DialogDescription>
 					Cari pengaduan, kegiatan, dan dokumen
 				</DialogDescription>
-			</DialogHeader>
+			</DialogHeader> */}
 
 			{/* Posisi atas (Spotlight-style), lebih lebar */}
 			<DialogContent className="top-[10%] translate-y-0 sm:max-w-2xl p-0 gap-0 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
