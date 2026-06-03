@@ -373,6 +373,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 	.post(
 		"/sync",
 		async ({ request, user }) => {
+			const syncStart = Date.now();
 			try {
 				console.log("[Demografi API] Starting sync...");
 
@@ -448,21 +449,40 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 				lastSyncedAt = new Date().toISOString();
 				console.log("[Demografi API] Sync completed at:", lastSyncedAt);
 
+				const durationMs = Date.now() - syncStart;
+				const syncLogPromise = prisma.syncLog.create({
+					data: {
+						type: "demografi",
+						status: errors.length > 0 ? "partial" : "success",
+						triggeredBy: "manual",
+						durationMs,
+						errorMessage:
+							errors.length > 0
+								? `Gagal: ${errors.join(", ")}`
+								: null,
+					},
+				});
+
 				if (user?.id) {
-					await prisma.activityLog.create({
-						data: {
-							userId: user.id,
-							action: "demografi-sync",
-							detail: JSON.stringify({
-								errors: errors.length > 0 ? errors : null,
-							}),
-							ipAddress:
-								request.headers.get("x-forwarded-for") ??
-								request.headers.get("x-real-ip") ??
-								null,
-							userAgent: request.headers.get("user-agent") ?? null,
-						},
-					});
+					await Promise.all([
+						prisma.activityLog.create({
+							data: {
+								userId: user.id,
+								action: "demografi-sync",
+								detail: JSON.stringify({
+									errors: errors.length > 0 ? errors : null,
+								}),
+								ipAddress:
+									request.headers.get("x-forwarded-for") ??
+									request.headers.get("x-real-ip") ??
+									null,
+								userAgent: request.headers.get("user-agent") ?? null,
+							},
+						}),
+						syncLogPromise,
+					]);
+				} else {
+					await syncLogPromise;
 				}
 
 				return {
@@ -473,6 +493,15 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 				};
 			} catch (error) {
 				console.error("[Demografi API] Sync error:", error);
+				await prisma.syncLog.create({
+					data: {
+						type: "demografi",
+						status: "error",
+						triggeredBy: "manual",
+						durationMs: Date.now() - syncStart,
+						errorMessage: (error as Error)?.message?.substring(0, 500) ?? "Unknown error",
+					},
+				});
 				return {
 					success: false,
 					error: "Gagal melakukan sinkronisasi data desa",
