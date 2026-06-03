@@ -25,9 +25,9 @@ export const noc = new Elysia({ prefix: "/noc" })
 				return { error: "Unauthorized" };
 			}
 
+			const syncStart = Date.now();
 			try {
 				console.log("[NOC Sync] Starting sync script...");
-				// Jalankan script sinkronisasi
 				// Hapus .quiet() agar kita bisa melihat log jika terjadi error di console server
 				const result = await $`bun run sync:noc`;
 				console.log(
@@ -35,19 +35,30 @@ export const noc = new Elysia({ prefix: "/noc" })
 					result.stdout?.toString(),
 				);
 
+				const durationMs = Date.now() - syncStart;
 				const lastSyncedAt = new Date().toISOString();
-				await prisma.activityLog.create({
-					data: {
-						userId: user.id,
-						action: "noc-sync",
-						detail: JSON.stringify({ success: true }),
-						ipAddress:
-							request.headers.get("x-forwarded-for") ??
-							request.headers.get("x-real-ip") ??
-							null,
-						userAgent: request.headers.get("user-agent") ?? null,
-					},
-				});
+				await Promise.all([
+					prisma.activityLog.create({
+						data: {
+							userId: user.id,
+							action: "noc-sync",
+							detail: JSON.stringify({ success: true }),
+							ipAddress:
+								request.headers.get("x-forwarded-for") ??
+								request.headers.get("x-real-ip") ??
+								null,
+							userAgent: request.headers.get("user-agent") ?? null,
+						},
+					}),
+					prisma.syncLog.create({
+						data: {
+							type: "noc",
+							status: "success",
+							triggeredBy: "manual",
+							durationMs,
+						},
+					}),
+				]);
 
 				return {
 					success: true,
@@ -61,6 +72,15 @@ export const noc = new Elysia({ prefix: "/noc" })
 					(error as any)?.message ||
 					JSON.stringify(error);
 				console.error("[NOC Sync] Error Details:", errorMessage);
+				await prisma.syncLog.create({
+					data: {
+						type: "noc",
+						status: "error",
+						triggeredBy: "manual",
+						durationMs: Date.now() - syncStart,
+						errorMessage: errorMessage.toString().substring(0, 500),
+					},
+				});
 				return {
 					success: false,
 					error: `Sinkronisasi gagal: ${errorMessage.substring(0, 200)}`,

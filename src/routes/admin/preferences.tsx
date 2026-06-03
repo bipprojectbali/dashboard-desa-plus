@@ -5,13 +5,16 @@ import {
 	Button,
 	Divider,
 	Group,
+	Loader,
 	LoadingOverlay,
 	Paper,
+	ScrollArea,
 	Select,
 	SimpleGrid,
 	Skeleton,
 	Stack,
 	Switch,
+	Table,
 	Text,
 	ThemeIcon,
 	Title,
@@ -19,9 +22,15 @@ import {
 } from "@mantine/core";
 import {
 	IconAdjustments,
+	IconAlertCircle,
+	IconArrowRight,
 	IconCheck,
+	IconCircleCheck,
 	IconClock,
+	IconCloudUpload,
+	IconDatabase,
 	IconGlobe,
+	IconHistory,
 	IconLanguage,
 	IconLayoutGrid,
 	IconRefresh,
@@ -30,17 +39,45 @@ import {
 	IconX,
 } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import "dayjs/locale/id";
+import relativeTime from "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
+import { useCallback, useEffect, useState } from "react";
 import { useApprovalGuard } from "@/hooks/useApprovalGuard";
 import { useTranslate } from "@/hooks/useTranslate";
 import { protectedRouteMiddleware } from "@/middleware/authMiddleware";
 import {
 	type FormatTanggal,
+	i18nStore,
 	setDashboardPrefs,
 	setFormatTanggal,
 	setLang,
 	setZonaWaktu,
 } from "@/store/i18n";
+import { apiClient } from "@/utils/api-client";
+import { useSnapshot } from "valtio";
+
+dayjs.extend(relativeTime);
+dayjs.extend(utc);
+dayjs.locale("id");
+
+type SyncLogEntry = {
+	id: string;
+	type: string;
+	status: string;
+	triggeredBy: string;
+	durationMs: number | null;
+	recordsAffected: number | null;
+	errorMessage: string | null;
+	startedAt: string;
+};
+
+const ZONA_OFFSET: Record<string, number> = {
+	"Asia/Jakarta": 420,
+	"Asia/Makassar": 480,
+	"Asia/Jayapura": 540,
+};
 
 export const Route = createFileRoute("/admin/preferences")({
 	component: AdminPreferencesPage,
@@ -66,6 +103,574 @@ const DEFAULT_PREFS: Prefs = {
 	tampilkanGrid: true,
 	animasiTransisi: true,
 };
+
+function AdminSyncSection() {
+	const [loading, setLoading] = useState(false);
+	const [demografiLoading, setDemografiLoading] = useState(false);
+	const { zonaWaktu } = useSnapshot(i18nStore);
+	const tzOffset = ZONA_OFFSET[zonaWaktu] ?? 420;
+	const fmtTs = (ts: string, format: string) =>
+		dayjs.utc(ts).utcOffset(tzOffset).format(format);
+
+	const [lastSync, setLastSync] = useState<string | null>(null);
+	const [demografiLastSync, setDemografiLastSync] = useState<string | null>(
+		null,
+	);
+	const [status, setStatus] = useState<{
+		type: "success" | "error" | null;
+		message: string;
+	}>({ type: null, message: "" });
+	const [demografiStatus, setDemografiStatus] = useState<{
+		type: "success" | "error" | null;
+		message: string;
+	}>({ type: null, message: "" });
+	const [syncLogs, setSyncLogs] = useState<SyncLogEntry[]>([]);
+	const [logsLoading, setLogsLoading] = useState(false);
+	const [logsType, setLogsType] = useState<string | null>(null);
+
+	const fetchSyncLogs = useCallback(async (type?: string | null) => {
+		setLogsLoading(true);
+		try {
+			const params: Record<string, string> = { limit: "30" };
+			if (type) params.type = type;
+			const qs = new URLSearchParams(params).toString();
+			const res = await fetch(`/api/admin/sync/logs?${qs}`);
+			if (res.ok) {
+				const json = await res.json();
+				setSyncLogs(json.data ?? []);
+			}
+		} catch {
+			// silent
+		} finally {
+			setLogsLoading(false);
+		}
+	}, []);
+
+	const fetchLastSync = async () => {
+		const { data } = await apiClient.GET("/api/noc/last-sync", {
+			params: { query: { idDesa: "desa1" } },
+		});
+		if (data?.lastSyncedAt) setLastSync(data.lastSyncedAt);
+	};
+
+	const fetchDemografiLastSync = async () => {
+		try {
+			const { data } = await apiClient.GET("/api/demografi/last-sync", {});
+			if (data?.lastSyncedAt) setDemografiLastSync(data.lastSyncedAt);
+		} catch {}
+	};
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: fetch once on mount
+	useEffect(() => {
+		fetchLastSync();
+		fetchDemografiLastSync();
+		fetchSyncLogs();
+	}, [fetchSyncLogs]);
+
+	useEffect(() => {
+		fetchSyncLogs(logsType);
+	}, [logsType, fetchSyncLogs]);
+
+	const handleSync = async () => {
+		setLoading(true);
+		setStatus({ type: null, message: "" });
+		try {
+			const { data, error, response } = await apiClient.POST(
+				"/api/noc/sync",
+				{},
+			);
+			if (response?.status === 401) {
+				setStatus({
+					type: "error",
+					message: "Tidak ada akses untuk sinkronisasi NOC",
+				});
+				return;
+			}
+			if (error) {
+				const errObj = error as Record<string, string>;
+				setStatus({
+					type: "error",
+					message: errObj?.error || errObj?.message || "Gagal sinkronisasi NOC",
+				});
+				return;
+			}
+			if (data?.success) {
+				setStatus({
+					type: "success",
+					message: data.message || "Sinkronisasi NOC berhasil",
+				});
+				if (data.lastSyncedAt) setLastSync(data.lastSyncedAt);
+				fetchSyncLogs(logsType);
+			} else {
+				setStatus({
+					type: "error",
+					message:
+						(data as unknown as Record<string, string>)?.error || "Respons tidak dikenali",
+				});
+			}
+		} catch {
+			setStatus({ type: "error", message: "Kesalahan sistem" });
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleDemografiSync = async () => {
+		setDemografiLoading(true);
+		setDemografiStatus({ type: null, message: "" });
+		try {
+			const { data, error } = await apiClient.POST("/api/demografi/sync", {});
+			if (error) {
+				const errObj = error as Record<string, string>;
+				setDemografiStatus({
+					type: "error",
+					message:
+						errObj?.error || errObj?.message || "Gagal sinkronisasi demografi",
+				});
+				return;
+			}
+			if (data?.success) {
+				setDemografiStatus({
+					type: "success",
+					message: data.message || "Sinkronisasi demografi berhasil",
+				});
+				if (data.lastSyncedAt) setDemografiLastSync(data.lastSyncedAt);
+				window.dispatchEvent(new CustomEvent("demografi-sync-complete"));
+				fetchSyncLogs(logsType);
+			} else {
+				setDemografiStatus({
+					type: "error",
+					message:
+						(data as unknown as Record<string, string>)?.error || "Respons tidak dikenali",
+				});
+			}
+		} catch {
+			setDemografiStatus({ type: "error", message: "Kesalahan sistem" });
+		} finally {
+			setDemografiLoading(false);
+		}
+	};
+
+	return (
+		<Stack gap="lg">
+			{/* Section header */}
+			<Group gap="md" align="flex-start">
+				<ThemeIcon
+					size={44}
+					radius="md"
+					variant="gradient"
+					gradient={{ from: "orange.7", to: "red.6" }}
+					style={{ flexShrink: 0 }}
+				>
+					<IconCloudUpload size={24} stroke={1.5} />
+				</ThemeIcon>
+				<Box>
+					<Group gap="xs" align="center">
+						<Title order={2} c="orange">
+							Sinkronisasi Data
+						</Title>
+						<Badge color="orange" variant="light" size="sm">
+							Admin Only
+						</Badge>
+					</Group>
+					<Text size="sm" c="dimmed">
+						Sinkronkan data eksternal ke database lokal dashboard
+					</Text>
+				</Box>
+			</Group>
+
+			{/* Sync Cards */}
+			<SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
+				{/* NOC Sync */}
+				<Paper withBorder radius="lg" p="xl">
+					<Group gap="sm" mb="lg">
+						<ThemeIcon
+							size={38}
+							radius="md"
+							variant="gradient"
+							gradient={{ from: "teal", to: "green" }}
+						>
+							<IconDatabase size={20} />
+						</ThemeIcon>
+						<Box style={{ flex: 1 }}>
+							<Group justify="space-between" align="flex-start">
+								<Box>
+									<Title order={4} fw={700}>
+										Data NOC
+									</Title>
+									<Text fz="xs" c="dimmed">
+										Kinerja divisi, kegiatan &amp; diskusi
+									</Text>
+								</Box>
+								<Badge
+									color={lastSync ? "teal" : "gray"}
+									variant="light"
+									size="sm"
+									leftSection={
+										lastSync ? (
+											<IconCircleCheck size={12} />
+										) : (
+											<IconClock size={12} />
+										)
+									}
+								>
+									{lastSync ? "Terkoneksi" : "Belum pernah"}
+								</Badge>
+							</Group>
+						</Box>
+					</Group>
+
+					<Paper withBorder radius="md" p="sm" mb="md">
+						<Group gap="xs" mb={2}>
+							<IconClock size={14} />
+							<Text fz="xs" fw={600} c="dimmed" tt="uppercase">
+								Sinkronisasi Terakhir
+							</Text>
+						</Group>
+						<Text fw={700} fz="sm">
+							{lastSync
+								? fmtTs(lastSync, "DD MMMM YYYY, HH:mm:ss")
+								: "Belum pernah dilakukan"}
+						</Text>
+						{lastSync && (
+							<Text fz="xs" c="dimmed" mt={2}>
+								{dayjs(lastSync).fromNow()}
+							</Text>
+						)}
+					</Paper>
+
+					<Group gap="xs" mb="sm">
+						<Text fz="xs" fw={600} c="dimmed">
+							Model:
+						</Text>
+						{["Divisi", "Kegiatan", "Diskusi"].map((m) => (
+							<Badge key={m} size="xs" color="teal" variant="light">
+								{m}
+							</Badge>
+						))}
+					</Group>
+
+					<Group gap="xs" mb="md">
+						<Text fz="xs" fw={600} c="dimmed">
+							URL:
+						</Text>
+						<Text fz="xs" c="dimmed" style={{ fontFamily: "monospace" }}>
+							darmasaba.muku.id/api/noc
+						</Text>
+					</Group>
+
+					{status.type && (
+						<Alert
+							icon={
+								status.type === "success" ? (
+									<IconCheck size={14} />
+								) : (
+									<IconAlertCircle size={14} />
+								)
+							}
+							color={status.type === "success" ? "teal" : "red"}
+							onClose={() => setStatus({ type: null, message: "" })}
+							withCloseButton
+							radius="md"
+							mb="md"
+							py="xs"
+						>
+							<Text fz="sm">{status.message}</Text>
+						</Alert>
+					)}
+
+					<Divider mb="md" />
+
+					<Button
+						variant="gradient"
+						gradient={{ from: "teal", to: "green" }}
+						leftSection={
+							<IconRefresh
+								size={16}
+								style={{
+									animation: loading ? "spin 1s linear infinite" : undefined,
+								}}
+							/>
+						}
+						rightSection={<IconArrowRight size={14} />}
+						onClick={handleSync}
+						loading={loading}
+						fullWidth
+						radius="md"
+					>
+						Sinkronkan NOC
+					</Button>
+					<Text fz="xs" c="dimmed" ta="center" mt="xs">
+						Sumber: NOC System (darmasaba.muku.id)
+					</Text>
+				</Paper>
+
+				{/* Demografi Sync */}
+				<Paper withBorder radius="lg" p="xl">
+					<Group gap="sm" mb="lg">
+						<ThemeIcon
+							size={38}
+							radius="md"
+							variant="gradient"
+							gradient={{ from: "blue", to: "cyan" }}
+						>
+							<IconUsers size={20} />
+						</ThemeIcon>
+						<Box style={{ flex: 1 }}>
+							<Group justify="space-between" align="flex-start">
+								<Box>
+									<Title order={4} fw={700}>
+										Website Desa
+									</Title>
+									<Text fz="xs" c="dimmed">
+										Demografi, APBDes &amp; sektor ekonomi
+									</Text>
+								</Box>
+								<Badge
+									color={demografiLastSync ? "blue" : "gray"}
+									variant="light"
+									size="sm"
+									leftSection={
+										demografiLastSync ? (
+											<IconCircleCheck size={12} />
+										) : (
+											<IconClock size={12} />
+										)
+									}
+								>
+									{demografiLastSync ? "Terkoneksi" : "Belum pernah"}
+								</Badge>
+							</Group>
+						</Box>
+					</Group>
+
+					<Paper withBorder radius="md" p="sm" mb="md">
+						<Group gap="xs" mb={2}>
+							<IconClock size={14} />
+							<Text fz="xs" fw={600} c="dimmed" tt="uppercase">
+								Sinkronisasi Terakhir
+							</Text>
+						</Group>
+						<Text fw={700} fz="sm">
+							{demografiLastSync
+								? fmtTs(demografiLastSync, "DD MMMM YYYY, HH:mm:ss")
+								: "Belum pernah dilakukan"}
+						</Text>
+						{demografiLastSync && (
+							<Text fz="xs" c="dimmed" mt={2}>
+								{dayjs(demografiLastSync).fromNow()}
+							</Text>
+						)}
+					</Paper>
+
+					<Group gap="xs" mb="sm">
+						<Text fz="xs" fw={600} c="dimmed">
+							Model:
+						</Text>
+						{["Demografi", "APBDes", "Sektor"].map((m) => (
+							<Badge key={m} size="xs" color="blue" variant="light">
+								{m}
+							</Badge>
+						))}
+					</Group>
+
+					<Group gap="xs" mb="md">
+						<Text fz="xs" fw={600} c="dimmed">
+							URL:
+						</Text>
+						<Text fz="xs" c="dimmed" style={{ fontFamily: "monospace" }}>
+							desa-darmasaba-stg.wibudev.com
+						</Text>
+					</Group>
+
+					{demografiStatus.type && (
+						<Alert
+							icon={
+								demografiStatus.type === "success" ? (
+									<IconCheck size={14} />
+								) : (
+									<IconAlertCircle size={14} />
+								)
+							}
+							color={demografiStatus.type === "success" ? "blue" : "red"}
+							onClose={() => setDemografiStatus({ type: null, message: "" })}
+							withCloseButton
+							radius="md"
+							mb="md"
+							py="xs"
+						>
+							<Text fz="sm">{demografiStatus.message}</Text>
+						</Alert>
+					)}
+
+					<Divider mb="md" />
+
+					<Button
+						variant="gradient"
+						gradient={{ from: "blue", to: "cyan" }}
+						leftSection={
+							<IconRefresh
+								size={16}
+								style={{
+									animation: demografiLoading
+										? "spin 1s linear infinite"
+										: undefined,
+								}}
+							/>
+						}
+						rightSection={<IconArrowRight size={14} />}
+						onClick={handleDemografiSync}
+						loading={demografiLoading}
+						fullWidth
+						radius="md"
+					>
+						Sinkronkan Data Desa
+					</Button>
+					<Text fz="xs" c="dimmed" ta="center" mt="xs">
+						Sumber: Website Desa Darmasaba
+					</Text>
+				</Paper>
+			</SimpleGrid>
+
+			{/* Riwayat Sinkronisasi */}
+			<Paper withBorder radius="lg" p="xl">
+				<Group justify="space-between" mb="md">
+					<Group gap="sm">
+						<ThemeIcon size={36} radius="md" variant="light" color="orange">
+							<IconHistory size={18} />
+						</ThemeIcon>
+						<Box>
+							<Title order={4} fw={700}>
+								Riwayat Sinkronisasi
+							</Title>
+							<Text fz="xs" c="dimmed">
+								30 entri terakhir dari scheduler otomatis &amp; manual
+							</Text>
+						</Box>
+					</Group>
+					<Group gap="xs">
+						<Select
+							size="xs"
+							radius="md"
+							placeholder="Semua tipe"
+							clearable
+							data={[
+								{ value: "noc", label: "NOC" },
+								{ value: "demografi", label: "Demografi" },
+							]}
+							value={logsType}
+							onChange={setLogsType}
+							w={130}
+						/>
+						<Button
+							size="xs"
+							variant="light"
+							color="orange"
+							radius="md"
+							leftSection={<IconRefresh size={13} />}
+							onClick={() => fetchSyncLogs(logsType)}
+							loading={logsLoading}
+						>
+							Refresh
+						</Button>
+					</Group>
+				</Group>
+
+				{logsLoading ? (
+					<Group justify="center" py="xl">
+						<Loader size="sm" color="orange" />
+					</Group>
+				) : syncLogs.length === 0 ? (
+					<Text fz="sm" c="dimmed" ta="center" py="xl">
+						Belum ada riwayat sinkronisasi.
+					</Text>
+				) : (
+					<ScrollArea>
+						<Table
+							striped
+							highlightOnHover
+							fz="xs"
+							withTableBorder
+							withColumnBorders
+						>
+							<Table.Thead>
+								<Table.Tr>
+									<Table.Th>Tipe</Table.Th>
+									<Table.Th>Status</Table.Th>
+									<Table.Th>Dipicu</Table.Th>
+									<Table.Th>Durasi</Table.Th>
+									<Table.Th>Records</Table.Th>
+									<Table.Th>Waktu Mulai</Table.Th>
+									<Table.Th>Error</Table.Th>
+								</Table.Tr>
+							</Table.Thead>
+							<Table.Tbody>
+								{syncLogs.map((log) => (
+									<Table.Tr key={log.id}>
+										<Table.Td>
+											<Badge
+												size="xs"
+												color={log.type === "noc" ? "teal" : "blue"}
+												variant="light"
+											>
+												{log.type.toUpperCase()}
+											</Badge>
+										</Table.Td>
+										<Table.Td>
+											<Badge
+												size="xs"
+												color={
+													log.status === "success"
+														? "green"
+														: log.status === "error"
+															? "red"
+															: "yellow"
+												}
+												variant="light"
+											>
+												{log.status}
+											</Badge>
+										</Table.Td>
+										<Table.Td>
+											<Badge size="xs" color="gray" variant="outline">
+												{log.triggeredBy}
+											</Badge>
+										</Table.Td>
+										<Table.Td>
+											{log.durationMs != null
+												? log.durationMs < 1000
+													? `${log.durationMs}ms`
+													: `${(log.durationMs / 1000).toFixed(1)}s`
+												: "-"}
+										</Table.Td>
+										<Table.Td>{log.recordsAffected ?? "-"}</Table.Td>
+										<Table.Td style={{ whiteSpace: "nowrap" }}>
+											{fmtTs(log.startedAt, "DD/MM/YY HH:mm:ss")}
+										</Table.Td>
+										<Table.Td>
+											{log.errorMessage ? (
+												<Text
+													fz="xs"
+													c="red"
+													style={{ maxWidth: 200 }}
+													lineClamp={2}
+												>
+													{log.errorMessage}
+												</Text>
+											) : (
+												"-"
+											)}
+										</Table.Td>
+									</Table.Tr>
+								))}
+							</Table.Tbody>
+						</Table>
+					</ScrollArea>
+				)}
+			</Paper>
+		</Stack>
+	);
+}
 
 function AdminPreferencesPage() {
 	const t = useTranslate();
@@ -515,9 +1120,7 @@ function AdminPreferencesPage() {
 									justify="space-between"
 									wrap="nowrap"
 									style={{
-										background: dark
-											? "rgba(249,115,22,0.12)"
-											: "#FFF7ED",
+										background: dark ? "rgba(249,115,22,0.12)" : "#FFF7ED",
 										borderRadius: 10,
 										borderLeft: "3px solid var(--mantine-color-orange-5)",
 									}}
@@ -583,6 +1186,9 @@ function AdminPreferencesPage() {
 					)}
 				</Paper>
 			</SimpleGrid>
+
+			{/* Sinkronisasi Data */}
+			<AdminSyncSection />
 
 			{/* Action Bar */}
 			<Paper withBorder radius="lg" p="md">
