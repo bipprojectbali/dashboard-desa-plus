@@ -18,6 +18,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import {
 	IconActivity,
+	IconAdjustments,
 	IconChevronRight,
 	IconHelpCircle,
 	IconHome,
@@ -99,6 +100,12 @@ function DashboardLayout() {
 			label: "Pengaturan",
 			to: "/admin/settings",
 			description: "Konfigurasi sistem",
+		},
+		{
+			icon: IconAdjustments,
+			label: "Preferensi",
+			to: "/admin/preferences",
+			description: "Bahasa, zona waktu & tampilan dashboard",
 		},
 	];
 

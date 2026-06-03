@@ -21,6 +21,32 @@ export const umumPreferences = new Elysia({
 		"/",
 		async ({ set, user }) => {
 			try {
+				// Non-admin users always inherit preferences from admin (global defaults)
+				if (user?.role !== "admin") {
+					const adminUser = await prisma.user.findFirst({
+						where: { role: "admin" },
+						select: { id: true },
+					});
+					if (adminUser) {
+						const adminPref = await prisma.umumPreference.findUnique({
+							where: { userId: adminUser.id },
+						});
+						if (adminPref) return { data: adminPref };
+					}
+					// No admin prefs saved yet — return hardcoded defaults
+					return {
+						data: {
+							bahasa: "id",
+							zonaWaktu: "Asia/Jakarta",
+							formatTanggal: "DD/MM/YYYY",
+							refreshOtomatis: true,
+							intervalRefresh: "1",
+							tampilkanGrid: true,
+							animasiTransisi: true,
+						},
+					};
+				}
+
 				const pref = await prisma.umumPreference.upsert({
 					where: { userId: user?.id },
 					create: { userId: user?.id },
