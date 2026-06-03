@@ -538,7 +538,7 @@ function DashboardSettingsComponent() {
 	return (
 		<Container size="lg" py="xl">
 			<Stack gap={2} mb="xl">
-				<Title order={2}>Pengaturan Sistem</Title>
+				<Title order={2} c={"orange"} variant="light">Pengaturan Sistem</Title>
 				<Text size="sm" c="dimmed">
 					Informasi konfigurasi, status aplikasi, dan manajemen FAQ
 				</Text>

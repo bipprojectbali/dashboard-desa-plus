@@ -160,7 +160,7 @@ function RolesPage() {
 							style={{ width: rem(24), height: rem(24) }}
 							color="var(--mantine-color-orange-6)"
 						/>
-						<Title order={2} fw={700}>
+						<Title order={2} fw={700} c={"orange"} variant="light">
 							Manajemen Role & Permission
 						</Title>
 					</Group>

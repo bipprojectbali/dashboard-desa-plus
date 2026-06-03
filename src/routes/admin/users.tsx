@@ -223,7 +223,7 @@ function DashboardUsersComponent() {
 		<Container size="lg" py="xl">
 			<Group justify="space-between" mb="lg">
 				<Stack gap={2}>
-					<Title order={2}>Manajemen Pengguna</Title>
+					<Title order={2} c={"orange"} variant="light">Manajemen Pengguna</Title>
 					<Text size="sm" c="dimmed">
 						Kelola akun dan hak akses pengguna sistem
 					</Text>

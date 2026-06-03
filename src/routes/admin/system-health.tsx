@@ -209,7 +209,7 @@ function SystemHealthPage() {
 		<Container size="xl" py="xl">
 			<Group justify="space-between" mb="lg" align="flex-start">
 				<Stack gap={2}>
-					<Title order={2}>System Health</Title>
+					<Title order={2} c={"orange"} variant="light">System Health</Title>
 					<Text size="sm" c="dimmed">
 						Status konektivitas dan latency komponen sistem
 					</Text>

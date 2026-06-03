@@ -200,7 +200,7 @@ function DashboardApikeyComponent() {
 
 	return (
 		<Container size="lg" py="xl">
-			<Title order={1} mb="lg" ta="center">
+			<Title c={"orange"} variant="light" order={1} mb="lg" ta="center">
 				API Keys Management
 			</Title>
 

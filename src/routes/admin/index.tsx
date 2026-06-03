@@ -145,7 +145,9 @@ function DashboardComponent() {
 			<Title
 				order={1}
 				ta="center"
-				className=" text-blue-600 p-4 rounded-lg mt-10 shadow-lg"
+				c={"orange"}
+				variant="light"
+				pb={20}
 			>
 				Dashboard Overview
 			</Title>

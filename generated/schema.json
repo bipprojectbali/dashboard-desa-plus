@@ -11637,6 +11637,131 @@
         }
       }
     },
+    "/api/bantuan/kirim-tiket": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiBantuanKirim-tiket",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nama",
+                  "email",
+                  "kategori",
+                  "deskripsi"
+                ],
+                "properties": {
+                  "nama": {
+                    "minLength": 2,
+                    "maxLength": 100,
+                    "type": "string"
+                  },
+                  "email": {
+                    "format": "email",
+                    "type": "string"
+                  },
+                  "kategori": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "deskripsi": {
+                    "minLength": 10,
+                    "maxLength": 2000,
+                    "type": "string"
+                  },
+                  "screenshotBase64": {
+                    "type": "string"
+                  },
+                  "screenshotMime": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nama",
+                  "email",
+                  "kategori",
+                  "deskripsi"
+                ],
+                "properties": {
+                  "nama": {
+                    "minLength": 2,
+                    "maxLength": 100,
+                    "type": "string"
+                  },
+                  "email": {
+                    "format": "email",
+                    "type": "string"
+                  },
+                  "kategori": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "deskripsi": {
+                    "minLength": 10,
+                    "maxLength": 2000,
+                    "type": "string"
+                  },
+                  "screenshotBase64": {
+                    "type": "string"
+                  },
+                  "screenshotMime": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nama",
+                  "email",
+                  "kategori",
+                  "deskripsi"
+                ],
+                "properties": {
+                  "nama": {
+                    "minLength": 2,
+                    "maxLength": 100,
+                    "type": "string"
+                  },
+                  "email": {
+                    "format": "email",
+                    "type": "string"
+                  },
+                  "kategori": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "deskripsi": {
+                    "minLength": 10,
+                    "maxLength": 2000,
+                    "type": "string"
+                  },
+                  "screenshotBase64": {
+                    "type": "string"
+                  },
+                  "screenshotMime": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
     "/api/admin/faq/": {
       "get": {
         "operationId": "getApiAdminFaq",

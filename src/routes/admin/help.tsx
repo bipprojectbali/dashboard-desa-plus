@@ -278,7 +278,7 @@ function AdminHelpPage() {
 
 	return (
 		<Container size="lg" py="xl">
-			<Title order={1} mb="xs" ta="center">
+			<Title order={1} c={"orange"} variant="light" mb="xs" ta="center">
 				Pusat Bantuan Admin
 			</Title>
 			<Text size="lg" c="dimmed" ta="center" mb="xl">
