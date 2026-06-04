@@ -51,12 +51,29 @@ function RolesPage() {
 	const [saveError, setSaveError] = useState<string | null>(null);
 	const [dirty, setDirty] = useState(false);
 	const successTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const abortRef = useRef<AbortController | null>(null);
+	const mountedRef = useRef(true);
+
+	useEffect(() => {
+		mountedRef.current = true;
+		return () => {
+			mountedRef.current = false;
+			abortRef.current?.abort();
+			if (successTimer.current) clearTimeout(successTimer.current);
+		};
+	}, []);
 
 	const fetchPermissions = useCallback(async () => {
+		abortRef.current?.abort();
+		const controller = new AbortController();
+		abortRef.current = controller;
+
 		setLoading(true);
 		setError(null);
 		try {
-			const res = await fetch("/api/admin/roles/permissions");
+			const res = await fetch("/api/admin/roles/permissions", {
+				signal: controller.signal,
+			});
 			if (!res.ok) throw new Error("Gagal memuat data permission");
 			const data = (await res.json()) as {
 				matrix: PermissionMatrix;
@@ -68,9 +85,10 @@ function RolesPage() {
 			setRoles(data.roles);
 			setDirty(false);
 		} catch (err) {
+			if (err instanceof Error && err.name === "AbortError") return;
 			setError(err instanceof Error ? err.message : "Terjadi kesalahan");
 		} finally {
-			setLoading(false);
+			if (!controller.signal.aborted) setLoading(false);
 		}
 	}, []);
 
@@ -80,6 +98,7 @@ function RolesPage() {
 
 	const toggle = (role: string, feature: string) => {
 		if (role === "admin") return; // admin selalu full access
+		if (feature === "sync-noc") return; // sync-noc tidak bisa diubah oleh siapapun selain admin
 		setMatrix((prev) => ({
 			...prev,
 			[role]: {
@@ -114,16 +133,25 @@ function RolesPage() {
 				body: JSON.stringify({ permissions }),
 			});
 
-			if (!res.ok) throw new Error("Gagal menyimpan permission");
+			if (!res.ok) {
+				const body = await res.json().catch(() => ({}));
+				throw new Error(
+					(body as { error?: string }).error ?? "Gagal menyimpan permission",
+				);
+			}
 
+			if (!mountedRef.current) return;
 			setDirty(false);
 			setSaveSuccess(true);
 			if (successTimer.current) clearTimeout(successTimer.current);
-			successTimer.current = setTimeout(() => setSaveSuccess(false), 4000);
+			successTimer.current = setTimeout(() => {
+				if (mountedRef.current) setSaveSuccess(false);
+			}, 4000);
 		} catch (err) {
-			setSaveError(err instanceof Error ? err.message : "Terjadi kesalahan");
+			if (mountedRef.current)
+				setSaveError(err instanceof Error ? err.message : "Terjadi kesalahan");
 		} finally {
-			setSaving(false);
+			if (mountedRef.current) setSaving(false);
 		}
 	};
 
@@ -278,25 +306,28 @@ function RolesPage() {
 									</Table.Td>
 									{roles.map((role) => {
 										const isAdmin = role === "admin";
+										const isSyncNocForUser =
+											role !== "admin" && feature.key === "sync-noc";
+										const isDisabled = isAdmin || isSyncNocForUser;
 										const checked = isAdmin
 											? true
-											: (matrix[role]?.[feature.key] ?? false);
+											: isSyncNocForUser
+												? false
+												: (matrix[role]?.[feature.key] ?? false);
+										const tooltipLabel = isAdmin
+											? "Admin selalu memiliki akses penuh"
+											: isSyncNocForUser
+												? "Sinkronisasi Data hanya tersedia untuk Admin"
+												: checked
+													? "Klik untuk menonaktifkan"
+													: "Klik untuk mengaktifkan";
 										return (
 											<Table.Td key={role} style={{ textAlign: "center" }}>
-												<Tooltip
-													label={
-														isAdmin
-															? "Admin selalu memiliki akses penuh"
-															: checked
-																? "Klik untuk menonaktifkan"
-																: "Klik untuk mengaktifkan"
-													}
-													openDelay={400}
-												>
+												<Tooltip label={tooltipLabel} openDelay={400}>
 													<Center>
 														<Checkbox
 															checked={checked}
-															disabled={isAdmin}
+															disabled={isDisabled}
 															onChange={() => toggle(role, feature.key)}
 															color="orange"
 															size="md"

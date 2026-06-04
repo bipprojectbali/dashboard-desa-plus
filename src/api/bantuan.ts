@@ -27,6 +27,10 @@ export const bantuanApi = new Elysia({ prefix: "/bantuan" })
 			});
 			return { data: faqs };
 		} catch (error) {
+			// P2021 = table not found (migration belum diapply)
+			if ((error as { code?: string })?.code === "P2021") {
+				return { data: [] };
+			}
 			logger.error({ error }, "Failed to fetch public FAQs");
 			set.status = 500;
 			return { error: "Gagal memuat FAQ" };

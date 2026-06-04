@@ -1189,9 +1189,6 @@ function AdminPreferencesPage() {
 				</Paper>
 			</SimpleGrid>
 
-			{/* Sinkronisasi Data */}
-			<AdminSyncSection />
-
 			{/* Action Bar */}
 			<Paper withBorder radius="lg" p="md">
 				<Group justify="space-between" align="center" wrap="wrap" gap="sm">
@@ -1237,6 +1234,9 @@ function AdminPreferencesPage() {
 					</Group>
 				</Group>
 			</Paper>
+
+			{/* Sinkronisasi Data */}
+			<AdminSyncSection />
 		</Stack>
 	);
 }

@@ -3,7 +3,12 @@ import { apiMiddleware } from "../middleware/apiMiddleware";
 import { cache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
-import { FEATURES, ROLES, seedDefaultPermissions } from "../utils/permission";
+import {
+	DEFAULT_PERMISSIONS,
+	FEATURES,
+	ROLES,
+	seedDefaultPermissions,
+} from "../utils/permission";
 
 export const adminApi = new Elysia({ prefix: "/admin" })
 	.use(apiMiddleware)
@@ -351,19 +356,34 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 				return { error: "Forbidden" };
 			}
 
-			await seedDefaultPermissions();
+			try {
+				await seedDefaultPermissions();
+			} catch (e) {
+				if ((e as { code?: string })?.code !== "P2021") throw e;
+			}
 
-			const records = await prisma.rolePermission.findMany({
-				select: { role: true, feature: true, allowed: true },
-				orderBy: [{ role: "asc" }, { feature: "asc" }],
-			});
+			let records: { role: string; feature: string; allowed: boolean }[] = [];
+			try {
+				records = await prisma.rolePermission.findMany({
+					select: { role: true, feature: true, allowed: true },
+					orderBy: [{ role: "asc" }, { feature: "asc" }],
+				});
+			} catch (e) {
+				// P2021 = tabel belum ada (migration pending) — return empty matrix
+				if ((e as { code?: string })?.code !== "P2021") throw e;
+			}
 
-			// Build matrix: { [role]: { [feature]: boolean } }
+			// Build matrix — fallback ke DEFAULT_PERMISSIONS jika records kosong (P2021)
+			const useDefaults = records.length === 0;
 			const matrix: Record<string, Record<string, boolean>> = {};
 			for (const r of ROLES) {
 				matrix[r] = {};
 				for (const f of FEATURES) {
-					matrix[r][f.key] = false;
+					matrix[r][f.key] = useDefaults
+						? (DEFAULT_PERMISSIONS[
+								r as keyof typeof DEFAULT_PERMISSIONS
+							]?.includes(f.key) ?? false)
+						: false;
 				}
 			}
 			for (const rec of records) {
@@ -384,14 +404,25 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 				return { error: "Forbidden" };
 			}
 
-			const ops = body.permissions.map(({ role, feature, allowed }) =>
-				prisma.rolePermission.upsert({
-					where: { role_feature: { role, feature } },
-					create: { role, feature, allowed },
-					update: { allowed },
-				}),
-			);
-			await prisma.$transaction(ops);
+			try {
+				const ops = body.permissions.map(({ role, feature, allowed }) =>
+					prisma.rolePermission.upsert({
+						where: { role_feature: { role, feature } },
+						create: { role, feature, allowed },
+						update: { allowed },
+					}),
+				);
+				await prisma.$transaction(ops);
+			} catch (e) {
+				if ((e as { code?: string })?.code === "P2021") {
+					set.status = 503;
+					return {
+						error:
+							"Tabel permission belum siap. Deploy ulang untuk menerapkan migration.",
+					};
+				}
+				throw e;
+			}
 
 			return { success: true, updated: body.permissions.length };
 		},

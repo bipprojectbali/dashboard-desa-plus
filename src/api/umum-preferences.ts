@@ -47,6 +47,23 @@ export const umumPreferences = new Elysia({
 					};
 				}
 
+				const userExists = await prisma.user.findUnique({
+					where: { id: user?.id },
+					select: { id: true },
+				});
+				if (!userExists) {
+					return {
+						data: {
+							bahasa: "id",
+							zonaWaktu: "Asia/Jakarta",
+							formatTanggal: "DD/MM/YYYY",
+							refreshOtomatis: true,
+							intervalRefresh: "1",
+							tampilkanGrid: true,
+							animasiTransisi: true,
+						},
+					};
+				}
 				const pref = await prisma.umumPreference.upsert({
 					where: { userId: user?.id },
 					create: { userId: user?.id },
@@ -74,6 +91,14 @@ export const umumPreferences = new Elysia({
 		"/",
 		async ({ body, set, user }) => {
 			try {
+				const userExists = await prisma.user.findUnique({
+					where: { id: user?.id },
+					select: { id: true },
+				});
+				if (!userExists) {
+					set.status = 400;
+					return { error: "User tidak ditemukan" };
+				}
 				const pref = await prisma.umumPreference.upsert({
 					where: { userId: user?.id },
 					create: { userId: user?.id, ...body },
@@ -94,6 +119,7 @@ export const umumPreferences = new Elysia({
 			body: prefShape,
 			response: {
 				200: t.Object({ data: t.Any() }),
+				400: t.Object({ error: t.String() }),
 				500: t.Object({ error: t.String() }),
 			},
 			detail: { summary: "Save umum preferences for current user" },

@@ -19,6 +19,7 @@ import { ipWhitelist } from "./ip-whitelist";
 import { jennaChat } from "./jenna";
 import { keamanan } from "./keamanan";
 import { keamananPreferences } from "./keamanan-preferences";
+import { myPermissions } from "./my-permissions";
 import { noc } from "./noc";
 import { notificationPreferences } from "./notification-preferences";
 import { profile } from "./profile";
@@ -94,7 +95,8 @@ const api = new Elysia({
 	.use(sosial)
 	.use(syncLog)
 	.use(bantuanApi)
-	.use(adminFaqApi);
+	.use(adminFaqApi)
+	.use(myPermissions);
 
 if (!isProduction) {
 	api.use(

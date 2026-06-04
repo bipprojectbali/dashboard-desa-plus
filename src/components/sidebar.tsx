@@ -9,7 +9,9 @@ import {
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useState } from "react";
+import { useSnapshot } from "valtio";
 import { useTranslate } from "@/hooks/useTranslate";
+import { permissionStore } from "@/store/permission";
 
 interface SidebarProps {
 	className?: string;
@@ -25,18 +27,49 @@ export function Sidebar({ className }: SidebarProps) {
 	const isActiveBorder = colorScheme === "dark" ? "#00398D" : "#1F41AE";
 
 	const [query, setQuery] = useState("");
+	const { allowed } = useSnapshot(permissionStore);
 
-	const menuItems = [
-		{ name: t.sidebar.beranda, path: "/" },
-		{ name: t.sidebar.kinerjaDevisi, path: "/kinerja-divisi" },
-		{ name: t.sidebar.pengaduanLayanan, path: "/pengaduan-layanan-publik" },
-		{ name: t.sidebar.analitik, path: "/jenna-analytic" },
-		{ name: t.sidebar.demografi, path: "/demografi-pekerjaan" },
-		{ name: t.sidebar.keuangan, path: "/keuangan-anggaran" },
-		{ name: t.sidebar.bumdes, path: "/bumdes" },
-		{ name: t.sidebar.sosial, path: "/sosial" },
-		{ name: t.sidebar.keamanan, path: "/keamanan" },
+	const allMenuItems = [
+		{ name: t.sidebar.beranda, path: "/", permission: "view-dashboard" },
+		{
+			name: t.sidebar.kinerjaDevisi,
+			path: "/kinerja-divisi",
+			permission: "view-kinerja-divisi",
+		},
+		{
+			name: t.sidebar.pengaduanLayanan,
+			path: "/pengaduan-layanan-publik",
+			permission: "view-pengaduan",
+		},
+		{
+			name: t.sidebar.analitik,
+			path: "/jenna-analytic",
+			permission: "view-jenna-analytic",
+		},
+		{
+			name: t.sidebar.demografi,
+			path: "/demografi-pekerjaan",
+			permission: "view-demografi",
+		},
+		{
+			name: t.sidebar.keuangan,
+			path: "/keuangan-anggaran",
+			permission: "view-keuangan",
+		},
+		{ name: t.sidebar.bumdes, path: "/bumdes", permission: "view-bumdes" },
+		{ name: t.sidebar.sosial, path: "/sosial", permission: "view-sosial" },
+		{
+			name: t.sidebar.keamanan,
+			path: "/keamanan",
+			permission: "view-keamanan",
+		},
 	];
+
+	// allowed === null berarti masih loading — tampilkan semua agar tidak flash kosong
+	const menuItems =
+		allowed === null
+			? allMenuItems
+			: allMenuItems.filter((item) => allowed.includes(item.permission));
 
 	const q = query.trim().toLowerCase();
 
