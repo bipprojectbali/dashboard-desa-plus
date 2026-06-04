@@ -31,7 +31,7 @@ const VIEW_FEATURES: FeatureKey[] = [
 	"view-keamanan",
 ];
 
-const DEFAULT_PERMISSIONS: Record<AppRole, FeatureKey[]> = {
+export const DEFAULT_PERMISSIONS: Record<AppRole, FeatureKey[]> = {
 	admin: [...VIEW_FEATURES, "sync-noc"],
 	user: VIEW_FEATURES,
 };

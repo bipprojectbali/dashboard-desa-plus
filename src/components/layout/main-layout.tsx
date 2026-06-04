@@ -25,6 +25,7 @@ import {
 	setLang,
 	setZonaWaktu,
 } from "@/store/i18n";
+import { resetPermissions, setPermissions } from "@/store/permission";
 
 interface MainLayoutProps {
 	children: React.ReactNode;
@@ -144,6 +145,19 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 			})
 			.catch(() => {});
 	}, []);
+
+	useEffect(() => {
+		if (!user) {
+			resetPermissions();
+			return;
+		}
+		fetch("/api/my-permissions")
+			.then((r) => (r.ok ? r.json() : null))
+			.then((json) => {
+				if (Array.isArray(json?.allowed)) setPermissions(json.allowed);
+			})
+			.catch(() => {});
+	}, [user?.id, user?.role]);
 
 	const headerBgColor = colorScheme === "dark" ? "#11192D" : "#19355E";
 	const navbarBgColor = colorScheme === "dark" ? "#11192D" : "white";

@@ -17,6 +17,10 @@ export const adminFaqApi = new Elysia({ prefix: "/admin/faq" })
 			});
 			return { data: faqs };
 		} catch (error) {
+			// P2021 = table not found (migration belum diapply)
+			if ((error as { code?: string })?.code === "P2021") {
+				return { data: [] };
+			}
 			logger.error({ error }, "Failed to fetch admin FAQs");
 			set.status = 500;
 			return { error: "Gagal memuat FAQ" };
