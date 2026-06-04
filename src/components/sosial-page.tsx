@@ -1,6 +1,7 @@
 import { Alert, Button, Grid, GridCol, Skeleton, Stack } from "@mantine/core";
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 import { Beasiswa } from "./sosial/beasiswa";
 import { EventCalendar } from "./sosial/event-calendar";
@@ -77,6 +78,8 @@ const SosialPage = () => {
 	useEffect(() => {
 		fetchData();
 	}, [fetchData]);
+
+	useAutoRefresh(fetchData);
 
 	const summaryData = kesehatanStats
 		? {

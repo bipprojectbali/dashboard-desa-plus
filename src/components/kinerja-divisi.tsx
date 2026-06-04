@@ -15,6 +15,7 @@ import {
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { useAksesPrefs } from "@/hooks/useAksesPrefs";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 import { ActivityCard } from "./kinerja-divisi/activity-card";
@@ -77,6 +78,8 @@ const KinerjaDivisi = () => {
 	useEffect(() => {
 		fetchData();
 	}, [fetchData]);
+
+	useAutoRefresh(fetchData);
 
 	const formattedEvents = todayEvents.map((event) => ({
 		time: dayjs(event.startDate).format("HH:mm"),
