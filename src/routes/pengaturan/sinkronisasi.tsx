@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import SinkronisasiSettings from "@/components/pengaturan/sinkronisasi";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/pengaturan/sinkronisasi")({
-	component: SinkronisasiSettings,
+	beforeLoad: () => {
+		throw redirect({ to: "/admin/preferences" });
+	},
 });

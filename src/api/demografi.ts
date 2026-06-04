@@ -2,7 +2,10 @@ import { Elysia, t } from "elysia";
 import { cache, TTL, withCache } from "@/utils/cache";
 import { prisma } from "@/utils/db";
 import { desaExternalClient } from "@/utils/desa-external-client";
+import { getEnv } from "@/utils/env";
 import { apiMiddleware } from "../middleware/apiMiddleware";
+
+const APBDES_ID = getEnv("DESA_APBDES_ID", "cmk-apbdes-001");
 
 function extractError(err: unknown): string {
 	if (!err) return "Unknown error";
@@ -399,7 +402,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 					desaExternalClient.GET("/api/kependudukan/migrasipenduduk/find-many"),
 					desaExternalClient.GET("/api/ekonomi/sektourunggulandesa/find-many"),
 					desaExternalClient.GET("/api/landingpage/apbdes/{id}", {
-						params: { path: { id: "cmk-apbdes-001" } },
+						params: { path: { id: APBDES_ID } },
 					}),
 				]);
 
@@ -444,7 +447,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 					cache.set("demografi:sectors", sectors.data.data, TTL.DEMOGRAFI);
 				const apbdesData = apbdes.data?.data || apbdes.data || null;
 				if (!apbdes.error && apbdesData != null)
-					cache.set("apbdes:cmk-apbdes-001", apbdesData, TTL.APBDES);
+					cache.set(`apbdes:${APBDES_ID}`, apbdesData, TTL.APBDES);
 
 				lastSyncedAt = new Date().toISOString();
 				console.log("[Demografi API] Sync completed at:", lastSyncedAt);

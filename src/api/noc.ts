@@ -4,7 +4,10 @@ import { apiMiddleware } from "../middleware/apiMiddleware";
 import { cache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import { desaExternalClient } from "../utils/desa-external-client";
+import { getEnv } from "../utils/env";
 import { nocExternalClient } from "../utils/noc-external-client";
+
+const APBDES_ID = getEnv("DESA_APBDES_ID", "cmk-apbdes-001");
 
 export const noc = new Elysia({ prefix: "/noc" })
 	.use(apiMiddleware)
@@ -621,8 +624,8 @@ export const noc = new Elysia({ prefix: "/noc" })
 				let apbdesData: any = null;
 
 				// 1. Check Cache first if ID matches
-				const cachedApbdes = cache.get<any>("apbdes:cmk-apbdes-001");
-				if (idDesa === "cmk-apbdes-001" && cachedApbdes) {
+				const cachedApbdes = cache.get<any>(`apbdes:${APBDES_ID}`);
+				if (idDesa === APBDES_ID && cachedApbdes) {
 					console.log("[APBDes API] Returning cached APBDes data");
 					apbdesData = cachedApbdes;
 				} else {

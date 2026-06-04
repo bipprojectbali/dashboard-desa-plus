@@ -2,7 +2,10 @@ import { $ } from "bun";
 import { cache, TTL } from "@/utils/cache";
 import { prisma } from "@/utils/db";
 import { desaExternalClient } from "@/utils/desa-external-client";
+import { getEnv } from "@/utils/env";
 import logger from "@/utils/logger";
+
+const APBDES_ID = getEnv("DESA_APBDES_ID", "cmk-apbdes-001");
 
 async function runNocSync(): Promise<void> {
 	const startedAt = new Date();
@@ -83,7 +86,7 @@ async function runDemografiSync(): Promise<void> {
 			desaExternalClient.GET("/api/kependudukan/migrasipenduduk/find-many"),
 			desaExternalClient.GET("/api/ekonomi/sektourunggulandesa/find-many"),
 			desaExternalClient.GET("/api/landingpage/apbdes/{id}", {
-				params: { path: { id: "cmk-apbdes-001" } },
+				params: { path: { id: APBDES_ID } },
 			}),
 		]);
 
@@ -120,7 +123,7 @@ async function runDemografiSync(): Promise<void> {
 		if (!sectors.error && sectors.data?.data != null)
 			cache.set("demografi:sectors", sectors.data.data, TTL.DEMOGRAFI);
 		if (!apbdes.error && apbdesData != null)
-			cache.set("apbdes:cmk-apbdes-001", apbdesData, TTL.APBDES);
+			cache.set(`apbdes:${APBDES_ID}`, apbdesData, TTL.APBDES);
 
 		const durationMs = Date.now() - startedAt.getTime();
 		const recordsAffected = 10 - failed;
