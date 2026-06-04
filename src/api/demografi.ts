@@ -457,9 +457,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 						triggeredBy: "manual",
 						durationMs,
 						errorMessage:
-							errors.length > 0
-								? `Gagal: ${errors.join(", ")}`
-								: null,
+							errors.length > 0 ? `Gagal: ${errors.join(", ")}` : null,
 					},
 				});
 
@@ -499,7 +497,8 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 						status: "error",
 						triggeredBy: "manual",
 						durationMs: Date.now() - syncStart,
-						errorMessage: (error as Error)?.message?.substring(0, 500) ?? "Unknown error",
+						errorMessage:
+							(error as Error)?.message?.substring(0, 500) ?? "Unknown error",
 					},
 				});
 				return {

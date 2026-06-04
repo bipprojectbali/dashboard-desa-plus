@@ -151,7 +151,9 @@ function AuditLogComponent() {
 		<Container size="xl" py="xl">
 			<Group justify="space-between" mb="lg">
 				<Stack gap={2}>
-					<Title c={"orange"} variant="light" order={2}>Audit Log</Title>
+					<Title c={"orange"} variant="light" order={2}>
+						Audit Log
+					</Title>
 					<Text size="sm" c="dimmed">
 						Riwayat aktivitas seluruh pengguna sistem
 					</Text>

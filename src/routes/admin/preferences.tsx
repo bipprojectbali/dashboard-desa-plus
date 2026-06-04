@@ -44,6 +44,7 @@ import "dayjs/locale/id";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
 import { useCallback, useEffect, useState } from "react";
+import { useSnapshot } from "valtio";
 import { useApprovalGuard } from "@/hooks/useApprovalGuard";
 import { useTranslate } from "@/hooks/useTranslate";
 import { protectedRouteMiddleware } from "@/middleware/authMiddleware";
@@ -56,7 +57,6 @@ import {
 	setZonaWaktu,
 } from "@/store/i18n";
 import { apiClient } from "@/utils/api-client";
-import { useSnapshot } from "valtio";
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -205,7 +205,8 @@ function AdminSyncSection() {
 				setStatus({
 					type: "error",
 					message:
-						(data as unknown as Record<string, string>)?.error || "Respons tidak dikenali",
+						(data as unknown as Record<string, string>)?.error ||
+						"Respons tidak dikenali",
 				});
 			}
 		} catch {
@@ -241,7 +242,8 @@ function AdminSyncSection() {
 				setDemografiStatus({
 					type: "error",
 					message:
-						(data as unknown as Record<string, string>)?.error || "Respons tidak dikenali",
+						(data as unknown as Record<string, string>)?.error ||
+						"Respons tidak dikenali",
 				});
 			}
 		} catch {

@@ -142,13 +142,7 @@ function DashboardComponent() {
 
 	return (
 		<Box py="xl">
-			<Title
-				order={1}
-				ta="center"
-				c={"orange"}
-				variant="light"
-				pb={20}
-			>
+			<Title order={1} ta="center" c={"orange"} variant="light" pb={20}>
 				Dashboard Overview
 			</Title>
 
