@@ -1,5 +1,7 @@
 import {
+	Alert,
 	Badge,
+	Button,
 	Card,
 	Grid,
 	GridCol,
@@ -13,14 +15,16 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import {
+	IconAlertCircle,
 	IconAlertTriangle,
 	IconCamera,
 	IconClock,
 	IconMapPin,
+	IconRefresh,
 } from "@tabler/icons-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslate } from "@/hooks/useTranslate";
 
 const DESA_API =
@@ -138,31 +142,35 @@ const KeamananPage = () => {
 	const [cctvList, setCctvList] = useState<CctvItem[]>([]);
 	const [laporanList, setLaporanList] = useState<LaporanItem[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 	const [cctvPage, setCctvPage] = useState(1);
 
-	useEffect(() => {
-		const fetchAll = async () => {
-			try {
-				const [statsRes, cctvRes, laporanRes] = await Promise.all([
-					fetch(`${DESA_API}/api/keamanan/cctv/stats`).then((r) => r.json()),
-					fetch(`${DESA_API}/api/keamanan/cctv/find-many`).then((r) =>
-						r.json(),
-					),
-					fetch(`${DESA_API}/api/keamanan/laporanpublik/find-many`).then((r) =>
-						r.json(),
-					),
-				]);
-				if (statsRes.data) setCctvStats(statsRes.data as CctvStats);
-				if (Array.isArray(cctvRes.data))
-					setCctvList(cctvRes.data as CctvItem[]);
-				if (Array.isArray(laporanRes.data))
-					setLaporanList(laporanRes.data as LaporanItem[]);
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchAll();
+	const fetchAll = useCallback(async () => {
+		setLoading(true);
+		setError(null);
+		try {
+			const [statsRes, cctvRes, laporanRes] = await Promise.all([
+				fetch(`${DESA_API}/api/keamanan/cctv/stats`).then((r) => r.json()),
+				fetch(`${DESA_API}/api/keamanan/cctv/find-many`).then((r) => r.json()),
+				fetch(`${DESA_API}/api/keamanan/laporanpublik/find-many`).then((r) =>
+					r.json(),
+				),
+			]);
+			if (statsRes.data) setCctvStats(statsRes.data as CctvStats);
+			if (Array.isArray(cctvRes.data)) setCctvList(cctvRes.data as CctvItem[]);
+			if (Array.isArray(laporanRes.data))
+				setLaporanList(laporanRes.data as LaporanItem[]);
+		} catch (err) {
+			console.error("Failed to fetch keamanan data", err);
+			setError("Gagal memuat data keamanan. Periksa koneksi dan coba lagi.");
+		} finally {
+			setLoading(false);
+		}
 	}, []);
+
+	useEffect(() => {
+		fetchAll();
+	}, [fetchAll]);
 
 	const cctvTotalPages = Math.ceil(cctvList.length / CCTV_PER_PAGE);
 	const cctvPaged = cctvList.slice(
@@ -189,6 +197,26 @@ const KeamananPage = () => {
 
 	return (
 		<Stack gap="lg">
+			{error && (
+				<Alert
+					icon={<IconAlertCircle size={16} />}
+					color="red"
+					title="Gagal memuat data"
+					radius="md"
+				>
+					{error}
+					<Button
+						size="xs"
+						variant="light"
+						color="red"
+						leftSection={<IconRefresh size={14} />}
+						onClick={fetchAll}
+						mt="xs"
+					>
+						Coba lagi
+					</Button>
+				</Alert>
+			)}
 			<Grid gutter="md">
 				{/* Peta Keamanan CCTV */}
 				<GridCol span={{ base: 12, lg: 6 }}>
