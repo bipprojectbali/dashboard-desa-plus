@@ -199,6 +199,17 @@ const KeamananPage = () => {
 
 	return (
 		<Stack gap="lg">
+			<Group justify="flex-end">
+				<Button
+					variant="light"
+					size="xs"
+					leftSection={<IconRefresh size={14} />}
+					onClick={fetchAll}
+					loading={loading}
+				>
+					Refresh
+				</Button>
+			</Group>
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}

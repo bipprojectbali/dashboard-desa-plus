@@ -95,7 +95,7 @@ const KeuanganAnggaran = () => {
 	// react to the live color scheme automatically.
 	const incomeColor = theme.colors.green[5];
 	const expenseColor = theme.colors.red[5];
-	const barColor = theme.colors["darmasaba-blue"][5];
+	const barColor = theme.colors["darmasaba-blue"]?.[5] ?? theme.colors.blue[5];
 	const gridStroke = dark ? theme.colors.dark[4] : theme.colors.gray[2];
 	const axisTick = dark ? theme.colors.dark[1] : theme.colors.gray[7];
 	const tooltipBg = dark ? theme.colors.dark[6] : theme.white;
@@ -384,10 +384,10 @@ const KeuanganAnggaran = () => {
 								p="md"
 								radius="xl"
 								withBorder
-								bg={dark ? "dark.6" : "white"}
+								bg={dark ? "#1E293B" : "white"}
 								style={{
 									borderColor: dark
-										? "var(--mantine-color-dark-4)"
+										? "#374b6aff"
 										: "var(--mantine-color-white)",
 									boxShadow: "var(--mantine-shadow-xs)",
 									transition: "transform 0.15s ease, box-shadow 0.15s ease",
@@ -440,10 +440,10 @@ const KeuanganAnggaran = () => {
 						p="md"
 						radius="xl"
 						withBorder
-						bg={dark ? "dark.6" : "white"}
+						bg={dark ? "#1E293B" : "white"}
 						style={{
 							borderColor: dark
-								? "var(--mantine-color-dark-4)"
+								? "#374b6aff"
 								: "var(--mantine-color-white)",
 							boxShadow: "var(--mantine-shadow-xs)",
 						}}
@@ -534,10 +534,10 @@ const KeuanganAnggaran = () => {
 						p="md"
 						radius="xl"
 						withBorder
-						bg={dark ? "dark.6" : "white"}
+						bg={dark ? "#1E293B" : "white"}
 						style={{
 							borderColor: dark
-								? "var(--mantine-color-dark-4)"
+								? "#374b6aff"
 								: "var(--mantine-color-white)",
 							boxShadow: "var(--mantine-shadow-xs)",
 						}}
@@ -621,10 +621,10 @@ const KeuanganAnggaran = () => {
 						p="md"
 						radius="xl"
 						withBorder
-						bg={dark ? "dark.6" : "white"}
+						bg={dark ? "#1E293B" : "white"}
 						style={{
 							borderColor: dark
-								? "var(--mantine-color-dark-4)"
+								? "#374b6aff"
 								: "var(--mantine-color-white)",
 							boxShadow: "var(--mantine-shadow-xs)",
 						}}
@@ -768,10 +768,10 @@ const KeuanganAnggaran = () => {
 						p="md"
 						radius="xl"
 						withBorder
-						bg={dark ? "dark.6" : "white"}
+						bg={dark ?  "#1E293B" : "white"}
 						style={{
 							borderColor: dark
-								? "var(--mantine-color-dark-4)"
+								? "#374b6aff"
 								: "var(--mantine-color-white)",
 							boxShadow: "var(--mantine-shadow-xs)",
 						}}
@@ -800,7 +800,7 @@ const KeuanganAnggaran = () => {
 											key={fund.source}
 											p="sm"
 											radius="lg"
-											bg={dark ? "dark.4" : "gray.1"}
+											bg={dark ? "#1e3a5f" : "#1e3a5f"}
 											style={{
 												borderColor: "transparent",
 												transition: "background-color 0.15s ease",
