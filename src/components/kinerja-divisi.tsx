@@ -102,8 +102,17 @@ const KinerjaDivisi = () => {
 
 	return (
 		<Stack gap="lg">
-			{izinExportData && (
-				<Group justify="flex-end">
+			<Group justify="flex-end" gap="xs">
+				<Button
+					variant="light"
+					size="xs"
+					leftSection={<IconRefresh size={14} />}
+					onClick={fetchData}
+					loading={loading}
+				>
+					Refresh
+				</Button>
+				{izinExportData && (
 					<Button
 						variant="light"
 						color="teal"
@@ -113,8 +122,8 @@ const KinerjaDivisi = () => {
 					>
 						Export PDF
 					</Button>
-				</Group>
-			)}
+				)}
+			</Group>
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}

@@ -1,4 +1,12 @@
-import { Alert, Button, Grid, GridCol, Skeleton, Stack } from "@mantine/core";
+import {
+	Alert,
+	Button,
+	Grid,
+	GridCol,
+	Group,
+	Skeleton,
+	Stack,
+} from "@mantine/core";
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
@@ -117,6 +125,17 @@ const SosialPage = () => {
 
 	return (
 		<Stack gap="lg">
+			<Group justify="flex-end">
+				<Button
+					variant="light"
+					size="xs"
+					leftSection={<IconRefresh size={14} />}
+					onClick={fetchData}
+					loading={loading}
+				>
+					Refresh
+				</Button>
+			</Group>
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}
