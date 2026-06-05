@@ -1,7 +1,7 @@
 import {
 	Card,
 	Group,
-	Loader,
+	Skeleton,
 	Stack,
 	Text,
 	useMantineColorScheme,
@@ -96,9 +96,11 @@ export function DiscussionPanel() {
 			</Group>
 			<Stack gap="sm">
 				{loading ? (
-					<Group justify="center" py="xl">
-						<Loader />
-					</Group>
+					<Stack gap="sm">
+						{Array.from({ length: 4 }).map((_, i) => (
+							<Skeleton key={i} height={72} radius="md" />
+						))}
+					</Stack>
 				) : discussions.length > 0 ? (
 					discussions.map((discussion) => (
 						<Card

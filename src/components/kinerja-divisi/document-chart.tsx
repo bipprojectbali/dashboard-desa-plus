@@ -1,7 +1,7 @@
 import {
 	Card,
 	Group,
-	Loader,
+	Skeleton,
 	Text,
 	useMantineColorScheme,
 } from "@mantine/core";
@@ -74,9 +74,7 @@ export function DocumentChart() {
 				{t.kinerjaDivisi.jumlahDokumen}
 			</Text>
 			{loading ? (
-				<Group justify="center" py="xl">
-					<Loader />
-				</Group>
+				<Skeleton height={200} radius="md" />
 			) : data.length > 0 ? (
 				<ResponsiveContainer width="100%" height={200}>
 					<BarChart data={data}>

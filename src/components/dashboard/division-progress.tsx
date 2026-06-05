@@ -2,8 +2,8 @@ import {
 	Box,
 	Card,
 	Group,
-	Loader,
 	Progress,
+	Skeleton,
 	Stack,
 	Text,
 	Title,
@@ -78,9 +78,11 @@ export function DivisionProgress() {
 			</Title>
 			<Stack gap="sm">
 				{loading ? (
-					<Group justify="center" py="xl">
-						<Loader />
-					</Group>
+					<Stack gap="sm">
+						{Array.from({ length: 5 }).map((_, i) => (
+							<Skeleton key={i} height={36} radius="sm" />
+						))}
+					</Stack>
 				) : data.length > 0 ? (
 					data.map((divisi) => (
 						<Box key={divisi.name}>

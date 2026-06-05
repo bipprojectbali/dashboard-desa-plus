@@ -3,7 +3,7 @@ import {
 	Box,
 	Card,
 	Group,
-	Loader,
+	Skeleton,
 	Text,
 	Title,
 	useMantineColorScheme,
@@ -129,9 +129,7 @@ export function ChartSurat() {
 			</Group>
 			<Box style={{ width: "100%", height: 300 }}>
 				{loading ? (
-					<Group justify="center" align="center" h="100%">
-						<Loader />
-					</Group>
+					<Skeleton height={300} radius="md" />
 				) : data.length > 0 ? (
 					<ResponsiveContainer width="100%" height={300}>
 						<BarChart data={data}>
