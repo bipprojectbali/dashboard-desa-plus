@@ -3,6 +3,7 @@ import { swagger } from "@elysiajs/swagger";
 import Elysia, { t } from "elysia";
 import { apiMiddleware } from "../middleware/apiMiddleware";
 import { auth } from "../utils/auth";
+import { prisma } from "../utils/db";
 import { activityLog } from "./activity-log";
 import { adminApi } from "./admin";
 import { adminFaqApi } from "./admin-faq";
@@ -61,6 +62,13 @@ const api = new Elysia({
 		"/session",
 		async ({ request }) => {
 			const data = await auth.api.getSession({ headers: request.headers });
+			if (data?.user?.id) {
+				const userExists = await prisma.user.findUnique({
+					where: { id: data.user.id },
+					select: { id: true },
+				});
+				if (!userExists) return { data: null };
+			}
 			return { data };
 		},
 		{

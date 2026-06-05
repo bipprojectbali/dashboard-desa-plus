@@ -25,7 +25,12 @@ export function apiMiddleware(app: Elysia) {
 			});
 
 			if (userSession?.user) {
-				// Return user data from session if authenticated via session
+				const userExists = await prisma.user.findUnique({
+					where: { id: userSession.user.id },
+					select: { id: true },
+				});
+				if (!userExists) return { user: null };
+
 				return {
 					user: {
 						...userSession.user,
