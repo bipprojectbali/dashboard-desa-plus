@@ -74,21 +74,28 @@ function RolesPage() {
 			const res = await fetch("/api/admin/roles/permissions", {
 				signal: controller.signal,
 			});
-			if (!res.ok) throw new Error("Gagal memuat data permission");
+			if (!res.ok) {
+				const body = await res.json().catch(() => ({}));
+				throw new Error(
+					(body as { error?: string }).error ?? "Gagal memuat data permission",
+				);
+			}
 			const data = (await res.json()) as {
 				matrix: PermissionMatrix;
 				features: FeatureDef[];
 				roles: string[];
 			};
+			if (!mountedRef.current) return;
 			setMatrix(data.matrix);
 			setFeatures(data.features);
 			setRoles(data.roles);
 			setDirty(false);
 		} catch (err) {
 			if (err instanceof Error && err.name === "AbortError") return;
-			setError(err instanceof Error ? err.message : "Terjadi kesalahan");
+			if (mountedRef.current)
+				setError(err instanceof Error ? err.message : "Terjadi kesalahan");
 		} finally {
-			if (!controller.signal.aborted) setLoading(false);
+			if (!controller.signal.aborted && mountedRef.current) setLoading(false);
 		}
 	}, []);
 
