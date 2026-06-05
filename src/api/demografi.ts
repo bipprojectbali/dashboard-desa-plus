@@ -524,6 +524,204 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	)
 
+	.get("/export", async ({ set }) => {
+		try {
+			const [summaryRes, banjarRes, ageRes, jobRes, religionRes, sectorsRes] =
+				await Promise.allSettled([
+					withCache("demografi:summary", TTL.DEMOGRAFI, async () => {
+						const r = await desaExternalClient.GET(
+							"/api/kependudukan/dashboard/summary",
+						);
+						if (r.error) throw new Error(extractError(r.error));
+						return r.data?.data ?? null;
+					}),
+					withCache("demografi:banjar", TTL.DEMOGRAFI, async () => {
+						const r = await desaExternalClient.GET(
+							"/api/kependudukan/databanjar/find-many",
+						);
+						if (r.error) throw new Error(extractError(r.error));
+						return r.data?.data ?? null;
+					}),
+					withCache("demografi:age", TTL.DEMOGRAFI, async () => {
+						const r = await desaExternalClient.GET(
+							"/api/kependudukan/distribusiumur/find-many",
+						);
+						if (r.error) throw new Error(extractError(r.error));
+						return r.data?.data ?? null;
+					}),
+					withCache("demografi:occupation", TTL.DEMOGRAFI, async () => {
+						const r = await desaExternalClient.GET(
+							"/api/ekonomi/demografipekerjaan/find-many",
+						);
+						if (r.error) throw new Error(extractError(r.error));
+						return r.data?.data ?? null;
+					}),
+					withCache("demografi:religion", TTL.DEMOGRAFI, async () => {
+						const r = await desaExternalClient.GET(
+							"/api/kependudukan/distribusiagama/find-many",
+						);
+						if (r.error) throw new Error(extractError(r.error));
+						return r.data?.data ?? null;
+					}),
+					withCache("demografi:sectors", TTL.DEMOGRAFI, async () => {
+						const r = await desaExternalClient.GET(
+							"/api/ekonomi/sektourunggulandesa/find-many",
+						);
+						if (r.error) throw new Error(extractError(r.error));
+						return r.data?.data ?? [];
+					}),
+				]);
+
+			const getVal = (res: PromiseSettledResult<unknown>) =>
+				res.status === "fulfilled" ? res.value : null;
+
+			const summary = getVal(summaryRes) as Record<string, any> | null;
+			const banjar = getVal(banjarRes);
+			const age = getVal(ageRes);
+			const occupation = getVal(jobRes);
+			const religion = getVal(religionRes);
+			const sectors = getVal(sectorsRes);
+
+			const s = summary?.summary ?? {};
+			const d = summary?.dinamika ?? {};
+
+			const { buildPdfReport } = await import("../utils/pdf-table");
+			const buffer = await buildPdfReport({
+				title: "Laporan Demografi & Pekerjaan",
+				subtitle: `Desa Darmasaba — Diekspor pada: ${new Date().toLocaleString("id-ID")}`,
+				sections: [
+					{
+						heading: "Ringkasan Kependudukan",
+						columns: [
+							{ header: "Indikator", key: "indikator", width: 300 },
+							{ header: "Jumlah", key: "jumlah", width: 215 },
+						],
+						rows: [
+							{
+								indikator: "Total Penduduk",
+								jumlah: (s.totalPenduduk || summary?.total || 0).toLocaleString(
+									"id-ID",
+								),
+							},
+							{
+								indikator: "Kepala Keluarga (KK)",
+								jumlah: (s.totalKK || summary?.heads || 0).toLocaleString(
+									"id-ID",
+								),
+							},
+							{
+								indikator: "Keluarga Miskin",
+								jumlah: (
+									s.totalKemiskinan ||
+									summary?.poor ||
+									0
+								).toLocaleString("id-ID"),
+							},
+							{ indikator: "Kelahiran", jumlah: String(d.kelahiran ?? 0) },
+							{ indikator: "Kematian", jumlah: String(d.kematian ?? 0) },
+						],
+					},
+					{
+						heading: "Data Per Banjar",
+						columns: [
+							{ header: "Nama Banjar", key: "nama", width: 175 },
+							{ header: "Penduduk", key: "penduduk", width: 110 },
+							{ header: "KK", key: "kk", width: 110 },
+							{ header: "Miskin", key: "miskin", width: 120 },
+						],
+						rows: Array.isArray(banjar)
+							? (banjar as any[]).slice(0, 20).map((b) => ({
+									nama: b.nama || b.name || "-",
+									penduduk: String(b.penduduk || b.totalPopulation || 0),
+									kk: String(b.kk || b.totalKK || 0),
+									miskin: String(b.miskin || b.totalPoor || 0),
+								}))
+							: [],
+					},
+					{
+						heading: "Distribusi Kelompok Umur",
+						columns: [
+							{ header: "Kelompok Umur", key: "kelompok", width: 290 },
+							{ header: "Jumlah", key: "jumlah", width: 225 },
+						],
+						rows: Array.isArray(age)
+							? (age as any[]).map((a) => ({
+									kelompok:
+										a.rentangUmur || a.ageRange || a.kelompokUmur || "-",
+									jumlah: String(a.jumlah || a.total || 0),
+								}))
+							: [],
+					},
+					{
+						heading: "Demografi Pekerjaan",
+						columns: [
+							{ header: "Jenis Pekerjaan", key: "pekerjaan", width: 290 },
+							{ header: "Jumlah", key: "jumlah", width: 225 },
+						],
+						rows: Array.isArray(occupation)
+							? (occupation as any[]).map((j) => ({
+									pekerjaan:
+										j.pekerjaan || j.namaPekerjaan || j.job || "-",
+									jumlah: String(
+										j.jumlah ||
+											j.total ||
+											Number(j.lakiLaki || 0) + Number(j.perempuan || 0) ||
+											0,
+									),
+								}))
+							: [],
+					},
+					{
+						heading: "Distribusi Agama",
+						columns: [
+							{ header: "Agama", key: "agama", width: 290 },
+							{ header: "Jumlah", key: "jumlah", width: 225 },
+						],
+						rows: Array.isArray(religion)
+							? (religion as any[]).map((r) => ({
+									agama: r.agama || r.religion || r.name || "-",
+									jumlah: String(r.jumlah || r.value || r.count || 0),
+								}))
+							: [],
+					},
+					{
+						heading: "Sektor Unggulan Desa",
+						columns: [
+							{ header: "Sektor", key: "sektor", width: 290 },
+							{ header: "Nilai", key: "nilai", width: 225 },
+						],
+						rows: Array.isArray(sectors)
+							? (sectors as any[]).map((s) => ({
+									sektor:
+										s.name ||
+										s.nama ||
+										s.sektor ||
+										s.sektorUnggulan ||
+										"-",
+									nilai: String(s.value ?? s.nilai ?? s.jumlah ?? 0),
+								}))
+							: [],
+					},
+				],
+			});
+
+			const ab = buffer.buffer.slice(
+				buffer.byteOffset,
+				buffer.byteOffset + buffer.byteLength,
+			) as ArrayBuffer;
+			return new Response(ab, {
+				headers: {
+					"Content-Type": "application/pdf",
+					"Content-Disposition": `attachment; filename="laporan-demografi-${new Date().toISOString().slice(0, 10)}.pdf"`,
+				},
+			});
+		} catch (error) {
+			console.error("[Demografi API] Export error:", error);
+			set.status = 500;
+			return { error: "Gagal membuat laporan PDF" };
+		}
+	})
+
 	.get("/last-sync", () => ({ lastSyncedAt }), {
 		response: {
 			200: t.Object({

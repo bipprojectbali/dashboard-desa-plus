@@ -12,7 +12,7 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
+import { IconAlertCircle, IconDownload, IconRefresh } from "@tabler/icons-react";
 import {
 	Baby,
 	BarChart3,
@@ -36,6 +36,7 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
+import { useAksesPrefs } from "@/hooks/useAksesPrefs";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
@@ -88,6 +89,7 @@ const DemografiPekerjaan = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const { tampilkanGrid } = useSnapshot(i18nStore);
+	const { izinExportData } = useAksesPrefs();
 
 	const [stats, setStats] = useState<DashboardSummary>({
 		total: 0,
@@ -425,8 +427,28 @@ const DemografiPekerjaan = () => {
 		},
 	];
 
+	const handleExport = () => {
+		const a = document.createElement("a");
+		a.href = "/api/demografi/export";
+		a.download = `laporan-demografi-${new Date().toISOString().slice(0, 10)}.pdf`;
+		a.click();
+	};
+
 	return (
 		<Stack gap="lg">
+			{izinExportData && (
+				<Group justify="flex-end">
+					<Button
+						variant="light"
+						color="teal"
+						size="sm"
+						leftSection={<IconDownload size={16} />}
+						onClick={handleExport}
+					>
+						Download Laporan
+					</Button>
+				</Group>
+			)}
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}
