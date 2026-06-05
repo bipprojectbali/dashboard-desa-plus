@@ -7286,6 +7286,14 @@
         "operationId": "getApiDemografiLast-sync"
       }
     },
+    "/api/demografi/apbdes/export": {
+      "get": {
+        "operationId": "getApiDemografiApbdesExport",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
     "/api/demografi/apbdes/{id}": {
       "get": {
         "parameters": [
