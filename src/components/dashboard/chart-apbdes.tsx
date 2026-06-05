@@ -2,8 +2,8 @@ import {
 	Box,
 	Card,
 	Group,
-	Loader,
 	Progress,
+	Skeleton,
 	Stack,
 	Text,
 	Title,
@@ -233,9 +233,11 @@ export function ChartAPBDes() {
 			</Title>
 			<Stack gap="xl">
 				{loading ? (
-					<Group justify="center" py="xl">
-						<Loader />
-					</Group>
+					<Stack gap="xl">
+						{Array.from({ length: 3 }).map((_, i) => (
+							<Skeleton key={i} height={80} radius="sm" />
+						))}
+					</Stack>
 				) : data.length > 0 ? (
 					data.map((item) => {
 						const icons: Record<string, string> = {

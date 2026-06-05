@@ -2,7 +2,7 @@ import {
 	Box,
 	Card,
 	Group,
-	Loader,
+	Skeleton,
 	Stack,
 	Text,
 	Title,
@@ -78,9 +78,11 @@ export function ActivityList() {
 			</Group>
 			<Stack gap="md">
 				{loading ? (
-					<Group justify="center" py="xl">
-						<Loader />
-					</Group>
+					<Stack gap="md">
+						{Array.from({ length: 5 }).map((_, i) => (
+							<Skeleton key={i} height={40} radius="sm" />
+						))}
+					</Stack>
 				) : data.length > 0 ? (
 					data.map((event) => (
 						<Box

@@ -2,7 +2,7 @@ import {
 	Box,
 	Card,
 	Group,
-	Loader,
+	Skeleton,
 	Text,
 	Title,
 	useMantineColorScheme,
@@ -144,12 +144,10 @@ export function SatisfactionChart() {
 			<Text size="sm" c="dimmed" mb="md">
 				{t.dashboard.tingkatKepuasanSubtitle}
 			</Text>
-			<ResponsiveContainer width="100%" height={300}>
-				{loading ? (
-					<Group justify="center" align="center" h="100%">
-						<Loader />
-					</Group>
-				) : (
+			{loading ? (
+				<Skeleton height={300} radius="md" />
+			) : (
+				<ResponsiveContainer width="100%" height={300}>
 					<PieChart>
 						<Pie
 							data={data.map((item) => ({
@@ -177,8 +175,8 @@ export function SatisfactionChart() {
 							}}
 						/>
 					</PieChart>
-				)}
-			</ResponsiveContainer>
+				</ResponsiveContainer>
+			)}
 			<Group justify="center" gap="md" mt="md">
 				{data.map((item) => (
 					<Group key={item.apiName} gap="xs">

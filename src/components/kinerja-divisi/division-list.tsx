@@ -1,7 +1,7 @@
 import {
 	Card,
 	Group,
-	Loader,
+	Skeleton,
 	Stack,
 	Text,
 	useMantineColorScheme,
@@ -72,9 +72,11 @@ export function DivisionList() {
 			</Text>
 			<Stack gap="xs">
 				{loading ? (
-					<Group justify="center" py="xl">
-						<Loader size="sm" />
-					</Group>
+					<Stack gap="xs">
+						{Array.from({ length: 5 }).map((_, i) => (
+							<Skeleton key={i} height={40} radius="md" />
+						))}
+					</Stack>
 				) : divisions.length > 0 ? (
 					divisions.map((division) => (
 						<Group

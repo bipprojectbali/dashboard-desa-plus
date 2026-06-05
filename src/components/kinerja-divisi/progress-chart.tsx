@@ -2,7 +2,7 @@ import {
 	Box,
 	Card,
 	Group,
-	Loader,
+	Skeleton,
 	Stack,
 	Text,
 	useMantineColorScheme,
@@ -95,9 +95,7 @@ export function ProgressChart() {
 				{t.kinerjaDivisi.progresKegiatan}
 			</Text>
 			{loading ? (
-				<Group justify="center" py="xl">
-					<Loader />
-				</Group>
+				<Skeleton height={200} radius="md" />
 			) : (
 				<>
 					<ResponsiveContainer width="100%" height={200}>

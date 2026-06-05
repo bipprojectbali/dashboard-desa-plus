@@ -2,7 +2,7 @@ import {
 	Box,
 	Card,
 	Group,
-	Loader,
+	Skeleton,
 	Stack,
 	Text,
 	useMantineColorScheme,
@@ -81,9 +81,11 @@ export function EventCard({ agendas: propAgendas }: EventCardProps) {
 				</Text>
 			</Group>
 			{loading ? (
-				<Group justify="center" py="md">
-					<Loader size="sm" />
-				</Group>
+				<Stack gap="sm">
+					{Array.from({ length: 3 }).map((_, i) => (
+						<Skeleton key={i} height={32} radius="sm" />
+					))}
+				</Stack>
 			) : agendas.length > 0 ? (
 				<Stack gap="sm">
 					{agendas.map((agenda) => (

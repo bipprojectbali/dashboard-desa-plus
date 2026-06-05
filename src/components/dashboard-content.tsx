@@ -1,4 +1,4 @@
-import { Center, Grid, Image, Loader, Stack } from "@mantine/core";
+import { Grid, Image, Skeleton, Stack } from "@mantine/core";
 import { CheckCircle, FileText, MessageCircle, Users } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
@@ -137,9 +137,13 @@ export function DashboardContent() {
 
 			{/* Section 6: SDGs Desa Cards */}
 			{sdgsLoading ? (
-				<Center py="xl">
-					<Loader />
-				</Center>
+				<Grid gutter="md">
+					{Array.from({ length: 4 }).map((_, i) => (
+						<Grid.Col key={i} span={{ base: 9, md: 3 }}>
+							<Skeleton height={160} radius="xl" />
+						</Grid.Col>
+					))}
+				</Grid>
 			) : (
 				<Grid gutter="md">
 					{sdgsData.map((sdg) => (
