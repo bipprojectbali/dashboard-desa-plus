@@ -13,7 +13,8 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
+	useComputedColorScheme,
+	useMantineTheme,
 } from "@mantine/core";
 import {
 	IconAlertCircle,
@@ -81,10 +82,24 @@ interface AssistanceData {
 
 const KeuanganAnggaran = () => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const theme = useMantineTheme();
+	const computedScheme = useComputedColorScheme("light", {
+		getInitialValueInEffect: false,
+	});
+	const dark = computedScheme === "dark";
 	const { tampilkanGrid } = useSnapshot(i18nStore);
 	const { izinExportData } = useAksesPrefs();
+
+	// Resolved color tokens — used for recharts (SVG attrs require concrete values,
+	// not CSS vars). Mantine JSX below uses `c=`/`bg=`/`color=` props so they
+	// react to the live color scheme automatically.
+	const incomeColor = theme.colors.green[5];
+	const expenseColor = theme.colors.red[5];
+	const barColor = theme.colors["darmasaba-blue"][5];
+	const gridStroke = dark ? theme.colors.dark[4] : theme.colors.gray[2];
+	const axisTick = dark ? theme.colors.dark[1] : theme.colors.gray[7];
+	const tooltipBg = dark ? theme.colors.dark[6] : theme.white;
+	const tooltipBorder = dark ? theme.colors.dark[4] : theme.colors.gray[3];
 
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -369,10 +384,12 @@ const KeuanganAnggaran = () => {
 								p="md"
 								radius="xl"
 								withBorder
-								bg={dark ? "#1E293B" : "white"}
+								bg={dark ? "dark.6" : "white"}
 								style={{
-									borderColor: dark ? "#334155" : "white",
-									boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+									borderColor: dark
+										? "var(--mantine-color-dark-4)"
+										: "var(--mantine-color-white)",
+									boxShadow: "var(--mantine-shadow-xs)",
 									transition: "transform 0.15s ease, box-shadow 0.15s ease",
 								}}
 								h="100%"
@@ -386,7 +403,12 @@ const KeuanganAnggaran = () => {
 											{item.value}
 										</Text>
 										<Group gap={4} align="flex-start">
-											{item.trend && <TrendingUp size={14} color="#22C55E" />}
+											{item.trend && (
+												<TrendingUp
+													size={14}
+													color="var(--mantine-color-green-5)"
+												/>
+											)}
 											<Text
 												size="xs"
 												c={item.trend ? "green" : dark ? "gray.4" : "gray.5"}
@@ -396,7 +418,7 @@ const KeuanganAnggaran = () => {
 										</Group>
 									</Stack>
 									<ThemeIcon
-										color="#1E3A5F"
+										color="darmasaba-navy.7"
 										variant="filled"
 										size="lg"
 										radius="xl"
@@ -418,15 +440,22 @@ const KeuanganAnggaran = () => {
 						p="md"
 						radius="xl"
 						withBorder
-						bg={dark ? "#1E293B" : "white"}
+						bg={dark ? "dark.6" : "white"}
 						style={{
-							borderColor: dark ? "#334155" : "white",
-							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+							borderColor: dark
+								? "var(--mantine-color-dark-4)"
+								: "var(--mantine-color-white)",
+							boxShadow: "var(--mantine-shadow-xs)",
 						}}
 						h="100%"
 					>
 						<Group gap="xs" mb="md">
-							<ThemeIcon color="#1E3A5F" variant="filled" size="sm" radius="sm">
+							<ThemeIcon
+								color="darmasaba-navy.7"
+								variant="filled"
+								size="sm"
+								radius="sm"
+							>
 								<PieChartIcon size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
@@ -448,34 +477,28 @@ const KeuanganAnggaran = () => {
 										<CartesianGrid
 											strokeDasharray="3 3"
 											vertical={false}
-											stroke={dark ? "#334155" : "#e5e7eb"}
+											stroke={gridStroke}
 										/>
 									)}
 									<XAxis
 										dataKey="month"
 										axisLine={false}
 										tickLine={false}
-										tick={{
-											fill: dark ? "#E2E8F0" : "#374151",
-											fontSize: 12,
-										}}
+										tick={{ fill: axisTick, fontSize: 12 }}
 									/>
 									<YAxis
 										axisLine={false}
 										tickLine={false}
-										tick={{
-											fill: dark ? "#E2E8F0" : "#374151",
-											fontSize: 12,
-										}}
+										tick={{ fill: axisTick, fontSize: 12 }}
 										tickFormatter={(value) => `${value}`}
 									/>
 									<Tooltip
 										contentStyle={{
-											backgroundColor: dark ? "#1E293B" : "white",
-											borderColor: dark ? "#334155" : "#e5e7eb",
+											backgroundColor: tooltipBg,
+											borderColor: tooltipBorder,
 											borderRadius: "8px",
 										}}
-										labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+										labelStyle={{ color: axisTick }}
 										formatter={(value: number | undefined) => [
 											`Rp ${value}jt`,
 											"",
@@ -484,18 +507,18 @@ const KeuanganAnggaran = () => {
 									<Line
 										type="monotone"
 										dataKey="income"
-										stroke="#22C55E"
+										stroke={incomeColor}
 										strokeWidth={2}
-										dot={{ fill: "#22C55E", strokeWidth: 2, r: 4 }}
+										dot={{ fill: incomeColor, strokeWidth: 2, r: 4 }}
 										activeDot={{ r: 6 }}
 										name={t.keuanganAnggaran.pemasukan}
 									/>
 									<Line
 										type="monotone"
 										dataKey="expense"
-										stroke="#EF4444"
+										stroke={expenseColor}
 										strokeWidth={2}
-										dot={{ fill: "#EF4444", strokeWidth: 2, r: 4 }}
+										dot={{ fill: expenseColor, strokeWidth: 2, r: 4 }}
 										activeDot={{ r: 6 }}
 										name={t.keuanganAnggaran.pengeluaran}
 									/>
@@ -511,15 +534,22 @@ const KeuanganAnggaran = () => {
 						p="md"
 						radius="xl"
 						withBorder
-						bg={dark ? "#1E293B" : "white"}
+						bg={dark ? "dark.6" : "white"}
 						style={{
-							borderColor: dark ? "#334155" : "white",
-							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+							borderColor: dark
+								? "var(--mantine-color-dark-4)"
+								: "var(--mantine-color-white)",
+							boxShadow: "var(--mantine-shadow-xs)",
 						}}
 						h="100%"
 					>
 						<Group gap="xs" mb="md">
-							<ThemeIcon color="#1E3A5F" variant="filled" size="sm" radius="sm">
+							<ThemeIcon
+								color="darmasaba-navy.7"
+								variant="filled"
+								size="sm"
+								radius="sm"
+							>
 								<PieChartIcon size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
@@ -541,17 +571,14 @@ const KeuanganAnggaran = () => {
 										<CartesianGrid
 											strokeDasharray="3 3"
 											horizontal={false}
-											stroke={dark ? "#334155" : "#e5e7eb"}
+											stroke={gridStroke}
 										/>
 									)}
 									<XAxis
 										type="number"
 										axisLine={false}
 										tickLine={false}
-										tick={{
-											fill: dark ? "#E2E8F0" : "#374151",
-											fontSize: 12,
-										}}
+										tick={{ fill: axisTick, fontSize: 12 }}
 										tickFormatter={(value) => `${value}`}
 									/>
 									<YAxis
@@ -559,16 +586,13 @@ const KeuanganAnggaran = () => {
 										dataKey="sector"
 										axisLine={false}
 										tickLine={false}
-										tick={{
-											fill: dark ? "#E2E8F0" : "#374151",
-											fontSize: 11,
-										}}
+										tick={{ fill: axisTick, fontSize: 11 }}
 										width={120}
 									/>
 									<Tooltip
 										contentStyle={{
-											backgroundColor: dark ? "#1E293B" : "white",
-											borderColor: dark ? "#334155" : "#e5e7eb",
+											backgroundColor: tooltipBg,
+											borderColor: tooltipBorder,
 											borderRadius: "8px",
 										}}
 										formatter={(value: number | undefined) => [
@@ -578,7 +602,7 @@ const KeuanganAnggaran = () => {
 									/>
 									<Bar
 										dataKey="amount"
-										fill="#396aaaff"
+										fill={barColor}
 										radius={[0, 8, 8, 0]}
 										maxBarSize={30}
 									/>
@@ -597,15 +621,22 @@ const KeuanganAnggaran = () => {
 						p="md"
 						radius="xl"
 						withBorder
-						bg={dark ? "#1E293B" : "white"}
+						bg={dark ? "dark.6" : "white"}
 						style={{
-							borderColor: dark ? "#334155" : "white",
-							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+							borderColor: dark
+								? "var(--mantine-color-dark-4)"
+								: "var(--mantine-color-white)",
+							boxShadow: "var(--mantine-shadow-xs)",
 						}}
 						h="100%"
 					>
 						<Group gap="xs" mb="md">
-							<ThemeIcon color="#1E3A5F" variant="filled" size="sm" radius="sm">
+							<ThemeIcon
+								color="darmasaba-navy.7"
+								variant="filled"
+								size="sm"
+								radius="sm"
+							>
 								<Receipt size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
@@ -627,8 +658,8 @@ const KeuanganAnggaran = () => {
 								<Grid gutter="md">
 									{/* Pendapatan */}
 									<Grid.Col span={6}>
-										<Card p="sm" radius="lg" bg={dark ? "#064E3B" : "#DCFCE7"}>
-											<Title order={5} c="#22C55E" mb="sm">
+										<Card p="sm" radius="lg" bg={dark ? "green.9" : "green.1"}>
+											<Title order={5} c="green.5" mb="sm">
 												{t.keuanganAnggaran.pendapatan}
 											</Title>
 											<Stack gap="xs">
@@ -637,7 +668,7 @@ const KeuanganAnggaran = () => {
 														<Text size="sm" c={dark ? "gray.3" : "gray.7"}>
 															{item.category}
 														</Text>
-														<Text size="sm" fw={600} c="#22C55E">
+														<Text size="sm" fw={600} c="green.5">
 															Rp {item.amount.toLocaleString()}jt
 														</Text>
 													</Group>
@@ -647,13 +678,13 @@ const KeuanganAnggaran = () => {
 													mt="sm"
 													pt="sm"
 													style={{
-														borderTop: `1px solid ${dark ? "#065F46" : "#86EFAC"}`,
+														borderTop: `1px solid var(--mantine-color-green-${dark ? "8" : "3"})`,
 													}}
 												>
-													<Text fw={700} c="#22C55E">
+													<Text fw={700} c="green.5">
 														{t.keuanganAnggaran.total}
 													</Text>
-													<Text fw={700} c="#22C55E">
+													<Text fw={700} c="green.5">
 														Rp {reportData.totalIncome.toLocaleString()}jt
 													</Text>
 												</Group>
@@ -663,8 +694,8 @@ const KeuanganAnggaran = () => {
 
 									{/* Belanja */}
 									<Grid.Col span={6}>
-										<Card p="sm" radius="lg" bg={dark ? "#7F1D1D" : "#FEE2E2"}>
-											<Title order={5} c="#EF4444" mb="sm">
+										<Card p="sm" radius="lg" bg={dark ? "red.9" : "red.1"}>
+											<Title order={5} c="red.5" mb="sm">
 												{t.keuanganAnggaran.belanja}
 											</Title>
 											<Stack gap="xs">
@@ -673,7 +704,7 @@ const KeuanganAnggaran = () => {
 														<Text size="sm" c={dark ? "gray.3" : "gray.7"}>
 															{item.category}
 														</Text>
-														<Text size="sm" fw={600} c="#EF4444">
+														<Text size="sm" fw={600} c="red.5">
 															Rp {item.amount.toLocaleString()}jt
 														</Text>
 													</Group>
@@ -683,13 +714,13 @@ const KeuanganAnggaran = () => {
 													mt="sm"
 													pt="sm"
 													style={{
-														borderTop: `1px solid ${dark ? "#991B1B" : "#FCA5A5"}`,
+														borderTop: `1px solid var(--mantine-color-red-${dark ? "8" : "3"})`,
 													}}
 												>
-													<Text fw={700} c="#EF4444">
+													<Text fw={700} c="red.5">
 														{t.keuanganAnggaran.total}
 													</Text>
-													<Text fw={700} c="#EF4444">
+													<Text fw={700} c="red.5">
 														Rp {reportData.totalExpenses.toLocaleString()}jt
 													</Text>
 												</Group>
@@ -704,7 +735,7 @@ const KeuanganAnggaran = () => {
 									mt="md"
 									pt="md"
 									style={{
-										borderTop: `1px solid ${dark ? "#334155" : "#e5e7eb"}`,
+										borderTop: `1px solid var(--mantine-color-${dark ? "dark-4" : "gray-2"})`,
 									}}
 								>
 									<Text fw={700} c={dark ? "white" : "gray.9"}>
@@ -715,8 +746,8 @@ const KeuanganAnggaran = () => {
 										size="lg"
 										c={
 											reportData.totalIncome > reportData.totalExpenses
-												? "#22C55E"
-												: "#EF4444"
+												? "green.5"
+												: "red.5"
 										}
 									>
 										Rp{" "}
@@ -737,15 +768,22 @@ const KeuanganAnggaran = () => {
 						p="md"
 						radius="xl"
 						withBorder
-						bg={dark ? "#1E293B" : "white"}
+						bg={dark ? "dark.6" : "white"}
 						style={{
-							borderColor: dark ? "#334155" : "white",
-							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+							borderColor: dark
+								? "var(--mantine-color-dark-4)"
+								: "var(--mantine-color-white)",
+							boxShadow: "var(--mantine-shadow-xs)",
 						}}
 						h="100%"
 					>
 						<Group gap="xs" mb="md">
-							<ThemeIcon color="#1E3A5F" variant="filled" size="sm" radius="sm">
+							<ThemeIcon
+								color="darmasaba-navy.7"
+								variant="filled"
+								size="sm"
+								radius="sm"
+							>
 								<Coins size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
@@ -762,7 +800,7 @@ const KeuanganAnggaran = () => {
 											key={fund.source}
 											p="sm"
 											radius="lg"
-											bg={dark ? "#334155" : "#F1F5F9"}
+											bg={dark ? "dark.4" : "gray.1"}
 											style={{
 												borderColor: "transparent",
 												transition: "background-color 0.15s ease",

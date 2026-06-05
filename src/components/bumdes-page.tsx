@@ -1,6 +1,7 @@
 import { Grid, GridCol, Stack } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 import { umkmStore } from "../store/umkm";
 import { HeaderToggle } from "./umkm/header-toggle";
@@ -77,81 +78,83 @@ const BumdesPage = () => {
 	const [detailModalOpen, setDetailModalOpen] = useState(false);
 
 	// Fetch KPI, ringkasan, top produk, and filter lists (re-fetch on range change for future backend support)
-	useEffect(() => {
-		async function fetchStatic() {
-			try {
-				const [kpiRes, ringkasanRes, topProdukRes, kategoriRes, umkmRes] =
-					await Promise.all([
-						fetch(
-							`${DESA_API}/api/ekonomi/umkm/dashboard/kpi?period=${selectedRange}`,
-						),
-						fetch(
-							`${DESA_API}/api/ekonomi/umkm/dashboard/ringkasan-penjualan?period=${selectedRange}`,
-						),
-						fetch(
-							`${DESA_API}/api/ekonomi/umkm/dashboard/top-produk?period=${selectedRange}`,
-						),
-						fetch(`${DESA_API}/api/ekonomi/kategoriproduk/find-many-all`),
-						fetch(`${DESA_API}/api/ekonomi/umkm/find-many-all`),
-					]);
+	const fetchStatic = useCallback(async () => {
+		try {
+			const [kpiRes, ringkasanRes, topProdukRes, kategoriRes, umkmRes] =
+				await Promise.all([
+					fetch(
+						`${DESA_API}/api/ekonomi/umkm/dashboard/kpi?period=${selectedRange}`,
+					),
+					fetch(
+						`${DESA_API}/api/ekonomi/umkm/dashboard/ringkasan-penjualan?period=${selectedRange}`,
+					),
+					fetch(
+						`${DESA_API}/api/ekonomi/umkm/dashboard/top-produk?period=${selectedRange}`,
+					),
+					fetch(`${DESA_API}/api/ekonomi/kategoriproduk/find-many-all`),
+					fetch(`${DESA_API}/api/ekonomi/umkm/find-many-all`),
+				]);
 
-				const [kpiJson, ringkasanJson, topProdukJson, kategoriJson, umkmJson] =
-					await Promise.all([
-						kpiRes.json(),
-						ringkasanRes.json(),
-						topProdukRes.json(),
-						kategoriRes.json(),
-						umkmRes.json(),
-					]);
+			const [kpiJson, ringkasanJson, topProdukJson, kategoriJson, umkmJson] =
+				await Promise.all([
+					kpiRes.json(),
+					ringkasanRes.json(),
+					topProdukRes.json(),
+					kategoriRes.json(),
+					umkmRes.json(),
+				]);
 
-				if (kpiJson.success) setKpi(kpiJson.data);
-				if (ringkasanJson.success) setRingkasan(ringkasanJson.data);
-				if (topProdukJson.success) setTopProduk(topProdukJson.data);
-				if (kategoriJson.success)
-					setKategoriOptions(
-						(kategoriJson.data ?? []).map(
-							(k: { id: string; nama: string }) => ({
-								value: k.id,
-								label: k.nama,
-							}),
-						),
-					);
-				if (umkmJson.success)
-					setUmkmOptions(
-						(umkmJson.data ?? []).map((u: { id: string; nama: string }) => ({
-							value: u.id,
-							label: u.nama,
-						})),
-					);
-			} catch (err) {
-				console.error("[BUMDes] Failed to fetch static data:", err);
-			}
+			if (kpiJson.success) setKpi(kpiJson.data);
+			if (ringkasanJson.success) setRingkasan(ringkasanJson.data);
+			if (topProdukJson.success) setTopProduk(topProdukJson.data);
+			if (kategoriJson.success)
+				setKategoriOptions(
+					(kategoriJson.data ?? []).map((k: { id: string; nama: string }) => ({
+						value: k.id,
+						label: k.nama,
+					})),
+				);
+			if (umkmJson.success)
+				setUmkmOptions(
+					(umkmJson.data ?? []).map((u: { id: string; nama: string }) => ({
+						value: u.id,
+						label: u.nama,
+					})),
+				);
+		} catch (err) {
+			console.error("[BUMDes] Failed to fetch static data:", err);
 		}
-
-		fetchStatic();
 	}, [selectedRange]);
 
-	// Fetch detail penjualan separately (re-fetch on filter change)
 	useEffect(() => {
-		async function fetchDetail() {
-			try {
-				const params = new URLSearchParams();
-				if (kategoriId) params.set("kategoriId", kategoriId);
-				if (umkmId) params.set("umkmId", umkmId);
-				params.set("period", selectedRange);
+		fetchStatic();
+	}, [fetchStatic]);
 
-				const res = await fetch(
-					`${DESA_API}/api/ekonomi/umkm/dashboard/detail-penjualan?${params}`,
-				);
-				const json = await res.json();
-				if (json.success) setDetailPenjualan(json.data);
-			} catch (err) {
-				console.error("[BUMDes] Failed to fetch detail penjualan:", err);
-			}
+	useAutoRefresh(fetchStatic);
+
+	// Fetch detail penjualan separately (re-fetch on filter change)
+	const fetchDetail = useCallback(async () => {
+		try {
+			const params = new URLSearchParams();
+			if (kategoriId) params.set("kategoriId", kategoriId);
+			if (umkmId) params.set("umkmId", umkmId);
+			params.set("period", selectedRange);
+
+			const res = await fetch(
+				`${DESA_API}/api/ekonomi/umkm/dashboard/detail-penjualan?${params}`,
+			);
+			const json = await res.json();
+			if (json.success) setDetailPenjualan(json.data);
+		} catch (err) {
+			console.error("[BUMDes] Failed to fetch detail penjualan:", err);
 		}
-
-		fetchDetail();
 	}, [kategoriId, umkmId, selectedRange]);
+
+	useEffect(() => {
+		fetchDetail();
+	}, [fetchDetail]);
+
+	useAutoRefresh(fetchDetail);
 
 	// Map API data to component props
 	const summaryCardsData = kpi
