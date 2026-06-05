@@ -730,6 +730,144 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		},
 	})
 
+	.get("/apbdes/export", async ({ set }) => {
+		try {
+			const data = await withCache(
+				`apbdes:${APBDES_ID}`,
+				TTL.APBDES,
+				async () => {
+					const response = await desaExternalClient.GET(
+						"/api/landingpage/apbdes/{id}",
+						{ params: { path: { id: APBDES_ID } } },
+					);
+					if (response.error) throw new Error(extractError(response.error));
+					return response.data ?? null;
+				},
+			);
+
+			const rawData = (data as Record<string, any>)?.data || data;
+			const items: Record<string, any>[] = (rawData as Record<string, any>)?.items || [];
+
+			const parseAmount = (val: unknown): number => {
+				if (typeof val === "number") return val;
+				if (typeof val === "string")
+					return Number(val.replace(/\./g, "").replace(/,/g, ""));
+				return 0;
+			};
+
+			const totalBudget = parseAmount((rawData as Record<string, any>)?.jumlah);
+			let totalIncomeReal = 0;
+			let totalExpenseReal = 0;
+
+			for (const item of items) {
+				const type = (item.tipe as string | undefined)?.toLowerCase();
+				if (Array.isArray(item.realisasiItems)) {
+					const real = (item.realisasiItems as Record<string, any>[]).reduce(
+						(acc: number, curr) => acc + (Number(curr.jumlah) || 0),
+						0,
+					);
+					if (type === "pendapatan") totalIncomeReal += real;
+					else if (type === "belanja") totalExpenseReal += real;
+				}
+			}
+
+			const realisasiPct =
+				totalBudget > 0
+					? Math.round((totalExpenseReal / totalBudget) * 100)
+					: 0;
+
+			const fmt = (n: number) =>
+				`Rp ${(n / 1_000_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })}jt`;
+
+			const incomeItems = items.filter(
+				(i) => i.level === 2 && i.tipe === "pendapatan",
+			);
+			const expenseItems = items.filter(
+				(i) => i.level === 2 && i.tipe === "belanja",
+			);
+			const aidItems = items.filter(
+				(i) =>
+					(i.uraian as string | undefined)?.toLowerCase().includes("bantuan") ||
+					(i.uraian as string | undefined)?.toLowerCase().includes("hibah"),
+			);
+
+			const { buildPdfReport } = await import("../utils/pdf-table");
+			const buffer = await buildPdfReport({
+				title: "Laporan Keuangan & Anggaran (APBDes)",
+				subtitle: `Desa Darmasaba — Tahun ${(rawData as Record<string, any>)?.tahun || new Date().getFullYear()} — Diekspor pada: ${new Date().toLocaleString("id-ID")}`,
+				sections: [
+					{
+						heading: "Ringkasan APBDes",
+						columns: [
+							{ header: "Indikator", key: "indikator", width: 300 },
+							{ header: "Nilai", key: "nilai", width: 215 },
+						],
+						rows: [
+							{ indikator: "Total Anggaran", nilai: fmt(totalBudget) },
+							{ indikator: "Realisasi Pendapatan", nilai: fmt(totalIncomeReal) },
+							{ indikator: "Realisasi Belanja", nilai: fmt(totalExpenseReal) },
+							{ indikator: "Persentase Realisasi", nilai: `${realisasiPct}%` },
+							{
+								indikator: "Tahun Anggaran",
+								nilai: String((rawData as Record<string, any>)?.tahun || "-"),
+							},
+						],
+					},
+					{
+						heading: "Rincian Pendapatan",
+						columns: [
+							{ header: "Kategori", key: "kategori", width: 340 },
+							{ header: "Anggaran", key: "anggaran", width: 175 },
+						],
+						rows: incomeItems.map((i) => ({
+							kategori: (i.uraian as string) || "-",
+							anggaran: fmt(parseAmount(i.anggaran)),
+						})),
+					},
+					{
+						heading: "Rincian Belanja",
+						columns: [
+							{ header: "Kategori", key: "kategori", width: 340 },
+							{ header: "Anggaran", key: "anggaran", width: 175 },
+						],
+						rows: expenseItems.map((e) => ({
+							kategori: (e.uraian as string) || "-",
+							anggaran: fmt(parseAmount(e.anggaran)),
+						})),
+					},
+					{
+						heading: "Dana Bantuan & Hibah",
+						columns: [
+							{ header: "Sumber Dana", key: "sumber", width: 290 },
+							{ header: "Anggaran", key: "anggaran", width: 125 },
+							{ header: "Status", key: "status", width: 100 },
+						],
+						rows: aidItems.map((a) => ({
+							sumber: (a.uraian as string) || "-",
+							anggaran: fmt(parseAmount(a.anggaran)),
+							status: (Number(a.totalRealisasi) || 0) > 0 ? "Cair" : "Proses",
+						})),
+					},
+				],
+			});
+
+			const ab = buffer.buffer.slice(
+				buffer.byteOffset,
+				buffer.byteOffset + buffer.byteLength,
+			) as ArrayBuffer;
+			return new Response(ab, {
+				headers: {
+					"Content-Type": "application/pdf",
+					"Content-Disposition": `attachment; filename="laporan-keuangan-anggaran-${new Date().toISOString().slice(0, 10)}.pdf"`,
+				},
+			});
+		} catch (error) {
+			console.error("[Demografi API] APBDes export error:", error);
+			set.status = 500;
+			return { error: "Gagal membuat laporan PDF keuangan" };
+		}
+	})
+
 	.get(
 		"/apbdes/:id",
 		async ({ params: { id } }) => {
