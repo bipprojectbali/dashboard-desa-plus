@@ -25,6 +25,7 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 
 const DESA_API =
@@ -170,6 +171,8 @@ const KeamananPage = () => {
 	useEffect(() => {
 		fetchAll();
 	}, [fetchAll]);
+
+	useAutoRefresh(fetchAll);
 
 	const cctvTotalPages = Math.ceil(cctvList.length / CCTV_PER_PAGE);
 	const cctvPaged = cctvList.slice(

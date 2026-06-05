@@ -23,7 +23,7 @@ import {
 	TrendingUp,
 } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -34,6 +34,7 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 
@@ -69,17 +70,26 @@ function useJennaAnalytics() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		// Fetch via server proxy — avoids CORS & doesn't require VITE_* env vars at build time
-		fetch("/api/jenna/analytics")
-			.then((r) => {
-				if (!r.ok) throw new Error(`HTTP ${r.status}`);
-				return r.json() as Promise<JennaAnalyticsData>;
-			})
-			.then(setData)
-			.catch((e: Error) => setError(e.message))
-			.finally(() => setLoading(false));
+	const fetchData = useCallback(async () => {
+		try {
+			// Fetch via server proxy — avoids CORS & doesn't require VITE_* env vars at build time
+			const r = await fetch("/api/jenna/analytics");
+			if (!r.ok) throw new Error(`HTTP ${r.status}`);
+			const json = (await r.json()) as JennaAnalyticsData;
+			setData(json);
+			setError(null);
+		} catch (e) {
+			setError((e as Error).message);
+		} finally {
+			setLoading(false);
+		}
 	}, []);
+
+	useEffect(() => {
+		fetchData();
+	}, [fetchData]);
+
+	useAutoRefresh(fetchData);
 
 	return { data, loading, error };
 }
