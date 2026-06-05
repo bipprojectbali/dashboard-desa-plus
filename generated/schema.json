@@ -7204,6 +7204,14 @@
         "operationId": "postApiDemografiSync"
       }
     },
+    "/api/demografi/export": {
+      "get": {
+        "operationId": "getApiDemografiExport",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
     "/api/demografi/last-sync": {
       "get": {
         "responses": {

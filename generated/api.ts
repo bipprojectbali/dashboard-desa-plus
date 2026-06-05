@@ -1015,6 +1015,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/demografi/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDemografiExport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/demografi/last-sync": {
         parameters: {
             query?: never;
@@ -4307,6 +4323,23 @@ export interface operations {
                         error?: string;
                     };
                 };
+            };
+        };
+    };
+    getApiDemografiExport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
