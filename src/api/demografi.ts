@@ -776,8 +776,18 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 					? Math.round((totalExpenseReal / totalBudget) * 100)
 					: 0;
 
-			const fmt = (n: number) =>
-				`Rp ${(n / 1_000_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })}jt`;
+			const fmt = (n: number): string => {
+				const abs = Math.abs(n);
+				if (abs >= 1_000_000_000_000)
+					return `Rp ${(n / 1_000_000_000_000).toLocaleString("id-ID", { maximumFractionDigits: 2 })} T`;
+				if (abs >= 1_000_000_000)
+					return `Rp ${(n / 1_000_000_000).toLocaleString("id-ID", { maximumFractionDigits: 2 })} M`;
+				if (abs >= 1_000_000)
+					return `Rp ${(n / 1_000_000).toLocaleString("id-ID", { maximumFractionDigits: 2 })} jt`;
+				if (abs >= 1_000)
+					return `Rp ${(n / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 2 })} rb`;
+				return `Rp ${n.toLocaleString("id-ID")}`;
+			};
 
 			const incomeItems = items.filter(
 				(i) => i.level === 2 && i.tipe === "pendapatan",
