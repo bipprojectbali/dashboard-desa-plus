@@ -660,8 +660,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 						],
 						rows: Array.isArray(occupation)
 							? (occupation as any[]).map((j) => ({
-									pekerjaan:
-										j.pekerjaan || j.namaPekerjaan || j.job || "-",
+									pekerjaan: j.pekerjaan || j.namaPekerjaan || j.job || "-",
 									jumlah: String(
 										j.jumlah ||
 											j.total ||
@@ -693,11 +692,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 						rows: Array.isArray(sectors)
 							? (sectors as any[]).map((s) => ({
 									sektor:
-										s.name ||
-										s.nama ||
-										s.sektor ||
-										s.sektorUnggulan ||
-										"-",
+										s.name || s.nama || s.sektor || s.sektorUnggulan || "-",
 									nilai: String(s.value ?? s.nilai ?? s.jumlah ?? 0),
 								}))
 							: [],
@@ -746,7 +741,8 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 			);
 
 			const rawData = (data as Record<string, any>)?.data || data;
-			const items: Record<string, any>[] = (rawData as Record<string, any>)?.items || [];
+			const items: Record<string, any>[] =
+				(rawData as Record<string, any>)?.items || [];
 
 			const parseAmount = (val: unknown): number => {
 				if (typeof val === "number") return val;
@@ -814,7 +810,10 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 						],
 						rows: [
 							{ indikator: "Total Anggaran", nilai: fmt(totalBudget) },
-							{ indikator: "Realisasi Pendapatan", nilai: fmt(totalIncomeReal) },
+							{
+								indikator: "Realisasi Pendapatan",
+								nilai: fmt(totalIncomeReal),
+							},
 							{ indikator: "Realisasi Belanja", nilai: fmt(totalExpenseReal) },
 							{ indikator: "Persentase Realisasi", nilai: `${realisasiPct}%` },
 							{

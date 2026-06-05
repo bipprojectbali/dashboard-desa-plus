@@ -12,7 +12,11 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { IconAlertCircle, IconDownload, IconRefresh } from "@tabler/icons-react";
+import {
+	IconAlertCircle,
+	IconDownload,
+	IconRefresh,
+} from "@tabler/icons-react";
 import {
 	Baby,
 	BarChart3,
