@@ -9,7 +9,7 @@ import {
 	Outlet,
 	useRouterState,
 } from "@tanstack/react-router";
-import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Component, type ErrorInfo, type ReactNode, useEffect } from "react";
 import { MainLayout } from "@/components/layout/main-layout";
 
 type ErrorBoundaryState = { hasError: boolean; message: string };
@@ -59,6 +59,46 @@ class ErrorBoundary extends Component<
 	}
 }
 
+const APP_NAME = "Dashboard Desa Plus";
+
+const PAGE_TITLES: Record<string, string> = {
+	"/": "Dashboard",
+	"/keuangan-anggaran": "Keuangan & Anggaran",
+	"/kinerja-divisi": "Kinerja Divisi",
+	"/demografi-pekerjaan": "Demografi & Pekerjaan",
+	"/pengaduan-layanan-publik": "Pengaduan Layanan Publik",
+	"/bumdes": "BUMDes",
+	"/sosial": "Sosial",
+	"/bantuan": "Bantuan",
+	"/jenna-analytic": "Jenna Analytics",
+	"/keamanan": "Keamanan",
+	"/signin": "Masuk",
+	"/signup": "Daftar",
+	"/profile/edit": "Edit Profil",
+	"/profile": "Profil",
+	"/pengaturan/akses-dan-tim": "Akses & Tim — Pengaturan",
+	"/pengaturan/keamanan": "Keamanan — Pengaturan",
+	"/pengaturan/notifikasi": "Notifikasi — Pengaturan",
+	"/pengaturan/sinkronisasi": "Sinkronisasi — Pengaturan",
+	"/pengaturan/umum": "Pengaturan Umum",
+	"/admin/audit-log": "Audit Log — Admin",
+	"/admin/apikey": "API Key — Admin",
+	"/admin/help": "Bantuan — Admin",
+	"/admin/preferences": "Preferensi — Admin",
+	"/admin/roles": "Peran — Admin",
+	"/admin/settings": "Pengaturan — Admin",
+	"/admin/system-health": "Kesehatan Sistem — Admin",
+	"/admin/users": "Pengguna — Admin",
+	"/admin": "Admin Dashboard",
+	"/users": "Pengguna",
+};
+
+function getPageTitle(pathname: string): string {
+	if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname];
+	if (pathname.startsWith("/users/")) return "Detail Pengguna";
+	return "";
+}
+
 export const Route = createRootRoute({
 	component: RootComponent,
 	beforeLoad: async ({ location }) => {
@@ -77,6 +117,12 @@ export const Route = createRootRoute({
 function RootComponent() {
 	const routerState = useRouterState();
 	const pathname = routerState.location.pathname;
+
+	useEffect(() => {
+		const pageTitle = getPageTitle(pathname);
+		document.title = pageTitle ? `${pageTitle} — ${APP_NAME}` : APP_NAME;
+	}, [pathname]);
+
 	const isPublicRoute = ["/signin", "/signup", "/admin", "/profile"].some(
 		(path) => pathname.startsWith(path),
 	);
