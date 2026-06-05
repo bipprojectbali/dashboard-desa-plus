@@ -1,5 +1,33 @@
 @import "tailwindcss";
 
+@media print {
+  /* Sembunyikan chrome navigasi */
+  .mantine-AppShell-header,
+  .mantine-AppShell-navbar {
+    display: none !important;
+  }
+
+  /* Reset offset sidebar & header agar konten full-width */
+  .mantine-AppShell-main {
+    padding-top: 0 !important;
+    padding-left: 0 !important;
+    --app-shell-header-height: 0px !important;
+    --app-shell-navbar-width: 0px !important;
+  }
+
+  /* Sembunyikan tombol-tombol aksi (export, refresh, filter) */
+  .mantine-Button-root,
+  .mantine-ActionIcon-root {
+    display: none !important;
+  }
+
+  /* Pastikan warna & background chart tetap muncul */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
 @keyframes bounce {
 	0%,
 	80%,
