@@ -15,7 +15,7 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
+import { IconAlertCircle, IconDownload, IconRefresh } from "@tabler/icons-react";
 import {
 	CheckCircle,
 	Coins,
@@ -37,6 +37,7 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
+import { useAksesPrefs } from "@/hooks/useAksesPrefs";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
@@ -79,6 +80,7 @@ const KeuanganAnggaran = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const { tampilkanGrid } = useSnapshot(i18nStore);
+	const { izinExportData } = useAksesPrefs();
 
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -295,12 +297,32 @@ const KeuanganAnggaran = () => {
 
 	useAutoRefresh(fetchData);
 
+	const handleExport = () => {
+		const a = document.createElement("a");
+		a.href = "/api/demografi/apbdes/export";
+		a.download = `laporan-keuangan-anggaran-${new Date().toISOString().slice(0, 10)}.pdf`;
+		a.click();
+	};
+
 	const hasChartData = incomeExpenseData.some(
 		(d) => d.income > 0 || d.expense > 0,
 	);
 
 	return (
 		<Stack gap="lg">
+			{izinExportData && (
+				<Group justify="flex-end">
+					<Button
+						variant="light"
+						color="teal"
+						size="sm"
+						leftSection={<IconDownload size={16} />}
+						onClick={handleExport}
+					>
+						Download Laporan
+					</Button>
+				</Group>
+			)}
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}
