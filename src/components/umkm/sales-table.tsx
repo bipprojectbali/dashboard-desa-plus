@@ -10,7 +10,9 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
+import { useSnapshot } from "valtio";
 import { useTranslate } from "@/hooks/useTranslate";
+import { i18nStore } from "@/store/i18n";
 
 export interface SalesData {
 	id: string;
@@ -51,13 +53,24 @@ export const SalesTable = ({
 
 	const displayData = data ?? [];
 
+	const { lang } = useSnapshot(i18nStore);
+	const isId = lang === "id";
+
 	const formatCurrency = (value: number) => {
-		if (value >= 1000000) {
-			return `Rp ${(value / 1000000).toFixed(1)}M`;
-		}
-		if (value >= 1000) {
-			return `Rp ${(value / 1000).toFixed(0)}K`;
-		}
+		if (value >= 1_000_000_000_000)
+			return `Rp ${(value / 1_000_000_000_000).toFixed(1)}T`;
+		if (value >= 1_000_000_000)
+			return isId
+				? `Rp ${(value / 1_000_000_000).toFixed(1)}M`
+				: `Rp ${(value / 1_000_000_000).toFixed(1)}B`;
+		if (value >= 1_000_000)
+			return isId
+				? `Rp ${(value / 1_000_000).toFixed(1)}Jt`
+				: `Rp ${(value / 1_000_000).toFixed(1)}M`;
+		if (value >= 1_000)
+			return isId
+				? `Rp ${(value / 1_000).toFixed(1)}rb`
+				: `Rp ${(value / 1_000).toFixed(1)}K`;
 		return `Rp ${value.toLocaleString()}`;
 	};
 
