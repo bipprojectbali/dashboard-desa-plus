@@ -1,8 +1,122 @@
 import { Elysia, t } from "elysia";
 import type { Prisma } from "generated/prisma";
+import { cache, TTL, withCache } from "@/utils/cache";
 import { prisma } from "@/utils/db";
+import { desaExternalClient } from "@/utils/desa-external-client";
+import logger from "@/utils/logger";
 
 export const sosial = new Elysia({ prefix: "/sosial" })
+	.get(
+		"/kesehatan/stats",
+		async ({ set }) => {
+			try {
+				const data = await withCache(
+					"sosial:kesehatan:stats",
+					TTL.SOSIAL,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/kesehatan/ringkasankesehatan/stats",
+						);
+						if (response.error) throw new Error(String(response.error));
+						return response.data?.data ?? null;
+					},
+				);
+				return { success: true, data };
+			} catch (error) {
+				logger.error({ error }, "Failed to proxy sosial kesehatan stats");
+				set.status = 500;
+				return { success: false, error: "Internal Server Error", data: null };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Any(),
+					error: t.Optional(t.String()),
+				}),
+				500: t.Object({
+					success: t.Boolean(),
+					error: t.String(),
+					data: t.Null(),
+				}),
+			},
+		},
+	)
+	.get(
+		"/posyandu/find-many",
+		async ({ set }) => {
+			try {
+				const data = await withCache(
+					"sosial:posyandu:list",
+					TTL.SOSIAL,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/kesehatan/posyandu/find-many",
+						);
+						if (response.error) throw new Error(String(response.error));
+						return response.data?.data ?? null;
+					},
+				);
+				return { success: true, data };
+			} catch (error) {
+				logger.error({ error }, "Failed to proxy sosial posyandu list");
+				set.status = 500;
+				return { success: false, error: "Internal Server Error", data: null };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Any(),
+					error: t.Optional(t.String()),
+				}),
+				500: t.Object({
+					success: t.Boolean(),
+					error: t.String(),
+					data: t.Null(),
+				}),
+			},
+		},
+	)
+	.get(
+		"/event-budaya/find-upcoming",
+		async ({ set }) => {
+			try {
+				const data = await withCache(
+					"sosial:event-budaya:upcoming",
+					TTL.SOSIAL,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/desa/eventbudaya/find-upcoming",
+						);
+						if (response.error) throw new Error(String(response.error));
+						return response.data?.data ?? null;
+					},
+				);
+				return { success: true, data };
+			} catch (error) {
+				logger.error({ error }, "Failed to proxy sosial event budaya");
+				set.status = 500;
+				return { success: false, error: "Internal Server Error", data: null };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Any(),
+					error: t.Optional(t.String()),
+				}),
+				500: t.Object({
+					success: t.Boolean(),
+					error: t.String(),
+					data: t.Null(),
+				}),
+			},
+		},
+	)
 	.get("/banjars", async () => {
 		try {
 			const data = await prisma.banjar.findMany({
@@ -80,5 +194,16 @@ export const sosial = new Elysia({ prefix: "/sosial" })
 				page: t.Optional(t.Number({ minimum: 1 })),
 				limit: t.Optional(t.Number({ minimum: 1, maximum: 100 })),
 			}),
+		},
+	)
+	.post(
+		"/cache-invalidate",
+		() => {
+			const deleted = cache.deleteByPrefix("sosial:");
+			return { deleted };
+		},
+		{
+			response: { 200: t.Object({ deleted: t.Number() }) },
+			detail: { summary: "Invalidate sosial cache entries" },
 		},
 	);

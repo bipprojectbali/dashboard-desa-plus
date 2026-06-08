@@ -19,11 +19,6 @@ import { Pendidikan } from "./sosial/pendidikan";
 import { PosyanduSchedule } from "./sosial/posyandu-schedule";
 import { SummaryCards } from "./sosial/summary-cards";
 
-const DESA_API =
-	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
-		? import.meta.env.VITE_DESA_API_URL
-		: "https://desa-darmasaba-stg.wibudev.com";
-
 interface KesehatanStats {
 	ibuHamilAktif: number;
 	balitaTerdaftar: number;
@@ -60,9 +55,9 @@ const SosialPage = () => {
 		setError(null);
 		try {
 			const [kesehatanRes, posyanduRes, eventsRes] = await Promise.all([
-				fetch(`${DESA_API}/api/kesehatan/ringkasankesehatan/stats`),
-				fetch(`${DESA_API}/api/kesehatan/posyandu/find-many`),
-				fetch(`${DESA_API}/api/desa/eventbudaya/find-upcoming`),
+				fetch("/api/sosial/kesehatan/stats"),
+				fetch("/api/sosial/posyandu/find-many"),
+				fetch("/api/sosial/event-budaya/find-upcoming"),
 			]);
 			const [kesehatan, posyandu, eventBudaya] = await Promise.all([
 				kesehatanRes.json(),
@@ -82,6 +77,15 @@ const SosialPage = () => {
 			setLoading(false);
 		}
 	}, []);
+
+	const handleForceRefresh = useCallback(async () => {
+		try {
+			await fetch("/api/sosial/cache-invalidate", { method: "POST" });
+		} catch {
+			// lanjut fetch meskipun invalidate gagal
+		}
+		await fetchData();
+	}, [fetchData]);
 
 	useEffect(() => {
 		fetchData();
@@ -127,13 +131,24 @@ const SosialPage = () => {
 		<Stack gap="lg">
 			<Group justify="flex-end">
 				<Button
-					variant="light"
+					variant="subtle"
 					size="xs"
 					leftSection={<IconRefresh size={14} />}
 					onClick={fetchData}
 					loading={loading}
 				>
 					Refresh
+				</Button>
+				<Button
+					variant="light"
+					size="xs"
+					color="orange"
+					leftSection={<IconRefresh size={14} />}
+					onClick={handleForceRefresh}
+					loading={loading}
+					title="Hapus cache dan ambil data terbaru dari sumber"
+				>
+					Paksa Refresh
 				</Button>
 			</Group>
 			{error && (

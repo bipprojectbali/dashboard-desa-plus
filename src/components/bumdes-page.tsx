@@ -1,4 +1,5 @@
-import { Grid, GridCol, Stack } from "@mantine/core";
+import { Button, Grid, GridCol, Group, Stack } from "@mantine/core";
+import { IconRefresh } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
@@ -11,11 +12,6 @@ import type { SalesData } from "./umkm/sales-table";
 import { SalesTable } from "./umkm/sales-table";
 import { SummaryCards } from "./umkm/summary-cards";
 import { TopProducts } from "./umkm/top-products";
-
-const DESA_API =
-	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
-		? import.meta.env.VITE_DESA_API_URL
-		: "https://desa-darmasaba-stg.wibudev.com";
 
 interface KpiData {
 	umkmAktif: number;
@@ -71,6 +67,7 @@ const BumdesPage = () => {
 
 	const [kategoriId, setKategoriId] = useState<string | null>(null);
 	const [umkmId, setUmkmId] = useState<string | null>(null);
+	const [refreshing, setRefreshing] = useState(false);
 
 	const [selectedProduct, setSelectedProduct] = useState<SalesData | null>(
 		null,
@@ -82,17 +79,11 @@ const BumdesPage = () => {
 		try {
 			const [kpiRes, ringkasanRes, topProdukRes, kategoriRes, umkmRes] =
 				await Promise.all([
-					fetch(
-						`${DESA_API}/api/ekonomi/umkm/dashboard/kpi?period=${selectedRange}`,
-					),
-					fetch(
-						`${DESA_API}/api/ekonomi/umkm/dashboard/ringkasan-penjualan?period=${selectedRange}`,
-					),
-					fetch(
-						`${DESA_API}/api/ekonomi/umkm/dashboard/top-produk?period=${selectedRange}`,
-					),
-					fetch(`${DESA_API}/api/ekonomi/kategoriproduk/find-many-all`),
-					fetch(`${DESA_API}/api/ekonomi/umkm/find-many-all`),
+					fetch(`/api/bumdes/kpi?period=${selectedRange}`),
+					fetch(`/api/bumdes/ringkasan-penjualan?period=${selectedRange}`),
+					fetch(`/api/bumdes/top-produk?period=${selectedRange}`),
+					fetch("/api/bumdes/kategori"),
+					fetch("/api/bumdes/umkm-list"),
 				]);
 
 			const [kpiJson, ringkasanJson, topProdukJson, kategoriJson, umkmJson] =
@@ -140,9 +131,7 @@ const BumdesPage = () => {
 			if (umkmId) params.set("umkmId", umkmId);
 			params.set("period", selectedRange);
 
-			const res = await fetch(
-				`${DESA_API}/api/ekonomi/umkm/dashboard/detail-penjualan?${params}`,
-			);
+			const res = await fetch(`/api/bumdes/detail-penjualan?${params}`);
 			const json = await res.json();
 			if (json.success) setDetailPenjualan(json.data);
 		} catch (err) {
@@ -155,6 +144,17 @@ const BumdesPage = () => {
 	}, [fetchDetail]);
 
 	useAutoRefresh(fetchDetail);
+
+	const handleForceRefresh = useCallback(async () => {
+		setRefreshing(true);
+		try {
+			await fetch("/api/bumdes/cache-invalidate", { method: "POST" });
+		} catch {
+			// lanjut fetch meskipun invalidate gagal
+		}
+		await Promise.all([fetchStatic(), fetchDetail()]);
+		setRefreshing(false);
+	}, [fetchStatic, fetchDetail]);
 
 	// Map API data to component props
 	const summaryCardsData = kpi
@@ -213,6 +213,27 @@ const BumdesPage = () => {
 				opened={detailModalOpen}
 				onClose={() => setDetailModalOpen(false)}
 			/>
+			<Group justify="flex-end">
+				<Button
+					variant="subtle"
+					size="xs"
+					leftSection={<IconRefresh size={14} />}
+					onClick={() => Promise.all([fetchStatic(), fetchDetail()])}
+				>
+					Refresh
+				</Button>
+				<Button
+					variant="light"
+					size="xs"
+					color="orange"
+					leftSection={<IconRefresh size={14} />}
+					onClick={handleForceRefresh}
+					loading={refreshing}
+					title="Hapus cache dan ambil data terbaru dari sumber"
+				>
+					Paksa Refresh
+				</Button>
+			</Group>
 			<SummaryCards data={summaryCardsData} />
 
 			<HeaderToggle />

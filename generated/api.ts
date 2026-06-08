@@ -205,6 +205,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/cache/invalidate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Invalidate cache entries by prefix (admin only). prefix: keamanan | sosial | bumdes | umkm | apbdes | demografi */
+        post: operations["postApiAdminCacheInvalidate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/activity-logs/export": {
         parameters: {
             query?: never;
@@ -1150,6 +1167,119 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/bumdes/kpi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiBumdesKpi"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bumdes/ringkasan-penjualan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiBumdesRingkasan-penjualan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bumdes/top-produk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiBumdesTop-produk"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bumdes/detail-penjualan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiBumdesDetail-penjualan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bumdes/kategori": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiBumdesKategori"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bumdes/umkm-list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiBumdesUmkm-list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bumdes/cache-invalidate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Invalidate bumdes cache entries */
+        post: operations["postApiBumdesCache-invalidate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/umum-preferences/": {
         parameters: {
             query?: never;
@@ -1203,6 +1333,54 @@ export interface paths {
         patch: operations["patchApiKeamananLaporan-lokalByIdStatus"];
         trace?: never;
     };
+    "/api/keamanan/cctv/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiKeamananCctvStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/keamanan/cctv/find-many": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiKeamananCctvFind-many"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/keamanan/laporan-publik/find-many": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiKeamananLaporan-publikFind-many"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/keamanan/laporan-lokal/stats": {
         parameters: {
             query?: never;
@@ -1214,6 +1392,23 @@ export interface paths {
         get: operations["getApiKeamananLaporan-lokalStats"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/keamanan/cache-invalidate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Invalidate keamanan cache entries */
+        post: operations["postApiKeamananCache-invalidate"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1444,6 +1639,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/sosial/kesehatan/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiSosialKesehatanStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sosial/posyandu/find-many": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiSosialPosyanduFind-many"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sosial/event-budaya/find-upcoming": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiSosialEvent-budayaFind-upcoming"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/sosial/banjars": {
         parameters: {
             query?: never;
@@ -1470,6 +1713,23 @@ export interface paths {
         get: operations["getApiSosialHealth-records"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sosial/cache-invalidate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Invalidate sosial cache entries */
+        post: operations["postApiSosialCache-invalidate"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1889,6 +2149,35 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    postApiAdminCacheInvalidate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    prefix: string;
+                };
+                "multipart/form-data": {
+                    prefix: string;
+                };
+                "text/plain": {
+                    prefix: string;
+                };
+            };
+        };
         responses: {
             200: {
                 headers: {
@@ -4840,6 +5129,373 @@ export interface operations {
             };
         };
     };
+    getApiBumdesKpi: {
+        parameters: {
+            query?: {
+                period?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
+    "getApiBumdesRingkasan-penjualan": {
+        parameters: {
+            query?: {
+                period?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
+    "getApiBumdesTop-produk": {
+        parameters: {
+            query?: {
+                period?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
+    "getApiBumdesDetail-penjualan": {
+        parameters: {
+            query?: {
+                period?: string;
+                kategoriId?: string;
+                umkmId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
+    getApiBumdesKategori: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
+    "getApiBumdesUmkm-list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
+    "postApiBumdesCache-invalidate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        deleted: number;
+                    };
+                    "multipart/form-data": {
+                        deleted: number;
+                    };
+                    "text/plain": {
+                        deleted: number;
+                    };
+                };
+            };
+        };
+    };
     "getApiUmum-preferences": {
         parameters: {
             query?: never;
@@ -5143,6 +5799,171 @@ export interface operations {
             };
         };
     };
+    getApiKeamananCctvStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
+    "getApiKeamananCctvFind-many": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
+    "getApiKeamananLaporan-publikFind-many": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
     "getApiKeamananLaporan-lokalStats": {
         parameters: {
             query?: never;
@@ -5196,6 +6017,33 @@ export interface operations {
                     };
                     "text/plain": {
                         error: string;
+                    };
+                };
+            };
+        };
+    };
+    "postApiKeamananCache-invalidate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        deleted: number;
+                    };
+                    "multipart/form-data": {
+                        deleted: number;
+                    };
+                    "text/plain": {
+                        deleted: number;
                     };
                 };
             };
@@ -6096,6 +6944,171 @@ export interface operations {
             };
         };
     };
+    getApiSosialKesehatanStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
+    "getApiSosialPosyanduFind-many": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
+    "getApiSosialEvent-budayaFind-upcoming": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
     getApiSosialBanjars: {
         parameters: {
             query?: never;
@@ -6132,6 +7145,33 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    "postApiSosialCache-invalidate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        deleted: number;
+                    };
+                    "multipart/form-data": {
+                        deleted: number;
+                    };
+                    "text/plain": {
+                        deleted: number;
+                    };
+                };
             };
         };
     };

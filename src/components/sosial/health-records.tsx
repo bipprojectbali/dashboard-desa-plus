@@ -45,7 +45,7 @@ interface IbuHamil {
 		id: string;
 		name: string;
 		banjar: { id: string; name: string };
-	};
+	} | null;
 }
 
 interface Balita {
@@ -64,7 +64,7 @@ interface Balita {
 		id: string;
 		name: string;
 		banjar: { id: string; name: string };
-	};
+	} | null;
 }
 
 interface PenderitaPenyakit {
@@ -183,7 +183,7 @@ function IbuHamilTab({ banjarId, dark }: IbuHamilTabProps) {
 	}, [banjarId]);
 
 	const filtered = banjarId
-		? allData.filter((d) => d.posyandu.banjar.id === banjarId)
+		? allData.filter((d) => d.posyandu?.banjar.id === banjarId)
 		: allData;
 	const total = filtered.length;
 	const totalPages = Math.max(1, Math.ceil(total / IBU_HAMIL_PAGE_SIZE));
@@ -237,9 +237,9 @@ function IbuHamilTab({ banjarId, dark }: IbuHamilTabProps) {
 									<Table.Td fw={500}>{row.nama}</Table.Td>
 									<Table.Td>
 										<Stack gap={0}>
-											<Text size="sm">{row.posyandu.name}</Text>
+											<Text size="sm">{row.posyandu?.name ?? "—"}</Text>
 											<Text size="xs" c="dimmed">
-												{row.posyandu.banjar.name}
+												{row.posyandu?.banjar.name ?? "—"}
 											</Text>
 										</Stack>
 									</Table.Td>
@@ -315,7 +315,7 @@ function BalitaTab({ banjarId, dark }: BalitaTabProps) {
 	}, [banjarId]);
 
 	const filtered = banjarId
-		? allData.filter((d) => d.posyandu.banjar.id === banjarId)
+		? allData.filter((d) => d.posyandu?.banjar.id === banjarId)
 		: allData;
 	const total = filtered.length;
 	const totalPages = Math.max(1, Math.ceil(total / BALITA_PAGE_SIZE));
@@ -381,9 +381,9 @@ function BalitaTab({ banjarId, dark }: BalitaTabProps) {
 									</Table.Td>
 									<Table.Td>
 										<Stack gap={0}>
-											<Text size="sm">{row.posyandu.name}</Text>
+											<Text size="sm">{row.posyandu?.name ?? "—"}</Text>
 											<Text size="xs" c="dimmed">
-												{row.posyandu.banjar.name}
+												{row.posyandu?.banjar.name ?? "—"}
 											</Text>
 										</Stack>
 									</Table.Td>

@@ -442,9 +442,7 @@ const KeuanganAnggaran = () => {
 						withBorder
 						bg={dark ? "#1E293B" : "white"}
 						style={{
-							borderColor: dark
-								? "#374b6aff"
-								: "var(--mantine-color-white)",
+							borderColor: dark ? "#374b6aff" : "var(--mantine-color-white)",
 							boxShadow: "var(--mantine-shadow-xs)",
 						}}
 						h="100%"
@@ -536,9 +534,7 @@ const KeuanganAnggaran = () => {
 						withBorder
 						bg={dark ? "#1E293B" : "white"}
 						style={{
-							borderColor: dark
-								? "#374b6aff"
-								: "var(--mantine-color-white)",
+							borderColor: dark ? "#374b6aff" : "var(--mantine-color-white)",
 							boxShadow: "var(--mantine-shadow-xs)",
 						}}
 						h="100%"
@@ -623,9 +619,7 @@ const KeuanganAnggaran = () => {
 						withBorder
 						bg={dark ? "#1E293B" : "white"}
 						style={{
-							borderColor: dark
-								? "#374b6aff"
-								: "var(--mantine-color-white)",
+							borderColor: dark ? "#374b6aff" : "var(--mantine-color-white)",
 							boxShadow: "var(--mantine-shadow-xs)",
 						}}
 						h="100%"
@@ -768,11 +762,9 @@ const KeuanganAnggaran = () => {
 						p="md"
 						radius="xl"
 						withBorder
-						bg={dark ?  "#1E293B" : "white"}
+						bg={dark ? "#1E293B" : "white"}
 						style={{
-							borderColor: dark
-								? "#374b6aff"
-								: "var(--mantine-color-white)",
+							borderColor: dark ? "#374b6aff" : "var(--mantine-color-white)",
 							boxShadow: "var(--mantine-shadow-xs)",
 						}}
 						h="100%"

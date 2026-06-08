@@ -18,7 +18,7 @@ class ErrorBoundary extends Component<
 	{ children: ReactNode },
 	ErrorBoundaryState
 > {
-	state: ErrorBoundaryState = { hasError: false, message: "" };
+	override state: ErrorBoundaryState = { hasError: false, message: "" };
 
 	static getDerivedStateFromError(error: unknown): ErrorBoundaryState {
 		const message =
@@ -26,11 +26,11 @@ class ErrorBoundary extends Component<
 		return { hasError: true, message };
 	}
 
-	componentDidCatch(error: unknown, info: ErrorInfo) {
+	override componentDidCatch(error: unknown, info: ErrorInfo) {
 		console.error("[ErrorBoundary]", error, info.componentStack);
 	}
 
-	render() {
+	override render() {
 		if (this.state.hasError) {
 			return (
 				<Center h="100vh">

@@ -276,6 +276,24 @@ export const adminApi = new Elysia({ prefix: "/admin" })
 		},
 		{ detail: { summary: "Flush all in-memory cache entries (admin only)" } },
 	)
+	.post(
+		"/cache/invalidate",
+		({ set, user, body }) => {
+			if (user?.role !== "admin") {
+				set.status = 403;
+				return { error: "Forbidden" };
+			}
+			const deleted = cache.deleteByPrefix(`${body.prefix}:`);
+			return { deleted };
+		},
+		{
+			body: t.Object({ prefix: t.String({ minLength: 1 }) }),
+			detail: {
+				summary:
+					"Invalidate cache entries by prefix (admin only). prefix: keamanan | sosial | bumdes | umkm | apbdes | demografi",
+			},
+		},
+	)
 	.get(
 		"/activity-logs/export",
 		async ({ query, user, set }) => {

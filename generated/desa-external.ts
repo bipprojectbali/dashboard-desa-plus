@@ -139,6 +139,154 @@ export interface paths {
 		patch?: never;
 		trace?: never;
 	};
+	"/api/keamanan/cctv/stats": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: GetOperation;
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/keamanan/cctv/find-many": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: GetOperation;
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/keamanan/laporanpublik/find-many": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: GetOperation;
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/kesehatan/ringkasankesehatan/stats": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: GetOperation;
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/kesehatan/posyandu/find-many": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: GetOperation;
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/desa/eventbudaya/find-upcoming": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: GetOperation;
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/ekonomi/umkm/dashboard/kpi": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: {
+			parameters: { query?: { period?: string }; header?: never; path?: never; cookie?: never };
+			requestBody?: never;
+			responses: { 200: ApiResponse; default: ApiError };
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/ekonomi/umkm/dashboard/ringkasan-penjualan": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: {
+			parameters: { query?: { period?: string }; header?: never; path?: never; cookie?: never };
+			requestBody?: never;
+			responses: { 200: ApiResponse; default: ApiError };
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/ekonomi/umkm/dashboard/top-produk": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: {
+			parameters: { query?: { period?: string }; header?: never; path?: never; cookie?: never };
+			requestBody?: never;
+			responses: { 200: ApiResponse; default: ApiError };
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/ekonomi/umkm/dashboard/detail-penjualan": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: {
+			parameters: { query?: { period?: string; kategoriId?: string; umkmId?: string }; header?: never; path?: never; cookie?: never };
+			requestBody?: never;
+			responses: { 200: ApiResponse; default: ApiError };
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/ekonomi/kategoriproduk/find-many-all": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: GetOperation;
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/ekonomi/umkm/find-many-all": {
+		parameters: { query?: never; header?: never; path?: never; cookie?: never };
+		get: GetOperation;
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 	"/api/landingpage/apbdes/{id}": {
 		parameters: { query?: never; header?: never; path: { id: string }; cookie?: never };
 		get: {

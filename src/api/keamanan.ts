@@ -1,6 +1,7 @@
 import Elysia, { t } from "elysia";
 import { cache, TTL, withCache } from "../utils/cache";
 import { prisma } from "../utils/db";
+import { desaExternalClient } from "../utils/desa-external-client";
 import logger from "../utils/logger";
 
 // Route berbeda dari /api/keamanan-preferences (preferensi user).
@@ -133,6 +134,117 @@ export const keamanan = new Elysia({
 		},
 	)
 	.get(
+		"/cctv/stats",
+		async ({ set }) => {
+			try {
+				const data = await withCache(
+					"keamanan:cctv:stats",
+					TTL.KEAMANAN,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/keamanan/cctv/stats",
+						);
+						if (response.error) throw new Error(String(response.error));
+						return response.data?.data ?? null;
+					},
+				);
+				return { success: true, data };
+			} catch (error) {
+				logger.error({ error }, "Failed to proxy keamanan cctv stats");
+				set.status = 500;
+				return { success: false, error: "Internal Server Error", data: null };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Any(),
+					error: t.Optional(t.String()),
+				}),
+				500: t.Object({
+					success: t.Boolean(),
+					error: t.String(),
+					data: t.Null(),
+				}),
+			},
+		},
+	)
+	.get(
+		"/cctv/find-many",
+		async ({ set }) => {
+			try {
+				const data = await withCache(
+					"keamanan:cctv:list",
+					TTL.KEAMANAN,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/keamanan/cctv/find-many",
+						);
+						if (response.error) throw new Error(String(response.error));
+						return response.data?.data ?? null;
+					},
+				);
+				return { success: true, data };
+			} catch (error) {
+				logger.error({ error }, "Failed to proxy keamanan cctv list");
+				set.status = 500;
+				return { success: false, error: "Internal Server Error", data: null };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Any(),
+					error: t.Optional(t.String()),
+				}),
+				500: t.Object({
+					success: t.Boolean(),
+					error: t.String(),
+					data: t.Null(),
+				}),
+			},
+		},
+	)
+	.get(
+		"/laporan-publik/find-many",
+		async ({ set }) => {
+			try {
+				const data = await withCache(
+					"keamanan:laporan-publik:list",
+					TTL.KEAMANAN,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/keamanan/laporanpublik/find-many",
+						);
+						if (response.error) throw new Error(String(response.error));
+						return response.data?.data ?? null;
+					},
+				);
+				return { success: true, data };
+			} catch (error) {
+				logger.error({ error }, "Failed to proxy keamanan laporan publik");
+				set.status = 500;
+				return { success: false, error: "Internal Server Error", data: null };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Any(),
+					error: t.Optional(t.String()),
+				}),
+				500: t.Object({
+					success: t.Boolean(),
+					error: t.String(),
+					data: t.Null(),
+				}),
+			},
+		},
+	)
+	.get(
 		"/laporan-lokal/stats",
 		async ({ set }) => {
 			try {
@@ -169,5 +281,16 @@ export const keamanan = new Elysia({
 				500: t.Object({ error: t.String() }),
 			},
 			detail: { summary: "Get stats for local security reports" },
+		},
+	)
+	.post(
+		"/cache-invalidate",
+		() => {
+			const deleted = cache.deleteByPrefix("keamanan:");
+			return { deleted };
+		},
+		{
+			response: { 200: t.Object({ deleted: t.Number() }) },
+			detail: { summary: "Invalidate keamanan cache entries" },
 		},
 	);

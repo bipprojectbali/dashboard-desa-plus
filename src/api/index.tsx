@@ -10,6 +10,7 @@ import { adminFaqApi } from "./admin-faq";
 import { aksesPreferences } from "./akses-preferences";
 import { apikey } from "./apikey";
 import { bantuanApi } from "./bantuan";
+import { bumdes } from "./bumdes";
 import { complaint } from "./complaint";
 import { dashboard } from "./dashboard";
 import { demografi } from "./demografi";
@@ -90,6 +91,7 @@ const api = new Elysia({
 	.use(demografi)
 	.use(notificationPreferences)
 	.use(umkm)
+	.use(bumdes)
 	.use(umumPreferences)
 	.use(keamanan)
 	.use(keamananPreferences)

@@ -674,6 +674,171 @@ function AdminSyncSection() {
 	);
 }
 
+const CACHE_MODULES = [
+	{
+		prefix: "keamanan",
+		label: "Keamanan",
+		description: "CCTV, laporan publik",
+	},
+	{
+		prefix: "sosial",
+		label: "Sosial",
+		description: "Kesehatan, posyandu, event budaya",
+	},
+	{ prefix: "bumdes", label: "BUMDes", description: "KPI, penjualan, produk" },
+	{ prefix: "umkm", label: "UMKM", description: "Data UMKM" },
+	{ prefix: "apbdes", label: "APBDes", description: "Data anggaran" },
+	{ prefix: "demografi", label: "Demografi", description: "Data kependudukan" },
+] as const;
+
+function AdminCacheSection() {
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
+	const [loadingPrefix, setLoadingPrefix] = useState<string | null>(null);
+	const [flushingAll, setFlushingAll] = useState(false);
+	const [result, setResult] = useState<{
+		type: "success" | "error";
+		message: string;
+	} | null>(null);
+
+	useEffect(() => {
+		if (!result) return;
+		const t = setTimeout(() => setResult(null), 3500);
+		return () => clearTimeout(t);
+	}, [result]);
+
+	const handleInvalidate = async (prefix: string, label: string) => {
+		setLoadingPrefix(prefix);
+		try {
+			const res = await fetch("/api/admin/cache/invalidate", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ prefix }),
+			});
+			if (!res.ok) throw new Error();
+			const json = await res.json();
+			setResult({
+				type: "success",
+				message: `Cache ${label} dihapus — ${json.deleted} entri.`,
+			});
+		} catch {
+			setResult({ type: "error", message: `Gagal menghapus cache ${label}.` });
+		} finally {
+			setLoadingPrefix(null);
+		}
+	};
+
+	const handleFlushAll = async () => {
+		setFlushingAll(true);
+		try {
+			const res = await fetch("/api/admin/cache/flush", { method: "DELETE" });
+			if (!res.ok) throw new Error();
+			const json = await res.json();
+			setResult({
+				type: "success",
+				message: `Semua cache dikosongkan — ${json.flushed} entri dihapus.`,
+			});
+		} catch {
+			setResult({ type: "error", message: "Gagal mengosongkan cache." });
+		} finally {
+			setFlushingAll(false);
+		}
+	};
+
+	return (
+		<Stack gap="md">
+			<Paper
+				withBorder
+				radius="lg"
+				p="xl"
+			>
+				<Stack gap="md">
+					<Group justify="space-between" align="center">
+						<Group gap="sm">
+							<ThemeIcon size="lg" radius="md" variant="light" color="orange">
+								<IconDatabase size={18} />
+							</ThemeIcon>
+							<Box>
+								<Text fz="sm" fw={700}>
+									Cache Data Proxy
+								</Text>
+								<Text fz="xs" c="dimmed">
+									Hapus cache per modul agar request berikutnya mengambil data
+									langsung dari Desa API
+								</Text>
+							</Box>
+						</Group>
+						<Button
+							variant="light"
+							color="red"
+							size="xs"
+							leftSection={<IconRefresh size={14} />}
+							onClick={handleFlushAll}
+							loading={flushingAll}
+						>
+							Kosongkan Semua Cache
+						</Button>
+					</Group>
+
+					{result && (
+						<Alert
+							color={result.type === "success" ? "green" : "red"}
+							icon={
+								result.type === "success" ? (
+									<IconCircleCheck size={16} />
+								) : (
+									<IconAlertCircle size={16} />
+								)
+							}
+							radius="md"
+							p="xs"
+						>
+							{result.message}
+						</Alert>
+					)}
+
+					<Divider />
+
+					<SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="sm">
+						{CACHE_MODULES.map((mod) => (
+							<Paper
+								key={mod.prefix}
+								withBorder
+								radius="md"
+								p="sm"
+								
+							>
+								<Group justify="space-between" align="center" wrap="nowrap">
+									<Box style={{ minWidth: 0 }}>
+										<Text fz="sm" fw={600} truncate>
+											{mod.label}
+										</Text>
+										<Text fz="xs" c="dimmed" truncate>
+											{mod.description}
+										</Text>
+									</Box>
+									<Button
+										variant="subtle"
+										color="orange"
+										size="xs"
+										leftSection={<IconRefresh size={12} />}
+										onClick={() => handleInvalidate(mod.prefix, mod.label)}
+										loading={loadingPrefix === mod.prefix}
+										disabled={flushingAll}
+										style={{ flexShrink: 0 }}
+									>
+										Hapus
+									</Button>
+								</Group>
+							</Paper>
+						))}
+					</SimpleGrid>
+				</Stack>
+			</Paper>
+		</Stack>
+	);
+}
+
 function AdminPreferencesPage() {
 	const t = useTranslate();
 	const { withApproval } = useApprovalGuard();
@@ -1237,6 +1402,9 @@ function AdminPreferencesPage() {
 
 			{/* Sinkronisasi Data */}
 			<AdminSyncSection />
+
+			{/* Cache Invalidasi */}
+			<AdminCacheSection />
 		</Stack>
 	);
 }

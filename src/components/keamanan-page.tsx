@@ -28,11 +28,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 
-const DESA_API =
-	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
-		? import.meta.env.VITE_DESA_API_URL
-		: "https://desa-darmasaba-stg.wibudev.com";
-
 type CctvItem = {
 	id: string;
 	kode: string;
@@ -150,11 +145,9 @@ const KeamananPage = () => {
 		setError(null);
 		try {
 			const [statsRes, cctvRes, laporanRes] = await Promise.all([
-				fetch(`${DESA_API}/api/keamanan/cctv/stats`).then((r) => r.json()),
-				fetch(`${DESA_API}/api/keamanan/cctv/find-many`).then((r) => r.json()),
-				fetch(`${DESA_API}/api/keamanan/laporanpublik/find-many`).then((r) =>
-					r.json(),
-				),
+				fetch("/api/keamanan/cctv/stats").then((r) => r.json()),
+				fetch("/api/keamanan/cctv/find-many").then((r) => r.json()),
+				fetch("/api/keamanan/laporan-publik/find-many").then((r) => r.json()),
 			]);
 			if (statsRes.data) setCctvStats(statsRes.data as CctvStats);
 			if (Array.isArray(cctvRes.data)) setCctvList(cctvRes.data as CctvItem[]);
@@ -167,6 +160,15 @@ const KeamananPage = () => {
 			setLoading(false);
 		}
 	}, []);
+
+	const handleForceRefresh = useCallback(async () => {
+		try {
+			await fetch("/api/keamanan/cache-invalidate", { method: "POST" });
+		} catch {
+			// lanjut fetch meskipun invalidate gagal
+		}
+		await fetchAll();
+	}, [fetchAll]);
 
 	useEffect(() => {
 		fetchAll();
@@ -201,13 +203,24 @@ const KeamananPage = () => {
 		<Stack gap="lg">
 			<Group justify="flex-end">
 				<Button
-					variant="light"
+					variant="subtle"
 					size="xs"
 					leftSection={<IconRefresh size={14} />}
 					onClick={fetchAll}
 					loading={loading}
 				>
 					Refresh
+				</Button>
+				<Button
+					variant="light"
+					size="xs"
+					color="orange"
+					leftSection={<IconRefresh size={14} />}
+					onClick={handleForceRefresh}
+					loading={loading}
+					title="Hapus cache dan ambil data terbaru dari sumber"
+				>
+					Paksa Refresh
 				</Button>
 			</Group>
 			{error && (

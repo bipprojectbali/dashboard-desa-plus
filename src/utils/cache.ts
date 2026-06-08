@@ -24,6 +24,17 @@ class InMemoryCache {
 		this.store.delete(key);
 	}
 
+	deleteByPrefix(prefix: string): number {
+		let count = 0;
+		for (const key of this.store.keys()) {
+			if (key.startsWith(prefix)) {
+				this.store.delete(key);
+				count++;
+			}
+		}
+		return count;
+	}
+
 	flush(): number {
 		const size = this.store.size;
 		this.store.clear();
@@ -48,6 +59,8 @@ export const TTL = {
 	APBDES: 60 * 60 * 1000,
 	UMKM: 60 * 60 * 1000,
 	KEAMANAN: 30 * 60 * 1000,
+	SOSIAL: 30 * 60 * 1000,
+	BUMDES: 60 * 60 * 1000,
 } as const;
 
 export async function withCache<T>(

@@ -503,7 +503,7 @@ const PengaduanLayananPublik = () => {
 						h="100%"
 					>
 						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
-							{t.pengaduanLayanan.ajuanIdeInovatif}
+							Musrenbang
 						</Title>
 						<Stack gap="sm">
 							{loading ? (
@@ -533,18 +533,6 @@ const PengaduanLayananPublik = () => {
 													{dayjs(item.createdAt).fromNow()}
 												</Text>
 											</Stack>
-											<Button
-												size="xs"
-												variant="light"
-												color="darmasaba-blue"
-												radius="md"
-												onClick={() => {
-													setSelectedIdea(item);
-													setIdeaModalOpen(true);
-												}}
-											>
-												{t.pengaduanLayanan.detail}
-											</Button>
 										</Group>
 									</Card>
 								))
