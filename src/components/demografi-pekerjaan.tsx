@@ -12,11 +12,7 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import {
-	IconAlertCircle,
-	IconDownload,
-	IconRefresh,
-} from "@tabler/icons-react";
+import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import {
 	Baby,
 	BarChart3,
@@ -26,7 +22,7 @@ import {
 	TrendingDown,
 	Users,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -350,25 +346,33 @@ const DemografiPekerjaan = () => {
 		}
 	}, []);
 
+	const fetchRef = useRef(fetchData);
 	useEffect(() => {
-		fetchData();
+		fetchRef.current = fetchData;
 	}, [fetchData]);
 
-	useAutoRefresh(fetchData);
+	const handleForceRefresh = useCallback(async () => {
+		await fetchRef.current();
+	}, []);
+
+	useEffect(() => {
+		handleForceRefresh();
+	}, [handleForceRefresh]);
+
+	useAutoRefresh(handleForceRefresh);
 
 	// Listen for sync complete event to refresh data
 	useEffect(() => {
 		const handleSyncComplete = () => {
 			console.log("🔄 Sync complete event received, refreshing data...");
-			setLoading(true);
-			fetchData();
+			handleForceRefresh();
 		};
 
 		window.addEventListener("demografi-sync-complete", handleSyncComplete);
 		return () => {
 			window.removeEventListener("demografi-sync-complete", handleSyncComplete);
 		};
-	}, [fetchData]);
+	}, [handleForceRefresh]);
 
 	// KPI Data
 	const kpiData = [
@@ -440,7 +444,7 @@ const DemografiPekerjaan = () => {
 
 	return (
 		<Stack gap="lg">
-			{izinExportData && (
+			{/* {izinExportData && (
 				<Group justify="flex-end">
 					<Button
 						variant="light"
@@ -452,7 +456,7 @@ const DemografiPekerjaan = () => {
 						Download Laporan
 					</Button>
 				</Group>
-			)}
+			)} */}
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}

@@ -23,7 +23,7 @@ import {
 	TrendingUp,
 } from "lucide-react";
 import type React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -85,11 +85,25 @@ function useJennaAnalytics() {
 		}
 	}, []);
 
+	const fetchDataRef = useRef(fetchData);
 	useEffect(() => {
-		fetchData();
+		fetchDataRef.current = fetchData;
 	}, [fetchData]);
 
-	useAutoRefresh(fetchData);
+	const handleForceRefresh = useCallback(async () => {
+		try {
+			await fetch("/api/jenna/cache-invalidate", { method: "POST" });
+		} catch {
+			// lanjut fetch meskipun invalidate gagal
+		}
+		await fetchDataRef.current();
+	}, []);
+
+	useEffect(() => {
+		handleForceRefresh();
+	}, [handleForceRefresh]);
+
+	useAutoRefresh(handleForceRefresh);
 
 	return { data, loading, error };
 }

@@ -1,14 +1,6 @@
-import {
-	Alert,
-	Button,
-	Grid,
-	GridCol,
-	Group,
-	Skeleton,
-	Stack,
-} from "@mantine/core";
+import { Alert, Button, Grid, GridCol, Skeleton, Stack } from "@mantine/core";
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 import { Beasiswa } from "./sosial/beasiswa";
@@ -78,20 +70,25 @@ const SosialPage = () => {
 		}
 	}, []);
 
+	const fetchDataRef = useRef(fetchData);
+	useEffect(() => {
+		fetchDataRef.current = fetchData;
+	}, [fetchData]);
+
 	const handleForceRefresh = useCallback(async () => {
 		try {
 			await fetch("/api/sosial/cache-invalidate", { method: "POST" });
 		} catch {
 			// lanjut fetch meskipun invalidate gagal
 		}
-		await fetchData();
-	}, [fetchData]);
+		await fetchDataRef.current();
+	}, []);
 
 	useEffect(() => {
-		fetchData();
-	}, [fetchData]);
+		handleForceRefresh();
+	}, [handleForceRefresh]);
 
-	useAutoRefresh(fetchData);
+	useAutoRefresh(handleForceRefresh);
 
 	const summaryData = kesehatanStats
 		? {
@@ -129,28 +126,6 @@ const SosialPage = () => {
 
 	return (
 		<Stack gap="lg">
-			<Group justify="flex-end">
-				<Button
-					variant="subtle"
-					size="xs"
-					leftSection={<IconRefresh size={14} />}
-					onClick={fetchData}
-					loading={loading}
-				>
-					Refresh
-				</Button>
-				<Button
-					variant="light"
-					size="xs"
-					color="orange"
-					leftSection={<IconRefresh size={14} />}
-					onClick={handleForceRefresh}
-					loading={loading}
-					title="Hapus cache dan ambil data terbaru dari sumber"
-				>
-					Paksa Refresh
-				</Button>
-			</Group>
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}
@@ -164,7 +139,7 @@ const SosialPage = () => {
 						variant="light"
 						color="red"
 						leftSection={<IconRefresh size={14} />}
-						onClick={fetchData}
+						onClick={handleForceRefresh}
 						mt="xs"
 					>
 						Coba lagi

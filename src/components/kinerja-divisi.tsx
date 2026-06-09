@@ -1,19 +1,7 @@
-import {
-	Alert,
-	Button,
-	Card,
-	Grid,
-	Group,
-	Skeleton,
-	Stack,
-} from "@mantine/core";
-import {
-	IconAlertCircle,
-	IconDownload,
-	IconRefresh,
-} from "@tabler/icons-react";
+import { Alert, Button, Card, Grid, Skeleton, Stack } from "@mantine/core";
+import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAksesPrefs } from "@/hooks/useAksesPrefs";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
@@ -75,11 +63,20 @@ const KinerjaDivisi = () => {
 		}
 	}, []);
 
+	const fetchRef = useRef(fetchData);
 	useEffect(() => {
-		fetchData();
+		fetchRef.current = fetchData;
 	}, [fetchData]);
 
-	useAutoRefresh(fetchData);
+	const handleForceRefresh = useCallback(async () => {
+		await fetchRef.current();
+	}, []);
+
+	useEffect(() => {
+		handleForceRefresh();
+	}, [handleForceRefresh]);
+
+	useAutoRefresh(handleForceRefresh);
 
 	const formattedEvents = todayEvents.map((event) => ({
 		time: dayjs(event.startDate).format("HH:mm"),
@@ -102,28 +99,6 @@ const KinerjaDivisi = () => {
 
 	return (
 		<Stack gap="lg">
-			<Group justify="flex-end" gap="xs">
-				<Button
-					variant="light"
-					size="xs"
-					leftSection={<IconRefresh size={14} />}
-					onClick={fetchData}
-					loading={loading}
-				>
-					Refresh
-				</Button>
-				{izinExportData && (
-					<Button
-						variant="light"
-						color="teal"
-						size="sm"
-						leftSection={<IconDownload size={16} />}
-						onClick={handleExport}
-					>
-						Export PDF
-					</Button>
-				)}
-			</Group>
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}
