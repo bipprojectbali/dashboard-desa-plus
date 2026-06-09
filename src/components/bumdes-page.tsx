@@ -1,6 +1,5 @@
-import { Button, Grid, GridCol, Group, Stack } from "@mantine/core";
-import { IconRefresh } from "@tabler/icons-react";
-import { useCallback, useEffect, useState } from "react";
+import { Grid, GridCol, Stack } from "@mantine/core";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSnapshot } from "valtio";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
@@ -67,7 +66,6 @@ const BumdesPage = () => {
 
 	const [kategoriId, setKategoriId] = useState<string | null>(null);
 	const [umkmId, setUmkmId] = useState<string | null>(null);
-	const [refreshing, setRefreshing] = useState(false);
 
 	const [selectedProduct, setSelectedProduct] = useState<SalesData | null>(
 		null,
@@ -117,12 +115,6 @@ const BumdesPage = () => {
 		}
 	}, [selectedRange]);
 
-	useEffect(() => {
-		fetchStatic();
-	}, [fetchStatic]);
-
-	useAutoRefresh(fetchStatic);
-
 	// Fetch detail penjualan separately (re-fetch on filter change)
 	const fetchDetail = useCallback(async () => {
 		try {
@@ -139,22 +131,47 @@ const BumdesPage = () => {
 		}
 	}, [kategoriId, umkmId, selectedRange]);
 
+	// Refs agar handleForceRefresh tetap stabil tanpa re-create saat range/filter berubah
+	const fetchStaticRef = useRef(fetchStatic);
+	const fetchDetailRef = useRef(fetchDetail);
 	useEffect(() => {
-		fetchDetail();
+		fetchStaticRef.current = fetchStatic;
+	}, [fetchStatic]);
+	useEffect(() => {
+		fetchDetailRef.current = fetchDetail;
 	}, [fetchDetail]);
 
-	useAutoRefresh(fetchDetail);
-
+	// Stabil — deps kosong karena pakai refs di atas
 	const handleForceRefresh = useCallback(async () => {
-		setRefreshing(true);
 		try {
 			await fetch("/api/bumdes/cache-invalidate", { method: "POST" });
 		} catch {
 			// lanjut fetch meskipun invalidate gagal
 		}
-		await Promise.all([fetchStatic(), fetchDetail()]);
-		setRefreshing(false);
-	}, [fetchStatic, fetchDetail]);
+		await Promise.all([fetchStaticRef.current(), fetchDetailRef.current()]);
+	}, []);
+
+	// Mount / browser reload: selalu force refresh
+	useEffect(() => {
+		handleForceRefresh();
+	}, [handleForceRefresh]);
+
+	// Range change: normal fetch tanpa invalidate cache
+	const didMount = useRef(false);
+	useEffect(() => {
+		if (!didMount.current) return;
+		fetchStatic();
+	}, [fetchStatic]);
+	useEffect(() => {
+		if (!didMount.current) {
+			didMount.current = true;
+			return;
+		}
+		fetchDetail();
+	}, [fetchDetail]);
+
+	// Auto interval sesuai pengaturan preferences (refreshOtomatis + intervalRefresh)
+	useAutoRefresh(handleForceRefresh);
 
 	// Map API data to component props
 	const summaryCardsData = kpi
@@ -213,27 +230,6 @@ const BumdesPage = () => {
 				opened={detailModalOpen}
 				onClose={() => setDetailModalOpen(false)}
 			/>
-			<Group justify="flex-end">
-				<Button
-					variant="subtle"
-					size="xs"
-					leftSection={<IconRefresh size={14} />}
-					onClick={() => Promise.all([fetchStatic(), fetchDetail()])}
-				>
-					Refresh
-				</Button>
-				<Button
-					variant="light"
-					size="xs"
-					color="orange"
-					leftSection={<IconRefresh size={14} />}
-					onClick={handleForceRefresh}
-					loading={refreshing}
-					title="Hapus cache dan ambil data terbaru dari sumber"
-				>
-					Paksa Refresh
-				</Button>
-			</Group>
 			<SummaryCards data={summaryCardsData} />
 
 			<HeaderToggle />

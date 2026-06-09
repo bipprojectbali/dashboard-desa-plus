@@ -161,20 +161,25 @@ const KeamananPage = () => {
 		}
 	}, []);
 
+	const fetchAllRef = useRef(fetchAll);
+	useEffect(() => {
+		fetchAllRef.current = fetchAll;
+	}, [fetchAll]);
+
 	const handleForceRefresh = useCallback(async () => {
 		try {
 			await fetch("/api/keamanan/cache-invalidate", { method: "POST" });
 		} catch {
 			// lanjut fetch meskipun invalidate gagal
 		}
-		await fetchAll();
-	}, [fetchAll]);
+		await fetchAllRef.current();
+	}, []);
 
 	useEffect(() => {
-		fetchAll();
-	}, [fetchAll]);
+		handleForceRefresh();
+	}, [handleForceRefresh]);
 
-	useAutoRefresh(fetchAll);
+	useAutoRefresh(handleForceRefresh);
 
 	const cctvTotalPages = Math.ceil(cctvList.length / CCTV_PER_PAGE);
 	const cctvPaged = cctvList.slice(
@@ -201,28 +206,6 @@ const KeamananPage = () => {
 
 	return (
 		<Stack gap="lg">
-			<Group justify="flex-end">
-				<Button
-					variant="subtle"
-					size="xs"
-					leftSection={<IconRefresh size={14} />}
-					onClick={fetchAll}
-					loading={loading}
-				>
-					Refresh
-				</Button>
-				<Button
-					variant="light"
-					size="xs"
-					color="orange"
-					leftSection={<IconRefresh size={14} />}
-					onClick={handleForceRefresh}
-					loading={loading}
-					title="Hapus cache dan ambil data terbaru dari sumber"
-				>
-					Paksa Refresh
-				</Button>
-			</Group>
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}
@@ -236,7 +219,7 @@ const KeamananPage = () => {
 						variant="light"
 						color="red"
 						leftSection={<IconRefresh size={14} />}
-						onClick={fetchAll}
+						onClick={handleForceRefresh}
 						mt="xs"
 					>
 						Coba lagi

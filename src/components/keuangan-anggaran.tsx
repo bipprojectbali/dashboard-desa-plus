@@ -16,11 +16,7 @@ import {
 	useComputedColorScheme,
 	useMantineTheme,
 } from "@mantine/core";
-import {
-	IconAlertCircle,
-	IconDownload,
-	IconRefresh,
-} from "@tabler/icons-react";
+import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import {
 	CheckCircle,
 	Coins,
@@ -29,7 +25,7 @@ import {
 	TrendingDown,
 	TrendingUp,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -310,11 +306,29 @@ const KeuanganAnggaran = () => {
 		}
 	}, [t]);
 
+	const fetchRef = useRef(fetchData);
 	useEffect(() => {
+		fetchRef.current = fetchData;
+	}, [fetchData]);
+
+	const handleForceRefresh = useCallback(async () => {
+		await fetchRef.current();
+	}, []);
+
+	useEffect(() => {
+		handleForceRefresh();
+	}, [handleForceRefresh]);
+
+	const didMount = useRef(false);
+	useEffect(() => {
+		if (!didMount.current) {
+			didMount.current = true;
+			return;
+		}
 		fetchData();
 	}, [fetchData]);
 
-	useAutoRefresh(fetchData);
+	useAutoRefresh(handleForceRefresh);
 
 	const handleExport = () => {
 		const a = document.createElement("a");
@@ -329,7 +343,7 @@ const KeuanganAnggaran = () => {
 
 	return (
 		<Stack gap="lg">
-			{izinExportData && (
+			{/* {izinExportData && (
 				<Group justify="flex-end">
 					<Button
 						variant="light"
@@ -341,7 +355,7 @@ const KeuanganAnggaran = () => {
 						Download Laporan
 					</Button>
 				</Group>
-			)}
+			)} */}
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}

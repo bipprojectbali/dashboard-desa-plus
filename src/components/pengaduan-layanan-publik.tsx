@@ -12,15 +12,11 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import {
-	IconAlertCircle,
-	IconDownload,
-	IconRefresh,
-} from "@tabler/icons-react";
+import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { CheckCircle, Clock, FileText, MessageCircle } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -152,11 +148,20 @@ const PengaduanLayananPublik = () => {
 		}
 	}, []);
 
+	const fetchRef = useRef(fetchData);
 	useEffect(() => {
-		fetchData();
+		fetchRef.current = fetchData;
 	}, [fetchData]);
 
-	useAutoRefresh(fetchData);
+	const handleForceRefresh = useCallback(async () => {
+		await fetchRef.current();
+	}, []);
+
+	useEffect(() => {
+		handleForceRefresh();
+	}, [handleForceRefresh]);
+
+	useAutoRefresh(handleForceRefresh);
 
 	const summaryData = [
 		{
@@ -203,7 +208,7 @@ const PengaduanLayananPublik = () => {
 				opened={ideaModalOpen}
 				onClose={() => setIdeaModalOpen(false)}
 			/>
-			{izinExportData && (
+			{/* {izinExportData && (
 				<Group justify="flex-end">
 					<Button
 						variant="light"
@@ -215,7 +220,7 @@ const PengaduanLayananPublik = () => {
 						Export PDF
 					</Button>
 				</Group>
-			)}
+			)} */}
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}

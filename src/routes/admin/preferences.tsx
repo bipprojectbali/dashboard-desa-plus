@@ -747,11 +747,7 @@ function AdminCacheSection() {
 
 	return (
 		<Stack gap="md">
-			<Paper
-				withBorder
-				radius="lg"
-				p="xl"
-			>
+			<Paper withBorder radius="lg" p="xl">
 				<Stack gap="md">
 					<Group justify="space-between" align="center">
 						<Group gap="sm">
@@ -801,13 +797,7 @@ function AdminCacheSection() {
 
 					<SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="sm">
 						{CACHE_MODULES.map((mod) => (
-							<Paper
-								key={mod.prefix}
-								withBorder
-								radius="md"
-								p="sm"
-								
-							>
+							<Paper key={mod.prefix} withBorder radius="md" p="sm">
 								<Group justify="space-between" align="center" wrap="nowrap">
 									<Box style={{ minWidth: 0 }}>
 										<Text fz="sm" fw={600} truncate>
