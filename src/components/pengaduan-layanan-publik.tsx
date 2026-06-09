@@ -3,6 +3,7 @@ import {
 	Badge,
 	Button,
 	Card,
+	Center,
 	Grid,
 	Group,
 	Skeleton,
@@ -15,7 +16,13 @@ import {
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { CheckCircle, Clock, FileText, MessageCircle } from "lucide-react";
+import {
+	CheckCircle,
+	Clock,
+	FileText,
+	Inbox,
+	MessageCircle,
+} from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	Bar,
@@ -29,119 +36,53 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
-import { useAksesPrefs } from "@/hooks/useAksesPrefs";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
-import { apiClient } from "@/utils/api-client";
-import type { InnovationIdea as InnovationIdeaType } from "./layanan/innovation-idea-modal";
-import { InnovationIdeaModal } from "./layanan/innovation-idea-modal";
 
 dayjs.extend(relativeTime);
 
-interface TrendData {
-	bulan: string;
-	jumlah: number;
-}
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-type InnovationIdea = InnovationIdeaType;
-
-interface ServiceStat {
-	jenis: string;
-	jumlah: number;
-}
-
-interface ServiceApiResponse {
-	letterType: string;
-	_count: {
-		_all: number;
+type PengaduanData = {
+	stats: {
+		total: number;
+		baru: number;
+		diproses: number;
+		selesai: number;
 	};
-}
-
-interface Complaint {
-	id: string;
-	title: string;
-	category: string;
-	status: string;
-	createdAt: string;
-}
-
-const getStatusColor = (status: string) => {
-	switch (status.toLowerCase()) {
-		case "baru":
-			return "red";
-		case "diproses":
-		case "proses":
-			return "blue";
-		case "selesai":
-			return "green";
-		default:
-			return "gray";
-	}
+	trends: { bulan: string; count: number }[];
+	surat_terbanyak: { jenis: string; count: number }[];
+	pengajuan_terbaru: {
+		id: string;
+		kategori: string;
+		sub_kategori: string | null;
+		status: string;
+		created_at: string;
+	}[];
+	musrenbang: {
+		id: string;
+		judul: string;
+		nama_pengusul: string;
+		created_at: string;
+	}[];
 };
 
-const PengaduanLayananPublik = () => {
-	const t = useTranslate();
-	const { izinExportData } = useAksesPrefs();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
-	const { tampilkanGrid } = useSnapshot(i18nStore);
+// ─── Hook ─────────────────────────────────────────────────────────────────────
 
-	const [stats, setStats] = useState({
-		total: 0,
-		baru: 0,
-		proses: 0,
-		selesai: 0,
-	});
-	const [recentComplaints, setRecentComplaints] = useState<Complaint[]>([]);
-	const [serviceStats, setServiceStats] = useState<ServiceStat[]>([]);
-	const [trendData, setTrendData] = useState<TrendData[]>([]);
-	const [innovationIdeas, setInnovationIdeas] = useState<InnovationIdea[]>([]);
+function usePengaduanNoc() {
+	const [data, setData] = useState<PengaduanData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
-	const [selectedIdea, setSelectedIdea] = useState<InnovationIdea | null>(null);
-	const [ideaModalOpen, setIdeaModalOpen] = useState(false);
-
 	const fetchData = useCallback(async () => {
-		setLoading(true);
-		setError(null);
 		try {
-			const [statsRes, recentRes, serviceRes, trendsRes, ideasRes] =
-				await Promise.all([
-					apiClient.GET("/api/complaint/stats"),
-					apiClient.GET("/api/complaint/recent"),
-					apiClient.GET("/api/complaint/service-stats"),
-					apiClient.GET("/api/complaint/trends"),
-					apiClient.GET("/api/complaint/innovation-ideas"),
-				]);
-
-			if (statsRes.data?.data) setStats(statsRes.data.data);
-			if (recentRes.data?.data)
-				setRecentComplaints(recentRes.data.data as Complaint[]);
-			if (serviceRes.data?.data) {
-				const mappedService = (
-					serviceRes.data.data as ServiceApiResponse[]
-				).map((item) => ({
-					jenis: item.letterType,
-					jumlah: item._count?._all || 0,
-				}));
-				setServiceStats(mappedService);
-			}
-			if (trendsRes.data?.data) {
-				const mappedTrends = (
-					trendsRes.data.data as { month: string; count: number }[]
-				).map((item) => ({
-					bulan: item.month,
-					jumlah: item.count,
-				}));
-				setTrendData(mappedTrends);
-			}
-			if (ideasRes.data?.data) {
-				setInnovationIdeas(ideasRes.data.data as InnovationIdea[]);
-			}
-		} catch (err) {
-			console.error("Failed to fetch complaint data", err);
+			const r = await fetch("/api/noc/pengaduan");
+			if (!r.ok) throw new Error(`HTTP ${r.status}`);
+			const json = (await r.json()) as PengaduanData;
+			setData(json);
+			setError(null);
+		} catch {
 			setError("Gagal memuat data pengaduan. Periksa koneksi dan coba lagi.");
 		} finally {
 			setLoading(false);
@@ -163,6 +104,66 @@ const PengaduanLayananPublik = () => {
 
 	useAutoRefresh(handleForceRefresh);
 
+	return { data, loading, error, refresh: handleForceRefresh };
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const getStatusColor = (status: string) => {
+	switch (status.toLowerCase()) {
+		case "baru":
+			return "red";
+		case "diproses":
+		case "proses":
+			return "blue";
+		case "selesai":
+			return "green";
+		default:
+			return "gray";
+	}
+};
+
+function EmptyState({
+	message,
+	height = 200,
+}: {
+	message: string;
+	height?: number;
+}) {
+	return (
+		<Center h={height}>
+			<Stack align="center" gap="xs">
+				<Inbox size={32} color="gray" />
+				<Text size="sm" c="dimmed" ta="center">
+					{message}
+				</Text>
+			</Stack>
+		</Center>
+	);
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
+const PengaduanLayananPublik = () => {
+	const t = useTranslate();
+	const { colorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
+	const { tampilkanGrid } = useSnapshot(i18nStore);
+
+	const { data, loading, error, refresh } = usePengaduanNoc();
+
+	const stats = data?.stats ?? { total: 0, baru: 0, diproses: 0, selesai: 0 };
+	const trends = (data?.trends ?? []).map((item) => ({
+		bulan: item.bulan,
+		jumlah: item.count,
+	}));
+	const suratTerbanyak = (data?.surat_terbanyak ?? []).map((item) => ({
+		jenis: item.jenis,
+		jumlah: item.count,
+	}));
+	const pengajuanTerbaru = data?.pengajuan_terbaru ?? [];
+	const musrenbang = data?.musrenbang ?? [];
+
 	const summaryData = [
 		{
 			title: t.pengaduanLayanan.totalPengaduan,
@@ -180,7 +181,7 @@ const PengaduanLayananPublik = () => {
 		},
 		{
 			title: t.pengaduanLayanan.diproses,
-			value: stats.proses,
+			value: stats.diproses,
 			subtitle: t.pengaduanLayanan.sedangDitangani,
 			icon: Clock,
 			color: "#1E3A5F",
@@ -194,33 +195,8 @@ const PengaduanLayananPublik = () => {
 		},
 	];
 
-	const handleExport = () => {
-		const a = document.createElement("a");
-		a.href = "/api/complaint/export";
-		a.download = `pengaduan-${new Date().toISOString().slice(0, 10)}.pdf`;
-		a.click();
-	};
-
 	return (
 		<Stack gap="lg">
-			<InnovationIdeaModal
-				idea={selectedIdea}
-				opened={ideaModalOpen}
-				onClose={() => setIdeaModalOpen(false)}
-			/>
-			{/* {izinExportData && (
-				<Group justify="flex-end">
-					<Button
-						variant="light"
-						color="teal"
-						size="sm"
-						leftSection={<IconDownload size={16} />}
-						onClick={handleExport}
-					>
-						Export PDF
-					</Button>
-				</Group>
-			)} */}
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}
@@ -234,7 +210,7 @@ const PengaduanLayananPublik = () => {
 						variant="light"
 						color="red"
 						leftSection={<IconRefresh size={14} />}
-						onClick={fetchData}
+						onClick={refresh}
 						mt="xs"
 					>
 						Coba lagi
@@ -246,6 +222,7 @@ const PengaduanLayananPublik = () => {
 			<Grid gutter="md">
 				{loading
 					? Array.from({ length: 4 }).map((_, i) => (
+							// biome-ignore lint/suspicious/noArrayIndexKey: static skeleton array
 							<Grid.Col key={i} span={{ base: 12, sm: 6, lg: 3 }}>
 								<Skeleton height={100} radius="xl" />
 							</Grid.Col>
@@ -308,9 +285,9 @@ const PengaduanLayananPublik = () => {
 				</Group>
 				{loading ? (
 					<Skeleton height={300} radius="md" />
-				) : trendData.length > 0 ? (
+				) : trends.length > 0 ? (
 					<ResponsiveContainer width="100%" height={300}>
-						<LineChart data={trendData}>
+						<LineChart data={trends}>
 							{tampilkanGrid && (
 								<CartesianGrid
 									strokeDasharray="3 3"
@@ -343,21 +320,16 @@ const PengaduanLayananPublik = () => {
 								dataKey="jumlah"
 								stroke="#396aaaff"
 								strokeWidth={2}
-								dot={{
-									fill: "#1E3A5F",
-									strokeWidth: 2,
-									r: 4,
-								}}
+								dot={{ fill: "#1E3A5F", strokeWidth: 2, r: 4 }}
 								activeDot={{ r: 6 }}
 							/>
 						</LineChart>
 					</ResponsiveContainer>
 				) : (
-					<Group justify="center" align="center" h={300}>
-						<Text size="sm" c="dimmed">
-							{t.pengaduanLayanan.tidakAdaDataPengaduan}
-						</Text>
-					</Group>
+					<EmptyState
+						message={t.pengaduanLayanan.tidakAdaDataPengaduan}
+						height={300}
+					/>
 				)}
 			</Card>
 
@@ -381,9 +353,9 @@ const PengaduanLayananPublik = () => {
 						</Title>
 						{loading ? (
 							<Skeleton height={250} radius="md" />
-						) : serviceStats.length > 0 ? (
+						) : suratTerbanyak.length > 0 ? (
 							<ResponsiveContainer width="100%" height={250}>
-								<BarChart data={serviceStats} layout="vertical">
+								<BarChart data={suratTerbanyak} layout="vertical">
 									{tampilkanGrid && (
 										<CartesianGrid
 											strokeDasharray="3 3"
@@ -403,7 +375,7 @@ const PengaduanLayananPublik = () => {
 										axisLine={false}
 										tickLine={false}
 										tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
-										width={80}
+										width={100}
 									/>
 									<Tooltip
 										contentStyle={{
@@ -420,11 +392,10 @@ const PengaduanLayananPublik = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<Group justify="center" align="center" h={250}>
-								<Text size="sm" c="dimmed">
-									Belum ada data surat.
-								</Text>
-							</Group>
+							<EmptyState
+								message={t.pengaduanLayanan.tidakAdaDataPengaduan}
+								height={250}
+							/>
 						)}
 					</Card>
 				</Grid.Col>
@@ -448,8 +419,8 @@ const PengaduanLayananPublik = () => {
 						<Stack gap="sm">
 							{loading ? (
 								<Skeleton height={180} radius="md" />
-							) : recentComplaints.length > 0 ? (
-								recentComplaints.map((item) => (
+							) : pengajuanTerbaru.length > 0 ? (
+								pengajuanTerbaru.map((item) => (
 									<Card
 										key={item.id}
 										p="sm"
@@ -463,12 +434,18 @@ const PengaduanLayananPublik = () => {
 									>
 										<Group justify="space-between">
 											<Stack gap={0}>
-												<Text fw={600} c={dark ? "white" : "gray.9"}>
-													{item.title}
+												<Text
+													fw={600}
+													c={dark ? "white" : "gray.9"}
+													tt="capitalize"
+												>
+													{item.kategori}
 												</Text>
-												<Text size="sm" c="dimmed">
-													{item.category}
-												</Text>
+												{item.sub_kategori && (
+													<Text size="sm" c="dimmed" tt="capitalize">
+														{item.sub_kategori}
+													</Text>
+												)}
 											</Stack>
 											<Stack gap={0} align="flex-end">
 												<Badge
@@ -479,22 +456,20 @@ const PengaduanLayananPublik = () => {
 													{item.status}
 												</Badge>
 												<Text size="xs" c="dimmed">
-													{dayjs(item.createdAt).fromNow()}
+													{dayjs(item.created_at).fromNow()}
 												</Text>
 											</Stack>
 										</Group>
 									</Card>
 								))
 							) : (
-								<Text c="dimmed" ta="center">
-									{t.pengaduanLayanan.tidakAdaPengajuan}
-								</Text>
+								<EmptyState message={t.pengaduanLayanan.tidakAdaPengajuan} />
 							)}
 						</Stack>
 					</Card>
 				</Grid.Col>
 
-				{/* RIGHT: AJUAN IDE INOVATIF */}
+				{/* RIGHT: MUSRENBANG */}
 				<Grid.Col span={{ base: 12, lg: 4 }}>
 					<Card
 						p="md"
@@ -508,13 +483,13 @@ const PengaduanLayananPublik = () => {
 						h="100%"
 					>
 						<Title order={4} c={dark ? "white" : "gray.9"} mb="md">
-							Musrenbang
+							{t.pengaduanLayanan.ajuanIdeInovatif}
 						</Title>
 						<Stack gap="sm">
 							{loading ? (
 								<Skeleton height={180} radius="md" />
-							) : innovationIdeas.length > 0 ? (
-								innovationIdeas.map((item) => (
+							) : musrenbang.length > 0 ? (
+								musrenbang.map((item) => (
 									<Card
 										key={item.id}
 										p="sm"
@@ -526,25 +501,21 @@ const PengaduanLayananPublik = () => {
 											transition: "background-color 0.15s ease",
 										}}
 									>
-										<Group justify="space-between">
-											<Stack gap={0}>
-												<Text fw={600} c={dark ? "white" : "gray.9"}>
-													{item.title}
-												</Text>
-												<Text size="sm" c="dimmed">
-													{item.submitterName}
-												</Text>
-												<Text size="xs" c="dimmed">
-													{dayjs(item.createdAt).fromNow()}
-												</Text>
-											</Stack>
-										</Group>
+										<Stack gap={0}>
+											<Text fw={600} c={dark ? "white" : "gray.9"}>
+												{item.judul}
+											</Text>
+											<Text size="sm" c="dimmed">
+												{item.nama_pengusul}
+											</Text>
+											<Text size="xs" c="dimmed">
+												{dayjs(item.created_at).fromNow()}
+											</Text>
+										</Stack>
 									</Card>
 								))
 							) : (
-								<Text c="dimmed" ta="center">
-									{t.pengaduanLayanan.tidakAdaIde}
-								</Text>
+								<EmptyState message={t.pengaduanLayanan.tidakAdaIde} />
 							)}
 						</Stack>
 					</Card>
