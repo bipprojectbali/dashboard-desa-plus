@@ -45,6 +45,26 @@ app.get("/api/jenna/analytics", async ({ set }) => {
 	}
 });
 
+app.get("/api/noc/pengaduan", async ({ set }) => {
+	const apiUrl = process.env.VITE_JENNA_API_URL ?? "";
+	const apiToken = process.env.VITE_JENNA_API_TOKEN ?? "";
+	if (!apiUrl || !apiToken) {
+		set.status = 503;
+		return { message: "Pengaduan API not configured" };
+	}
+	try {
+		const res = await fetch(`${apiUrl}/api/noc/pengaduan`, {
+			headers: { Authorization: `Bearer ${apiToken}` },
+		});
+		set.status = res.status;
+		const text = await res.text();
+		return JSON.parse(text);
+	} catch {
+		set.status = 502;
+		return { message: "Failed to fetch pengaduan data" };
+	}
+});
+
 if (!isProduction) {
 	// Development: Use Vite middleware
 	const { createVite } = await import("./vite");
