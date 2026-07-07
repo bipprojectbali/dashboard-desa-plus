@@ -23,7 +23,6 @@ import {
 	Inbox,
 	MessageCircle,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -36,7 +35,7 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
-import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 
@@ -70,41 +69,25 @@ type PengaduanData = {
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
+async function fetchPengaduan(): Promise<PengaduanData> {
+	const r = await fetch("/api/noc/pengaduan");
+	if (!r.ok) throw new Error(`HTTP ${r.status}`);
+	return (await r.json()) as PengaduanData;
+}
+
 function usePengaduanNoc() {
-	const [data, setData] = useState<PengaduanData | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+	const query = useApiQuery(["pengaduan", "noc"], fetchPengaduan, {
+		autoRefresh: true,
+	});
 
-	const fetchData = useCallback(async () => {
-		try {
-			const r = await fetch("/api/noc/pengaduan");
-			if (!r.ok) throw new Error(`HTTP ${r.status}`);
-			const json = (await r.json()) as PengaduanData;
-			setData(json);
-			setError(null);
-		} catch {
-			setError("Gagal memuat data pengaduan. Periksa koneksi dan coba lagi.");
-		} finally {
-			setLoading(false);
-		}
-	}, []);
-
-	const fetchRef = useRef(fetchData);
-	useEffect(() => {
-		fetchRef.current = fetchData;
-	}, [fetchData]);
-
-	const handleForceRefresh = useCallback(async () => {
-		await fetchRef.current();
-	}, []);
-
-	useEffect(() => {
-		handleForceRefresh();
-	}, [handleForceRefresh]);
-
-	useAutoRefresh(handleForceRefresh);
-
-	return { data, loading, error, refresh: handleForceRefresh };
+	return {
+		data: query.data ?? null,
+		loading: query.isLoading,
+		error: query.isError
+			? "Gagal memuat data pengaduan. Periksa koneksi dan coba lagi."
+			: null,
+		refresh: () => query.refetch(),
+	};
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

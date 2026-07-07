@@ -8,7 +8,6 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -18,6 +17,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -26,62 +26,32 @@ interface ChartData {
 	value: number;
 }
 
+async function fetchServiceTrends(): Promise<ChartData[]> {
+	const res = await apiClient.GET("/api/complaint/service-trends");
+
+	if (
+		res.data?.data &&
+		Array.isArray(res.data.data) &&
+		res.data.data.length > 0
+	) {
+		return (res.data.data as { month: string; count: number }[]).map((d) => ({
+			month: d.month,
+			value: Number(d.count),
+		}));
+	}
+	return [];
+}
+
 export function ChartSurat() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const t = useTranslate();
 
-	const [data, setData] = useState<ChartData[]>([]);
-	const [loading, setLoading] = useState(true);
-
-	// DEBUG: Uncomment to test chart rendering with sample data
-	// useEffect(() => {
-	// 	setData([
-	// 		{ month: "Oct", value: 1 },
-	// 		{ month: "Nov", value: 1 },
-	// 		{ month: "Dec", value: 1 },
-	// 		{ month: "Feb", value: 1 },
-	// 		{ month: "Mar", value: 1 },
-	// 	]);
-	// 	setLoading(false);
-	// }, []);
-
-	useEffect(() => {
-		async function fetchTrends() {
-			try {
-				const res = await apiClient.GET("/api/complaint/service-trends");
-				console.log("📊 Service trends response:", res);
-
-				// Check if response has data
-				if (
-					res.data?.data &&
-					Array.isArray(res.data.data) &&
-					res.data.data.length > 0
-				) {
-					const chartData = (
-						res.data.data as { month: string; count: number }[]
-					).map((d) => ({
-						month: d.month,
-						value: Number(d.count),
-					}));
-					console.log("📈 Mapped chart data:", chartData);
-					console.log("✅ Chart data count:", chartData.length);
-					setData(chartData);
-				} else {
-					console.warn("⚠️ No data in response or empty array");
-					console.log("Response structure:", JSON.stringify(res, null, 2));
-					setData([]);
-				}
-			} catch (error) {
-				console.error("❌ Failed to fetch service trends", error);
-				console.log("Error details:", error);
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		fetchTrends();
-	}, []);
+	const { data = [], isLoading: loading } = useApiQuery(
+		["dashboard", "service-trends"],
+		fetchServiceTrends,
+		{ autoRefresh: true },
+	);
 
 	return (
 		<Card

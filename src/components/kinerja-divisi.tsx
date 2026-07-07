@@ -1,9 +1,7 @@
 import { Alert, Button, Card, Grid, Skeleton, Stack } from "@mantine/core";
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useAksesPrefs } from "@/hooks/useAksesPrefs";
-import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 import { ActivityCard } from "./kinerja-divisi/activity-card";
@@ -28,55 +26,42 @@ interface EventData {
 	startDate: string;
 }
 
+interface KinerjaOverview {
+	activities: Activity[];
+	todayEvents: EventData[];
+}
+
+async function fetchKinerjaOverview(): Promise<KinerjaOverview> {
+	const [activityRes, eventRes] = await Promise.all([
+		apiClient.GET("/api/noc/latest-projects", {
+			params: { query: { idDesa: "desa1", limit: "10" } },
+		}),
+		apiClient.GET("/api/event/today"),
+	]);
+
+	return {
+		activities: (activityRes.data?.data as Activity[]) ?? [],
+		todayEvents: (eventRes.data?.data as EventData[]) ?? [],
+	};
+}
+
+const EMPTY_OVERVIEW: KinerjaOverview = { activities: [], todayEvents: [] };
+
 const KinerjaDivisi = () => {
 	const t = useTranslate();
-	const { izinExportData } = useAksesPrefs();
-	const [activities, setActivities] = useState<Activity[]>([]);
-	const [todayEvents, setTodayEvents] = useState<EventData[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
 
-	const fetchData = useCallback(async () => {
-		setLoading(true);
-		setError(null);
-		try {
-			const [activityRes, eventRes] = await Promise.all([
-				apiClient.GET("/api/noc/latest-projects", {
-					params: { query: { idDesa: "desa1", limit: "10" } },
-				}),
-				apiClient.GET("/api/event/today"),
-			]);
-
-			if (activityRes.data?.data) {
-				setActivities(activityRes.data.data as Activity[]);
-			}
-			if (eventRes.data?.data) {
-				setTodayEvents(eventRes.data.data as EventData[]);
-			}
-		} catch (err) {
-			console.error("Failed to fetch performance data from NOC", err);
-			setError(
-				"Gagal memuat data kinerja divisi. Periksa koneksi dan coba lagi.",
-			);
-		} finally {
-			setLoading(false);
-		}
-	}, []);
-
-	const fetchRef = useRef(fetchData);
-	useEffect(() => {
-		fetchRef.current = fetchData;
-	}, [fetchData]);
-
-	const handleForceRefresh = useCallback(async () => {
-		await fetchRef.current();
-	}, []);
-
-	useEffect(() => {
-		handleForceRefresh();
-	}, [handleForceRefresh]);
-
-	useAutoRefresh(handleForceRefresh);
+	const {
+		data = EMPTY_OVERVIEW,
+		isLoading: loading,
+		isError,
+		refetch,
+	} = useApiQuery(["kinerja", "overview"], fetchKinerjaOverview, {
+		autoRefresh: true,
+	});
+	const { activities, todayEvents } = data;
+	const error = isError
+		? "Gagal memuat data kinerja divisi. Periksa koneksi dan coba lagi."
+		: null;
 
 	const formattedEvents = todayEvents.map((event) => ({
 		time: dayjs(event.startDate).format("HH:mm"),
@@ -89,13 +74,6 @@ const KinerjaDivisi = () => {
 		{ name: t.kinerjaDivisi.laporanKeuangan },
 		{ name: t.kinerjaDivisi.notulensiRapat },
 	];
-
-	const handleExport = () => {
-		const a = document.createElement("a");
-		a.href = "/api/noc/export-activities?idDesa=desa1";
-		a.download = `kinerja-divisi-${new Date().toISOString().slice(0, 10)}.pdf`;
-		a.click();
-	};
 
 	return (
 		<Stack gap="lg">
@@ -112,7 +90,7 @@ const KinerjaDivisi = () => {
 						variant="light"
 						color="red"
 						leftSection={<IconRefresh size={14} />}
-						onClick={fetchData}
+						onClick={() => refetch()}
 						mt="xs"
 					>
 						Coba lagi

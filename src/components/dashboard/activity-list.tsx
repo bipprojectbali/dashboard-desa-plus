@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import dayjs from "dayjs";
 import { Calendar } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -19,39 +19,31 @@ interface EventData {
 	title: string;
 }
 
+async function fetchUpcomingEvents(): Promise<EventData[]> {
+	const res = await apiClient.GET("/api/noc/upcoming-events", {
+		params: { query: { idDesa: "desa1", limit: "10" } },
+	});
+	if (res.data?.data) {
+		return (res.data.data as { startDate: string; title: string }[]).map(
+			(e) => ({
+				date: dayjs(e.startDate).format("D MMMM YYYY"),
+				title: e.title,
+			}),
+		);
+	}
+	return [];
+}
+
 export function ActivityList() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const t = useTranslate();
 
-	const [data, setData] = useState<EventData[]>([]);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		async function fetchEvents() {
-			try {
-				const res = await apiClient.GET("/api/noc/upcoming-events", {
-					params: { query: { idDesa: "desa1", limit: "10" } },
-				});
-				if (res.data?.data) {
-					setData(
-						(res.data.data as { startDate: string; title: string }[]).map(
-							(e) => ({
-								date: dayjs(e.startDate).format("D MMMM YYYY"),
-								title: e.title,
-							}),
-						),
-					);
-				}
-			} catch (error) {
-				console.error("Failed to fetch events from NOC", error);
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		fetchEvents();
-	}, []);
+	const { data = [], isLoading: loading } = useApiQuery(
+		["dashboard", "upcoming-events"],
+		fetchUpcomingEvents,
+		{ autoRefresh: true },
+	);
 
 	return (
 		<Card

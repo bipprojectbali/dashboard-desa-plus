@@ -7,8 +7,8 @@ import {
 	Text,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -18,20 +18,21 @@ interface ProgressData {
 	color: string;
 }
 
-interface ActivityStats {
-	total: number;
-	counts: {
-		selesai: number;
-		berjalan: number;
-		tertunda: number;
-		dibatalkan: number;
-	};
-	percentages: {
-		selesai: number;
-		berjalan: number;
-		tertunda: number;
-		dibatalkan: number;
-	};
+async function fetchActivityStats(): Promise<ProgressData[]> {
+	const res = await apiClient.GET("/api/noc/diagram-progres-kegiatan", {
+		params: { query: { idDesa: "desa1" } },
+	});
+	if (res.data?.data) {
+		const rawData = res.data.data;
+		const labels = ["Segera Dikerjakan", "Dikerjakan", "Selesai", "Dibatalkan"];
+
+		return rawData.map((d: any, index: number) => ({
+			name: d.label || labels[index] || "Lainnya",
+			value: Number(d.value) || 0,
+			color: d.color,
+		}));
+	}
+	return [];
 }
 
 export function ProgressChart() {
@@ -39,43 +40,10 @@ export function ProgressChart() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const [data, setData] = useState<ProgressData[]>([]);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		async function fetchActivityStats() {
-			try {
-				const res = await apiClient.GET("/api/noc/diagram-progres-kegiatan", {
-					params: { query: { idDesa: "desa1" } },
-				});
-				if (res.data?.data) {
-					const rawData = res.data.data;
-					const labels = [
-						"Segera Dikerjakan",
-						"Dikerjakan",
-						"Selesai",
-						"Dibatalkan",
-					];
-
-					const chartData: ProgressData[] = rawData.map(
-						(d: any, index: number) => ({
-							name: d.label || labels[index] || "Lainnya",
-							value: Number(d.value) || 0,
-							color: d.color,
-						}),
-					);
-
-					setData(chartData);
-				}
-			} catch (error) {
-				console.error("Failed to fetch activity progress from NOC", error);
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		fetchActivityStats();
-	}, []);
+	const { data = [], isLoading: loading } = useApiQuery(
+		["kinerja", "progress-diagram"],
+		fetchActivityStats,
+	);
 
 	return (
 		<Card

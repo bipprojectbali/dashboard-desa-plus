@@ -5,7 +5,6 @@ import {
 	Text,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -16,6 +15,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -25,36 +25,26 @@ interface DocumentData {
 	color: string;
 }
 
+async function fetchDocumentStats(): Promise<DocumentData[]> {
+	const res = await apiClient.GET("/api/noc/diagram-jumlah-document", {
+		params: {
+			query: {
+				idDesa: "desa1",
+			},
+		},
+	});
+	return res.data?.data ?? [];
+}
+
 export function DocumentChart() {
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const [data, setData] = useState<DocumentData[]>([]);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		async function fetchDocumentStats() {
-			try {
-				const res = await apiClient.GET("/api/noc/diagram-jumlah-document", {
-					params: {
-						query: {
-							idDesa: "desa1",
-						},
-					},
-				});
-				if (res.data?.data) {
-					setData(res.data.data);
-				}
-			} catch (error) {
-				console.error("Failed to fetch document stats", error);
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		fetchDocumentStats();
-	}, []);
+	const { data = [], isLoading: loading } = useApiQuery(
+		["kinerja", "document-diagram"],
+		fetchDocumentStats,
+	);
 
 	return (
 		<Card

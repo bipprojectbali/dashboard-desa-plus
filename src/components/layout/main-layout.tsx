@@ -83,23 +83,15 @@ function PageTransition({
 		// biome-ignore lint/correctness/useExhaustiveDependencies: see above
 	}, [routeKey, enabled]);
 
-	const style: React.CSSProperties = enabled
-		? {
-				opacity: phase === "exit" ? 0 : 1,
-				transform:
-					phase === "exit"
-						? "translateY(8px)"
-						: phase === "enter"
-							? "translateY(-4px)"
-							: "translateY(0)",
-				transition:
-					phase === "idle"
-						? "none"
-						: "opacity 0.18s ease, transform 0.18s ease",
-			}
-		: {};
+	const glitchClass = enabled
+		? phase === "exit"
+			? "page-glitch-exit"
+			: phase === "enter"
+				? "page-glitch-enter"
+				: undefined
+		: undefined;
 
-	return <div style={style}>{displayChildren}</div>;
+	return <div className={glitchClass}>{displayChildren}</div>;
 }
 
 export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {

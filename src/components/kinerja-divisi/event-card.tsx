@@ -8,7 +8,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { Calendar } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -21,44 +21,39 @@ interface EventCardProps {
 	agendas?: AgendaItem[];
 }
 
+async function fetchTodayEvents(): Promise<AgendaItem[]> {
+	const res = await apiClient.GET("/api/noc/upcoming-events", {
+		params: { query: { idDesa: "desa1", filter: "today" } },
+	});
+	if (res.data?.data) {
+		return (res.data.data as { startDate: string; title: string }[]).map(
+			(e) => ({
+				time: new Date(e.startDate).toLocaleTimeString("id-ID", {
+					hour: "2-digit",
+					minute: "2-digit",
+				}),
+				event: e.title,
+			}),
+		);
+	}
+	return [];
+}
+
 export function EventCard({ agendas: propAgendas }: EventCardProps) {
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const [agendas, setAgendas] = useState<AgendaItem[]>(propAgendas || []);
-	const [loading, setLoading] = useState(!propAgendas);
+	// Hanya fetch bila agenda tidak disediakan lewat props.
+	const shouldFetch = !propAgendas || propAgendas.length === 0;
+	const { data: fetchedAgendas = [], isLoading } = useApiQuery(
+		["kinerja", "upcoming-events"],
+		fetchTodayEvents,
+		{ enabled: shouldFetch },
+	);
 
-	useEffect(() => {
-		// If agendas not provided via props, fetch from API
-		if (!propAgendas || propAgendas.length === 0) {
-			async function fetchTodayEvents() {
-				try {
-					const res = await apiClient.GET("/api/noc/upcoming-events", {
-						params: { query: { idDesa: "desa1", filter: "today" } },
-					});
-					if (res.data?.data) {
-						const todayEvents = (
-							res.data.data as { startDate: string; title: string }[]
-						).map((e) => ({
-							time: new Date(e.startDate).toLocaleTimeString("id-ID", {
-								hour: "2-digit",
-								minute: "2-digit",
-							}),
-							event: e.title,
-						}));
-						setAgendas(todayEvents);
-					}
-				} catch (error) {
-					console.error("Failed to fetch today's events from NOC", error);
-				} finally {
-					setLoading(false);
-				}
-			}
-
-			fetchTodayEvents();
-		}
-	}, [propAgendas]);
+	const agendas = shouldFetch ? fetchedAgendas : propAgendas;
+	const loading = shouldFetch && isLoading;
 
 	return (
 		<Card

@@ -23,7 +23,6 @@ import {
 	TrendingUp,
 } from "lucide-react";
 import type React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -34,7 +33,7 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
-import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 
@@ -65,47 +64,23 @@ type JennaAnalyticsData = {
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
+async function fetchJennaAnalytics(): Promise<JennaAnalyticsData> {
+	// Fetch via server proxy — avoids CORS & doesn't require VITE_* env vars at build time
+	const r = await fetch("/api/jenna/analytics");
+	if (!r.ok) throw new Error(`HTTP ${r.status}`);
+	return (await r.json()) as JennaAnalyticsData;
+}
+
 function useJennaAnalytics() {
-	const [data, setData] = useState<JennaAnalyticsData | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+	const query = useApiQuery(["jenna", "analytics"], fetchJennaAnalytics, {
+		autoRefresh: true,
+	});
 
-	const fetchData = useCallback(async () => {
-		try {
-			// Fetch via server proxy — avoids CORS & doesn't require VITE_* env vars at build time
-			const r = await fetch("/api/jenna/analytics");
-			if (!r.ok) throw new Error(`HTTP ${r.status}`);
-			const json = (await r.json()) as JennaAnalyticsData;
-			setData(json);
-			setError(null);
-		} catch (e) {
-			setError((e as Error).message);
-		} finally {
-			setLoading(false);
-		}
-	}, []);
-
-	const fetchDataRef = useRef(fetchData);
-	useEffect(() => {
-		fetchDataRef.current = fetchData;
-	}, [fetchData]);
-
-	const handleForceRefresh = useCallback(async () => {
-		try {
-			await fetch("/api/jenna/cache-invalidate", { method: "POST" });
-		} catch {
-			// lanjut fetch meskipun invalidate gagal
-		}
-		await fetchDataRef.current();
-	}, []);
-
-	useEffect(() => {
-		handleForceRefresh();
-	}, [handleForceRefresh]);
-
-	useAutoRefresh(handleForceRefresh);
-
-	return { data, loading, error };
+	return {
+		data: query.data ?? null,
+		loading: query.isLoading,
+		error: query.error ? query.error.message : null,
+	};
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────

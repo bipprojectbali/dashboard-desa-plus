@@ -11,7 +11,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { IconAlertCircle, IconBuildingHospital } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 
 const DESA_API =
@@ -41,24 +41,24 @@ interface PosyanduApiItem {
 	jadwalPelayanan: string;
 }
 
+async function fetchPosyandu(): Promise<PosyanduApiItem[]> {
+	const r = await fetch(`${DESA_API}/api/kesehatan/posyandu/find-many`);
+	const res = await r.json();
+	if (res.success) return (res.data as PosyanduApiItem[]).slice(0, 5);
+	throw new Error("Data tidak tersedia");
+}
+
 export const PosyanduSchedule = () => {
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
-	const [items, setItems] = useState<PosyanduApiItem[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		fetch(`${DESA_API}/api/kesehatan/posyandu/find-many`)
-			.then((r) => r.json())
-			.then((res) => {
-				if (res.success) setItems((res.data as PosyanduApiItem[]).slice(0, 5));
-				else setError("Data tidak tersedia");
-			})
-			.catch(() => setError("Gagal memuat jadwal posyandu"))
-			.finally(() => setLoading(false));
-	}, []);
+	const {
+		data: items = [],
+		isLoading: loading,
+		isError,
+	} = useApiQuery(["sosial-ext", "posyandu"], fetchPosyandu);
+	const error = isError ? "Gagal memuat jadwal posyandu" : null;
 
 	return (
 		<Card
