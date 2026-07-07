@@ -10,7 +10,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { IconArrowDownRight, IconArrowUpRight } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -20,6 +20,33 @@ interface ApbdesData {
 	realisasi: number;
 	percentage: number;
 	color: string;
+}
+
+const DEFAULT_APBDES_TITLE = "Grafik Realisasi APBDes";
+
+async function fetchApbdes(): Promise<{ data: ApbdesData[]; title: string }> {
+	// Fetch from new NOC endpoint that integrates with external Desa API
+	// Using specific ID for APBDes: cmk-apbdes-001
+	const res = await apiClient.GET("/api/noc/apbdes-data", {
+		params: { query: { idDesa: "cmk-apbdes-001" } },
+	});
+
+	const data = res.data?.data
+		? res.data.data.map((d) => ({
+				name: d.category,
+				anggaran: d.anggaran,
+				realisasi: d.realisasi,
+				percentage: d.percentage,
+				color: d.color,
+			}))
+		: [];
+
+	// Update title with APBDes info from message
+	const title = res.data?.message
+		? res.data.message.replace("data", "Realisasi")
+		: DEFAULT_APBDES_TITLE;
+
+	return { data, title };
 }
 
 // Helper to format currency
@@ -169,44 +196,13 @@ export function ChartAPBDes() {
 	const dark = colorScheme === "dark";
 	const t = useTranslate();
 
-	const [data, setData] = useState<ApbdesData[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [apbdesTitle, setApbdesTitle] = useState("Grafik Realisasi APBDes");
-
-	useEffect(() => {
-		async function fetchApbdes() {
-			try {
-				// Fetch from new NOC endpoint that integrates with external Desa API
-				// Using specific ID for APBDes: cmk-apbdes-001
-				const res = await apiClient.GET("/api/noc/apbdes-data", {
-					params: { query: { idDesa: "cmk-apbdes-001" } },
-				});
-
-				if (res.data?.data) {
-					setData(
-						res.data.data.map((d) => ({
-							name: d.category,
-							anggaran: d.anggaran,
-							realisasi: d.realisasi,
-							percentage: d.percentage,
-							color: d.color,
-						})),
-					);
-				}
-
-				// Update title with APBDes info from message
-				if (res.data?.message) {
-					setApbdesTitle(res.data.message.replace("data", "Realisasi"));
-				}
-			} catch (error) {
-				console.error("Failed to fetch APBDes data", error);
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		fetchApbdes();
-	}, []);
+	const { data: apbdes, isLoading: loading } = useApiQuery(
+		["dashboard", "apbdes"],
+		fetchApbdes,
+		{ autoRefresh: true },
+	);
+	const data = apbdes?.data ?? [];
+	const apbdesTitle = apbdes?.title ?? DEFAULT_APBDES_TITLE;
 
 	return (
 		<Card

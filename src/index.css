@@ -40,3 +40,84 @@
 		opacity: 1;
 	}
 }
+
+/* ===== Transisi glitch antar halaman =====
+ * Efek halus: RGB split tipis + slice clip-path + flicker singkat.
+ * Timing diselaraskan dengan state machine di PageTransition
+ * (fase exit ~180ms, fase enter ~250ms). Offset kecil (1-3px) agar
+ * tetap terbaca dan profesional untuk dashboard. */
+@keyframes page-glitch-out {
+	0% {
+		opacity: 1;
+		transform: translateX(0);
+		clip-path: inset(0 0 0 0);
+		filter: none;
+	}
+	30% {
+		opacity: 0.85;
+		transform: translateX(-2px);
+		clip-path: inset(8% 0 30% 0);
+		filter: drop-shadow(2px 0 0 rgba(255, 0, 80, 0.5))
+			drop-shadow(-2px 0 0 rgba(0, 200, 255, 0.5));
+	}
+	60% {
+		opacity: 0.5;
+		transform: translateX(3px);
+		clip-path: inset(40% 0 5% 0);
+		filter: drop-shadow(-3px 0 0 rgba(255, 0, 80, 0.5))
+			drop-shadow(3px 0 0 rgba(0, 200, 255, 0.5));
+	}
+	100% {
+		opacity: 0;
+		transform: translateX(0);
+		clip-path: inset(0 0 0 0);
+		filter: none;
+	}
+}
+
+@keyframes page-glitch-in {
+	0% {
+		opacity: 0;
+		transform: translateX(3px);
+		clip-path: inset(45% 0 10% 0);
+		filter: drop-shadow(3px 0 0 rgba(255, 0, 80, 0.5))
+			drop-shadow(-3px 0 0 rgba(0, 200, 255, 0.5));
+	}
+	40% {
+		opacity: 0.6;
+		transform: translateX(-2px);
+		clip-path: inset(10% 0 35% 0);
+		filter: drop-shadow(-2px 0 0 rgba(255, 0, 80, 0.4))
+			drop-shadow(2px 0 0 rgba(0, 200, 255, 0.4));
+	}
+	70% {
+		opacity: 0.9;
+		transform: translateX(1px);
+		clip-path: inset(0 0 0 0);
+		filter: none;
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+		clip-path: inset(0 0 0 0);
+		filter: none;
+	}
+}
+
+.page-glitch-exit {
+	animation: page-glitch-out 0.18s steps(2, end) forwards;
+	will-change: opacity, transform, filter, clip-path;
+}
+
+.page-glitch-enter {
+	animation: page-glitch-in 0.25s steps(3, end) forwards;
+	will-change: opacity, transform, filter, clip-path;
+}
+
+/* Hormati preferensi pengguna: matikan glitch, biarkan tampil instan. */
+@media (prefers-reduced-motion: reduce) {
+	.page-glitch-exit,
+	.page-glitch-enter {
+		animation: none;
+	}
+}

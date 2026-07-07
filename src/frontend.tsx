@@ -9,6 +9,7 @@
 
 import { createTheme, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
@@ -16,6 +17,7 @@ import { routeTree } from "./routeTree.gen";
 import "./index.css";
 import "@mantine/charts/styles.css";
 import { IS_DEV } from "./utils/env";
+import { queryClient } from "./utils/query-client";
 
 // Create a new router instance
 export const router = createRouter({
@@ -122,9 +124,11 @@ const elem = document.getElementById("root")!;
 const app = (
 	<InspectorWrapper>
 		<MantineProvider theme={theme} defaultColorScheme="auto">
-			<ModalsProvider>
-				<RouterProvider router={router} />
-			</ModalsProvider>
+			<QueryClientProvider client={queryClient}>
+				<ModalsProvider>
+					<RouterProvider router={router} />
+				</ModalsProvider>
+			</QueryClientProvider>
 		</MantineProvider>
 	</InspectorWrapper>
 );

@@ -7,7 +7,7 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 
 const DESA_API =
@@ -26,22 +26,22 @@ interface PendidikanStats {
 	jumlahPengajar: number;
 }
 
+// Mengembalikan null bila gagal — mempertahankan perilaku lama (tanpa error UI).
+async function fetchPendidikan(): Promise<PendidikanStats | null> {
+	const r = await fetch(`${DESA_API}/api/pendidikan/ringkasan/stats`);
+	const json = await r.json();
+	return json.success ? json.data : null;
+}
+
 export const Pendidikan = () => {
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const [stats, setStats] = useState<PendidikanStats | null>(null);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		fetch(`${DESA_API}/api/pendidikan/ringkasan/stats`)
-			.then((r) => r.json())
-			.then((json) => {
-				if (json.success) setStats(json.data);
-			})
-			.finally(() => setLoading(false));
-	}, []);
+	const { data: stats = null, isLoading: loading } = useApiQuery(
+		["sosial-ext", "pendidikan"],
+		fetchPendidikan,
+	);
 
 	return (
 		<Card

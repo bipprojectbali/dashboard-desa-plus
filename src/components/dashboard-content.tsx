@@ -1,7 +1,6 @@
 import { Grid, Image, Skeleton, Stack } from "@mantine/core";
 import { CheckCircle, FileText, MessageCircle, Users } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 import { ActivityList } from "./dashboard/activity-list";
@@ -12,65 +11,54 @@ import { SatisfactionChart } from "./dashboard/satisfaction-chart";
 import { SDGSCard } from "./dashboard/sdgs-card";
 import { StatCard } from "./dashboard/stat-card";
 
+interface DashboardStats {
+	complaints: { total: number; baru: number; proses: number; selesai: number };
+	residents: { total: number; heads: number; poor: number };
+	weeklyService: number;
+}
+
+type SdgsItem = { title: string; score: number; image: string | null };
+
+async function fetchDashboardStats(): Promise<DashboardStats> {
+	const [complaintRes, residentRes, weeklyServiceRes] = await Promise.all([
+		apiClient.GET("/api/complaint/stats"),
+		apiClient.GET("/api/resident/stats"),
+		apiClient.GET("/api/complaint/service-weekly"),
+	]);
+
+	return {
+		complaints: (complaintRes.data as { data: DashboardStats["complaints"] })
+			?.data || { total: 0, baru: 0, proses: 0, selesai: 0 },
+		residents: (residentRes.data as { data: DashboardStats["residents"] })
+			?.data || { total: 0, heads: 0, poor: 0 },
+		weeklyService:
+			(weeklyServiceRes.data as { data: { count: number } })?.data?.count || 0,
+	};
+}
+
+async function fetchSdgs(): Promise<SdgsItem[]> {
+	const sdgsRes = await apiClient.GET("/api/dashboard/sdgs");
+	return sdgsRes.data?.data ?? [];
+}
+
+const EMPTY_STATS: DashboardStats = {
+	complaints: { total: 0, baru: 0, proses: 0, selesai: 0 },
+	residents: { total: 0, heads: 0, poor: 0 },
+	weeklyService: 0,
+};
+
 export function DashboardContent() {
-	const [stats, setStats] = useState({
-		complaints: { total: 0, baru: 0, proses: 0, selesai: 0 },
-		residents: { total: 0, heads: 0, poor: 0 },
-		weeklyService: 0,
-		loading: true,
-	});
+	const { data: stats = EMPTY_STATS } = useApiQuery(
+		["dashboard", "stats"],
+		fetchDashboardStats,
+		{ autoRefresh: true },
+	);
 
-	const [sdgsData, setSdgsData] = useState<
-		{ title: string; score: number; image: string | null }[]
-	>([]);
-	const [sdgsLoading, setSdgsLoading] = useState(true);
-
-	const fetchStats = useCallback(async () => {
-		try {
-			const [complaintRes, residentRes, weeklyServiceRes, sdgsRes] =
-				await Promise.all([
-					apiClient.GET("/api/complaint/stats"),
-					apiClient.GET("/api/resident/stats"),
-					apiClient.GET("/api/complaint/service-weekly"),
-					apiClient.GET("/api/dashboard/sdgs"),
-				]);
-
-			setStats({
-				complaints: (complaintRes.data as { data: typeof stats.complaints })
-					?.data || {
-					total: 0,
-					baru: 0,
-					proses: 0,
-					selesai: 0,
-				},
-				residents: (residentRes.data as { data: typeof stats.residents })
-					?.data || {
-					total: 0,
-					heads: 0,
-					poor: 0,
-				},
-				weeklyService:
-					(weeklyServiceRes.data as { data: { count: number } })?.data?.count ||
-					0,
-				loading: false,
-			});
-
-			if (sdgsRes.data?.data) {
-				setSdgsData(sdgsRes.data.data);
-			}
-			setSdgsLoading(false);
-		} catch (error) {
-			console.error("Failed to fetch dashboard content", error);
-			setStats((prev) => ({ ...prev, loading: false }));
-			setSdgsLoading(false);
-		}
-	}, []);
-
-	useEffect(() => {
-		fetchStats();
-	}, [fetchStats]);
-
-	useAutoRefresh(fetchStats);
+	const { data: sdgsData = [], isLoading: sdgsLoading } = useApiQuery(
+		["dashboard", "sdgs"],
+		fetchSdgs,
+		{ autoRefresh: true },
+	);
 
 	const t = useTranslate();
 

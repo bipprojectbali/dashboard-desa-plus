@@ -24,8 +24,8 @@ import {
 } from "@tabler/icons-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { useEffect, useRef, useState } from "react";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 
 type CctvItem = {
@@ -54,6 +54,36 @@ type CctvStats = {
 };
 
 const CCTV_PER_PAGE = 5;
+
+interface KeamananData {
+	cctvStats: CctvStats;
+	cctvList: CctvItem[];
+	laporanList: LaporanItem[];
+}
+
+async function fetchKeamananAll(): Promise<KeamananData> {
+	const [statsRes, cctvRes, laporanRes] = await Promise.all([
+		fetch("/api/keamanan/cctv/stats").then((r) => r.json()),
+		fetch("/api/keamanan/cctv/find-many").then((r) => r.json()),
+		fetch("/api/keamanan/laporan-publik/find-many").then((r) => r.json()),
+	]);
+	return {
+		cctvStats: (statsRes.data as CctvStats) ?? {
+			cctvOnline: 0,
+			laporanMingguIni: 0,
+		},
+		cctvList: Array.isArray(cctvRes.data) ? (cctvRes.data as CctvItem[]) : [],
+		laporanList: Array.isArray(laporanRes.data)
+			? (laporanRes.data as LaporanItem[])
+			: [],
+	};
+}
+
+const EMPTY_KEAMANAN: KeamananData = {
+	cctvStats: { cctvOnline: 0, laporanMingguIni: 0 },
+	cctvList: [],
+	laporanList: [],
+};
 
 const markerIcon = L.icon({
 	iconUrl: "/marker-icon.png",
@@ -130,56 +160,28 @@ const KeamananPage = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const [cctvStats, setCctvStats] = useState<CctvStats>({
-		cctvOnline: 0,
-		laporanMingguIni: 0,
-	});
-	const [cctvList, setCctvList] = useState<CctvItem[]>([]);
-	const [laporanList, setLaporanList] = useState<LaporanItem[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
 	const [cctvPage, setCctvPage] = useState(1);
 
-	const fetchAll = useCallback(async () => {
-		setLoading(true);
-		setError(null);
-		try {
-			const [statsRes, cctvRes, laporanRes] = await Promise.all([
-				fetch("/api/keamanan/cctv/stats").then((r) => r.json()),
-				fetch("/api/keamanan/cctv/find-many").then((r) => r.json()),
-				fetch("/api/keamanan/laporan-publik/find-many").then((r) => r.json()),
-			]);
-			if (statsRes.data) setCctvStats(statsRes.data as CctvStats);
-			if (Array.isArray(cctvRes.data)) setCctvList(cctvRes.data as CctvItem[]);
-			if (Array.isArray(laporanRes.data))
-				setLaporanList(laporanRes.data as LaporanItem[]);
-		} catch (err) {
-			console.error("Failed to fetch keamanan data", err);
-			setError("Gagal memuat data keamanan. Periksa koneksi dan coba lagi.");
-		} finally {
-			setLoading(false);
-		}
-	}, []);
+	const {
+		data = EMPTY_KEAMANAN,
+		isLoading: loading,
+		isError,
+		refetch,
+	} = useApiQuery(["keamanan", "all"], fetchKeamananAll, { autoRefresh: true });
+	const { cctvStats, cctvList, laporanList } = data;
+	const error = isError
+		? "Gagal memuat data keamanan. Periksa koneksi dan coba lagi."
+		: null;
 
-	const fetchAllRef = useRef(fetchAll);
-	useEffect(() => {
-		fetchAllRef.current = fetchAll;
-	}, [fetchAll]);
-
-	const handleForceRefresh = useCallback(async () => {
+	// Refresh manual: bust server cache lalu ambil ulang (hanya saat user klik).
+	const handleForceRefresh = async () => {
 		try {
 			await fetch("/api/keamanan/cache-invalidate", { method: "POST" });
 		} catch {
 			// lanjut fetch meskipun invalidate gagal
 		}
-		await fetchAllRef.current();
-	}, []);
-
-	useEffect(() => {
-		handleForceRefresh();
-	}, [handleForceRefresh]);
-
-	useAutoRefresh(handleForceRefresh);
+		await refetch();
+	};
 
 	const cctvTotalPages = Math.ceil(cctvList.length / CCTV_PER_PAGE);
 	const cctvPaged = cctvList.slice(

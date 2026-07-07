@@ -1,7 +1,6 @@
 import { Alert, Button, Grid, GridCol, Skeleton, Stack } from "@mantine/core";
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useAutoRefresh } from "@/hooks/useAutoRefresh";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { Beasiswa } from "./sosial/beasiswa";
 import { EventCalendar } from "./sosial/event-calendar";
@@ -32,63 +31,62 @@ interface EventBudaya {
 	lokasi: string;
 }
 
+interface SosialPageData {
+	kesehatanStats: KesehatanStats | null;
+	posyandus: PosyanduForCount[] | null;
+	events: EventBudaya[] | null;
+}
+
+async function fetchSosialData(): Promise<SosialPageData> {
+	const [kesehatanRes, posyanduRes, eventsRes] = await Promise.all([
+		fetch("/api/sosial/kesehatan/stats"),
+		fetch("/api/sosial/posyandu/find-many"),
+		fetch("/api/sosial/event-budaya/find-upcoming"),
+	]);
+	const [kesehatan, posyandu, eventBudaya] = await Promise.all([
+		kesehatanRes.json(),
+		posyanduRes.json(),
+		eventsRes.json(),
+	]);
+
+	return {
+		kesehatanStats: kesehatan.success ? kesehatan.data : null,
+		posyandus: posyandu.success
+			? (posyandu.data as PosyanduForCount[]).filter((p) => p.isActive)
+			: null,
+		events: eventBudaya.success ? eventBudaya.data : null,
+	};
+}
+
+const EMPTY_SOSIAL: SosialPageData = {
+	kesehatanStats: null,
+	posyandus: null,
+	events: null,
+};
+
 const SosialPage = () => {
 	const t = useTranslate();
-	const [kesehatanStats, setKesehatanStats] = useState<KesehatanStats | null>(
-		null,
-	);
-	const [posyandus, setPosyandus] = useState<PosyanduForCount[] | null>(null);
-	const [events, setEvents] = useState<EventBudaya[] | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
 
-	const fetchData = useCallback(async () => {
-		setLoading(true);
-		setError(null);
-		try {
-			const [kesehatanRes, posyanduRes, eventsRes] = await Promise.all([
-				fetch("/api/sosial/kesehatan/stats"),
-				fetch("/api/sosial/posyandu/find-many"),
-				fetch("/api/sosial/event-budaya/find-upcoming"),
-			]);
-			const [kesehatan, posyandu, eventBudaya] = await Promise.all([
-				kesehatanRes.json(),
-				posyanduRes.json(),
-				eventsRes.json(),
-			]);
-			if (kesehatan.success) setKesehatanStats(kesehatan.data);
-			if (posyandu.success)
-				setPosyandus(
-					(posyandu.data as PosyanduForCount[]).filter((p) => p.isActive),
-				);
-			if (eventBudaya.success) setEvents(eventBudaya.data);
-		} catch (err) {
-			console.error("Failed to fetch sosial data", err);
-			setError("Gagal memuat data sosial. Periksa koneksi dan coba lagi.");
-		} finally {
-			setLoading(false);
-		}
-	}, []);
+	const {
+		data = EMPTY_SOSIAL,
+		isLoading: loading,
+		isError,
+		refetch,
+	} = useApiQuery(["sosial", "page"], fetchSosialData, { autoRefresh: true });
+	const { kesehatanStats, posyandus, events } = data;
+	const error = isError
+		? "Gagal memuat data sosial. Periksa koneksi dan coba lagi."
+		: null;
 
-	const fetchDataRef = useRef(fetchData);
-	useEffect(() => {
-		fetchDataRef.current = fetchData;
-	}, [fetchData]);
-
-	const handleForceRefresh = useCallback(async () => {
+	// Refresh manual: bust server cache lalu ambil ulang (hanya saat user klik).
+	const handleForceRefresh = async () => {
 		try {
 			await fetch("/api/sosial/cache-invalidate", { method: "POST" });
 		} catch {
 			// lanjut fetch meskipun invalidate gagal
 		}
-		await fetchDataRef.current();
-	}, []);
-
-	useEffect(() => {
-		handleForceRefresh();
-	}, [handleForceRefresh]);
-
-	useAutoRefresh(handleForceRefresh);
+		await refetch();
+	};
 
 	const summaryData = kesehatanStats
 		? {

@@ -21,6 +21,7 @@ import {
 	IconVirus,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import { useApiQuery } from "@/hooks/useApiQuery";
 
 const DESA_API =
 	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
@@ -30,6 +31,15 @@ const DESA_API =
 interface BanjarOption {
 	id: string;
 	name: string;
+}
+
+async function fetchBanjars(): Promise<BanjarOption[]> {
+	const r = await fetch(`${DESA_API}/api/desa/banjar/findMany`);
+	const res = await r.json();
+	if (res.success && Array.isArray(res.data)) {
+		return res.data as BanjarOption[];
+	}
+	return [];
 }
 
 interface IbuHamil {
@@ -155,27 +165,23 @@ interface IbuHamilTabProps {
 
 const IBU_HAMIL_PAGE_SIZE = 10;
 
-function IbuHamilTab({ banjarId, dark }: IbuHamilTabProps) {
-	const [allData, setAllData] = useState<IbuHamil[]>([]);
-	const [page, setPage] = useState(1);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+async function fetchIbuHamil(): Promise<IbuHamil[]> {
+	const r = await fetch(
+		`${DESA_API}/api/kesehatan/ibuhamil/find-many?limit=200`,
+	);
+	const json = await r.json();
+	if (json.success) return json.data as IbuHamil[];
+	throw new Error(json.message ?? "Gagal memuat data ibu hamil");
+}
 
-	useEffect(() => {
-		setLoading(true);
-		setError(null);
-		fetch(`${DESA_API}/api/kesehatan/ibuhamil/find-many?limit=200`)
-			.then((r) => r.json())
-			.then((json) => {
-				if (json.success) {
-					setAllData(json.data as IbuHamil[]);
-				} else {
-					setError(json.message ?? "Gagal memuat data ibu hamil");
-				}
-			})
-			.catch(() => setError("Gagal memuat data ibu hamil"))
-			.finally(() => setLoading(false));
-	}, []);
+function IbuHamilTab({ banjarId, dark }: IbuHamilTabProps) {
+	const [page, setPage] = useState(1);
+	const {
+		data: allData = [],
+		isLoading: loading,
+		isError,
+	} = useApiQuery(["sosial-ext", "health-records", "ibu-hamil"], fetchIbuHamil);
+	const error = isError ? "Gagal memuat data ibu hamil" : null;
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: banjarId change should reset page to 1
 	useEffect(() => {
@@ -287,27 +293,21 @@ interface BalitaTabProps {
 
 const BALITA_PAGE_SIZE = 10;
 
-function BalitaTab({ banjarId, dark }: BalitaTabProps) {
-	const [allData, setAllData] = useState<Balita[]>([]);
-	const [page, setPage] = useState(1);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+async function fetchBalita(): Promise<Balita[]> {
+	const r = await fetch(`${DESA_API}/api/kesehatan/balita/find-many?limit=200`);
+	const json = await r.json();
+	if (json.success) return json.data as Balita[];
+	throw new Error(json.message ?? "Gagal memuat data balita");
+}
 
-	useEffect(() => {
-		setLoading(true);
-		setError(null);
-		fetch(`${DESA_API}/api/kesehatan/balita/find-many?limit=200`)
-			.then((r) => r.json())
-			.then((json) => {
-				if (json.success) {
-					setAllData(json.data as Balita[]);
-				} else {
-					setError(json.message ?? "Gagal memuat data balita");
-				}
-			})
-			.catch(() => setError("Gagal memuat data balita"))
-			.finally(() => setLoading(false));
-	}, []);
+function BalitaTab({ banjarId, dark }: BalitaTabProps) {
+	const [page, setPage] = useState(1);
+	const {
+		data: allData = [],
+		isLoading: loading,
+		isError,
+	} = useApiQuery(["sosial-ext", "health-records", "balita"], fetchBalita);
+	const error = isError ? "Gagal memuat data balita" : null;
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: banjarId change should reset page to 1
 	useEffect(() => {
@@ -448,38 +448,52 @@ interface PenderitaTabProps {
 	dark: boolean;
 }
 
+interface PenderitaResult {
+	data: PenderitaPenyakit[];
+	total: number;
+	totalPages: number;
+}
+
+async function fetchPenderita(
+	banjarId: string | null,
+	page: number,
+): Promise<PenderitaResult> {
+	const params = new URLSearchParams({ page: String(page), limit: "10" });
+	if (banjarId) params.set("banjarId", banjarId);
+	const r = await fetch(
+		`${DESA_API}/api/kesehatan/grafikkepuasan/find-many?${params}`,
+	);
+	const json = await r.json();
+	if (json.success) {
+		return {
+			data: json.data as PenderitaPenyakit[],
+			total: json.total ?? 0,
+			totalPages: json.totalPages ?? 1,
+		};
+	}
+	throw new Error(json.message ?? "Gagal memuat data penderita penyakit");
+}
+
+const EMPTY_PENDERITA: PenderitaResult = { data: [], total: 0, totalPages: 1 };
+
 function PenderitaTab({ banjarId, dark }: PenderitaTabProps) {
-	const [data, setData] = useState<PenderitaPenyakit[]>([]);
-	const [total, setTotal] = useState(0);
-	const [totalPages, setTotalPages] = useState(1);
 	const [page, setPage] = useState(1);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: banjarId change should reset page to 1
 	useEffect(() => {
 		setPage(1);
 	}, [banjarId]);
 
-	useEffect(() => {
-		setLoading(true);
-		setError(null);
-		const params = new URLSearchParams({ page: String(page), limit: "10" });
-		if (banjarId) params.set("banjarId", banjarId);
-		fetch(`${DESA_API}/api/kesehatan/grafikkepuasan/find-many?${params}`)
-			.then((r) => r.json())
-			.then((json) => {
-				if (json.success) {
-					setData(json.data as PenderitaPenyakit[]);
-					setTotal(json.total ?? 0);
-					setTotalPages(json.totalPages ?? 1);
-				} else {
-					setError(json.message ?? "Gagal memuat data penderita penyakit");
-				}
-			})
-			.catch(() => setError("Gagal memuat data penderita penyakit"))
-			.finally(() => setLoading(false));
-	}, [banjarId, page]);
+	const {
+		data: result = EMPTY_PENDERITA,
+		isLoading: loading,
+		isError,
+	} = useApiQuery(
+		["sosial-ext", "health-records", "penyakit", banjarId, page],
+		() => fetchPenderita(banjarId, page),
+	);
+	const { data, total, totalPages } = result;
+	const error = isError ? "Gagal memuat data penderita penyakit" : null;
 
 	if (loading) return <TableSkeleton />;
 	if (error)
@@ -564,20 +578,13 @@ export const HealthRecords = () => {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const [banjars, setBanjars] = useState<BanjarOption[]>([]);
 	const [banjarId, setBanjarId] = useState<string | null>(null);
 	const [activeTab, setActiveTab] = useState<string | null>("ibu-hamil");
 
-	useEffect(() => {
-		fetch(`${DESA_API}/api/desa/banjar/findMany`)
-			.then((r) => r.json())
-			.then((res) => {
-				if (res.success && Array.isArray(res.data)) {
-					setBanjars(res.data as BanjarOption[]);
-				}
-			})
-			.catch(() => {});
-	}, []);
+	const { data: banjars = [] } = useApiQuery(
+		["sosial-ext", "health-records", "banjars"],
+		fetchBanjars,
+	);
 
 	const banjarOptions = banjars.map((b) => ({ value: b.id, label: b.name }));
 

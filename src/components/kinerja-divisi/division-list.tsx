@@ -7,7 +7,7 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 import { ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -24,34 +24,26 @@ interface DivisionApiResponse {
 	};
 }
 
+async function fetchDivisionList(): Promise<DivisionItem[]> {
+	const { data } = await apiClient.GET("/api/division/");
+	if (data?.data) {
+		return (data.data as DivisionApiResponse[]).map((div) => ({
+			name: div.name,
+			count: div.activityCount || 0,
+		}));
+	}
+	return [];
+}
+
 export function DivisionList() {
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const [divisions, setDivisions] = useState<DivisionItem[]>([]);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		async function fetchDivisions() {
-			try {
-				const { data } = await apiClient.GET("/api/division/");
-				if (data?.data) {
-					const mapped = (data.data as DivisionApiResponse[]).map((div) => ({
-						name: div.name,
-						count: div.activityCount || 0,
-					}));
-					setDivisions(mapped);
-				}
-			} catch (error) {
-				console.error("Failed to fetch divisions", error);
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		fetchDivisions();
-	}, []);
+	const { data: divisions = [], isLoading: loading } = useApiQuery(
+		["kinerja", "division-list"],
+		fetchDivisionList,
+	);
 
 	return (
 		<Card

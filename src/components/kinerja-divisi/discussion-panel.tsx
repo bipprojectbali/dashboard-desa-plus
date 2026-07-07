@@ -9,7 +9,7 @@ import {
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { MessageCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -22,49 +22,40 @@ interface DiscussionItem {
 	isResolved: boolean;
 }
 
+async function fetchDiscussions(): Promise<DiscussionItem[]> {
+	const res = await apiClient.GET("/api/noc/latest-discussion", {
+		params: { query: { idDesa: "desa1", limit: "6" } },
+	});
+	if (res.data?.data) {
+		const rawData = res.data.data as {
+			id: string;
+			message: string;
+			senderName: string;
+			divisionName: string;
+			createdAt: string;
+		}[];
+
+		return rawData.map((d) => ({
+			id: d.id,
+			message: d.message,
+			sender: d.senderName,
+			date: d.createdAt,
+			division: d.divisionName,
+			isResolved: false, // Default for NOC discussions
+		}));
+	}
+	return [];
+}
+
 export function DiscussionPanel() {
 	const t = useTranslate();
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 
-	const [discussions, setDiscussions] = useState<DiscussionItem[]>([]);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		async function fetchDiscussions() {
-			try {
-				const res = await apiClient.GET("/api/noc/latest-discussion", {
-					params: { query: { idDesa: "desa1", limit: "6" } },
-				});
-				if (res.data?.data) {
-					const rawData = res.data.data as {
-						id: string;
-						message: string;
-						senderName: string;
-						divisionName: string;
-						createdAt: string;
-					}[];
-
-					setDiscussions(
-						rawData.map((d) => ({
-							id: d.id,
-							message: d.message,
-							sender: d.senderName,
-							date: d.createdAt,
-							division: d.divisionName,
-							isResolved: false, // Default for NOC discussions
-						})),
-					);
-				}
-			} catch (error) {
-				console.error("Failed to fetch discussions from NOC", error);
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		fetchDiscussions();
-	}, []);
+	const { data: discussions = [], isLoading: loading } = useApiQuery(
+		["kinerja", "latest-discussion"],
+		fetchDiscussions,
+	);
 
 	const formatDate = (dateString: string) => {
 		try {

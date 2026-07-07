@@ -9,7 +9,7 @@ import {
 	Title,
 	useMantineColorScheme,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -27,35 +27,27 @@ interface DivisionApiResponse {
 	};
 }
 
+async function fetchDivisions(): Promise<DivisionData[]> {
+	const res = await apiClient.GET("/api/division/");
+	if (res.data?.data) {
+		return (res.data.data as DivisionApiResponse[]).map((d) => ({
+			name: d.name,
+			value: d.activityCount || 0,
+		}));
+	}
+	return [];
+}
+
 export function DivisionProgress() {
 	const { colorScheme } = useMantineColorScheme();
 	const dark = colorScheme === "dark";
 	const t = useTranslate();
 
-	const [data, setData] = useState<DivisionData[]>([]);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		async function fetchDivisions() {
-			try {
-				const res = await apiClient.GET("/api/division/");
-				if (res.data?.data) {
-					setData(
-						(res.data.data as DivisionApiResponse[]).map((d) => ({
-							name: d.name,
-							value: d.activityCount || 0,
-						})),
-					);
-				}
-			} catch (error) {
-				console.error("Failed to fetch division stats", error);
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		fetchDivisions();
-	}, []);
+	const { data = [], isLoading: loading } = useApiQuery(
+		["dashboard", "division"],
+		fetchDivisions,
+		{ autoRefresh: true },
+	);
 
 	const max_value = Math.max(...data.map((d) => d.value), 1);
 
