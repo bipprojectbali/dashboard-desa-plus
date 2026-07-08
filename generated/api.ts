@@ -1671,6 +1671,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/sosial/pendidikan/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiSosialPendidikanStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/sosial/event-budaya/find-upcoming": {
         parameters: {
             query?: never;
@@ -7000,6 +7016,61 @@ export interface operations {
         };
     };
     "getApiSosialPosyanduFind-many": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                };
+            };
+        };
+    };
+    getApiSosialPendidikanStats: {
         parameters: {
             query?: never;
             header?: never;
