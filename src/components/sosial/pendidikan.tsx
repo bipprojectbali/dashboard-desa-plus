@@ -9,11 +9,7 @@ import {
 } from "@mantine/core";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
-
-const DESA_API =
-	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
-		? import.meta.env.VITE_DESA_API_URL
-		: "https://desa-darmasaba-stg.wibudev.com";
+import { apiClient } from "@/utils/api-client";
 
 interface JenjangItem {
 	nama: string;
@@ -27,10 +23,14 @@ interface PendidikanStats {
 }
 
 // Mengembalikan null bila gagal — mempertahankan perilaku lama (tanpa error UI).
+// Lewat proxy internal (/api/sosial/*) agar tidak kena CORS saat cross-origin
+// dari browser ke Desa API — server-to-server tidak butuh header CORS.
 async function fetchPendidikan(): Promise<PendidikanStats | null> {
-	const r = await fetch(`${DESA_API}/api/pendidikan/ringkasan/stats`);
-	const json = await r.json();
-	return json.success ? json.data : null;
+	const res = await apiClient.GET("/api/sosial/pendidikan/stats");
+	const body = res.data as
+		| { success: boolean; data: PendidikanStats | null }
+		| undefined;
+	return body?.success ? (body.data ?? null) : null;
 }
 
 export const Pendidikan = () => {

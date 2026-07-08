@@ -13,11 +13,7 @@ import {
 import { IconAlertCircle, IconBuildingHospital } from "@tabler/icons-react";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
-
-const DESA_API =
-	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
-		? import.meta.env.VITE_DESA_API_URL
-		: "https://desa-darmasaba-stg.wibudev.com";
+import { apiClient } from "@/utils/api-client";
 
 function stripHtml(html: string): string {
 	return html.replace(/<[^>]*>/g, "").trim();
@@ -42,9 +38,13 @@ interface PosyanduApiItem {
 }
 
 async function fetchPosyandu(): Promise<PosyanduApiItem[]> {
-	const r = await fetch(`${DESA_API}/api/kesehatan/posyandu/find-many`);
-	const res = await r.json();
-	if (res.success) return (res.data as PosyanduApiItem[]).slice(0, 5);
+	// Lewat proxy internal (/api/sosial/*) agar tidak kena CORS saat cross-origin
+	// dari browser ke Desa API — server-to-server tidak butuh header CORS.
+	const res = await apiClient.GET("/api/sosial/posyandu/find-many");
+	const body = res.data as
+		| { success: boolean; data: PosyanduApiItem[] | null }
+		| undefined;
+	if (body?.success && body.data) return body.data.slice(0, 5);
 	throw new Error("Data tidak tersedia");
 }
 

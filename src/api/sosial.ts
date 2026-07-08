@@ -81,6 +81,43 @@ export const sosial = new Elysia({ prefix: "/sosial" })
 		},
 	)
 	.get(
+		"/pendidikan/stats",
+		async ({ set }) => {
+			try {
+				const data = await withCache(
+					"sosial:pendidikan:stats",
+					TTL.SOSIAL,
+					async () => {
+						const response = await desaExternalClient.GET(
+							"/api/pendidikan/ringkasan/stats",
+						);
+						if (response.error) throw new Error(String(response.error));
+						return response.data?.data ?? null;
+					},
+				);
+				return { success: true, data };
+			} catch (error) {
+				logger.error({ error }, "Failed to proxy sosial pendidikan stats");
+				set.status = 500;
+				return { success: false, error: "Internal Server Error", data: null };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Any(),
+					error: t.Optional(t.String()),
+				}),
+				500: t.Object({
+					success: t.Boolean(),
+					error: t.String(),
+					data: t.Null(),
+				}),
+			},
+		},
+	)
+	.get(
 		"/event-budaya/find-upcoming",
 		async ({ set }) => {
 			try {
