@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.42] - 2026-07-08
+
+### Fixed
+- Data jadwal Posyandu dan ringkasan Pendidikan di halaman Sosial kini tampil di STG. Sebelumnya kedua komponen mengambil data langsung dari Desa API di browser, tetapi Desa API tidak mengirim header CORS sehingga response diblokir browser dan data jatuh ke kondisi kosong (0). Kini keduanya melewati proxy internal server (`/api/sosial/*`) sehingga bebas CORS dan mendapat cache.
+
 ## [0.1.41] - 2026-07-08
 
 ### Added
