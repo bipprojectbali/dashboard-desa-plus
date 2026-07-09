@@ -23,7 +23,6 @@ import {
 	TextInput,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconBook,
@@ -44,6 +43,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { HelpCard } from "@/components/ui/help-card";
 import { supportConfig } from "@/config/support";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 
 interface FaqItem {
@@ -66,8 +66,7 @@ const MAX_SCREENSHOT_BYTES = 2 * 1024 * 1024;
 
 const HelpPage = () => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const guideItems = [
 		{
@@ -588,7 +587,6 @@ const HelpPage = () => {
 													label: "WhatsApp",
 													value: supportConfig.whatsapp.label,
 													href: `https://wa.me/${supportConfig.whatsapp.number}`,
-													linkColor: "#16a34a",
 													external: true,
 												},
 												{
@@ -597,7 +595,6 @@ const HelpPage = () => {
 													label: "Email",
 													value: supportConfig.email,
 													href: `mailto:${supportConfig.email}`,
-													linkColor: "#2563eb",
 													external: false,
 												},
 												{
@@ -649,11 +646,8 @@ const HelpPage = () => {
 																	? "noreferrer"
 																	: undefined
 															}
+															c={item.color}
 															style={{
-																color:
-																	"linkColor" in item
-																		? item.linkColor
-																		: undefined,
 																textDecoration: "none",
 																display: "block",
 															}}

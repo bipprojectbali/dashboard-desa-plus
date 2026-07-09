@@ -1,12 +1,5 @@
-import {
-	Card,
-	Group,
-	Progress,
-	Stack,
-	Text,
-	Title,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Card, Group, Progress, Stack, Text, Title } from "@mantine/core";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 
 interface HealthProgressItem {
@@ -21,8 +14,7 @@ interface HealthStatsProps {
 
 export const HealthStats = ({ data }: HealthStatsProps) => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const defaultData: HealthProgressItem[] = [
 		{ label: t.sosial.imunisasiLengkap, value: 92, color: "green" },

@@ -4,7 +4,6 @@ import {
 	Group,
 	Tooltip,
 	UnstyledButton,
-	useMantineColorScheme,
 } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import type React from "react";
@@ -13,6 +12,7 @@ import { useSnapshot } from "valtio";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 import { useSidebarFullscreen } from "@/hooks/use-sidebar-fullscreen";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useSystemMonitor } from "@/hooks/useSystemMonitor";
 import { useTranslate } from "@/hooks/useTranslate";
 import { setAksesPrefs } from "@/store/akses";
@@ -102,7 +102,7 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 		toggleSidebar,
 		handleMainClick,
 	} = useSidebarFullscreen();
-	const { colorScheme } = useMantineColorScheme();
+	const dark = useIsDark();
 	const { animasiTransisi } = useSnapshot(i18nStore);
 	const { user } = useSnapshot(authStore);
 	const t = useTranslate();
@@ -151,9 +151,9 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 			.catch(() => {});
 	}, [user?.id, user?.role]);
 
-	const headerBgColor = colorScheme === "dark" ? "#11192D" : "#19355E";
-	const navbarBgColor = colorScheme === "dark" ? "#11192D" : "white";
-	const mainBgColor = colorScheme === "dark" ? "#11192D" : "#edf3f8ff";
+	const headerBgColor = dark ? "#11192D" : "#19355E";
+	const navbarBgColor = dark ? "#11192D" : "white";
+	const mainBgColor = dark ? "#11192D" : "#edf3f8ff";
 
 	return (
 		<AppShell

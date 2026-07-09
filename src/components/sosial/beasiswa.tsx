@@ -1,12 +1,6 @@
-import {
-	Card,
-	Group,
-	Stack,
-	Text,
-	ThemeIcon,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Card, Group, Stack, Text, ThemeIcon } from "@mantine/core";
 import { IconAward } from "@tabler/icons-react";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 
 interface ScholarshipData {
@@ -21,8 +15,7 @@ interface BeasiswaProps {
 
 export const Beasiswa = ({ data }: BeasiswaProps) => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const defaultData: ScholarshipData = {
 		penerima: 45,

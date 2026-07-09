@@ -1,5 +1,6 @@
-import { Card, Group, Text, useMantineColorScheme } from "@mantine/core";
+import { Card, Group, Text } from "@mantine/core";
 import { FileText } from "lucide-react";
+import { useIsDark } from "@/hooks/useIsDark";
 
 interface ArchiveItem {
 	name: string;
@@ -11,8 +12,7 @@ interface ArchiveCardProps {
 }
 
 export function ArchiveCard({ item, onClick }: ArchiveCardProps) {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	return (
 		<Card

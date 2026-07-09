@@ -40,6 +40,7 @@ import {
 	useNavigate,
 } from "@tanstack/react-router";
 import { useSnapshot } from "valtio";
+import { useIsDark } from "@/hooks/useIsDark";
 import { protectedRouteMiddleware } from "@/middleware/authMiddleware";
 import { authClient } from "@/utils/auth-client";
 import { authStore } from "../../store/auth";
@@ -53,8 +54,8 @@ function DashboardLayout() {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const snap = useSnapshot(authStore);
-	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const { setColorScheme } = useMantineColorScheme();
+	const dark = useIsDark();
 	const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
 	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
@@ -187,7 +188,7 @@ function DashboardLayout() {
 
 					<Group gap="md">
 						<ActionIcon
-							onClick={() => toggleColorScheme()}
+							onClick={() => setColorScheme(dark ? "light" : "dark")}
 							variant="subtle"
 							size="lg"
 							radius="xl"

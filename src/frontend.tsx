@@ -101,6 +101,7 @@ const theme = createTheme({
 		],
 	},
 	primaryColor: "darmasaba-blue",
+	autoContrast: true,
 });
 
 const DevInspectorLazy = IS_DEV

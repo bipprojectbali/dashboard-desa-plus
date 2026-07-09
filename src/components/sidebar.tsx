@@ -4,12 +4,12 @@ import {
 	Input,
 	NavLink as MantineNavLink,
 	Stack,
-	useMantineColorScheme,
 } from "@mantine/core";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { useSnapshot } from "valtio";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { permissionStore } from "@/store/permission";
 
@@ -20,11 +20,10 @@ interface SidebarProps {
 export function Sidebar({ className }: SidebarProps) {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const { colorScheme } = useMantineColorScheme();
+	const dark = useIsDark();
 	const t = useTranslate();
-	const dark = colorScheme === "dark";
-	const isActiveBg = colorScheme === "dark" ? "#182949" : "#E6F0FF";
-	const isActiveBorder = colorScheme === "dark" ? "#00398D" : "#1F41AE";
+	const isActiveBg = dark ? "#182949" : "#E6F0FF";
+	const isActiveBorder = dark ? "#00398D" : "#1F41AE";
 
 	const [query, setQuery] = useState("");
 	const { allowed } = useSnapshot(permissionStore);

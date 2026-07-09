@@ -16,7 +16,6 @@ import {
 	TextInput,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconBook,
@@ -35,6 +34,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { HelpCard } from "@/components/ui/help-card";
 import { supportConfig } from "@/config/support";
+import { useIsDark } from "@/hooks/useIsDark";
 
 export const Route = createFileRoute("/admin/help")({
 	component: AdminHelpPage,
@@ -189,8 +189,7 @@ const QUICK_REPLIES = [
 ];
 
 function AdminHelpPage() {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const [selectedGuide, setSelectedGuide] = useState<
 		(typeof guideItems)[0] | null

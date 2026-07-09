@@ -14,7 +14,6 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconCheck,
@@ -28,6 +27,7 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useApprovalGuard } from "@/hooks/useApprovalGuard";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import {
 	type FormatTanggal,
@@ -155,8 +155,7 @@ const UmumSettings = () => {
 		});
 	};
 
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const isDirty =
 		prefs.bahasa !== savedPrefs.bahasa ||

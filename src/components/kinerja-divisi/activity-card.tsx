@@ -1,11 +1,5 @@
-import {
-	Box,
-	Card,
-	Group,
-	Progress,
-	Text,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Box, Card, Group, Progress, Text } from "@mantine/core";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 
 interface ActivityCardProps {
@@ -41,8 +35,7 @@ export function ActivityCard({
 		}
 	};
 
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	return (
 		<Card

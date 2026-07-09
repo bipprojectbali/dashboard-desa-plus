@@ -6,7 +6,6 @@ import {
 	Stack,
 	Text,
 	ThemeIcon,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconBabyCarriage,
@@ -14,6 +13,7 @@ import {
 	IconMedicalCross,
 	IconStethoscope,
 } from "@tabler/icons-react";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 
 interface SummaryCardProps {
@@ -35,8 +35,7 @@ const SummaryCard = ({
 	highlight = false,
 	backgroundColor,
 }: SummaryCardProps) => {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	return (
 		<Card
@@ -59,7 +58,7 @@ const SummaryCard = ({
 					<Text
 						size="xl"
 						fw={700}
-						c={highlight ? "red" : dark ? "white" : "#1e3a5f"}
+						c={highlight ? "red" : dark ? "white" : "darmasaba-navy.7"}
 					>
 						{value}
 					</Text>
@@ -109,7 +108,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 					subtitle={t.sosial.aktif}
 					icon={<IconHeartbeat size={20} />}
 					color="white"
-					backgroundColor="#1E3A5F"
+					backgroundColor="darmasaba-navy.7"
 				/>
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
@@ -119,7 +118,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 					subtitle={t.sosial.terdaftar}
 					icon={<IconBabyCarriage size={20} />}
 					color="white"
-					backgroundColor="#1E3A5F"
+					backgroundColor="darmasaba-navy.7"
 				/>
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
@@ -129,7 +128,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 					subtitle={t.sosial.perhatian}
 					icon={<IconStethoscope size={20} />}
 					color="white"
-					backgroundColor="#1E3A5F"
+					backgroundColor="darmasaba-navy.7"
 				/>
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
@@ -139,7 +138,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 					subtitle={t.sosial.aktif}
 					icon={<IconMedicalCross size={20} />}
 					color="white"
-					backgroundColor="#1E3A5F"
+					backgroundColor="darmasaba-navy.7"
 				/>
 			</GridCol>
 		</Grid>

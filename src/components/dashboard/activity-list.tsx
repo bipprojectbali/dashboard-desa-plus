@@ -1,16 +1,8 @@
-import {
-	Box,
-	Card,
-	Group,
-	Skeleton,
-	Stack,
-	Text,
-	Title,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Box, Card, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
 import dayjs from "dayjs";
 import { Calendar } from "lucide-react";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -35,8 +27,7 @@ async function fetchUpcomingEvents(): Promise<EventData[]> {
 }
 
 export function ActivityList() {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const t = useTranslate();
 
 	const { data = [], isLoading: loading } = useApiQuery(

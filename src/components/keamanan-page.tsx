@@ -12,7 +12,6 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconAlertCircle,
@@ -23,6 +22,7 @@ import {
 	IconRefresh,
 } from "@tabler/icons-react";
 import L from "leaflet";
+import { useIsDark } from "@/hooks/useIsDark";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef, useState } from "react";
 import { useApiQuery } from "@/hooks/useApiQuery";
@@ -157,8 +157,7 @@ const CctvMap = ({
 
 const KeamananPage = () => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const [cctvPage, setCctvPage] = useState(1);
 

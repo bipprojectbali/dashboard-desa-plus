@@ -1,19 +1,11 @@
-import {
-	Avatar,
-	Card,
-	Grid,
-	GridCol,
-	Group,
-	Stack,
-	Text,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Avatar, Card, Grid, GridCol, Group, Stack, Text } from "@mantine/core";
 import {
 	IconCurrencyDollar,
 	IconTrendingUp,
 	IconUsers,
 } from "@tabler/icons-react";
 import { useSnapshot } from "valtio";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 
@@ -34,8 +26,7 @@ const KpiCard = ({
 	color,
 	backgroundColor,
 }: KpiCardProps) => {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const { lang } = useSnapshot(i18nStore);
 
 	const formatValue = (val: string | number) => {
@@ -80,7 +71,7 @@ const KpiCard = ({
 					<Text size="sm" c={dark ? "dark.3" : "dimmed"} fw={500}>
 						{title}
 					</Text>
-					<Text size="xl" fw={700} c={dark ? "white" : "#1e3a5f"}>
+					<Text size="xl" fw={700} c={dark ? "white" : "darmasaba-navy.7"}>
 						{formatValue(value)}
 					</Text>
 					{subtitle && (
@@ -132,7 +123,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			subtitle: t.bumdes.beroperasi,
 			icon: <IconCurrencyDollar size={25} />,
 			color: "white",
-			backgroundColor: "#1E3A5F",
+			backgroundColor: "darmasaba-navy.7",
 		},
 		{
 			title: t.bumdes.umkmTerdaftar,
@@ -140,7 +131,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			subtitle: t.bumdes.totalRegistrasi,
 			icon: <IconUsers size={25} />,
 			color: "white",
-			backgroundColor: "#1E3A5F",
+			backgroundColor: "darmasaba-navy.7",
 		},
 		{
 			title: t.bumdes.omzet,
@@ -148,7 +139,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			subtitle: t.bumdes.omzetBumdes,
 			icon: <IconTrendingUp size={25} />,
 			color: "white",
-			backgroundColor: "#1E3A5F",
+			backgroundColor: "darmasaba-navy.7",
 		},
 		{
 			title: t.bumdes.umkmTerbanyak,
@@ -156,7 +147,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			subtitle: `${t.bumdes.kategoriPrefix} ${displayData.kategoriTerbanyak.name}`,
 			icon: <IconTrendingUp size={25} />,
 			color: "white",
-			backgroundColor: "#1E3A5F",
+			backgroundColor: "darmasaba-navy.7",
 		},
 	];
 

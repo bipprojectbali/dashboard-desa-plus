@@ -18,7 +18,6 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconAdjustments,
@@ -40,6 +39,7 @@ import {
 } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
+import { useIsDark } from "@/hooks/useIsDark";
 import "dayjs/locale/id";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
@@ -692,8 +692,7 @@ const CACHE_MODULES = [
 ] as const;
 
 function AdminCacheSection() {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const [loadingPrefix, setLoadingPrefix] = useState<string | null>(null);
 	const [flushingAll, setFlushingAll] = useState(false);
 	const [result, setResult] = useState<{
@@ -832,8 +831,7 @@ function AdminCacheSection() {
 function AdminPreferencesPage() {
 	const t = useTranslate();
 	const { withApproval } = useApprovalGuard();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
 	const [savedPrefs, setSavedPrefs] = useState<Prefs>(DEFAULT_PREFS);

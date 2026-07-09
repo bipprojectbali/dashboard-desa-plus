@@ -1,12 +1,5 @@
-import {
-	Badge,
-	Card,
-	Group,
-	Stack,
-	Text,
-	Title,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Badge, Card, Group, Stack, Text, Title } from "@mantine/core";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 
 interface TopProduct {
@@ -41,8 +34,7 @@ const formatNumber = (value: number) => {
 
 export const TopProducts = ({ products }: TopProductsProps) => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const displayProducts = products ?? [];
 

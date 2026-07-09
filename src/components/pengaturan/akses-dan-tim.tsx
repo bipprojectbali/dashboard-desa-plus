@@ -13,7 +13,6 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconCheck,
@@ -29,6 +28,7 @@ import {
 import { useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
 import { useApprovalGuard } from "@/hooks/useApprovalGuard";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { setAksesPrefs } from "@/store/akses";
 import { authStore } from "@/store/auth";
@@ -149,8 +149,7 @@ const AksesDanTimSettings = () => {
 		setPrefs(savedPrefs);
 	};
 
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const SwitchRow = ({
 		label,

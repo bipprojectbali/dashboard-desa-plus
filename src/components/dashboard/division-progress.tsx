@@ -7,9 +7,9 @@ import {
 	Stack,
 	Text,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -39,8 +39,7 @@ async function fetchDivisions(): Promise<DivisionData[]> {
 }
 
 export function DivisionProgress() {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const t = useTranslate();
 
 	const { data = [], isLoading: loading } = useApiQuery(

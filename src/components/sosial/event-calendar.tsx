@@ -7,10 +7,10 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import { IconCalendarEvent } from "@tabler/icons-react";
 import { useState } from "react";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 
 const PAGE_SIZE = 5;
@@ -37,8 +37,7 @@ function formatTanggal(iso: string): string {
 
 export const EventCalendar = ({ data }: EventCalendarProps) => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const [page, setPage] = useState(1);
 
 	const totalPages = data ? Math.ceil(data.length / PAGE_SIZE) : 1;

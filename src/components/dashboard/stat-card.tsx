@@ -1,12 +1,6 @@
-import {
-	Box,
-	Card,
-	Group,
-	Text,
-	ThemeIcon,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Box, Card, Group, Text, ThemeIcon } from "@mantine/core";
 import type { ReactNode } from "react";
+import { useIsDark } from "@/hooks/useIsDark";
 
 interface StatCardProps {
 	title: string;
@@ -27,8 +21,7 @@ export function StatCard({
 	icon,
 	iconColor = "#1E3A5F",
 }: StatCardProps) {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const isPositiveTrend = trendValue ? trendValue >= 0 : true;
 

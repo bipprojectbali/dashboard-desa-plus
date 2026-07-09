@@ -1,13 +1,6 @@
-import {
-	Card,
-	Group,
-	Skeleton,
-	Stack,
-	Text,
-	Title,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Card, Group, Skeleton, Stack, Text, Title } from "@mantine/core";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -35,8 +28,7 @@ async function fetchPendidikan(): Promise<PendidikanStats | null> {
 
 export const Pendidikan = () => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const { data: stats = null, isLoading: loading } = useApiQuery(
 		["sosial-ext", "pendidikan"],

@@ -1,15 +1,9 @@
-import {
-	Card,
-	Group,
-	Skeleton,
-	Stack,
-	Text,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Card, Group, Skeleton, Stack, Text } from "@mantine/core";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { MessageCircle } from "lucide-react";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -49,8 +43,7 @@ async function fetchDiscussions(): Promise<DiscussionItem[]> {
 
 export function DiscussionPanel() {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const { data: discussions = [], isLoading: loading } = useApiQuery(
 		["kinerja", "latest-discussion"],
