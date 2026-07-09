@@ -7,10 +7,10 @@ import {
 	Stack,
 	Text,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import { IconArrowDownRight, IconArrowUpRight } from "@tabler/icons-react";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -41,9 +41,14 @@ async function fetchApbdes(): Promise<{ data: ApbdesData[]; title: string }> {
 			}))
 		: [];
 
-	// Update title with APBDes info from message
-	const title = res.data?.message
-		? res.data.message.replace("data", "Realisasi")
+	// Message is "Berhasil mendapatkan data <APBDes ... Tahun YYYY>".
+	// Turn it into a clean chart title: "Realisasi <name>".
+	const apbdesName = res.data?.message?.replace(
+		/^Berhasil mendapatkan data\s*/,
+		"",
+	);
+	const title = apbdesName
+		? `Realisasi ${apbdesName}`
 		: DEFAULT_APBDES_TITLE;
 
 	return { data, title };
@@ -96,8 +101,7 @@ interface ApbdesSummaryProps {
 }
 
 function ApbdesSummary({ title, data, icon }: ApbdesSummaryProps) {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const t = useTranslate();
 	const progressColor = getProgressColor(data.percentage);
 	const statusMessage = getStatusMessage(data.percentage, t.dashboard);
@@ -192,8 +196,7 @@ function ApbdesSummary({ title, data, icon }: ApbdesSummaryProps) {
 }
 
 export function ChartAPBDes() {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const t = useTranslate();
 
 	const { data: apbdes, isLoading: loading } = useApiQuery(

@@ -718,9 +718,11 @@ export const noc = new Elysia({ prefix: "/noc" })
 
 						console.log("[APBDes] Transformed chart data:", chartData);
 
+						// `name` already includes "APBDes ... Tahun <year>", so don't
+						// re-prepend "APBDes" or re-append the year (avoids redundancy).
 						return {
 							success: true,
-							message: `Berhasil mendapatkan data APBDes ${apbdesData.name || ""} (${apbdesData.tahun || ""})`,
+							message: `Berhasil mendapatkan data ${apbdesData.name || "APBDes"}`,
 							data: chartData,
 						};
 					}

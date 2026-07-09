@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.43] - 2026-07-09
+
+### Fixed
+- Grafik Tingkat Kepuasan di dashboard kini menampilkan data responden asli di STG. Sebelumnya browser mengambil data langsung dari NOC API sehingga terblokir CORS dan jatuh ke data seed DB — semua segmen tampil dengan label "Puas". Kini data dilewatkan proxy internal server (`/api/dashboard/satisfaction-responden`) sehingga bebas CORS dan label rating tampil benar.
+- Teks tooltip pada semua grafik (donut & bar) kini terbaca di dark mode. Sebelumnya warna teks item tooltip mengikuti default gelap Recharts sehingga tidak terlihat di atas latar gelap.
+
 ## [0.1.42] - 2026-07-08
 
 ### Fixed

@@ -61,6 +61,7 @@ export const TTL = {
 	KEAMANAN: 30 * 60 * 1000,
 	SOSIAL: 30 * 60 * 1000,
 	BUMDES: 60 * 60 * 1000,
+	DASHBOARD: 15 * 60 * 1000,
 } as const;
 
 export async function withCache<T>(

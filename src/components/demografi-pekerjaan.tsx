@@ -10,7 +10,6 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import {
@@ -37,6 +36,7 @@ import {
 } from "recharts";
 import { useSnapshot } from "valtio";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 import { apiClient } from "@/utils/api-client";
@@ -307,8 +307,7 @@ async function fetchDemografiAll(): Promise<DemografiAll> {
 
 const DemografiPekerjaan = () => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const { tampilkanGrid } = useSnapshot(i18nStore);
 
 	const {
@@ -500,7 +499,7 @@ const DemografiPekerjaan = () => {
 											</Group>
 										</Stack>
 										<ThemeIcon
-											color="#1E3A5F"
+											color="darmasaba-navy.7"
 											variant="filled"
 											size="lg"
 											radius="xl"
@@ -529,7 +528,12 @@ const DemografiPekerjaan = () => {
 						h="100%"
 					>
 						<Group gap="xs" mb="md">
-							<ThemeIcon color="#1E3A5F" variant="filled" size="sm" radius="sm">
+							<ThemeIcon
+								color="darmasaba-navy.7"
+								variant="filled"
+								size="sm"
+								radius="sm"
+							>
 								<BarChart3 size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
@@ -577,6 +581,7 @@ const DemografiPekerjaan = () => {
 											borderColor: dark ? "#334155" : "#e5e7eb",
 											borderRadius: "8px",
 										}}
+										itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 										labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 									/>
 									<Bar
@@ -605,7 +610,12 @@ const DemografiPekerjaan = () => {
 						h="100%"
 					>
 						<Group gap="xs" mb="md">
-							<ThemeIcon color="#1E3A5F" variant="filled" size="sm" radius="sm">
+							<ThemeIcon
+								color="darmasaba-navy.7"
+								variant="filled"
+								size="sm"
+								radius="sm"
+							>
 								<Building2 size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
@@ -656,6 +666,8 @@ const DemografiPekerjaan = () => {
 											borderColor: dark ? "#334155" : "#e5e7eb",
 											borderRadius: "8px",
 										}}
+										itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+										labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 									/>
 									<Bar
 										dataKey="total"
@@ -683,7 +695,12 @@ const DemografiPekerjaan = () => {
 						h="100%"
 					>
 						<Group gap="xs" mb="md">
-							<ThemeIcon color="#1E3A5F" variant="filled" size="sm" radius="sm">
+							<ThemeIcon
+								color="darmasaba-navy.7"
+								variant="filled"
+								size="sm"
+								radius="sm"
+							>
 								<BarChart3 size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
@@ -751,7 +768,12 @@ const DemografiPekerjaan = () => {
 						h="100%"
 					>
 						<Group gap="xs" mb="md">
-							<ThemeIcon color="#1E3A5F" variant="filled" size="sm" radius="sm">
+							<ThemeIcon
+								color="darmasaba-navy.7"
+								variant="filled"
+								size="sm"
+								radius="sm"
+							>
 								<PieChartIcon size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
@@ -789,6 +811,8 @@ const DemografiPekerjaan = () => {
 												borderColor: dark ? "#334155" : "#e5e7eb",
 												borderRadius: "8px",
 											}}
+											itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+											labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 										/>
 									</PieChart>
 								</ResponsiveContainer>
@@ -833,7 +857,12 @@ const DemografiPekerjaan = () => {
 						h="100%"
 					>
 						<Group gap="xs" mb="md">
-							<ThemeIcon color="#1E3A5F" variant="filled" size="sm" radius="sm">
+							<ThemeIcon
+								color="darmasaba-navy.7"
+								variant="filled"
+								size="sm"
+								radius="sm"
+							>
 								<Users size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
@@ -981,7 +1010,12 @@ const DemografiPekerjaan = () => {
 						h="100%"
 					>
 						<Group gap="xs" mb="md">
-							<ThemeIcon color="#1E3A5F" variant="filled" size="sm" radius="sm">
+							<ThemeIcon
+								color="darmasaba-navy.7"
+								variant="filled"
+								size="sm"
+								radius="sm"
+							>
 								<BarChart3 size={14} />
 							</ThemeIcon>
 							<Title order={4} c={dark ? "white" : "gray.9"}>
@@ -1032,6 +1066,8 @@ const DemografiPekerjaan = () => {
 											borderColor: dark ? "#334155" : "#e5e7eb",
 											borderRadius: "8px",
 										}}
+										itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+										labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 									/>
 									<Bar
 										dataKey="value"

@@ -1,14 +1,7 @@
-import {
-	Box,
-	Card,
-	Group,
-	Skeleton,
-	Stack,
-	Text,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Box, Card, Group, Skeleton, Stack, Text } from "@mantine/core";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -37,8 +30,7 @@ async function fetchActivityStats(): Promise<ProgressData[]> {
 
 export function ProgressChart() {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const { data = [], isLoading: loading } = useApiQuery(
 		["kinerja", "progress-diagram"],
@@ -87,6 +79,8 @@ export function ProgressChart() {
 									borderColor: dark ? "#334155" : "#e5e7eb",
 									borderRadius: "8px",
 								}}
+								itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+								labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 							/>
 						</PieChart>
 					</ResponsiveContainer>
