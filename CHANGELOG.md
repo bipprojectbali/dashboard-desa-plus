@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.44] - 2026-07-09
+
+### Fixed
+- Bagian "Top 3 Produk Terlaris" di menu BumDes & UMKM Desa kini menampilkan pesan "Belum ada data produk terlaris" beserta ikon saat data kosong. Sebelumnya area tersebut tampil kosong tanpa keterangan apa pun.
+
 ## [0.1.43] - 2026-07-09
 
 ### Fixed
