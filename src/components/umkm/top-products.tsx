@@ -1,4 +1,5 @@
 import { Badge, Card, Group, Stack, Text, Title } from "@mantine/core";
+import { IconPackageOff } from "@tabler/icons-react";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 
@@ -62,6 +63,18 @@ export const TopProducts = ({ products }: TopProductsProps) => {
 				{t.bumdes.top3Produk}
 			</Title>
 			<Stack gap="sm">
+				{displayProducts.length === 0 && (
+					<Stack align="center" justify="center" gap="xs" py="xl">
+						<IconPackageOff
+							size={40}
+							color={dark ? "#64748B" : "#94A3B8"}
+							stroke={1.5}
+						/>
+						<Text size="sm" c={dark ? "dimmed" : "gray.6"} ta="center">
+							{t.bumdes.tidakAdaProdukTerlaris}
+						</Text>
+					</Stack>
+				)}
 				{displayProducts.map((product) => (
 					<Group key={product.rank} justify="space-between" align="center">
 						<Group gap="sm">

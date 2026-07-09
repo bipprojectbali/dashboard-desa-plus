@@ -238,6 +238,7 @@ export type TranslationKeys = {
 		umkmTerbanyak: string;
 		kategoriPrefix: string;
 		top3Produk: string;
+		tidakAdaProdukTerlaris: string;
 		terjual: string;
 		detailPenjualan: string;
 		semuaKategori: string;
@@ -706,6 +707,7 @@ const id: TranslationKeys = {
 		umkmTerbanyak: "UMKM Terbanyak",
 		kategoriPrefix: "Kategori",
 		top3Produk: "Top 3 Produk Terlaris",
+		tidakAdaProdukTerlaris: "Belum ada data produk terlaris",
 		terjual: "terjual",
 		detailPenjualan: "Detail Penjualan Produk",
 		semuaKategori: "Semua Kategori",
