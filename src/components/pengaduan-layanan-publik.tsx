@@ -11,7 +11,6 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import dayjs from "dayjs";
@@ -36,6 +35,7 @@ import {
 } from "recharts";
 import { useSnapshot } from "valtio";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 
@@ -129,8 +129,7 @@ function EmptyState({
 
 const PengaduanLayananPublik = () => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const { tampilkanGrid } = useSnapshot(i18nStore);
 
 	const { data, loading, error, refresh } = usePengaduanNoc();
@@ -153,28 +152,28 @@ const PengaduanLayananPublik = () => {
 			value: stats.total,
 			subtitle: t.pengaduanLayanan.bulanIni,
 			icon: MessageCircle,
-			color: "#1E3A5F",
+			color: "darmasaba-navy.7",
 		},
 		{
 			title: t.pengaduanLayanan.baru,
 			value: stats.baru,
 			subtitle: t.pengaduanLayanan.belumDiproses,
 			icon: FileText,
-			color: "#1E3A5F",
+			color: "darmasaba-navy.7",
 		},
 		{
 			title: t.pengaduanLayanan.diproses,
 			value: stats.diproses,
 			subtitle: t.pengaduanLayanan.sedangDitangani,
 			icon: Clock,
-			color: "#1E3A5F",
+			color: "darmasaba-navy.7",
 		},
 		{
 			title: t.pengaduanLayanan.selesai,
 			value: stats.selesai,
 			subtitle: t.pengaduanLayanan.terselesaikan,
 			icon: CheckCircle,
-			color: "#1E3A5F",
+			color: "darmasaba-navy.7",
 		},
 	];
 
@@ -296,6 +295,7 @@ const PengaduanLayananPublik = () => {
 									borderColor: dark ? "#334155" : "#e5e7eb",
 									borderRadius: "8px",
 								}}
+								itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 								labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 							/>
 							<Line
@@ -303,7 +303,11 @@ const PengaduanLayananPublik = () => {
 								dataKey="jumlah"
 								stroke="#396aaaff"
 								strokeWidth={2}
-								dot={{ fill: "#1E3A5F", strokeWidth: 2, r: 4 }}
+								dot={{
+									fill: "var(--mantine-color-darmasaba-navy-7)",
+									strokeWidth: 2,
+									r: 4,
+								}}
 								activeDot={{ r: 6 }}
 							/>
 						</LineChart>
@@ -366,6 +370,8 @@ const PengaduanLayananPublik = () => {
 											borderColor: dark ? "#334155" : "#e5e7eb",
 											borderRadius: "8px",
 										}}
+										itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+										labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 									/>
 									<Bar
 										dataKey="jumlah"

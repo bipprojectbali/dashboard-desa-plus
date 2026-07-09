@@ -13,7 +13,6 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	AlertTriangle,
@@ -34,6 +33,7 @@ import {
 } from "recharts";
 import { useSnapshot } from "valtio";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 
@@ -87,8 +87,7 @@ function useJennaAnalytics() {
 
 const JennaAnalytic = () => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const { tampilkanGrid } = useSnapshot(i18nStore);
 
 	const { data, loading, error } = useJennaAnalytics();
@@ -205,7 +204,7 @@ const JennaAnalytic = () => {
 									</Group>
 								</Stack>
 								<ThemeIcon
-									color="#1E3A5F"
+									color="darmasaba-navy.7"
 									variant="filled"
 									size="lg"
 									radius="xl"
@@ -260,6 +259,7 @@ const JennaAnalytic = () => {
 								borderColor: dark ? "#334155" : "#e5e7eb",
 								borderRadius: "8px",
 							}}
+							itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 							labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 							cursor={{ fill: dark ? "#334155" : "#f3f4f6" }}
 						/>
@@ -350,7 +350,7 @@ const JennaAnalytic = () => {
 										value={item.percentage}
 										size="lg"
 										radius="xl"
-										color="#1E3A5F"
+										color="darmasaba-navy.7"
 										animated
 									/>
 								</Box>

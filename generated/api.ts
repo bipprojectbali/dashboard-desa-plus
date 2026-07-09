@@ -872,6 +872,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/dashboard/satisfaction-responden": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiDashboardSatisfaction-responden"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/demografi/summary": {
         parameters: {
             query?: never;
@@ -4279,6 +4295,73 @@ export interface operations {
                             value: number;
                             color: string;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiDashboardSatisfaction-responden": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: {
+                            apiName: string;
+                            value: number;
+                            color: string;
+                        }[];
+                        error?: string;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: {
+                            apiName: string;
+                            value: number;
+                            color: string;
+                        }[];
+                        error?: string;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: {
+                            apiName: string;
+                            value: number;
+                            color: string;
+                        }[];
+                        error?: string;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: unknown[];
                     };
                 };
             };

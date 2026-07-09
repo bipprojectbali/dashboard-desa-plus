@@ -6,7 +6,6 @@ import {
 	Skeleton,
 	Text,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	Bar,
@@ -18,6 +17,7 @@ import {
 	YAxis,
 } from "recharts";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -43,8 +43,7 @@ async function fetchServiceTrends(): Promise<ChartData[]> {
 }
 
 export function ChartSurat() {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const t = useTranslate();
 
 	const { data = [], isLoading: loading } = useApiQuery(
@@ -127,6 +126,7 @@ export function ChartSurat() {
 									borderRadius: "8px",
 									boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
 								}}
+								itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 								labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 							/>
 							<Bar

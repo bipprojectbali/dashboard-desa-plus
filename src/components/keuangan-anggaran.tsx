@@ -13,7 +13,6 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useComputedColorScheme,
 	useMantineTheme,
 } from "@mantine/core";
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
@@ -38,6 +37,7 @@ import {
 } from "recharts";
 import { useSnapshot } from "valtio";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 import { apiClient } from "@/utils/api-client";
@@ -283,10 +283,7 @@ async function fetchApbdesData(
 const KeuanganAnggaran = () => {
 	const t = useTranslate();
 	const theme = useMantineTheme();
-	const computedScheme = useComputedColorScheme("light", {
-		getInitialValueInEffect: false,
-	});
-	const dark = computedScheme === "dark";
+	const dark = useIsDark();
 	const { tampilkanGrid } = useSnapshot(i18nStore);
 
 	// Resolved color tokens — used for recharts (SVG attrs require concrete values,
@@ -478,6 +475,7 @@ const KeuanganAnggaran = () => {
 											borderColor: tooltipBorder,
 											borderRadius: "8px",
 										}}
+										itemStyle={{ color: axisTick }}
 										labelStyle={{ color: axisTick }}
 										formatter={(value: number | undefined) => [
 											`Rp ${value}jt`,
@@ -573,6 +571,8 @@ const KeuanganAnggaran = () => {
 											borderColor: tooltipBorder,
 											borderRadius: "8px",
 										}}
+										itemStyle={{ color: axisTick }}
+										labelStyle={{ color: axisTick }}
 										formatter={(value: number | undefined) => [
 											`Rp ${value}jt`,
 											t.keuanganAnggaran.jumlah,

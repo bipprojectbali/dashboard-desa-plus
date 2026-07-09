@@ -1,5 +1,16 @@
 import { Elysia, t } from "elysia";
+import { TTL, withCache } from "../utils/cache";
 import { prisma } from "../utils/db";
+import logger from "../utils/logger";
+
+// Mapping nama rating dari NOC API → warna chart.
+// Key harus sama dengan RATING_NAME_MAP di satisfaction-chart.tsx.
+const RATING_COLOR_MAP: Record<string, { color: string; order: number }> = {
+	"Sangat Baik": { color: "#10B981", order: 0 },
+	Baik: { color: "#3B82F6", order: 1 },
+	"Kurang Baik": { color: "#F59E0B", order: 2 },
+	"Sangat Kurang Baik": { color: "#EF4444", order: 3 },
+};
 
 export const dashboard = new Elysia({ prefix: "/dashboard" })
 	.get(
@@ -66,6 +77,76 @@ export const dashboard = new Elysia({ prefix: "/dashboard" })
 							color: t.String(),
 						}),
 					),
+				}),
+			},
+		},
+	)
+	.get(
+		"/satisfaction-responden",
+		async ({ set }) => {
+			try {
+				// Proxy server-side ke NOC agar tidak kena CORS di browser (staging).
+				const data = await withCache(
+					"dashboard:satisfaction:responden",
+					TTL.DASHBOARD,
+					async () => {
+						const baseUrl =
+							process.env.DESA_API_URL ||
+							"https://desa-darmasaba-stg.wibudev.com";
+						const response = await fetch(
+							`${baseUrl}/api/landingpage/responden/findMany`,
+						);
+						if (!response.ok) {
+							throw new Error(`External API error: ${response.status}`);
+						}
+						const json = await response.json();
+						if (!json.success || !Array.isArray(json.data)) {
+							throw new Error("Invalid response from external API");
+						}
+
+						// Agregasi: hitung jumlah tiap rating.
+						const counts: Record<string, number> = {};
+						for (const r of json.data as Array<{
+							rating?: { name?: string };
+						}>) {
+							const name = r.rating?.name;
+							if (name) counts[name] = (counts[name] ?? 0) + 1;
+						}
+
+						return Object.entries(RATING_COLOR_MAP)
+							.filter(([apiName]) => counts[apiName])
+							.sort((a, b) => a[1].order - b[1].order)
+							.map(([apiName, mapping]) => ({
+								apiName,
+								value: counts[apiName] ?? 0,
+								color: mapping.color,
+							}));
+					},
+				);
+				return { success: true, data };
+			} catch (error) {
+				logger.error({ error }, "Failed to proxy dashboard satisfaction");
+				set.status = 500;
+				return { success: false, error: "Internal Server Error", data: [] };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Array(
+						t.Object({
+							apiName: t.String(),
+							value: t.Number(),
+							color: t.String(),
+						}),
+					),
+					error: t.Optional(t.String()),
+				}),
+				500: t.Object({
+					success: t.Boolean(),
+					error: t.String(),
+					data: t.Array(t.Unknown()),
 				}),
 			},
 		},

@@ -1,10 +1,4 @@
-import {
-	Card,
-	Group,
-	Skeleton,
-	Text,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Card, Group, Skeleton, Text } from "@mantine/core";
 import {
 	Bar,
 	BarChart,
@@ -16,6 +10,7 @@ import {
 	YAxis,
 } from "recharts";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -38,8 +33,7 @@ async function fetchDocumentStats(): Promise<DocumentData[]> {
 
 export function DocumentChart() {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const { data = [], isLoading: loading } = useApiQuery(
 		["kinerja", "document-diagram"],
@@ -91,6 +85,7 @@ export function DocumentChart() {
 								borderColor: dark ? "#334155" : "#e5e7eb",
 								borderRadius: "8px",
 							}}
+							itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 							labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 						/>
 						<Bar dataKey="value" radius={[4, 4, 0, 0]}>

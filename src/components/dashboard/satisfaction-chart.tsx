@@ -1,14 +1,7 @@
-import {
-	Box,
-	Card,
-	Group,
-	Skeleton,
-	Text,
-	Title,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Box, Card, Group, Skeleton, Text, Title } from "@mantine/core";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -33,76 +26,45 @@ const RATING_NAME_MAP: Record<
 	"Sangat Kurang Baik": { color: "#EF4444", order: 3, key: "kurang" },
 };
 
+// Alias nama kategori seed DB (fallback) → key RATING_NAME_MAP.
+// Seed lama pakai "Sangat Puas"/"Puas"/dst, NOC API pakai "Sangat Baik"/"Baik"/dst.
+const FALLBACK_CATEGORY_ALIAS: Record<string, keyof typeof RATING_NAME_MAP> = {
+	"Sangat Puas": "Sangat Baik",
+	Puas: "Baik",
+	Cukup: "Kurang Baik",
+	Kurang: "Sangat Kurang Baik",
+};
+
 async function fetchSatisfaction(): Promise<SatisfactionData[]> {
-	try {
-		// Fetch data responden LANGSUNG dari external API
-		const externalApiUrl =
-			(typeof import.meta.env !== "undefined" &&
-				import.meta.env?.VITE_DESA_API_URL) ||
-			"https://desa-darmasaba-stg.wibudev.com";
-
-		const respondentsResponse = await fetch(
-			`${externalApiUrl}/api/landingpage/responden/findMany`,
-		);
-
-		if (!respondentsResponse.ok) {
-			throw new Error(`External API error: ${respondentsResponse.status}`);
-		}
-
-		const respondentsJson = await respondentsResponse.json();
-
-		if (
-			!respondentsJson.success ||
-			!respondentsJson.data ||
-			respondentsJson.data.length === 0
-		) {
-			throw new Error("No respondents data from external API");
-		}
-
-		// Aggregate: hitung jumlah setiap rating
-		const ratingCounts: Record<string, number> = {};
-
-		respondentsJson.data.forEach((responden: { rating: { name: string } }) => {
-			const ratingName = responden.rating?.name;
-			if (ratingName) {
-				ratingCounts[ratingName] = (ratingCounts[ratingName] || 0) + 1;
-			}
-		});
-
-		// Map ke format chart
-		const chartData: SatisfactionData[] = Object.entries(RATING_NAME_MAP)
-			.filter(([apiName]) => ratingCounts[apiName])
-			.map(([apiName, mapping]) => ({
-				apiName,
-				value: ratingCounts[apiName] ?? 0,
-				color: mapping.color,
-			}))
-			.sort((a, b) => a.value - b.value);
-
-		if (chartData.length === 0) {
-			throw new Error("No valid rating data found");
-		}
-
-		return chartData;
-	} catch (error) {
-		console.error("Failed to fetch satisfaction data", error);
-
-		// Error fallback: pakai data dari local DB
-		const countsRes = await apiClient.GET("/api/dashboard/satisfaction", {});
-		if (countsRes.data?.data) {
-			return countsRes.data.data.map((d) => ({
-				apiName: d.category,
-				value: d.value,
-				color: d.color,
-			}));
-		}
-		return [];
+	// Ambil data responden via proxy internal (server-side fetch, bebas CORS).
+	const respondenRes = await apiClient.GET(
+		"/api/dashboard/satisfaction-responden",
+		{},
+	);
+	const respondenData = respondenRes.data?.data;
+	if (respondenData && respondenData.length > 0) {
+		return respondenData.map((d) => ({
+			apiName: d.apiName,
+			value: d.value,
+			color: d.color,
+		}));
 	}
+
+	// Fallback: pakai data dari local DB. Normalisasi category seed lama
+	// ke apiName yang dikenal RATING_NAME_MAP supaya label tetap benar.
+	const countsRes = await apiClient.GET("/api/dashboard/satisfaction", {});
+	if (countsRes.data?.data) {
+		return countsRes.data.data.map((d) => ({
+			apiName: FALLBACK_CATEGORY_ALIAS[d.category] ?? d.category,
+			value: d.value,
+			color: d.color,
+		}));
+	}
+	return [];
 }
 
 export function SatisfactionChart() {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const t = useTranslate();
 
 	const { data = [], isLoading: loading } = useApiQuery(
@@ -160,6 +122,8 @@ export function SatisfactionChart() {
 								borderColor: dark ? "#334155" : "#e5e7eb",
 								borderRadius: "8px",
 							}}
+							itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+							labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 						/>
 					</PieChart>
 				</ResponsiveContainer>
