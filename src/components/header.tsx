@@ -19,6 +19,7 @@ import { Bell, Moon, Search, Sun, User as UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
 import { GlobalSearch, useGlobalSearch } from "@/components/global-search";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { authStore } from "@/store/auth";
 import { i18nStore } from "@/store/i18n";
@@ -32,8 +33,8 @@ interface HeaderProps {
 export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const { setColorScheme } = useMantineColorScheme();
+	const dark = useIsDark();
 	const snap = useSnapshot(authStore);
 	const { zonaWaktu, formatTanggal } = useSnapshot(i18nStore);
 	const t = useTranslate();
@@ -262,7 +263,7 @@ export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 						</ActionIcon>
 
 						<ActionIcon
-							onClick={() => toggleColorScheme()}
+							onClick={() => setColorScheme(dark ? "light" : "dark")}
 							variant="subtle"
 							size="lg"
 							radius="xl"
