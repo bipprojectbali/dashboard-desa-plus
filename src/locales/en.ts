@@ -243,6 +243,7 @@ const en: TranslationKeys = {
 		umkmTerbanyak: "Top UMKM",
 		kategoriPrefix: "Category",
 		top3Produk: "Top 3 Best Selling Products",
+		tidakAdaProdukTerlaris: "No best selling product data available",
 		terjual: "sold",
 		detailPenjualan: "Product Sales Detail",
 		semuaKategori: "All Categories",
