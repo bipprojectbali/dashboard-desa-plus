@@ -15,7 +15,6 @@ import {
 	ThemeIcon,
 	Title,
 	Tooltip,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconCheck,
@@ -38,6 +37,7 @@ import { useSnapshot } from "valtio";
 import { useActivityLogger } from "@/hooks/useActivityLogger";
 import { useAksesPrefs } from "@/hooks/useAksesPrefs";
 import { useApprovalGuard } from "@/hooks/useApprovalGuard";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { authStore } from "@/store/auth";
 import { SesiAktifModal } from "./keamanan/SesiAktifModal";
@@ -189,8 +189,7 @@ const KeamananSettings = () => {
 		}
 	};
 
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const SwitchRow = ({
 		label,

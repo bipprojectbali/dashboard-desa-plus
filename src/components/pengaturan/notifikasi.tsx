@@ -13,7 +13,6 @@ import {
 	ThemeIcon,
 	Title,
 	Tooltip,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconBell,
@@ -31,6 +30,7 @@ import {
 } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 import { useApprovalGuard } from "@/hooks/useApprovalGuard";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useNotification } from "@/hooks/useNotification";
 import { useTranslate } from "@/hooks/useTranslate";
 import { setNotifPrefs } from "@/store/notif";
@@ -142,8 +142,7 @@ const NotifikasiSettings = () => {
 		setPrefs(savedPrefs);
 	};
 
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const SwitchRow = ({
 		label,

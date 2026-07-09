@@ -11,7 +11,6 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import {
@@ -22,6 +21,7 @@ import {
 	IconUser,
 } from "@tabler/icons-react";
 import dayjs from "dayjs";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 
 export interface InnovationIdea {
@@ -79,8 +79,7 @@ export const InnovationIdeaModal = ({
 	onClose,
 }: InnovationIdeaModalProps) => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const isMobile = useMediaQuery("(max-width: 48em)");
 
 	if (!idea) return null;

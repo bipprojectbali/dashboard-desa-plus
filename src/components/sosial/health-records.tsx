@@ -12,7 +12,6 @@ import {
 	Tabs,
 	Text,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconAlertCircle,
@@ -22,6 +21,7 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 
 const DESA_API =
 	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
@@ -575,8 +575,7 @@ function PenderitaTab({ banjarId, dark }: PenderitaTabProps) {
 
 // ── Main HealthRecords Component ─────────────────────────────
 export const HealthRecords = () => {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const [banjarId, setBanjarId] = useState<string | null>(null);
 	const [activeTab, setActiveTab] = useState<string | null>("ibu-hamil");

@@ -1,6 +1,7 @@
 import type { CardProps } from "@mantine/core";
-import { Card, useComputedColorScheme, useMantineTheme } from "@mantine/core";
+import { Card, useMantineTheme } from "@mantine/core";
 import type { ReactNode } from "react";
+import { useIsDark } from "@/hooks/useIsDark";
 
 interface HelpCardProps extends CardProps {
 	children: ReactNode;
@@ -17,8 +18,7 @@ export const HelpCard = ({
 	...props
 }: HelpCardProps) => {
 	const theme = useMantineTheme();
-	const colorScheme = useComputedColorScheme("light");
-	const isDark = colorScheme === "dark";
+	const isDark = useIsDark();
 
 	return (
 		<Card

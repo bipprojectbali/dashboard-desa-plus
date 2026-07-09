@@ -1,14 +1,7 @@
-import {
-	ActionIcon,
-	AppShell,
-	Box,
-	Button,
-	Group,
-	Text,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { ActionIcon, AppShell, Box, Button, Group, Text } from "@mantine/core";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { useIsDark } from "@/hooks/useIsDark";
 
 export const Route = createFileRoute("/profile")({
 	component: ProfileLayout,
@@ -16,8 +9,7 @@ export const Route = createFileRoute("/profile")({
 
 function ProfileLayout() {
 	const navigate = useNavigate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	return (
 		<AppShell

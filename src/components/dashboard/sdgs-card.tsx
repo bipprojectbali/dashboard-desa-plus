@@ -1,5 +1,6 @@
-import { Box, Card, Group, Text, useMantineColorScheme } from "@mantine/core";
+import { Box, Card, Group, Text } from "@mantine/core";
 import type { ReactNode } from "react";
+import { useIsDark } from "@/hooks/useIsDark";
 
 interface SDGSCardProps {
 	title: string;
@@ -8,8 +9,7 @@ interface SDGSCardProps {
 }
 
 export function SDGSCard({ title, score, image }: SDGSCardProps) {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	return (
 		<Card

@@ -1,13 +1,7 @@
-import {
-	Card,
-	Group,
-	Skeleton,
-	Stack,
-	Text,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Card, Group, Skeleton, Stack, Text } from "@mantine/core";
 import { ChevronRight } from "lucide-react";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -37,8 +31,7 @@ async function fetchDivisionList(): Promise<DivisionItem[]> {
 
 export function DivisionList() {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const { data: divisions = [], isLoading: loading } = useApiQuery(
 		["kinerja", "division-list"],

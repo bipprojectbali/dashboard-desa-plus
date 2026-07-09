@@ -13,7 +13,6 @@ import {
 	Text,
 	ThemeIcon,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import {
 	IconArrowDown,
@@ -26,6 +25,7 @@ import {
 	IconTrendingDown,
 	IconTrendingUp,
 } from "@tabler/icons-react";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import type { SalesData } from "./sales-table";
 
@@ -41,8 +41,7 @@ export const SalesDetailModal = ({
 	onClose,
 }: SalesDetailModalProps) => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	if (!product) return null;
 

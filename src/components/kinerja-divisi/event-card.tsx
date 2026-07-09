@@ -1,14 +1,7 @@
-import {
-	Box,
-	Card,
-	Group,
-	Skeleton,
-	Stack,
-	Text,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Box, Card, Group, Skeleton, Stack, Text } from "@mantine/core";
 import { Calendar } from "lucide-react";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -41,8 +34,7 @@ async function fetchTodayEvents(): Promise<AgendaItem[]> {
 
 export function EventCard({ agendas: propAgendas }: EventCardProps) {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	// Hanya fetch bila agenda tidak disediakan lewat props.
 	const shouldFetch = !propAgendas || propAgendas.length === 0;

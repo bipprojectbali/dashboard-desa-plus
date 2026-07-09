@@ -8,10 +8,10 @@ import {
 	Stack,
 	Text,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import { IconAlertCircle, IconBuildingHospital } from "@tabler/icons-react";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 
@@ -50,8 +50,7 @@ async function fetchPosyandu(): Promise<PosyanduApiItem[]> {
 
 export const PosyanduSchedule = () => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const {
 		data: items = [],

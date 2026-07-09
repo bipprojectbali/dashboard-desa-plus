@@ -7,10 +7,10 @@ import {
 	Table,
 	Text,
 	Title,
-	useMantineColorScheme,
 } from "@mantine/core";
 import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
 import { useSnapshot } from "valtio";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 
@@ -48,8 +48,7 @@ export const SalesTable = ({
 	onUmkmChange,
 }: SalesTableProps) => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const displayData = data ?? [];
 

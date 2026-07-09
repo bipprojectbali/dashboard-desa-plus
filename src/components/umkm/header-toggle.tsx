@@ -1,11 +1,6 @@
-import {
-	Button,
-	Card,
-	Group,
-	Title,
-	useMantineColorScheme,
-} from "@mantine/core";
+import { Button, Card, Group, Title } from "@mantine/core";
 import { useSnapshot } from "valtio";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { setRange, umkmStore } from "../../store/umkm";
 
@@ -18,8 +13,7 @@ interface HeaderToggleProps {
 
 export const HeaderToggle = ({ title, onRangeChange }: HeaderToggleProps) => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 	const { selectedRange } = useSnapshot(umkmStore);
 	const displayTitle = title ?? t.bumdes.updatePenjualan;
 

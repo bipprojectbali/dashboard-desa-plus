@@ -1,5 +1,6 @@
-import { Card, Group, Stack, Text, useMantineColorScheme } from "@mantine/core";
+import { Card, Group, Stack, Text } from "@mantine/core";
 import { useSnapshot } from "valtio";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
 
@@ -13,8 +14,7 @@ interface MetricCardProps {
 }
 
 const MetricCard = ({ title, value, trend }: MetricCardProps) => {
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	return (
 		<Group justify="space-between" align="center">
@@ -50,8 +50,7 @@ interface ProdukUnggulanProps {
 
 export const ProdukUnggulan = ({ data }: ProdukUnggulanProps) => {
 	const t = useTranslate();
-	const { colorScheme } = useMantineColorScheme();
-	const dark = colorScheme === "dark";
+	const dark = useIsDark();
 
 	const displayData = data ?? {
 		totalPenjualan: 0,
