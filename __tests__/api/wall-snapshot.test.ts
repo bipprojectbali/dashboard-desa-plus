@@ -10,15 +10,17 @@ afterEach(() => {
 
 // WHITELIST kunci per slice — tolak key tak dikenal. Blacklist (cek nik/nama)
 // bisa lolos untuk occupationTop/nama divisi; whitelist menutup celah itu.
+const KPI_KEYS = [
+	"residents",
+	"umkm",
+	"complaints",
+	"activities",
+	"securityReports",
+	"documents",
+] as const;
+
 const ALLOWED_KEYS: Record<string, string[]> = {
-	kpi: [
-		"residents",
-		"umkm",
-		"complaints",
-		"activities",
-		"securityReports",
-		"documents",
-	],
+	kpi: [...KPI_KEYS],
 	keuangan: ["apbdes", "satisfaction", "sdgs"],
 	pengaduan: ["stats", "trend7m", "serviceByType", "kepuasan"],
 	demografi: ["stats", "gender", "religion", "ageGroups", "occupationTop"],
@@ -46,9 +48,7 @@ describe("GET /api/noc/wall-snapshot", () => {
 		const { data } = await res.json();
 
 		if (data.kpi !== null) {
-			expect(Object.keys(data.kpi).sort()).toEqual(
-				[...ALLOWED_KEYS.kpi].sort(),
-			);
+			expect(Object.keys(data.kpi).sort()).toEqual([...KPI_KEYS].sort());
 		}
 		if (data.system !== null) {
 			expect(data.system).toHaveProperty("cpuPct");
