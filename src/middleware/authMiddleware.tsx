@@ -80,6 +80,12 @@ const routeRules: RouteRule[] = [
 		requiredRole: "admin",
 		redirectTo: "/",
 	},
+	// NOC video wall — publik (TV/kiosk tak login). Token opsional dicek
+	// di server via WALL_ACCESS_TOKEN, bukan di router.
+	{
+		match: (p) => p.startsWith("/wall"),
+		requireAuth: false,
+	},
 	// All other routes — auth required
 	{
 		match: () => true,

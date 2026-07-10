@@ -123,9 +123,13 @@ function RootComponent() {
 		document.title = pageTitle ? `${pageTitle} — ${APP_NAME}` : APP_NAME;
 	}, [pathname]);
 
-	const isPublicRoute = ["/signin", "/signup", "/admin", "/profile"].some(
-		(path) => pathname.startsWith(path),
-	);
+	const isPublicRoute = [
+		"/signin",
+		"/signup",
+		"/admin",
+		"/profile",
+		"/wall",
+	].some((path) => pathname.startsWith(path));
 
 	if (isPublicRoute) {
 		return (
