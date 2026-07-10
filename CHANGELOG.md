@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.46] - 2026-07-10
+
+### Fixed
+- Menu "Riwayat Kesehatan Warga" di halaman Sosial kini menampilkan data dengan benar. Sebelumnya tab Ibu Hamil gagal memuat ("Gagal memuat data ibu hamil") dan tab Penderita Penyakit salah mengambil data dari endpoint grafik kepuasan. Ketiga tab (Ibu Hamil, Balita, Penderita Penyakit) beserta daftar banjar kini dimuat dari satu endpoint tunggal `/api/kesehatan/riwayatwarga/find-many`; filter per-banjar dan paginasi dilakukan di sisi klien.
+- Card empty state pada menu Keuangan (APBDes) dan Kinerja Divisi (aktivitas & acara) kini memiliki latar yang sesuai di dark mode. Warna card sumber dana di Keuangan juga diperbaiki agar terbaca di light mode.
+- Jarak sumbu dan margin grafik tren pengaduan serta grafik surat terbanyak dirapikan agar label tidak terpotong.
+
 ## [0.1.44] - 2026-07-09
 
 ### Fixed
