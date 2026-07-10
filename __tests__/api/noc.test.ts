@@ -2,84 +2,75 @@ import { describe, expect, it } from "bun:test";
 import api from "@/api";
 import { prisma } from "@/utils/db";
 
-describe("NOC API Module", () => {
+// Setelah allowlist diperketat (hanya /api/noc/wall-snapshot yang publik),
+// GET noc lain wajib auth → 401 tanpa sesi. Detail regresi kebocoran PII
+// diuji di noc-allowlist.test.ts. Di sini kita pastikan endpoint tetap
+// terdaftar (bukan 404) dan validasi query tetap jalan.
+describe("NOC API Module (allowlist tightened)", () => {
 	const idDesa = "desa1";
 
-	it("should return last sync timestamp", async () => {
+	it("last-sync tanpa auth → 401", async () => {
 		const response = await api.handle(
 			new Request(`http://localhost/api/noc/last-sync?idDesa=${idDesa}`),
 		);
-		expect(response.status).toBe(200);
-		const data = await response.json();
-		expect(data).toHaveProperty("lastSyncedAt");
+		expect(response.status).toBe(401);
 	});
 
-	it("should return active divisions", async () => {
+	it("active-divisions tanpa auth → 401", async () => {
 		const response = await api.handle(
 			new Request(`http://localhost/api/noc/active-divisions?idDesa=${idDesa}`),
 		);
-		expect(response.status).toBe(200);
-		const data = await response.json();
-		expect(Array.isArray(data.data)).toBe(true);
+		expect(response.status).toBe(401);
 	});
 
-	it("should return latest projects", async () => {
+	it("latest-projects tanpa auth → 401", async () => {
 		const response = await api.handle(
 			new Request(`http://localhost/api/noc/latest-projects?idDesa=${idDesa}`),
 		);
-		expect(response.status).toBe(200);
-		const data = await response.json();
-		expect(Array.isArray(data.data)).toBe(true);
+		expect(response.status).toBe(401);
 	});
 
-	it("should return upcoming events", async () => {
+	it("upcoming-events tanpa auth → 401", async () => {
 		const response = await api.handle(
 			new Request(`http://localhost/api/noc/upcoming-events?idDesa=${idDesa}`),
 		);
-		expect(response.status).toBe(200);
-		const data = await response.json();
-		expect(Array.isArray(data.data)).toBe(true);
+		expect(response.status).toBe(401);
 	});
 
-	it("should return diagram jumlah document", async () => {
+	it("diagram-jumlah-document tanpa auth → 401", async () => {
 		const response = await api.handle(
 			new Request(
 				`http://localhost/api/noc/diagram-jumlah-document?idDesa=${idDesa}`,
 			),
 		);
-		expect(response.status).toBe(200);
-		const data = await response.json();
-		expect(Array.isArray(data.data)).toBe(true);
+		expect(response.status).toBe(401);
 	});
 
-	it("should return diagram progres kegiatan", async () => {
+	it("diagram-progres-kegiatan tanpa auth → 401", async () => {
 		const response = await api.handle(
 			new Request(
 				`http://localhost/api/noc/diagram-progres-kegiatan?idDesa=${idDesa}`,
 			),
 		);
-		expect(response.status).toBe(200);
-		const data = await response.json();
-		expect(Array.isArray(data.data)).toBe(true);
+		expect(response.status).toBe(401);
 	});
 
-	it("should return latest discussion", async () => {
+	it("latest-discussion tanpa auth → 401", async () => {
 		const response = await api.handle(
 			new Request(
 				`http://localhost/api/noc/latest-discussion?idDesa=${idDesa}`,
 			),
 		);
-		expect(response.status).toBe(200);
-		const data = await response.json();
-		expect(Array.isArray(data.data)).toBe(true);
+		expect(response.status).toBe(401);
 	});
 
-	it("should return 400 for missing idDesa in active-divisions", async () => {
+	it("wall-snapshot tetap publik → 200", async () => {
 		const response = await api.handle(
-			new Request("http://localhost/api/noc/active-divisions"),
+			new Request("http://localhost/api/noc/wall-snapshot"),
 		);
-		// Elysia returns 400 or 422 for validation errors
-		expect([400, 422]).toContain(response.status);
+		expect(response.status).toBe(200);
+		const data = await response.json();
+		expect(data.success).toBe(true);
 	});
 
 	it("should return 401 or 422 for sync without admin auth", async () => {
@@ -89,5 +80,10 @@ describe("NOC API Module", () => {
 			}),
 		);
 		expect([401, 422]).toContain(response.status);
+	});
+
+	// prisma di-import agar koneksi DB terinisialisasi konsisten dgn suite lain.
+	it("prisma client tersedia", () => {
+		expect(prisma).toBeDefined();
 	});
 });

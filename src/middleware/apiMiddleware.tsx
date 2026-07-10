@@ -107,8 +107,14 @@ export function apiMiddleware(app: Elysia) {
 				return;
 			}
 
-			// Allow public GET access to NOC monitoring endpoints
-			if (url.pathname.startsWith("/api/noc/") && request.method === "GET") {
+			// Hanya wall-snapshot yang publik (agregat, tanpa PII). Blanket lama
+			// `/api/noc/* GET` membuka data warga (latest-discussion → nama+isi
+			// pesan, active-divisions/latest-projects → nama). Konsumen frontend
+			// tetap lolos via sesi (credentials:"include"), jadi ini aman.
+			if (
+				url.pathname === "/api/noc/wall-snapshot" &&
+				request.method === "GET"
+			) {
 				return;
 			}
 
