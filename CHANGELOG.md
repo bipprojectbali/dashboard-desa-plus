@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.47] - 2026-07-10
+
+### Fixed
+- Menu "Riwayat Kesehatan Warga" kini benar-benar tampil di STG. Pada v0.1.46 endpoint sudah benar tetapi browser mengambil data langsung dari Desa API sehingga diblokir CORS (tidak ada header `Access-Control-Allow-Origin`) dan tetap muncul "Gagal memuat data". Kini data dilewatkan proxy internal server (`/api/sosial/kesehatan/riwayat-warga`) sehingga bebas CORS — pola sama seperti perbaikan Posyandu & Pendidikan sebelumnya.
+
 ## [0.1.46] - 2026-07-10
 
 ### Fixed
