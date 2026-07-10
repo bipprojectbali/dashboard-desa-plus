@@ -352,7 +352,14 @@ const KeuanganAnggaran = () => {
 					))
 				) : kpiData.length === 0 ? (
 					<Grid.Col span={12}>
-						<Card p="md" radius="xl" withBorder ta="center" c="dimmed">
+						<Card
+							p="md"
+							radius="xl"
+							withBorder
+							ta="center"
+							c="dimmed"
+							bg={dark ? "#1F293A" : undefined}
+						>
 							Belum ada data APBDes.
 						</Card>
 					</Grid.Col>
@@ -774,7 +781,7 @@ const KeuanganAnggaran = () => {
 											key={fund.source}
 											p="sm"
 											radius="lg"
-											bg={dark ? "#1e3a5f" : "#1e3a5f"}
+											bg={dark ? "#1e3a5f" : "#eaf1fb"}
 											style={{
 												borderColor: "transparent",
 												transition: "background-color 0.15s ease",

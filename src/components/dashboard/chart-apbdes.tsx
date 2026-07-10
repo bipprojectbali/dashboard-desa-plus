@@ -47,9 +47,7 @@ async function fetchApbdes(): Promise<{ data: ApbdesData[]; title: string }> {
 		/^Berhasil mendapatkan data\s*/,
 		"",
 	);
-	const title = apbdesName
-		? `Realisasi ${apbdesName}`
-		: DEFAULT_APBDES_TITLE;
+	const title = apbdesName ? `Realisasi ${apbdesName}` : DEFAULT_APBDES_TITLE;
 
 	return { data, title };
 }

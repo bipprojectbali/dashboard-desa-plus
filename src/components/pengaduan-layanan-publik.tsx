@@ -269,7 +269,10 @@ const PengaduanLayananPublik = () => {
 					<Skeleton height={300} radius="md" />
 				) : trends.length > 0 ? (
 					<ResponsiveContainer width="100%" height={300}>
-						<LineChart data={trends}>
+						<LineChart
+							data={trends}
+							margin={{ top: 8, right: 24, bottom: 8, left: 0 }}
+						>
 							{tampilkanGrid && (
 								<CartesianGrid
 									strokeDasharray="3 3"
@@ -281,6 +284,8 @@ const PengaduanLayananPublik = () => {
 								dataKey="bulan"
 								axisLine={false}
 								tickLine={false}
+								tickMargin={12}
+								padding={{ left: 24, right: 24 }}
 								tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
 							/>
 							<YAxis
@@ -342,7 +347,11 @@ const PengaduanLayananPublik = () => {
 							<Skeleton height={250} radius="md" />
 						) : suratTerbanyak.length > 0 ? (
 							<ResponsiveContainer width="100%" height={250}>
-								<BarChart data={suratTerbanyak} layout="vertical">
+								<BarChart
+									data={suratTerbanyak}
+									layout="vertical"
+									margin={{ top: 8, right: 16, bottom: 8, left: 8 }}
+								>
 									{tampilkanGrid && (
 										<CartesianGrid
 											strokeDasharray="3 3"
@@ -361,8 +370,9 @@ const PengaduanLayananPublik = () => {
 										dataKey="jenis"
 										axisLine={false}
 										tickLine={false}
-										tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
-										width={100}
+										tickMargin={8}
+										tick={{ fill: dark ? "#E2E8F0" : "#374151", fontSize: 12 }}
+										width={128}
 									/>
 									<Tooltip
 										contentStyle={{
