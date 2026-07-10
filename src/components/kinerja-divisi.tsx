@@ -2,6 +2,7 @@ import { Alert, Button, Card, Grid, Skeleton, Stack } from "@mantine/core";
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 import { ActivityCard } from "./kinerja-divisi/activity-card";
@@ -49,6 +50,7 @@ const EMPTY_OVERVIEW: KinerjaOverview = { activities: [], todayEvents: [] };
 
 const KinerjaDivisi = () => {
 	const t = useTranslate();
+	const dark = useIsDark();
 
 	const {
 		data = EMPTY_OVERVIEW,
@@ -120,7 +122,14 @@ const KinerjaDivisi = () => {
 						))}
 						{activities.length === 0 && (
 							<Grid.Col span={12}>
-								<Card p="md" radius="xl" withBorder ta="center" c="dimmed">
+								<Card
+									p="md"
+									radius="xl"
+									withBorder
+									ta="center"
+									c="dimmed"
+									bg={dark ? "#1F293A" : undefined}
+								>
 									{t.kinerjaDivisi.tidakAdaAktivitas}
 								</Card>
 							</Grid.Col>
@@ -156,7 +165,14 @@ const KinerjaDivisi = () => {
 			) : formattedEvents.length > 0 ? (
 				<EventCard agendas={formattedEvents} />
 			) : (
-				<Card p="md" radius="xl" withBorder ta="center" c="dimmed">
+				<Card
+					p="md"
+					radius="xl"
+					withBorder
+					ta="center"
+					c="dimmed"
+					bg={dark ? "#1F293A" : undefined}
+				>
 					Tidak ada acara hari ini.
 				</Card>
 			)}
