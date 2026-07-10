@@ -33,15 +33,6 @@ interface BanjarOption {
 	name: string;
 }
 
-async function fetchBanjars(): Promise<BanjarOption[]> {
-	const r = await fetch(`${DESA_API}/api/desa/banjar/findMany`);
-	const res = await r.json();
-	if (res.success && Array.isArray(res.data)) {
-		return res.data as BanjarOption[];
-	}
-	return [];
-}
-
 interface IbuHamil {
 	id: string;
 	nama: string;
@@ -87,6 +78,17 @@ interface PenderitaPenyakit {
 	banjar: { id: string; name: string };
 }
 
+/**
+ * Response gabungan dari endpoint tunggal `/api/kesehatan/riwayatwarga/find-many`.
+ * Satu request mengembalikan daftar banjar + ketiga dataset kesehatan sekaligus.
+ */
+interface RiwayatWargaResponse {
+	banjarList: BanjarOption[];
+	ibuHamil: IbuHamil[];
+	balita: Balita[];
+	penyakit: PenderitaPenyakit[];
+}
+
 const IBU_HAMIL_STATUS: Record<string, { label: string; color: string }> = {
 	AKTIF: { label: "Aktif", color: "green" },
 	NONAKTIF: { label: "Nonaktif", color: "gray" },
@@ -99,6 +101,29 @@ const STUNTING_STATUS: Record<string, { label: string; color: string }> = {
 	ALERT: { label: "Alert", color: "orange" },
 	STUNTING: { label: "Stunting", color: "red" },
 };
+
+/**
+ * Ambil seluruh data riwayat kesehatan warga dalam satu request. Tiap dataset
+ * di response terbungkus `{ data, total, ... }`; kita ambil `.data`-nya saja
+ * karena filter per-banjar dan paginasi dilakukan di sisi klien.
+ */
+async function fetchRiwayatWarga(): Promise<RiwayatWargaResponse> {
+	const r = await fetch(
+		`${DESA_API}/api/kesehatan/riwayatwarga/find-many?limit=200`,
+	);
+	const json = await r.json();
+	if (!json.success) {
+		throw new Error(
+			json.message ?? "Gagal memuat data riwayat kesehatan warga",
+		);
+	}
+	return {
+		banjarList: Array.isArray(json.banjarList) ? json.banjarList : [],
+		ibuHamil: json.ibuHamil?.data ?? [],
+		balita: json.balita?.data ?? [],
+		penyakit: json.penyakit?.data ?? [],
+	};
+}
 
 function fmtDate(iso: string | null): string {
 	if (!iso) return "—";
@@ -157,54 +182,66 @@ function tableStyles(dark: boolean) {
 	};
 }
 
-// ── Ibu Hamil Tab ────────────────────────────────────────────
-interface IbuHamilTabProps {
-	banjarId: string | null;
-	dark: boolean;
-}
+const PAGE_SIZE = 10;
 
-const IBU_HAMIL_PAGE_SIZE = 10;
-
-async function fetchIbuHamil(): Promise<IbuHamil[]> {
-	const r = await fetch(
-		`${DESA_API}/api/kesehatan/ibuhamil/find-many?limit=200`,
-	);
-	const json = await r.json();
-	if (json.success) return json.data as IbuHamil[];
-	throw new Error(json.message ?? "Gagal memuat data ibu hamil");
-}
-
-function IbuHamilTab({ banjarId, dark }: IbuHamilTabProps) {
+/** Reset ke halaman 1 setiap kali filter banjar berubah. */
+function usePagedByBanjar(banjarId: string | null) {
 	const [page, setPage] = useState(1);
-	const {
-		data: allData = [],
-		isLoading: loading,
-		isError,
-	} = useApiQuery(["sosial-ext", "health-records", "ibu-hamil"], fetchIbuHamil);
-	const error = isError ? "Gagal memuat data ibu hamil" : null;
-
 	// biome-ignore lint/correctness/useExhaustiveDependencies: banjarId change should reset page to 1
 	useEffect(() => {
 		setPage(1);
 	}, [banjarId]);
+	return { page, setPage };
+}
+
+function PagerFooter({
+	total,
+	totalPages,
+	page,
+	onChange,
+}: {
+	total: number;
+	totalPages: number;
+	page: number;
+	onChange: (p: number) => void;
+}) {
+	return (
+		<Group justify="space-between" align="center">
+			<Text size="xs" c="dimmed">
+				{total} data ditemukan
+			</Text>
+			{totalPages > 1 && (
+				<Pagination
+					value={page}
+					onChange={onChange}
+					total={totalPages}
+					size="sm"
+					radius="md"
+				/>
+			)}
+		</Group>
+	);
+}
+
+// ── Ibu Hamil Tab ────────────────────────────────────────────
+function IbuHamilTab({
+	rows,
+	banjarId,
+	dark,
+}: {
+	rows: IbuHamil[];
+	banjarId: string | null;
+	dark: boolean;
+}) {
+	const { page, setPage } = usePagedByBanjar(banjarId);
 
 	const filtered = banjarId
-		? allData.filter((d) => d.posyandu?.banjar.id === banjarId)
-		: allData;
+		? rows.filter((d) => d.posyandu?.banjar.id === banjarId)
+		: rows;
 	const total = filtered.length;
-	const totalPages = Math.max(1, Math.ceil(total / IBU_HAMIL_PAGE_SIZE));
-	const data = filtered.slice(
-		(page - 1) * IBU_HAMIL_PAGE_SIZE,
-		page * IBU_HAMIL_PAGE_SIZE,
-	);
+	const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+	const data = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-	if (loading) return <TableSkeleton />;
-	if (error)
-		return (
-			<Alert icon={<IconAlertCircle size={16} />} color="red" radius="md">
-				{error}
-			</Alert>
-		);
 	if (data.length === 0)
 		return (
 			<EmptyState
@@ -267,70 +304,35 @@ function IbuHamilTab({ banjarId, dark }: IbuHamilTabProps) {
 					</Table.Tbody>
 				</Table>
 			</Table.ScrollContainer>
-			<Group justify="space-between" align="center">
-				<Text size="xs" c="dimmed">
-					{total} data ditemukan
-				</Text>
-				{totalPages > 1 && (
-					<Pagination
-						value={page}
-						onChange={setPage}
-						total={totalPages}
-						size="sm"
-						radius="md"
-					/>
-				)}
-			</Group>
+			<PagerFooter
+				total={total}
+				totalPages={totalPages}
+				page={page}
+				onChange={setPage}
+			/>
 		</Stack>
 	);
 }
 
 // ── Balita Tab ───────────────────────────────────────────────
-interface BalitaTabProps {
+function BalitaTab({
+	rows,
+	banjarId,
+	dark,
+}: {
+	rows: Balita[];
 	banjarId: string | null;
 	dark: boolean;
-}
-
-const BALITA_PAGE_SIZE = 10;
-
-async function fetchBalita(): Promise<Balita[]> {
-	const r = await fetch(`${DESA_API}/api/kesehatan/balita/find-many?limit=200`);
-	const json = await r.json();
-	if (json.success) return json.data as Balita[];
-	throw new Error(json.message ?? "Gagal memuat data balita");
-}
-
-function BalitaTab({ banjarId, dark }: BalitaTabProps) {
-	const [page, setPage] = useState(1);
-	const {
-		data: allData = [],
-		isLoading: loading,
-		isError,
-	} = useApiQuery(["sosial-ext", "health-records", "balita"], fetchBalita);
-	const error = isError ? "Gagal memuat data balita" : null;
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: banjarId change should reset page to 1
-	useEffect(() => {
-		setPage(1);
-	}, [banjarId]);
+}) {
+	const { page, setPage } = usePagedByBanjar(banjarId);
 
 	const filtered = banjarId
-		? allData.filter((d) => d.posyandu?.banjar.id === banjarId)
-		: allData;
+		? rows.filter((d) => d.posyandu?.banjar.id === banjarId)
+		: rows;
 	const total = filtered.length;
-	const totalPages = Math.max(1, Math.ceil(total / BALITA_PAGE_SIZE));
-	const data = filtered.slice(
-		(page - 1) * BALITA_PAGE_SIZE,
-		page * BALITA_PAGE_SIZE,
-	);
+	const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+	const data = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-	if (loading) return <TableSkeleton />;
-	if (error)
-		return (
-			<Alert icon={<IconAlertCircle size={16} />} color="red" radius="md">
-				{error}
-			</Alert>
-		);
 	if (data.length === 0)
 		return (
 			<EmptyState
@@ -424,84 +426,35 @@ function BalitaTab({ banjarId, dark }: BalitaTabProps) {
 					</Table.Tbody>
 				</Table>
 			</Table.ScrollContainer>
-			<Group justify="space-between" align="center">
-				<Text size="xs" c="dimmed">
-					{total} data ditemukan
-				</Text>
-				{totalPages > 1 && (
-					<Pagination
-						value={page}
-						onChange={setPage}
-						total={totalPages}
-						size="sm"
-						radius="md"
-					/>
-				)}
-			</Group>
+			<PagerFooter
+				total={total}
+				totalPages={totalPages}
+				page={page}
+				onChange={setPage}
+			/>
 		</Stack>
 	);
 }
 
 // ── Penderita Penyakit Tab ───────────────────────────────────
-interface PenderitaTabProps {
+function PenderitaTab({
+	rows,
+	banjarId,
+	dark,
+}: {
+	rows: PenderitaPenyakit[];
 	banjarId: string | null;
 	dark: boolean;
-}
+}) {
+	const { page, setPage } = usePagedByBanjar(banjarId);
 
-interface PenderitaResult {
-	data: PenderitaPenyakit[];
-	total: number;
-	totalPages: number;
-}
+	const filtered = banjarId
+		? rows.filter((d) => d.banjar?.id === banjarId)
+		: rows;
+	const total = filtered.length;
+	const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+	const data = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-async function fetchPenderita(
-	banjarId: string | null,
-	page: number,
-): Promise<PenderitaResult> {
-	const params = new URLSearchParams({ page: String(page), limit: "10" });
-	if (banjarId) params.set("banjarId", banjarId);
-	const r = await fetch(
-		`${DESA_API}/api/kesehatan/grafikkepuasan/find-many?${params}`,
-	);
-	const json = await r.json();
-	if (json.success) {
-		return {
-			data: json.data as PenderitaPenyakit[],
-			total: json.total ?? 0,
-			totalPages: json.totalPages ?? 1,
-		};
-	}
-	throw new Error(json.message ?? "Gagal memuat data penderita penyakit");
-}
-
-const EMPTY_PENDERITA: PenderitaResult = { data: [], total: 0, totalPages: 1 };
-
-function PenderitaTab({ banjarId, dark }: PenderitaTabProps) {
-	const [page, setPage] = useState(1);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: banjarId change should reset page to 1
-	useEffect(() => {
-		setPage(1);
-	}, [banjarId]);
-
-	const {
-		data: result = EMPTY_PENDERITA,
-		isLoading: loading,
-		isError,
-	} = useApiQuery(
-		["sosial-ext", "health-records", "penyakit", banjarId, page],
-		() => fetchPenderita(banjarId, page),
-	);
-	const { data, total, totalPages } = result;
-	const error = isError ? "Gagal memuat data penderita penyakit" : null;
-
-	if (loading) return <TableSkeleton />;
-	if (error)
-		return (
-			<Alert icon={<IconAlertCircle size={16} />} color="red" radius="md">
-				{error}
-			</Alert>
-		);
 	if (data.length === 0)
 		return (
 			<EmptyState
@@ -532,7 +485,7 @@ function PenderitaTab({ banjarId, dark }: PenderitaTabProps) {
 						{data.map((row) => (
 							<Table.Tr key={row.id}>
 								<Table.Td fw={500}>{row.nama}</Table.Td>
-								<Table.Td>{row.banjar.name}</Table.Td>
+								<Table.Td>{row.banjar?.name ?? "—"}</Table.Td>
 								<Table.Td>
 									<Badge
 										variant="light"
@@ -555,20 +508,12 @@ function PenderitaTab({ banjarId, dark }: PenderitaTabProps) {
 					</Table.Tbody>
 				</Table>
 			</Table.ScrollContainer>
-			<Group justify="space-between" align="center">
-				<Text size="xs" c="dimmed">
-					{total} data ditemukan
-				</Text>
-				{totalPages > 1 && (
-					<Pagination
-						value={page}
-						onChange={setPage}
-						total={totalPages}
-						size="sm"
-						radius="md"
-					/>
-				)}
-			</Group>
+			<PagerFooter
+				total={total}
+				totalPages={totalPages}
+				page={page}
+				onChange={setPage}
+			/>
 		</Stack>
 	);
 }
@@ -580,12 +525,15 @@ export const HealthRecords = () => {
 	const [banjarId, setBanjarId] = useState<string | null>(null);
 	const [activeTab, setActiveTab] = useState<string | null>("ibu-hamil");
 
-	const { data: banjars = [] } = useApiQuery(
-		["sosial-ext", "health-records", "banjars"],
-		fetchBanjars,
+	const { data, isLoading, isError } = useApiQuery(
+		["sosial-ext", "health-records", "riwayat-warga"],
+		fetchRiwayatWarga,
 	);
 
-	const banjarOptions = banjars.map((b) => ({ value: b.id, label: b.name }));
+	const banjarOptions = (data?.banjarList ?? []).map((b) => ({
+		value: b.id,
+		label: b.name,
+	}));
 
 	return (
 		<Card
@@ -614,34 +562,64 @@ export const HealthRecords = () => {
 				/>
 			</Group>
 
-			<Tabs
-				value={activeTab}
-				onChange={setActiveTab}
-				variant="pills"
-				radius="md"
-			>
-				<Tabs.List mb="md">
-					<Tabs.Tab value="ibu-hamil" leftSection={<IconHeartbeat size={14} />}>
-						Ibu Hamil
-					</Tabs.Tab>
-					<Tabs.Tab value="balita" leftSection={<IconBabyCarriage size={14} />}>
-						Balita
-					</Tabs.Tab>
-					<Tabs.Tab value="penyakit" leftSection={<IconVirus size={14} />}>
-						Penderita Penyakit
-					</Tabs.Tab>
-				</Tabs.List>
+			{isError ? (
+				<Alert icon={<IconAlertCircle size={16} />} color="red" radius="md">
+					Gagal memuat data riwayat kesehatan warga
+				</Alert>
+			) : (
+				<Tabs
+					value={activeTab}
+					onChange={setActiveTab}
+					variant="pills"
+					radius="md"
+				>
+					<Tabs.List mb="md">
+						<Tabs.Tab
+							value="ibu-hamil"
+							leftSection={<IconHeartbeat size={14} />}
+						>
+							Ibu Hamil
+						</Tabs.Tab>
+						<Tabs.Tab
+							value="balita"
+							leftSection={<IconBabyCarriage size={14} />}
+						>
+							Balita
+						</Tabs.Tab>
+						<Tabs.Tab value="penyakit" leftSection={<IconVirus size={14} />}>
+							Penderita Penyakit
+						</Tabs.Tab>
+					</Tabs.List>
 
-				<Tabs.Panel value="ibu-hamil">
-					<IbuHamilTab banjarId={banjarId} dark={dark} />
-				</Tabs.Panel>
-				<Tabs.Panel value="balita">
-					<BalitaTab banjarId={banjarId} dark={dark} />
-				</Tabs.Panel>
-				<Tabs.Panel value="penyakit">
-					<PenderitaTab banjarId={banjarId} dark={dark} />
-				</Tabs.Panel>
-			</Tabs>
+					{isLoading ? (
+						<TableSkeleton />
+					) : (
+						<>
+							<Tabs.Panel value="ibu-hamil">
+								<IbuHamilTab
+									rows={data?.ibuHamil ?? []}
+									banjarId={banjarId}
+									dark={dark}
+								/>
+							</Tabs.Panel>
+							<Tabs.Panel value="balita">
+								<BalitaTab
+									rows={data?.balita ?? []}
+									banjarId={banjarId}
+									dark={dark}
+								/>
+							</Tabs.Panel>
+							<Tabs.Panel value="penyakit">
+								<PenderitaTab
+									rows={data?.penyakit ?? []}
+									banjarId={banjarId}
+									dark={dark}
+								/>
+							</Tabs.Panel>
+						</>
+					)}
+				</Tabs>
+			)}
 		</Card>
 	);
 };
