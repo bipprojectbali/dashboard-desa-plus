@@ -22,11 +22,7 @@ import {
 import { useEffect, useState } from "react";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { useIsDark } from "@/hooks/useIsDark";
-
-const DESA_API =
-	typeof import.meta.env !== "undefined" && import.meta.env?.VITE_DESA_API_URL
-		? import.meta.env.VITE_DESA_API_URL
-		: "https://desa-darmasaba-stg.wibudev.com";
+import { apiClient } from "@/utils/api-client";
 
 interface BanjarOption {
 	id: string;
@@ -102,27 +98,28 @@ const STUNTING_STATUS: Record<string, { label: string; color: string }> = {
 	STUNTING: { label: "Stunting", color: "red" },
 };
 
+const EMPTY_RIWAYAT: RiwayatWargaResponse = {
+	banjarList: [],
+	ibuHamil: [],
+	balita: [],
+	penyakit: [],
+};
+
 /**
- * Ambil seluruh data riwayat kesehatan warga dalam satu request. Tiap dataset
- * di response terbungkus `{ data, total, ... }`; kita ambil `.data`-nya saja
- * karena filter per-banjar dan paginasi dilakukan di sisi klien.
+ * Ambil seluruh data riwayat kesehatan warga lewat proxy internal
+ * (`/api/sosial/kesehatan/riwayat-warga`). Fetch langsung ke Desa API dari
+ * browser diblokir CORS, jadi datanya diambil server-side. Server sudah
+ * meratakan tiap dataset ke array, filter per-banjar & paginasi di klien.
  */
 async function fetchRiwayatWarga(): Promise<RiwayatWargaResponse> {
-	const r = await fetch(
-		`${DESA_API}/api/kesehatan/riwayatwarga/find-many?limit=200`,
-	);
-	const json = await r.json();
-	if (!json.success) {
-		throw new Error(
-			json.message ?? "Gagal memuat data riwayat kesehatan warga",
-		);
+	const res = await apiClient.GET("/api/sosial/kesehatan/riwayat-warga");
+	const body = res.data as
+		| { success: boolean; data: RiwayatWargaResponse | null }
+		| undefined;
+	if (!body?.success || !body.data) {
+		throw new Error("Gagal memuat data riwayat kesehatan warga");
 	}
-	return {
-		banjarList: Array.isArray(json.banjarList) ? json.banjarList : [],
-		ibuHamil: json.ibuHamil?.data ?? [],
-		balita: json.balita?.data ?? [],
-		penyakit: json.penyakit?.data ?? [],
-	};
+	return { ...EMPTY_RIWAYAT, ...body.data };
 }
 
 function fmtDate(iso: string | null): string {

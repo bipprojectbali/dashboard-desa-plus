@@ -3,7 +3,15 @@ import type { Prisma } from "generated/prisma";
 import { cache, TTL, withCache } from "@/utils/cache";
 import { prisma } from "@/utils/db";
 import { desaExternalClient } from "@/utils/desa-external-client";
+import { getEnv } from "@/utils/env";
 import logger from "@/utils/logger";
+
+// Base URL Desa API untuk endpoint yang belum ada di generated types
+// (dipakai proxy plain-fetch server-side agar bebas CORS).
+const DESA_API_URL = getEnv(
+	"DESA_API_URL",
+	"https://desa-darmasaba-stg.wibudev.com",
+).replace(/\/+$/, "");
 
 export const sosial = new Elysia({ prefix: "/sosial" })
 	.get(
@@ -231,6 +239,58 @@ export const sosial = new Elysia({ prefix: "/sosial" })
 				page: t.Optional(t.Number({ minimum: 1 })),
 				limit: t.Optional(t.Number({ minimum: 1, maximum: 100 })),
 			}),
+		},
+	)
+	.get(
+		"/kesehatan/riwayat-warga",
+		async ({ set }) => {
+			try {
+				// Proxy ke Desa API. Endpoint tunggal mengembalikan banjarList +
+				// ibuHamil + balita + penyakit sekaligus; browser tidak bisa fetch
+				// langsung karena Desa API tak mengirim header CORS, jadi diambil
+				// server-side lalu diteruskan apa adanya.
+				const data = await withCache(
+					"sosial:kesehatan:riwayat-warga",
+					TTL.SOSIAL,
+					async () => {
+						const r = await fetch(
+							`${DESA_API_URL}/api/kesehatan/riwayatwarga/find-many?limit=200`,
+						);
+						if (!r.ok) throw new Error(`Desa API HTTP ${r.status}`);
+						const json = await r.json();
+						if (!json.success) {
+							throw new Error(
+								json.message ?? "Desa API returned success=false",
+							);
+						}
+						return {
+							banjarList: Array.isArray(json.banjarList) ? json.banjarList : [],
+							ibuHamil: json.ibuHamil?.data ?? [],
+							balita: json.balita?.data ?? [],
+							penyakit: json.penyakit?.data ?? [],
+						};
+					},
+				);
+				return { success: true, data };
+			} catch (error) {
+				logger.error({ error }, "Failed to proxy sosial riwayat warga");
+				set.status = 500;
+				return { success: false, error: "Internal Server Error", data: null };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Any(),
+					error: t.Optional(t.String()),
+				}),
+				500: t.Object({
+					success: t.Boolean(),
+					error: t.String(),
+					data: t.Null(),
+				}),
+			},
 		},
 	)
 	.post(
