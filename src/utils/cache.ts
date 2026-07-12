@@ -62,6 +62,9 @@ export const TTL = {
 	SOSIAL: 30 * 60 * 1000,
 	BUMDES: 60 * 60 * 1000,
 	DASHBOARD: 15 * 60 * 1000,
+	// Cache server ~10s di bawah refetch klien (~30s) → batasi beban DB
+	// saat banyak TV membuka wall bersamaan.
+	WALL: 10 * 1000,
 } as const;
 
 export async function withCache<T>(

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WallRouteImport } from './routes/wall'
 import { Route as SosialRouteImport } from './routes/sosial'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
@@ -43,6 +44,11 @@ import { Route as AdminHelpRouteImport } from './routes/admin/help'
 import { Route as AdminAuditLogRouteImport } from './routes/admin/audit-log'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
 
+const WallRoute = WallRouteImport.update({
+  id: '/wall',
+  path: '/wall',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SosialRoute = SosialRouteImport.update({
   id: '/sosial',
   path: '/sosial',
@@ -225,6 +231,7 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/sosial': typeof SosialRoute
+  '/wall': typeof WallRoute
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
@@ -258,6 +265,7 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/sosial': typeof SosialRoute
+  '/wall': typeof WallRoute
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/sosial': typeof SosialRoute
+  '/wall': typeof WallRoute
   '/admin/apikey': typeof AdminApikeyRoute
   '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/help': typeof AdminHelpRoute
@@ -331,6 +340,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/signup'
     | '/sosial'
+    | '/wall'
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
@@ -364,6 +374,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/signup'
     | '/sosial'
+    | '/wall'
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
@@ -399,6 +410,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/signup'
     | '/sosial'
+    | '/wall'
     | '/admin/apikey'
     | '/admin/audit-log'
     | '/admin/help'
@@ -435,12 +447,20 @@ export interface RootRouteChildren {
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
   SosialRoute: typeof SosialRoute
+  WallRoute: typeof WallRoute
   UsersIdRoute: typeof UsersIdRoute
   UsersIndexRoute: typeof UsersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wall': {
+      id: '/wall'
+      path: '/wall'
+      fullPath: '/wall'
+      preLoaderRoute: typeof WallRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sosial': {
       id: '/sosial'
       path: '/sosial'
@@ -753,6 +773,7 @@ const rootRouteChildren: RootRouteChildren = {
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
   SosialRoute: SosialRoute,
+  WallRoute: WallRoute,
   UsersIdRoute: UsersIdRoute,
   UsersIndexRoute: UsersIndexRoute,
 }

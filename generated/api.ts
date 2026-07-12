@@ -434,6 +434,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/noc/wall-snapshot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Public NOC wall snapshot (no PII) */
+        get: operations["getApiNocWall-snapshot"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/apikey/": {
         parameters: {
             query?: never;
@@ -2807,6 +2824,60 @@ export interface operations {
                             name: string;
                             isActive: boolean;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "getApiNocWall-snapshot": {
+        parameters: {
+            query?: {
+                key?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: unknown;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        data: unknown;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        data: unknown;
+                    };
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        error: string;
+                        data: null;
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        error: string;
+                        data: null;
                     };
                 };
             };

@@ -1,11 +1,12 @@
 import { $ } from "bun";
 import { Elysia, t } from "elysia";
 import { apiMiddleware } from "../middleware/apiMiddleware";
-import { cache } from "../utils/cache";
+import { cache, TTL, withCache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import { desaExternalClient } from "../utils/desa-external-client";
 import { getEnv } from "../utils/env";
 import { nocExternalClient } from "../utils/noc-external-client";
+import { buildWallSnapshot, isWallAuthorized } from "./wall-snapshot";
 
 const APBDES_ID = getEnv("DESA_APBDES_ID", "cmk-apbdes-001");
 
@@ -892,5 +893,39 @@ export const noc = new Elysia({ prefix: "/noc" })
 					),
 				}),
 			},
+		},
+	)
+	.get(
+		"/wall-snapshot",
+		async ({ query, set }) => {
+			// WALL_ACCESS_TOKEN server-only (BUKAN VITE_/BUN_PUBLIC_).
+			// Unset ⇒ terbuka; diisi ⇒ wajib ?key=<token>.
+			const token = process.env.WALL_ACCESS_TOKEN;
+			if (!isWallAuthorized(token, query.key)) {
+				set.status = 403;
+				return { success: false, error: "Forbidden", data: null };
+			}
+
+			const data = await withCache(
+				"wall:snapshot",
+				TTL.WALL,
+				buildWallSnapshot,
+			);
+			return { success: true, data };
+		},
+		{
+			query: t.Object({ key: t.Optional(t.String()) }),
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Any(),
+				}),
+				403: t.Object({
+					success: t.Boolean(),
+					error: t.String(),
+					data: t.Null(),
+				}),
+			},
+			detail: { summary: "Public NOC wall snapshot (no PII)" },
 		},
 	);
