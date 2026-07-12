@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.48] - 2026-07-12
+
+### Added
+- Halaman **NOC Video Wall** baru di `/wall` — satu layar besar (TV/kiosk) yang menampilkan seluruh data desa sekaligus, tanpa header/sidebar, auto-refresh, dan berganti "scene" otomatis (Keuangan → Pengaduan → Demografi & Kinerja). Dapat diakses tanpa login; opsional dikunci token via env `WALL_ACCESS_TOKEN` (diisi ⇒ wajib `/wall?key=<token>`, dikosongkan ⇒ terbuka).
+- Panel operasional gaya NOC: CPU/Memori/Disk live, status koneksi DB & API eksternal, dan waktu sinkronisasi terakhir.
+- Endpoint publik `GET /api/noc/wall-snapshot` — snapshot data agregat lintas domain tanpa PII, cache server 10 detik.
+
+### Fixed
+- **Keamanan:** allowlist NOC diperketat. Sebelumnya seluruh `GET /api/noc/*` terbuka tanpa login sehingga data warga (isi diskusi + nama pengirim, nama divisi/proyek) bisa diakses publik. Kini hanya `/api/noc/wall-snapshot` yang publik; endpoint NOC lain kembali wajib autentikasi.
+- Pembacaan **CPU kini live** (mengukur delta antar sampel) menggantikan rata-rata sejak boot yang tampak statis di panel monitoring.
+
 ## [0.1.47] - 2026-07-10
 
 ### Fixed
