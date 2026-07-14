@@ -676,7 +676,7 @@ const id: TranslationKeys = {
 		suratTerbanyak: "Surat Terbanyak",
 		pengajuanTerbaru: "Pengajuan Terbaru",
 		tidakAdaPengajuan: "Tidak ada pengajuan terbaru",
-		ajuanIdeInovatif: "Ajuan Ide Inovatif",
+		ajuanIdeInovatif: "Musrenbang",
 		tidakAdaIde: "Tidak ada ide inovatif",
 		detail: "Detail",
 		detailIde: "Detail Ide Inovatif",
