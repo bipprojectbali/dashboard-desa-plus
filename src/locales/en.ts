@@ -212,7 +212,7 @@ const en: TranslationKeys = {
 		suratTerbanyak: "Most Requested Letters",
 		pengajuanTerbaru: "Recent Submissions",
 		tidakAdaPengajuan: "No recent submissions",
-		ajuanIdeInovatif: "Innovative Ideas",
+		ajuanIdeInovatif: "Musrenbang",
 		tidakAdaIde: "No innovative ideas",
 		detail: "Details",
 		detailIde: "Innovation Idea Details",
