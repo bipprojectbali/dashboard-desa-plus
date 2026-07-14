@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.49] - 2026-07-14
+
+### Changed
+- Label panel dashboard **"Ajuan Ide Inovatif"** diganti menjadi **"Musrenbang"** (locale ID & EN).
+
 ## [0.1.48] - 2026-07-12
 
 ### Added
