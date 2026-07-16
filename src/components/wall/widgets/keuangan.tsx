@@ -4,11 +4,7 @@ import type { WallKeuangan } from "@/types/wall";
 import { WALL_THEME } from "../wall-theme";
 
 /** APBDes per kategori (bar). */
-export function KeuanganApbdesBody({
-	data,
-}: {
-	data: WallKeuangan["apbdes"];
-}) {
+export function KeuanganApbdesBody({ data }: { data: WallKeuangan["apbdes"] }) {
 	const rows = data.map((b) => ({ category: b.category, amount: b.amount }));
 	return (
 		<BarChart

@@ -1,22 +1,11 @@
 import type { FC } from "react";
 import type { WallSnapshot } from "@/types/wall";
 import {
-	type WallCategory,
-	type WidgetId,
 	ALL_WIDGET_IDS,
 	isKnownWidgetId,
+	type WallCategory,
+	type WidgetId,
 } from "./wall-layout-utils";
-import {
-	KeuanganApbdesBody,
-	KeuanganKepuasanBody,
-	KeuanganSdgsBody,
-} from "./widgets/keuangan";
-import {
-	PengaduanKepuasanBody,
-	PengaduanServiceTypeBody,
-	PengaduanStatusBody,
-	PengaduanTrendBody,
-} from "./widgets/pengaduan";
 import {
 	DemografiAgeBody,
 	DemografiGenderBody,
@@ -26,7 +15,18 @@ import {
 } from "./widgets/demografi";
 import { DivisiDocumentsBody, DivisiKinerjaBody } from "./widgets/divisi";
 import { KeamananStatusBody } from "./widgets/keamanan";
+import {
+	KeuanganApbdesBody,
+	KeuanganKepuasanBody,
+	KeuanganSdgsBody,
+} from "./widgets/keuangan";
 import { OpsBody } from "./widgets/ops";
+import {
+	PengaduanKepuasanBody,
+	PengaduanServiceTypeBody,
+	PengaduanStatusBody,
+	PengaduanTrendBody,
+} from "./widgets/pengaduan";
 
 /**
  * Definisi satu widget. `selectData` mengambil slice dari snapshot; balikin
@@ -176,9 +176,7 @@ export function allWidgets(): WidgetDefinition[] {
  * Widget yang BELUM terpasang di layout aktif — sumber galeri tambah-widget.
  * `order` yang mengandung id tak dikenal diabaikan (tak mempengaruhi hasil).
  */
-export function unplacedWidgets(
-	order: readonly string[],
-): WidgetDefinition[] {
+export function unplacedWidgets(order: readonly string[]): WidgetDefinition[] {
 	const placed = new Set(order);
 	return ALL_WIDGET_IDS.filter((id) => !placed.has(id)).map(
 		(id) => WIDGETS[id],

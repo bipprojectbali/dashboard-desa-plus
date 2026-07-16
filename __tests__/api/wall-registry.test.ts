@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import {
-	DEFAULT_LAYOUT,
 	ALL_WIDGET_IDS,
+	DEFAULT_LAYOUT,
 	isKnownWidgetId,
 } from "@/components/wall/wall-layout-utils";
 import {
@@ -58,7 +58,9 @@ describe("unplacedWidgets — sumber galeri", () => {
 		for (const id of DEFAULT_LAYOUT) {
 			expect(unplacedIds).not.toContain(id);
 		}
-		expect(unplaced).toHaveLength(ALL_WIDGET_IDS.length - DEFAULT_LAYOUT.length);
+		expect(unplaced).toHaveLength(
+			ALL_WIDGET_IDS.length - DEFAULT_LAYOUT.length,
+		);
 	});
 
 	it("order kosong → semua widget tersedia", () => {

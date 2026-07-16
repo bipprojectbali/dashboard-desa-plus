@@ -11,9 +11,6 @@ export const WALL_THEME = {
 	DANGER: "#EF4444",
 } as const;
 
-/** Interval rotasi antar scene di area tengah (ms). */
-export const SCENE_INTERVAL_MS = 20_000;
-
 /** Interval refetch snapshot di klien (ms) — di atas cache server 10s. */
 export const WALL_REFETCH_MS = 30_000;
 

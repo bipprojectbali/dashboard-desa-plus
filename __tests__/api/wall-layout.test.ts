@@ -1,10 +1,10 @@
 import { describe, expect, it } from "bun:test";
 import {
 	DEFAULT_LAYOUT,
-	type WidgetId,
-	WALL_SLOTS,
 	resolveLayout,
 	validateLayout,
+	WALL_SLOTS,
+	type WidgetId,
 } from "@/components/wall/wall-layout-utils";
 
 describe("resolveLayout — selalu balikin grid penuh valid", () => {

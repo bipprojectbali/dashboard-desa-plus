@@ -15,7 +15,8 @@ function toDonut(rows: Array<{ label: string; count: number }>) {
 	return rows.map((r, i) => ({
 		name: r.label,
 		value: r.count,
-		color: CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length] ?? WALL_THEME.ACCENT,
+		color:
+			CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length] ?? WALL_THEME.ACCENT,
 	}));
 }
 
@@ -85,11 +86,7 @@ const STAT_ITEMS: Array<{
 ];
 
 /** Ringkasan angka demografi. Slice yang sebelumnya nganggur. */
-export function DemografiStatsBody({
-	data,
-}: {
-	data: WallDemografi["stats"];
-}) {
+export function DemografiStatsBody({ data }: { data: WallDemografi["stats"] }) {
 	return (
 		<Stack gap="sm">
 			{STAT_ITEMS.map((item) => (
