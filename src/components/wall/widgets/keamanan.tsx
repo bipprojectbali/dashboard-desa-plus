@@ -1,5 +1,6 @@
-import { Stack, Text } from "@mantine/core";
+import { Group, Stack, Text } from "@mantine/core";
 import type { WallKeamanan } from "@/types/wall";
+import { StatRow } from "../stat-row";
 import { WALL_THEME } from "../wall-theme";
 
 const ITEMS: Array<{
@@ -12,28 +13,37 @@ const ITEMS: Array<{
 	{ key: "selesai", label: "Selesai", color: WALL_THEME.OK },
 ];
 
-/** Status laporan keamanan. Slice yang sebelumnya nganggur. */
+/** Status laporan keamanan: total + bar proporsi + laju penanganan. */
 export function KeamananStatusBody({ data }: { data: WallKeamanan }) {
+	const total = data.total || 0;
+	const outstanding = data.baru + data.diproses;
 	return (
-		<Stack gap="sm">
-			<Text size="sm" style={{ color: WALL_THEME.TEXT_DIM }}>
-				Total laporan: {data.total}
-			</Text>
-			{ITEMS.map((item) => (
-				<div
-					key={item.key}
+		<Stack gap="md" justify="space-between" style={{ height: "100%" }}>
+			<Stack gap="md">
+				{ITEMS.map((item) => (
+					<StatRow
+						key={item.key}
+						label={item.label}
+						value={data[item.key]}
+						color={item.color}
+						fraction={total > 0 ? data[item.key] / total : 0}
+					/>
+				))}
+			</Stack>
+			<Group justify="space-between" align="baseline">
+				<Text size="sm" style={{ color: WALL_THEME.TEXT_DIM }}>
+					Total {total} · Perlu tindak lanjut
+				</Text>
+				<Text
+					fw={800}
 					style={{
-						display: "flex",
-						justifyContent: "space-between",
-						alignItems: "baseline",
+						fontSize: 20,
+						color: outstanding > 0 ? WALL_THEME.WARN : WALL_THEME.OK,
 					}}
 				>
-					<Text style={{ color: WALL_THEME.TEXT }}>{item.label}</Text>
-					<Text fw={800} style={{ fontSize: 28, color: item.color }}>
-						{data[item.key]}
-					</Text>
-				</div>
-			))}
+					{outstanding}
+				</Text>
+			</Group>
 		</Stack>
 	);
 }

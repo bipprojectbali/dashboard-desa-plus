@@ -9,7 +9,20 @@ export const WALL_THEME = {
 	OK: "#22C55E",
 	WARN: "#F59E0B",
 	DANGER: "#EF4444",
+	INFO: "#38BDF8", // cyan-sky untuk aksen sekunder
+	VIOLET: "#A78BFA", // ungu untuk kategori/ KPI tambahan
+	TRACK: "#273449", // rel progress bar di atas CARD
 } as const;
+
+/** Palet kategorikal untuk chart/list dgn banyak seri — hindari warna muddy. */
+export const WALL_CATEGORICAL = [
+	WALL_THEME.ACCENT,
+	WALL_THEME.OK,
+	WALL_THEME.WARN,
+	WALL_THEME.VIOLET,
+	WALL_THEME.INFO,
+	WALL_THEME.DANGER,
+] as const;
 
 /** Interval refetch snapshot di klien (ms) — di atas cache server 10s. */
 export const WALL_REFETCH_MS = 30_000;

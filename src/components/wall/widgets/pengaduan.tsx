@@ -1,6 +1,7 @@
 import { BarChart, DonutChart, LineChart } from "@mantine/charts";
-import { SimpleGrid, Text } from "@mantine/core";
+import { Group, Stack, Text } from "@mantine/core";
 import type { WallPengaduan } from "@/types/wall";
+import { StatRow } from "../stat-row";
 import { WALL_THEME } from "../wall-theme";
 
 const STATUS_ITEMS: Array<{
@@ -13,30 +14,36 @@ const STATUS_ITEMS: Array<{
 	{ key: "selesai", label: "Selesai", color: WALL_THEME.OK },
 ];
 
-/** Status pengaduan (angka besar per status). */
+/** Status pengaduan: total + bar proporsi per status (bukan angka telanjang). */
 export function PengaduanStatusBody({
 	data,
 }: {
 	data: WallPengaduan["stats"];
 }) {
+	const total = data.total || 0;
+	const rate = total > 0 ? Math.round((data.selesai / total) * 100) : 0;
 	return (
-		<SimpleGrid cols={1} spacing="sm">
-			{STATUS_ITEMS.map((item) => (
-				<div
-					key={item.key}
-					style={{
-						display: "flex",
-						justifyContent: "space-between",
-						alignItems: "baseline",
-					}}
-				>
-					<Text style={{ color: WALL_THEME.TEXT }}>{item.label}</Text>
-					<Text fw={800} style={{ fontSize: 28, color: item.color }}>
-						{data[item.key]}
-					</Text>
-				</div>
-			))}
-		</SimpleGrid>
+		<Stack gap="md" justify="space-between" style={{ height: "100%" }}>
+			<Stack gap="md">
+				{STATUS_ITEMS.map((item) => (
+					<StatRow
+						key={item.key}
+						label={item.label}
+						value={data[item.key]}
+						color={item.color}
+						fraction={total > 0 ? data[item.key] / total : 0}
+					/>
+				))}
+			</Stack>
+			<Group justify="space-between" align="baseline">
+				<Text size="sm" style={{ color: WALL_THEME.TEXT_DIM }}>
+					Total {total} · Tingkat penyelesaian
+				</Text>
+				<Text fw={800} style={{ fontSize: 20, color: WALL_THEME.OK }}>
+					{rate}%
+				</Text>
+			</Group>
+		</Stack>
 	);
 }
 

@@ -1,7 +1,15 @@
 import { BarChart, DonutChart } from "@mantine/charts";
-import { Stack, Text } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import type { WallKeuangan } from "@/types/wall";
+import { StatRow } from "../stat-row";
 import { WALL_THEME } from "../wall-theme";
+
+/** Warnai skor SDGs per ambang: hijau baik, biru cukup, oranye rendah. */
+function scoreColor(score: number): string {
+	if (score >= 80) return WALL_THEME.OK;
+	if (score >= 60) return WALL_THEME.ACCENT;
+	return WALL_THEME.WARN;
+}
 
 /** APBDes per kategori (bar). */
 export function KeuanganApbdesBody({ data }: { data: WallKeuangan["apbdes"] }) {
@@ -31,22 +39,18 @@ export function KeuanganKepuasanBody({
 	return <DonutChart h="100%" data={rows} withLabels />;
 }
 
-/** Skor SDGs (list). */
+/** Skor SDGs: nilai 0–100 dgn bar progres berwarna per ambang. */
 export function KeuanganSdgsBody({ data }: { data: WallKeuangan["sdgs"] }) {
 	return (
-		<Stack gap={8}>
-			{data.slice(0, 8).map((s) => (
-				<div
+		<Stack gap="sm" justify="center" style={{ height: "100%" }}>
+			{data.slice(0, 6).map((s) => (
+				<StatRow
 					key={s.title}
-					style={{ display: "flex", justifyContent: "space-between" }}
-				>
-					<Text size="sm" style={{ color: WALL_THEME.TEXT }}>
-						{s.title}
-					</Text>
-					<Text size="sm" fw={700} style={{ color: WALL_THEME.ACCENT }}>
-						{s.score}
-					</Text>
-				</div>
+					label={s.title}
+					value={s.score.toFixed(1)}
+					color={scoreColor(s.score)}
+					fraction={s.score / 100}
+				/>
 			))}
 		</Stack>
 	);
