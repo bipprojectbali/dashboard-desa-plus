@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { initBufferFrom } from "@/store/wall-layout";
 import type { WallSnapshot } from "@/types/wall";
 import { KpiStrip } from "./kpi-strip";
+import { LiveClock } from "./live-clock";
 import { WallGrid } from "./wall-grid";
 import { WallHeader } from "./wall-header";
 import { WallLayoutEditor } from "./wall-layout-editor";
@@ -36,9 +37,11 @@ export function WallShell({ snapshot, order, live, canEdit }: WallShellProps) {
 		setMode("edit");
 	};
 
+	// Admin display: tombol Atur BERSAMA jam — jangan gantikan jam (TV tetap
+	// butuh jam). Publik → undefined → header render LiveClock seperti biasa.
 	const headerActions =
 		canEdit && mode === "display" ? (
-			<Group gap="sm">
+			<Group gap="lg" align="center" wrap="nowrap">
 				<Button
 					variant="light"
 					leftSection={<IconPencil size={16} />}
@@ -46,6 +49,7 @@ export function WallShell({ snapshot, order, live, canEdit }: WallShellProps) {
 				>
 					Atur
 				</Button>
+				<LiveClock />
 			</Group>
 		) : undefined;
 

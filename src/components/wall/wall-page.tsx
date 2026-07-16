@@ -89,9 +89,17 @@ export function WallPage({ accessKey }: WallPageProps) {
 				{!fsFailed ? (
 					<Button
 						size="xs"
-						variant="subtle"
+						variant="default"
 						onClick={requestFullscreen}
-						style={{ position: "fixed", bottom: 8, right: 8, opacity: 0.4 }}
+						style={{
+							position: "fixed",
+							bottom: 12,
+							right: 12,
+							opacity: 0.85,
+							background: WALL_THEME.CARD,
+							borderColor: WALL_THEME.BORDER,
+							color: WALL_THEME.TEXT,
+						}}
 					>
 						Layar penuh
 					</Button>

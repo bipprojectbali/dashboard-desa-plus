@@ -81,6 +81,9 @@ export function WallLayoutEditor({
 	}, [toast]);
 
 	const dirty = isDirty();
+	// Section admin (framed) pakai aksen grape agar selaras kartu; inline /wall
+	// (dark) tetap biru default.
+	const accent = framed ? "grape" : undefined;
 
 	const handleSave = async () => {
 		try {
@@ -136,6 +139,7 @@ export function WallLayoutEditor({
 			<Group justify="flex-end" gap="sm">
 				<Button
 					variant="light"
+					color={accent}
 					leftSection={<IconPlus size={16} />}
 					onClick={openGallery}
 				>
@@ -150,6 +154,7 @@ export function WallLayoutEditor({
 					Reset default
 				</Button>
 				<Button
+					color={accent}
 					onClick={handleSave}
 					loading={snap.status === "saving"}
 					disabled={!dirty}
@@ -164,19 +169,25 @@ export function WallLayoutEditor({
 			</Group>
 
 			{framed ? (
-				<MantineProvider forceColorScheme="dark">
-					<div
-						style={{
-							aspectRatio: "16 / 9",
-							background: WALL_THEME.PAGE_BG,
-							border: `1px solid ${WALL_THEME.BORDER}`,
-							borderRadius: 12,
-							padding: 18,
-						}}
-					>
-						{grid}
-					</div>
-				</MantineProvider>
+				// Bungkus preview dalam frame gelap "layar". Di mobile lebar sempit,
+				// 3 kolom mustahil terbaca → jaga proporsi TV (minWidth) & scroll
+				// horizontal, bukan menciutkan sel jadi berantakan.
+				<div style={{ overflowX: "auto", borderRadius: 12 }}>
+					<MantineProvider forceColorScheme="dark">
+						<div
+							style={{
+								aspectRatio: "16 / 9",
+								minWidth: 680,
+								background: WALL_THEME.PAGE_BG,
+								border: `1px solid ${WALL_THEME.BORDER}`,
+								borderRadius: 12,
+								padding: 18,
+							}}
+						>
+							{grid}
+						</div>
+					</MantineProvider>
+				</div>
 			) : (
 				<div style={{ flex: 1, minHeight: 0 }}>{grid}</div>
 			)}
