@@ -1,6 +1,7 @@
-import { BarChart, DonutChart } from "@mantine/charts";
+import { BarChart } from "@mantine/charts";
 import { Stack } from "@mantine/core";
 import type { WallKeuangan } from "@/types/wall";
+import { DonutBody } from "../donut-body";
 import { StatRow } from "../stat-row";
 import { WALL_THEME } from "../wall-theme";
 
@@ -25,7 +26,7 @@ export function KeuanganApbdesBody({ data }: { data: WallKeuangan["apbdes"] }) {
 	);
 }
 
-/** Kepuasan layanan versi Keuangan (donut). */
+/** Kepuasan layanan versi Keuangan (donut besar + legenda). */
 export function KeuanganKepuasanBody({
 	data,
 }: {
@@ -36,7 +37,7 @@ export function KeuanganKepuasanBody({
 		value: s.value,
 		color: s.color,
 	}));
-	return <DonutChart h="100%" data={rows} withLabels />;
+	return <DonutBody data={rows} />;
 }
 
 /** Skor SDGs: nilai 0–100 dgn bar progres berwarna per ambang. */

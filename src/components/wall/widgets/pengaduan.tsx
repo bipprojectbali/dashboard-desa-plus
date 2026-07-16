@@ -1,6 +1,7 @@
-import { BarChart, DonutChart, LineChart } from "@mantine/charts";
+import { BarChart, LineChart } from "@mantine/charts";
 import { Group, Stack, Text } from "@mantine/core";
 import type { WallPengaduan } from "@/types/wall";
+import { DonutBody } from "../donut-body";
 import { StatRow } from "../stat-row";
 import { WALL_THEME } from "../wall-theme";
 
@@ -84,7 +85,7 @@ export function PengaduanServiceTypeBody({
 	);
 }
 
-/** Kepuasan versi Pengaduan (donut) — sumber berbeda dari Keuangan. */
+/** Kepuasan versi Pengaduan (donut besar + legenda) — sumber beda dari Keuangan. */
 export function PengaduanKepuasanBody({
 	data,
 }: {
@@ -95,5 +96,5 @@ export function PengaduanKepuasanBody({
 		value: s.value,
 		color: s.color,
 	}));
-	return <DonutChart h="100%" data={rows} withLabels />;
+	return <DonutBody data={rows} />;
 }

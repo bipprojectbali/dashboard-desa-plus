@@ -1,32 +1,24 @@
-import { BarChart, DonutChart } from "@mantine/charts";
+import { BarChart } from "@mantine/charts";
 import { Stack, Text } from "@mantine/core";
 import type { WallDemografi } from "@/types/wall";
-import { WALL_THEME } from "../wall-theme";
-
-const CATEGORICAL_COLORS = [
-	WALL_THEME.ACCENT,
-	WALL_THEME.WARN,
-	WALL_THEME.OK,
-	WALL_THEME.DANGER,
-	WALL_THEME.TEXT_DIM,
-];
+import { DonutBody } from "../donut-body";
+import { WALL_CATEGORICAL, WALL_THEME } from "../wall-theme";
 
 function toDonut(rows: Array<{ label: string; count: number }>) {
 	return rows.map((r, i) => ({
 		name: r.label,
 		value: r.count,
-		color:
-			CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length] ?? WALL_THEME.ACCENT,
+		color: WALL_CATEGORICAL[i % WALL_CATEGORICAL.length] ?? WALL_THEME.ACCENT,
 	}));
 }
 
-/** Sebaran gender (donut). */
+/** Sebaran gender (donut besar + legenda). */
 export function DemografiGenderBody({
 	data,
 }: {
 	data: WallDemografi["gender"];
 }) {
-	return <DonutChart h="100%" data={toDonut(data)} withLabels />;
+	return <DonutBody data={toDonut(data)} unit="jiwa" />;
 }
 
 /** Kelompok umur (bar). */
@@ -47,13 +39,13 @@ export function DemografiAgeBody({
 	);
 }
 
-/** Sebaran agama (donut). Slice yang sebelumnya nganggur. */
+/** Sebaran agama (donut besar + legenda). Slice yang sebelumnya nganggur. */
 export function DemografiReligionBody({
 	data,
 }: {
 	data: WallDemografi["religion"];
 }) {
-	return <DonutChart h="100%" data={toDonut(data)} withLabels />;
+	return <DonutBody data={toDonut(data)} unit="jiwa" />;
 }
 
 /** Pekerjaan teratas (bar horizontal). Slice yang sebelumnya nganggur. */
