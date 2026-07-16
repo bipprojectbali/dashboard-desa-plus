@@ -16,3 +16,10 @@ export const SCENE_INTERVAL_MS = 20_000;
 
 /** Interval refetch snapshot di klien (ms) — di atas cache server 10s. */
 export const WALL_REFETCH_MS = 30_000;
+
+/**
+ * Interval refetch layout (ms). Lebih longgar dari snapshot: layout jarang
+ * berubah (hanya saat admin simpan), jadi 60s cukup buat propagasi ke TV
+ * tanpa polling berlebih. GET read-only → poll ini nol-write.
+ */
+export const WALL_LAYOUT_REFETCH_MS = 60_000;

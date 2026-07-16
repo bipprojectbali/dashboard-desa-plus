@@ -2,9 +2,15 @@ import { Button, Center, MantineProvider, Stack, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import "@mantine/charts/styles.css";
+import { fetchWallLayout } from "./fetch-wall-layout";
 import { fetchWallSnapshot } from "./fetch-wall-snapshot";
+import { resolveLayout } from "./wall-layout-utils";
 import { WallShell } from "./wall-shell";
-import { WALL_REFETCH_MS, WALL_THEME } from "./wall-theme";
+import {
+	WALL_LAYOUT_REFETCH_MS,
+	WALL_REFETCH_MS,
+	WALL_THEME,
+} from "./wall-theme";
 
 interface WallPageProps {
 	accessKey?: string;
@@ -24,6 +30,17 @@ export function WallPage({ accessKey }: WallPageProps) {
 		refetchInterval: WALL_REFETCH_MS,
 		refetchOnWindowFocus: false,
 	});
+
+	// Layout global (singleton DB). Stateless read: admin simpan → nyampe TV
+	// dalam 1 siklus refetch. Gagal fetch → resolveLayout(undefined) = default.
+	const { data: layoutOrder } = useQuery({
+		queryKey: ["wall", "layout"],
+		queryFn: fetchWallLayout,
+		refetchInterval: WALL_LAYOUT_REFETCH_MS,
+		refetchOnWindowFocus: false,
+	});
+
+	const order = resolveLayout(layoutOrder);
 
 	const requestFullscreen = () => {
 		document.documentElement
@@ -53,7 +70,7 @@ export function WallPage({ accessKey }: WallPageProps) {
 						</Stack>
 					</Center>
 				) : (
-					<WallShell snapshot={data} live={!isError} />
+					<WallShell snapshot={data} order={order} live={!isError} />
 				)}
 
 				{/* Fallback fullscreen dalam app; kiosk browser tetap jalur utama. */}

@@ -4,7 +4,8 @@ import { WALL_THEME } from "./wall-theme";
 
 interface WidgetCardProps {
 	title: string;
-	children: ReactNode;
+	/** Isi kartu. Opsional — saat `empty`, empty state yang dirender. */
+	children?: ReactNode;
 	/** Aksi opsional di kanan header (mis. tombol ✕ saat mode edit). */
 	actions?: ReactNode;
 	/** True → tampilkan empty state alih-alih children. */
