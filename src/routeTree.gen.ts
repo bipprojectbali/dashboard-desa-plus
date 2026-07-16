@@ -30,6 +30,7 @@ import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UsersIdRouteImport } from './routes/users/$id'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
+import { Route as PengaturanWallRouteImport } from './routes/pengaturan/wall'
 import { Route as PengaturanUmumRouteImport } from './routes/pengaturan/umum'
 import { Route as PengaturanSinkronisasiRouteImport } from './routes/pengaturan/sinkronisasi'
 import { Route as PengaturanNotifikasiRouteImport } from './routes/pengaturan/notifikasi'
@@ -149,6 +150,11 @@ const ProfileEditRoute = ProfileEditRouteImport.update({
   path: '/edit',
   getParentRoute: () => ProfileRouteRoute,
 } as any)
+const PengaturanWallRoute = PengaturanWallRouteImport.update({
+  id: '/wall',
+  path: '/wall',
+  getParentRoute: () => PengaturanRouteRoute,
+} as any)
 const PengaturanUmumRoute = PengaturanUmumRouteImport.update({
   id: '/umum',
   path: '/umum',
@@ -245,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
   '/pengaturan/sinkronisasi': typeof PengaturanSinkronisasiRoute
   '/pengaturan/umum': typeof PengaturanUmumRoute
+  '/pengaturan/wall': typeof PengaturanWallRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -279,6 +286,7 @@ export interface FileRoutesByTo {
   '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
   '/pengaturan/sinkronisasi': typeof PengaturanSinkronisasiRoute
   '/pengaturan/umum': typeof PengaturanUmumRoute
+  '/pengaturan/wall': typeof PengaturanWallRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin': typeof AdminIndexRoute
@@ -316,6 +324,7 @@ export interface FileRoutesById {
   '/pengaturan/notifikasi': typeof PengaturanNotifikasiRoute
   '/pengaturan/sinkronisasi': typeof PengaturanSinkronisasiRoute
   '/pengaturan/umum': typeof PengaturanUmumRoute
+  '/pengaturan/wall': typeof PengaturanWallRoute
   '/profile/edit': typeof ProfileEditRoute
   '/users/$id': typeof UsersIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -354,6 +363,7 @@ export interface FileRouteTypes {
     | '/pengaturan/notifikasi'
     | '/pengaturan/sinkronisasi'
     | '/pengaturan/umum'
+    | '/pengaturan/wall'
     | '/profile/edit'
     | '/users/$id'
     | '/admin/'
@@ -388,6 +398,7 @@ export interface FileRouteTypes {
     | '/pengaturan/notifikasi'
     | '/pengaturan/sinkronisasi'
     | '/pengaturan/umum'
+    | '/pengaturan/wall'
     | '/profile/edit'
     | '/users/$id'
     | '/admin'
@@ -424,6 +435,7 @@ export interface FileRouteTypes {
     | '/pengaturan/notifikasi'
     | '/pengaturan/sinkronisasi'
     | '/pengaturan/umum'
+    | '/pengaturan/wall'
     | '/profile/edit'
     | '/users/$id'
     | '/admin/'
@@ -601,6 +613,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileEditRouteImport
       parentRoute: typeof ProfileRouteRoute
     }
+    '/pengaturan/wall': {
+      id: '/pengaturan/wall'
+      path: '/wall'
+      fullPath: '/pengaturan/wall'
+      preLoaderRoute: typeof PengaturanWallRouteImport
+      parentRoute: typeof PengaturanRouteRoute
+    }
     '/pengaturan/umum': {
       id: '/pengaturan/umum'
       path: '/umum'
@@ -729,6 +748,7 @@ interface PengaturanRouteRouteChildren {
   PengaturanNotifikasiRoute: typeof PengaturanNotifikasiRoute
   PengaturanSinkronisasiRoute: typeof PengaturanSinkronisasiRoute
   PengaturanUmumRoute: typeof PengaturanUmumRoute
+  PengaturanWallRoute: typeof PengaturanWallRoute
 }
 
 const PengaturanRouteRouteChildren: PengaturanRouteRouteChildren = {
@@ -737,6 +757,7 @@ const PengaturanRouteRouteChildren: PengaturanRouteRouteChildren = {
   PengaturanNotifikasiRoute: PengaturanNotifikasiRoute,
   PengaturanSinkronisasiRoute: PengaturanSinkronisasiRoute,
   PengaturanUmumRoute: PengaturanUmumRoute,
+  PengaturanWallRoute: PengaturanWallRoute,
 }
 
 const PengaturanRouteRouteWithChildren = PengaturanRouteRoute._addFileChildren(

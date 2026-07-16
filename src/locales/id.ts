@@ -27,6 +27,7 @@ export type TranslationKeys = {
 		notifikasi: string;
 		aksesDanTim: string;
 		sinkronisasi: string;
+		wall: string;
 		profile: string;
 		edit: string;
 	};
@@ -491,6 +492,7 @@ const id: TranslationKeys = {
 		notifikasi: "Notifikasi",
 		aksesDanTim: "Akses & Tim",
 		sinkronisasi: "Sinkronisasi NOC",
+		wall: "Video Wall",
 		profile: "Profil",
 		edit: "Edit",
 	},
