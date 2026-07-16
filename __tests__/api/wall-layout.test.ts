@@ -1,17 +1,18 @@
 import { describe, expect, it } from "bun:test";
 import {
+	ALL_WIDGET_IDS,
 	DEFAULT_LAYOUT,
 	resolveLayout,
 	validateLayout,
-	WALL_SLOTS,
+	WALL_DEFAULT_COUNT,
+	WALL_MAX_SLOTS,
 	type WidgetId,
 } from "@/components/wall/wall-layout-utils";
 
-describe("resolveLayout — selalu balikin grid penuh valid", () => {
-	it("input kosong → DEFAULT_LAYOUT (6 widget)", () => {
+describe("resolveLayout — daftar valid tanpa batas atas (selain katalog)", () => {
+	it("input kosong → DEFAULT_LAYOUT", () => {
 		const out = resolveLayout([]);
 		expect(out).toEqual(DEFAULT_LAYOUT);
-		expect(out).toHaveLength(WALL_SLOTS);
 	});
 
 	it("null/undefined → DEFAULT_LAYOUT", () => {
@@ -19,23 +20,22 @@ describe("resolveLayout — selalu balikin grid penuh valid", () => {
 		expect(resolveLayout(undefined)).toEqual(DEFAULT_LAYOUT);
 	});
 
-	it("buang id tak dikenal lalu backfill dari default", () => {
+	it("buang id tak dikenal, pertahankan yang valid (tanpa backfill)", () => {
 		const out = resolveLayout(["keuangan-sdgs", "tidak-ada", "bukan-widget"]);
-		expect(out).toHaveLength(WALL_SLOTS);
-		expect(out[0]).toBe("keuangan-sdgs");
-		expect(out).not.toContain("tidak-ada");
-		// Sisanya diisi default yang belum terpakai.
-		expect(new Set(out).size).toBe(WALL_SLOTS);
+		expect(out).toEqual(["keuangan-sdgs"]);
+	});
+
+	it("semua id rusak → fallback DEFAULT_LAYOUT (wall tak boot kosong)", () => {
+		const out = resolveLayout(["tidak-ada", "hantu"]);
+		expect(out).toEqual(DEFAULT_LAYOUT);
 	});
 
 	it("dedupe id duplikat", () => {
 		const out = resolveLayout(["ops-panel", "ops-panel", "ops-panel"]);
-		expect(out.filter((id) => id === "ops-panel")).toHaveLength(1);
-		expect(out).toHaveLength(WALL_SLOTS);
-		expect(new Set(out).size).toBe(WALL_SLOTS);
+		expect(out).toEqual(["ops-panel"]);
 	});
 
-	it("cap kelebihan slot (7 → 6), pertahankan urutan awal", () => {
+	it("TIDAK cap: 7 widget valid tetap 7", () => {
 		const seven: WidgetId[] = [
 			"keuangan-apbdes",
 			"keuangan-kepuasan",
@@ -46,8 +46,14 @@ describe("resolveLayout — selalu balikin grid penuh valid", () => {
 			"ops-panel",
 		];
 		const out = resolveLayout(seven);
-		expect(out).toHaveLength(WALL_SLOTS);
-		expect(out).toEqual(seven.slice(0, WALL_SLOTS));
+		expect(out).toEqual(seven);
+		expect(out).toHaveLength(7);
+	});
+
+	it("terima seluruh katalog sekaligus", () => {
+		const out = resolveLayout(ALL_WIDGET_IDS);
+		expect(out).toHaveLength(WALL_MAX_SLOTS);
+		expect(new Set(out).size).toBe(WALL_MAX_SLOTS);
 	});
 
 	it("output selalu unik", () => {
@@ -63,12 +69,7 @@ describe("validateLayout — strict guard sebelum simpan", () => {
 		expect(res.errors).toHaveLength(0);
 	});
 
-	it("tolak kosong", () => {
-		const res = validateLayout([]);
-		expect(res.ok).toBe(false);
-	});
-
-	it("tolak melebihi WALL_SLOTS", () => {
+	it("terima 7 widget (di atas default 6, di bawah maks)", () => {
 		const seven: WidgetId[] = [
 			"keuangan-apbdes",
 			"keuangan-kepuasan",
@@ -78,9 +79,24 @@ describe("validateLayout — strict guard sebelum simpan", () => {
 			"demografi-gender",
 			"ops-panel",
 		];
-		const res = validateLayout(seven);
+		expect(validateLayout(seven).ok).toBe(true);
+	});
+
+	it("terima seluruh katalog (batas atas = jumlah widget)", () => {
+		expect(validateLayout([...ALL_WIDGET_IDS]).ok).toBe(true);
+	});
+
+	it("tolak kosong", () => {
+		const res = validateLayout([]);
 		expect(res.ok).toBe(false);
-		expect(res.errors.some((e) => e.includes("slot"))).toBe(true);
+	});
+
+	it("tolak melebihi WALL_MAX_SLOTS (duplikat memperpanjang array)", () => {
+		const tooMany = [...ALL_WIDGET_IDS, ALL_WIDGET_IDS[0] as WidgetId];
+		const res = validateLayout(tooMany);
+		expect(res.ok).toBe(false);
+		// Melebihi maks DAN duplikat — dua-duanya harus terdeteksi.
+		expect(res.errors.some((e) => e.includes("widget"))).toBe(true);
 	});
 
 	it("tolak id tak dikenal", () => {
@@ -96,13 +112,17 @@ describe("validateLayout — strict guard sebelum simpan", () => {
 	});
 });
 
-describe("konstanta grid", () => {
-	it("WALL_SLOTS === 6", () => {
-		expect(WALL_SLOTS).toBe(6);
+describe("konstanta layout", () => {
+	it("WALL_DEFAULT_COUNT === 6", () => {
+		expect(WALL_DEFAULT_COUNT).toBe(6);
 	});
 
-	it("DEFAULT_LAYOUT punya tepat WALL_SLOTS widget unik", () => {
-		expect(DEFAULT_LAYOUT).toHaveLength(WALL_SLOTS);
-		expect(new Set(DEFAULT_LAYOUT).size).toBe(WALL_SLOTS);
+	it("WALL_MAX_SLOTS === jumlah widget katalog", () => {
+		expect(WALL_MAX_SLOTS).toBe(ALL_WIDGET_IDS.length);
+	});
+
+	it("DEFAULT_LAYOUT punya WALL_DEFAULT_COUNT widget unik", () => {
+		expect(DEFAULT_LAYOUT).toHaveLength(WALL_DEFAULT_COUNT);
+		expect(new Set(DEFAULT_LAYOUT).size).toBe(WALL_DEFAULT_COUNT);
 	});
 });

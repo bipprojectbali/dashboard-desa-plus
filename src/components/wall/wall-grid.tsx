@@ -9,8 +9,12 @@ import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { Text, UnstyledButton } from "@mantine/core";
 import type { WallSnapshot } from "@/types/wall";
 import { SortableWidgetCard } from "./sortable-widget-card";
-import { WALL_COLS, WALL_ROWS, WALL_SLOTS } from "./wall-layout-utils";
-import { WALL_THEME } from "./wall-theme";
+import { WALL_MAX_SLOTS } from "./wall-layout-utils";
+import {
+	WALL_MIN_CARD_HEIGHT,
+	WALL_MIN_CARD_WIDTH,
+	WALL_THEME,
+} from "./wall-theme";
 import { WidgetSlot } from "./widget-slot";
 
 interface WallGridProps {
@@ -25,19 +29,25 @@ interface WallGridProps {
 	onAdd?: () => void;
 }
 
+/**
+ * Grid responsif auto-fill: jumlah kolom mengikuti lebar layar (tiap kartu
+ * minimal {@link WALL_MIN_CARD_WIDTH}px). Baris memakai `auto-rows` bertinggi
+ * minimum agar chart terbaca; saat widget sedikit mereka melar mengisi tinggi
+ * (`minmax(H, 1fr)` via container), saat banyak grid tumbuh ke bawah & di-scroll.
+ */
 const gridStyle: React.CSSProperties = {
 	display: "grid",
-	gridTemplateColumns: `repeat(${WALL_COLS}, 1fr)`,
-	gridTemplateRows: `repeat(${WALL_ROWS}, 1fr)`,
+	gridTemplateColumns: `repeat(auto-fill, minmax(${WALL_MIN_CARD_WIDTH}px, 1fr))`,
+	gridAutoRows: `minmax(${WALL_MIN_CARD_HEIGHT}px, 1fr)`,
 	gap: 18,
-	height: "100%",
-	minHeight: 0,
+	minHeight: "100%",
+	alignContent: "stretch",
 };
 
 /**
- * Grid 3×2 widget wall. `display` = read-only (dipakai `/wall` 24/7).
- * `edit` = drag-and-drop reorder + ✕ hapus + tile "＋ Tambah" di slot kosong
- * (dipakai preview halaman admin).
+ * Grid widget wall responsif. `display` = read-only (dipakai `/wall` 24/7).
+ * `edit` = drag-and-drop reorder + ✕ hapus + tile "＋ Tambah" (dipakai mode
+ * edit inline & preview halaman admin).
  */
 export function WallGrid({
 	order,
@@ -70,7 +80,7 @@ export function WallGrid({
 		onReorder?.(from, to);
 	};
 
-	const canAdd = order.length < WALL_SLOTS;
+	const canAdd = order.length < WALL_MAX_SLOTS;
 
 	return (
 		<DndContext sensors={sensors} onDragEnd={handleDragEnd}>

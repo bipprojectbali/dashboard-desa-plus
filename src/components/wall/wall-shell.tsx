@@ -67,7 +67,9 @@ export function WallShell({ snapshot, order, live, canEdit }: WallShellProps) {
 		>
 			<WallHeader live={live} actions={headerActions} />
 			<KpiStrip kpi={snapshot?.kpi ?? null} />
-			<div style={{ minHeight: 0 }}>
+			{/* Area grid: scroll vertikal saat widget melebihi tinggi layar
+			    (grid responsif tak lagi dibatasi 6). */}
+			<div style={{ minHeight: 0, overflowY: "auto" }}>
 				{mode === "edit" && canEdit ? (
 					<WallLayoutEditor
 						snapshot={snapshot}

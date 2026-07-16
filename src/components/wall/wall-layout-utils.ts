@@ -44,10 +44,15 @@ export type WallCategory =
 	| "keamanan"
 	| "ops";
 
-/** Grid tetap 3×2 = 6 slot. Konstanta bernama — tak ada hardcode 3/2. */
-export const WALL_COLS = 3;
-export const WALL_ROWS = 2;
-export const WALL_SLOTS = WALL_COLS * WALL_ROWS;
+/**
+ * Jumlah widget default saat wall pertama kali boot (DB kosong). BUKAN batas
+ * atas — admin boleh menambah widget hingga sebanyak katalog. Grid render
+ * responsif (auto-fill), jadi jumlah kolom mengikuti lebar layar, bukan tetap.
+ */
+export const WALL_DEFAULT_COUNT = 6;
+
+/** Batas atas layout = sebanyak widget unik yang tersedia (tak boleh duplikat). */
+export const WALL_MAX_SLOTS = ALL_WIDGET_IDS.length;
 
 /** Id baris singleton di tabel `wall_layout`. */
 export const WALL_LAYOUT_ID = "singleton";
@@ -73,33 +78,25 @@ export function isKnownWidgetId(id: string): id is WidgetId {
 }
 
 /**
- * Resolusi untuk RENDER — selalu balikin tepat {@link WALL_SLOTS} widget unik & valid.
- * Pipeline: buang unknown → dedupe → cap ke SLOTS → backfill dari DEFAULT_LAYOUT
- * (yang belum terpakai) → slice ke SLOTS. Toleran: input rusak apa pun tetap
- * menghasilkan grid penuh yang bisa dirender.
+ * Resolusi untuk RENDER — balikin daftar widget unik & valid, sebanyak yang
+ * disimpan admin (tanpa batas atas selain katalog). Pipeline: buang unknown →
+ * dedupe. Bila hasil KOSONG (input null/rusak total) → pakai DEFAULT_LAYOUT
+ * supaya wall 24/7 tak boot kosong. Toleran: input rusak tetap menghasilkan
+ * grid yang bisa dirender.
  */
 export function resolveLayout(ids?: readonly string[] | null): WidgetId[] {
 	const seen = new Set<WidgetId>();
 	const out: WidgetId[] = [];
 
 	for (const id of ids ?? []) {
-		if (out.length >= WALL_SLOTS) break;
 		if (isKnownWidgetId(id) && !seen.has(id)) {
 			seen.add(id);
 			out.push(id);
 		}
 	}
 
-	// Backfill slot kosong dengan default yang belum dipakai.
-	for (const id of DEFAULT_LAYOUT) {
-		if (out.length >= WALL_SLOTS) break;
-		if (!seen.has(id)) {
-			seen.add(id);
-			out.push(id);
-		}
-	}
-
-	return out.slice(0, WALL_SLOTS);
+	// Kosong (belum di-set / semua id rusak) → jangan boot kosong.
+	return out.length > 0 ? out : [...DEFAULT_LAYOUT];
 }
 
 export interface LayoutValidation {
@@ -111,7 +108,7 @@ export interface LayoutValidation {
  * Validasi STRICT untuk guard sebelum simpan (server + klien).
  * Beda dari {@link resolveLayout}: ini TOLAK input cacat, bukan perbaiki —
  * supaya klien tak diam-diam menyimpan sesuatu yang beda dari yang dia kira.
- * Aturan: hanya id dikenal, tanpa duplikat, jumlah 1..WALL_SLOTS.
+ * Aturan: hanya id dikenal, tanpa duplikat, jumlah 1..WALL_MAX_SLOTS.
  */
 export function validateLayout(ids: readonly string[]): LayoutValidation {
 	const errors: string[] = [];
@@ -122,8 +119,8 @@ export function validateLayout(ids: readonly string[]): LayoutValidation {
 	if (ids.length === 0) {
 		errors.push("order tidak boleh kosong");
 	}
-	if (ids.length > WALL_SLOTS) {
-		errors.push(`order melebihi ${WALL_SLOTS} slot (${ids.length})`);
+	if (ids.length > WALL_MAX_SLOTS) {
+		errors.push(`order melebihi ${WALL_MAX_SLOTS} widget (${ids.length})`);
 	}
 
 	const seen = new Set<string>();

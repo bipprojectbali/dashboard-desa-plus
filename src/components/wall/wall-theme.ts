@@ -24,6 +24,14 @@ export const WALL_CATEGORICAL = [
 	WALL_THEME.DANGER,
 ] as const;
 
+/**
+ * Ukuran minimum kartu widget untuk grid responsif. Lebar min menentukan
+ * jumlah kolom (auto-fill): makin lebar layar → makin banyak kolom. Tinggi min
+ * menjaga chart tetap terbaca; saat widget sedikit, baris melar mengisi layar.
+ */
+export const WALL_MIN_CARD_WIDTH = 460;
+export const WALL_MIN_CARD_HEIGHT = 300;
+
 /** Interval refetch snapshot di klien (ms) — di atas cache server 10s. */
 export const WALL_REFETCH_MS = 30_000;
 
