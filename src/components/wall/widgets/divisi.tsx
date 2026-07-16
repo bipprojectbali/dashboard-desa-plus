@@ -1,6 +1,6 @@
-import { BarChart } from "@mantine/charts";
 import { Group, Stack, Text } from "@mantine/core";
 import type { WallDivisi } from "@/types/wall";
+import { HorizontalBar } from "../horizontal-bar";
 import { StatRow } from "../stat-row";
 import { WALL_THEME } from "../wall-theme";
 
@@ -43,7 +43,7 @@ export function DivisiKinerjaBody({
 	);
 }
 
-/** Dokumen per jenis (bar). Slice yang sebelumnya nganggur. */
+/** Dokumen per jenis (bar horizontal). Slice yang sebelumnya nganggur. */
 export function DivisiDocumentsBody({
 	data,
 }: {
@@ -51,13 +51,11 @@ export function DivisiDocumentsBody({
 }) {
 	const rows = data.map((d) => ({ name: d.name, jumlah: d.jumlah }));
 	return (
-		<BarChart
-			h="100%"
+		<HorizontalBar
 			data={rows}
 			dataKey="name"
-			orientation="vertical"
-			series={[{ name: "jumlah", color: WALL_THEME.ACCENT }]}
-			withLegend={false}
+			valueKey="jumlah"
+			color={WALL_THEME.ACCENT}
 		/>
 	);
 }

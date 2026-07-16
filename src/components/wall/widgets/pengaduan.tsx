@@ -1,7 +1,8 @@
-import { BarChart, LineChart } from "@mantine/charts";
+import { LineChart } from "@mantine/charts";
 import { Group, Stack, Text } from "@mantine/core";
 import type { WallPengaduan } from "@/types/wall";
 import { DonutBody } from "../donut-body";
+import { HorizontalBar } from "../horizontal-bar";
 import { StatRow } from "../stat-row";
 import { WALL_THEME } from "../wall-theme";
 
@@ -74,13 +75,11 @@ export function PengaduanServiceTypeBody({
 }) {
 	const rows = data.map((s) => ({ type: s.letterType, count: s.count }));
 	return (
-		<BarChart
-			h="100%"
+		<HorizontalBar
 			data={rows}
 			dataKey="type"
-			orientation="vertical"
-			series={[{ name: "count", color: WALL_THEME.OK }]}
-			withLegend={false}
+			valueKey="count"
+			color={WALL_THEME.OK}
 		/>
 	);
 }

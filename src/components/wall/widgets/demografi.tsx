@@ -2,6 +2,7 @@ import { BarChart } from "@mantine/charts";
 import { Stack, Text } from "@mantine/core";
 import type { WallDemografi } from "@/types/wall";
 import { DonutBody } from "../donut-body";
+import { HorizontalBar } from "../horizontal-bar";
 import { WALL_CATEGORICAL, WALL_THEME } from "../wall-theme";
 
 function toDonut(rows: Array<{ label: string; count: number }>) {
@@ -56,13 +57,11 @@ export function DemografiOccupationBody({
 }) {
 	const rows = data.map((o) => ({ label: o.label, count: o.count }));
 	return (
-		<BarChart
-			h="100%"
+		<HorizontalBar
 			data={rows}
 			dataKey="label"
-			orientation="vertical"
-			series={[{ name: "count", color: WALL_THEME.OK }]}
-			withLegend={false}
+			valueKey="count"
+			color={WALL_THEME.OK}
 		/>
 	);
 }
