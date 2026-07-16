@@ -108,6 +108,18 @@ model AksesPreference {
   @@map("akses_preference")
 }
 
+model WallLayout {
+  // Fixed id (BUKAN cuid seperti model lain) karena ini singleton global config:
+  // satu baris untuk seluruh instance. Layout video wall di-set admin, dibaca
+  // publik oleh TV kiosk — bukan per-user, jadi tak ada relasi User.
+  id        String   @id @default("singleton")
+  order     String[] // urutan widget id (Postgres text[])
+  updatedAt DateTime @updatedAt
+  updatedBy String?  // userId editor terakhir (audit; nullable saat baris pertama)
+
+  @@map("wall_layout")
+}
+
 model IpWhitelistEntry {
   id        String   @id @default(cuid())
   userId    String

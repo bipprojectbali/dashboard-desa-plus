@@ -1,0 +1,186 @@
+import type { FC } from "react";
+import type { WallSnapshot } from "@/types/wall";
+import {
+	type WallCategory,
+	type WidgetId,
+	ALL_WIDGET_IDS,
+	isKnownWidgetId,
+} from "./wall-layout-utils";
+import {
+	KeuanganApbdesBody,
+	KeuanganKepuasanBody,
+	KeuanganSdgsBody,
+} from "./widgets/keuangan";
+import {
+	PengaduanKepuasanBody,
+	PengaduanServiceTypeBody,
+	PengaduanStatusBody,
+	PengaduanTrendBody,
+} from "./widgets/pengaduan";
+import {
+	DemografiAgeBody,
+	DemografiGenderBody,
+	DemografiOccupationBody,
+	DemografiReligionBody,
+	DemografiStatsBody,
+} from "./widgets/demografi";
+import { DivisiDocumentsBody, DivisiKinerjaBody } from "./widgets/divisi";
+import { KeamananStatusBody } from "./widgets/keamanan";
+import { OpsBody } from "./widgets/ops";
+
+/**
+ * Definisi satu widget. `selectData` mengambil slice dari snapshot; balikin
+ * `null` bila slice tak ada / kosong → renderer tampilkan empty state.
+ * `Body` menerima data non-null (renderer sudah cabang empty).
+ */
+// biome-ignore lint/suspicious/noExplicitAny: tiap widget punya tipe data slice sendiri; disatukan di sini.
+export interface WidgetDefinition<T = any> {
+	id: WidgetId;
+	title: string;
+	category: WallCategory;
+	selectData: (snap: WallSnapshot | null | undefined) => T | null;
+	Body: FC<{ data: T }>;
+}
+
+/** Balikin array bila ada isi, selain itu null (empty state). */
+function nonEmpty<T>(arr: T[] | undefined | null): T[] | null {
+	return arr && arr.length > 0 ? arr : null;
+}
+
+const WIDGETS: Record<WidgetId, WidgetDefinition> = {
+	"keuangan-apbdes": {
+		id: "keuangan-apbdes",
+		title: "APBDes 2025",
+		category: "keuangan",
+		selectData: (s) => nonEmpty(s?.keuangan?.apbdes),
+		Body: KeuanganApbdesBody,
+	},
+	"keuangan-kepuasan": {
+		id: "keuangan-kepuasan",
+		title: "Kepuasan Layanan (Keuangan)",
+		category: "keuangan",
+		selectData: (s) => nonEmpty(s?.keuangan?.satisfaction),
+		Body: KeuanganKepuasanBody,
+	},
+	"keuangan-sdgs": {
+		id: "keuangan-sdgs",
+		title: "Skor SDGs",
+		category: "keuangan",
+		selectData: (s) => nonEmpty(s?.keuangan?.sdgs),
+		Body: KeuanganSdgsBody,
+	},
+	"pengaduan-status": {
+		id: "pengaduan-status",
+		title: "Status Pengaduan",
+		category: "pengaduan",
+		selectData: (s) => s?.pengaduan?.stats ?? null,
+		Body: PengaduanStatusBody,
+	},
+	"pengaduan-trend": {
+		id: "pengaduan-trend",
+		title: "Tren 7 Bulan",
+		category: "pengaduan",
+		selectData: (s) => nonEmpty(s?.pengaduan?.trend7m),
+		Body: PengaduanTrendBody,
+	},
+	"pengaduan-service-type": {
+		id: "pengaduan-service-type",
+		title: "Surat Layanan per Tipe",
+		category: "pengaduan",
+		selectData: (s) => nonEmpty(s?.pengaduan?.serviceByType),
+		Body: PengaduanServiceTypeBody,
+	},
+	"pengaduan-kepuasan": {
+		id: "pengaduan-kepuasan",
+		title: "Kepuasan Layanan (Pengaduan)",
+		category: "pengaduan",
+		selectData: (s) => nonEmpty(s?.pengaduan?.kepuasan),
+		Body: PengaduanKepuasanBody,
+	},
+	"demografi-gender": {
+		id: "demografi-gender",
+		title: "Sebaran Gender",
+		category: "demografi",
+		selectData: (s) => nonEmpty(s?.demografi?.gender),
+		Body: DemografiGenderBody,
+	},
+	"demografi-age": {
+		id: "demografi-age",
+		title: "Kelompok Umur",
+		category: "demografi",
+		selectData: (s) => nonEmpty(s?.demografi?.ageGroups),
+		Body: DemografiAgeBody,
+	},
+	"demografi-religion": {
+		id: "demografi-religion",
+		title: "Sebaran Agama",
+		category: "demografi",
+		selectData: (s) => nonEmpty(s?.demografi?.religion),
+		Body: DemografiReligionBody,
+	},
+	"demografi-occupation": {
+		id: "demografi-occupation",
+		title: "Pekerjaan Teratas",
+		category: "demografi",
+		selectData: (s) => nonEmpty(s?.demografi?.occupationTop),
+		Body: DemografiOccupationBody,
+	},
+	"demografi-stats": {
+		id: "demografi-stats",
+		title: "Ringkasan Demografi",
+		category: "demografi",
+		selectData: (s) => s?.demografi?.stats ?? null,
+		Body: DemografiStatsBody,
+	},
+	"divisi-kinerja": {
+		id: "divisi-kinerja",
+		title: "Kinerja Divisi",
+		category: "divisi",
+		selectData: (s) => s?.divisi?.activities ?? null,
+		Body: DivisiKinerjaBody,
+	},
+	"divisi-documents": {
+		id: "divisi-documents",
+		title: "Dokumen per Jenis",
+		category: "divisi",
+		selectData: (s) => nonEmpty(s?.divisi?.documents),
+		Body: DivisiDocumentsBody,
+	},
+	"keamanan-status": {
+		id: "keamanan-status",
+		title: "Laporan Keamanan",
+		category: "keamanan",
+		selectData: (s) => s?.keamanan ?? null,
+		Body: KeamananStatusBody,
+	},
+	"ops-panel": {
+		id: "ops-panel",
+		title: "Status Sistem",
+		category: "ops",
+		selectData: (s) => s?.system ?? null,
+		Body: OpsBody,
+	},
+};
+
+/** Ambil definisi widget bila id dikenal. */
+export function getWidget(id: string): WidgetDefinition | undefined {
+	return isKnownWidgetId(id) ? WIDGETS[id] : undefined;
+}
+
+/** Semua definisi widget dalam urutan katalog. */
+export function allWidgets(): WidgetDefinition[] {
+	return ALL_WIDGET_IDS.map((id) => WIDGETS[id]);
+}
+
+/**
+ * Widget yang BELUM terpasang di layout aktif — sumber galeri tambah-widget.
+ * `order` yang mengandung id tak dikenal diabaikan (tak mempengaruhi hasil).
+ */
+export function unplacedWidgets(
+	order: readonly string[],
+): WidgetDefinition[] {
+	const placed = new Set(order);
+	return ALL_WIDGET_IDS.filter((id) => !placed.has(id)).map(
+		(id) => WIDGETS[id],
+	);
+}
