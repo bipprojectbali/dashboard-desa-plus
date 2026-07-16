@@ -1,17 +1,54 @@
+import { Button, Group } from "@mantine/core";
+import { IconPencil } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { initBufferFrom } from "@/store/wall-layout";
 import type { WallSnapshot } from "@/types/wall";
 import { KpiStrip } from "./kpi-strip";
 import { WallGrid } from "./wall-grid";
 import { WallHeader } from "./wall-header";
+import { WallLayoutEditor } from "./wall-layout-editor";
+import type { WidgetId } from "./wall-layout-utils";
 import { WALL_THEME } from "./wall-theme";
 
 interface WallShellProps {
 	snapshot: WallSnapshot | undefined;
 	order: string[];
 	live: boolean;
+	/** true → admin login: tampilkan tombol Atur + izinkan mode edit inline. */
+	canEdit: boolean;
 }
 
-/** Grid tetap: header, KPI strip, grid widget 3×2 (mode display, tanpa rotasi). */
-export function WallShell({ snapshot, order, live }: WallShellProps) {
+/**
+ * Grid tetap: header, KPI strip, grid widget 3×2. Publik → display statis.
+ * Admin (canEdit) → tombol Atur di header masuk mode edit inline (drag/drop),
+ * TV/publik tak pernah lihat kontrol. Backend tetap gate PUT admin-only.
+ */
+export function WallShell({ snapshot, order, live, canEdit }: WallShellProps) {
+	const [mode, setMode] = useState<"display" | "edit">("display");
+
+	// Kalau status admin hilang (mis. sesi habis), paksa kembali display.
+	useEffect(() => {
+		if (!canEdit && mode === "edit") setMode("display");
+	}, [canEdit, mode]);
+
+	const enterEdit = () => {
+		initBufferFrom(order as WidgetId[]);
+		setMode("edit");
+	};
+
+	const headerActions =
+		canEdit && mode === "display" ? (
+			<Group gap="sm">
+				<Button
+					variant="light"
+					leftSection={<IconPencil size={16} />}
+					onClick={enterEdit}
+				>
+					Atur
+				</Button>
+			</Group>
+		) : undefined;
+
 	return (
 		<div
 			style={{
@@ -24,10 +61,19 @@ export function WallShell({ snapshot, order, live }: WallShellProps) {
 				boxSizing: "border-box",
 			}}
 		>
-			<WallHeader live={live} />
+			<WallHeader live={live} actions={headerActions} />
 			<KpiStrip kpi={snapshot?.kpi ?? null} />
 			<div style={{ minHeight: 0 }}>
-				<WallGrid order={order} snapshot={snapshot} mode="display" />
+				{mode === "edit" && canEdit ? (
+					<WallLayoutEditor
+						snapshot={snapshot}
+						seed={{ mode: "order", order: order as WidgetId[] }}
+						onDone={() => setMode("display")}
+						onSaved={() => setMode("display")}
+					/>
+				) : (
+					<WallGrid order={order} snapshot={snapshot} mode="display" />
+				)}
 			</div>
 		</div>
 	);

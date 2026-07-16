@@ -80,15 +80,6 @@ const routeRules: RouteRule[] = [
 		requiredRole: "admin",
 		redirectTo: "/",
 	},
-	// Pengaturan video wall — admin only. Harus SEBELUM rule `/wall` publik;
-	// meski `/pengaturan/wall` tak match `startsWith("/wall")`, urutan eksplisit
-	// ini mencegah salah-lolos bila pola diubah kelak.
-	{
-		match: (p) => p === "/pengaturan/wall",
-		requireAuth: true,
-		requiredRole: "admin",
-		redirectTo: "/",
-	},
 	// NOC video wall — publik (TV/kiosk tak login). Token opsional dicek
 	// di server via WALL_ACCESS_TOKEN, bukan di router.
 	{

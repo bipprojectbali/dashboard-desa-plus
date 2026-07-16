@@ -29,7 +29,6 @@ const en: TranslationKeys = {
 		notifikasi: "Notifications",
 		aksesDanTim: "Access & Team",
 		sinkronisasi: "NOC Sync",
-		wall: "Video Wall",
 		profile: "Profile",
 		edit: "Edit",
 	},

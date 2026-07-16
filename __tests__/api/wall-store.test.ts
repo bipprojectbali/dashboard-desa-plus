@@ -5,6 +5,7 @@ import {
 } from "@/components/wall/wall-layout-utils";
 import {
 	addWidget,
+	initBufferFrom,
 	isDirty,
 	moveWidget,
 	removeWidget,
@@ -60,6 +61,22 @@ describe("wall-layout store — mutasi buffer", () => {
 	it("isDirty mendeteksi perubahan urutan dengan panjang sama", () => {
 		const [first, second, ...rest] = DEFAULT_LAYOUT;
 		setOrder([second, first, ...rest] as WidgetId[]);
+		expect(isDirty()).toBe(true);
+	});
+
+	it("initBufferFrom seed order + baseline saved (isDirty false)", () => {
+		const custom: WidgetId[] = ["ops-panel", "keuangan-sdgs", "demografi-age"];
+		initBufferFrom(custom);
+		expect(wallLayoutStore.order).toEqual(custom);
+		expect(wallLayoutStore.saved).toEqual(custom);
+		expect(isDirty()).toBe(false);
+		expect(wallLayoutStore.status).toBe("idle");
+		expect(wallLayoutStore.error).toBeNull();
+	});
+
+	it("initBufferFrom lalu ubah → dirty", () => {
+		initBufferFrom(["ops-panel", "keuangan-sdgs"]);
+		addWidget("demografi-age");
 		expect(isDirty()).toBe(true);
 	});
 });

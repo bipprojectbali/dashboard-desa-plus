@@ -1,7 +1,9 @@
 import { Button, Center, MantineProvider, Stack, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useSnapshot } from "valtio";
 import "@mantine/charts/styles.css";
+import { authStore } from "@/store/auth";
 import { fetchWallLayout } from "./fetch-wall-layout";
 import { fetchWallSnapshot } from "./fetch-wall-snapshot";
 import { resolveLayout } from "./wall-layout-utils";
@@ -42,6 +44,11 @@ export function WallPage({ accessKey }: WallPageProps) {
 
 	const order = resolveLayout(layoutOrder);
 
+	// Admin login terdeteksi bahkan di route publik (__root beforeLoad selalu
+	// set authStore dari sesi). Publik/TV → user null → canEdit false.
+	const { user } = useSnapshot(authStore);
+	const canEdit = user?.role === "admin";
+
 	const requestFullscreen = () => {
 		document.documentElement
 			.requestFullscreen?.()
@@ -70,7 +77,12 @@ export function WallPage({ accessKey }: WallPageProps) {
 						</Stack>
 					</Center>
 				) : (
-					<WallShell snapshot={data} order={order} live={!isError} />
+					<WallShell
+						snapshot={data}
+						order={order}
+						live={!isError}
+						canEdit={canEdit}
+					/>
 				)}
 
 				{/* Fallback fullscreen dalam app; kiosk browser tetap jalur utama. */}

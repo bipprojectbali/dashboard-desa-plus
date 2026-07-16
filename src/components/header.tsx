@@ -111,7 +111,6 @@ export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 		notifikasi: t.breadcrumb.notifikasi,
 		"akses-dan-tim": t.breadcrumb.aksesDanTim,
 		sinkronisasi: t.breadcrumb.sinkronisasi,
-		wall: t.breadcrumb.wall,
 		profile: t.breadcrumb.profile,
 		edit: t.breadcrumb.edit,
 	};

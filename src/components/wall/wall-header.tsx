@@ -1,13 +1,16 @@
 import { Group, Text } from "@mantine/core";
+import type { ReactNode } from "react";
 import { LiveClock } from "./live-clock";
 import { WALL_THEME } from "./wall-theme";
 
 interface WallHeaderProps {
 	live: boolean;
+	/** Kontrol opsional di kanan (mis. tombol Atur/Simpan untuk admin). */
+	actions?: ReactNode;
 }
 
-/** Header wall: judul + indikator LIVE berdenyut + jam. */
-export function WallHeader({ live }: WallHeaderProps) {
+/** Header wall: judul + indikator LIVE berdenyut + jam (atau actions admin). */
+export function WallHeader({ live, actions }: WallHeaderProps) {
 	return (
 		<Group justify="space-between" align="center" wrap="nowrap">
 			<div>
@@ -36,7 +39,7 @@ export function WallHeader({ live }: WallHeaderProps) {
 					</Text>
 				</Group>
 			</div>
-			<LiveClock />
+			{actions ?? <LiveClock />}
 		</Group>
 	);
 }

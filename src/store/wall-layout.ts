@@ -24,9 +24,10 @@ interface WallLayoutState {
 }
 
 /**
- * Store buffer edit layout wall untuk halaman admin (`/pengaturan/wall`).
- * Read path `/wall` TIDAK pakai store ini — dia stateless via useQuery.
- * Store cuma menampung perubahan sebelum di-`saveLayout`.
+ * Store buffer edit layout wall — dipakai mode edit inline di `/wall` (admin)
+ * dan section "Video Wall" di `/admin/settings`. Read path `/wall` (display)
+ * TIDAK pakai store ini — dia stateless via useQuery. Store cuma menampung
+ * perubahan sebelum di-`saveLayout`.
  */
 export const wallLayoutStore = proxy<WallLayoutState>({
 	order: [...DEFAULT_LAYOUT],
@@ -44,6 +45,18 @@ export function isDirty(): boolean {
 
 export function setOrder(order: WidgetId[]) {
 	wallLayoutStore.order = order;
+}
+
+/**
+ * Seed buffer dari order yang SEDANG tampil (mode edit inline `/wall`) —
+ * tanpa fetch server, tanpa flicker. Baseline `saved` = order awal supaya
+ * `isDirty()` false sampai admin benar-benar mengubah sesuatu.
+ */
+export function initBufferFrom(order: readonly WidgetId[]) {
+	wallLayoutStore.order = [...order];
+	wallLayoutStore.saved = [...order];
+	wallLayoutStore.status = "idle";
+	wallLayoutStore.error = null;
 }
 
 /** Tambah widget ke slot berikutnya bila masih ada ruang & belum terpasang. */

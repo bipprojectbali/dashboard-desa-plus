@@ -49,6 +49,7 @@ import {
 	IconEyeOff,
 	IconGripVertical,
 	IconKey,
+	IconLayoutDashboard,
 	IconMail,
 	IconPlus,
 	IconServer,
@@ -57,8 +58,11 @@ import {
 	IconTrash,
 	IconUsers,
 } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
+import { fetchWallSnapshot } from "@/components/wall/fetch-wall-snapshot";
+import { WallLayoutEditor } from "@/components/wall/wall-layout-editor";
 import { protectedRouteMiddleware } from "../../middleware/authMiddleware";
 
 export const Route = createFileRoute("/admin/settings")({
@@ -515,6 +519,37 @@ function FaqSection() {
 	);
 }
 
+/**
+ * Section pengaturan video wall di halaman admin. Jalur kedua (selain edit
+ * inline di `/wall`) untuk admin menyusun widget. Pakai editor bersama
+ * `WallLayoutEditor` (framed 16:9) — buffer di-seed dari server via `loadLayout`.
+ */
+function WallLayoutSection() {
+	const { data: snapshot } = useQuery({
+		queryKey: ["wall", "snapshot", "admin-preview"],
+		queryFn: () => fetchWallSnapshot(undefined),
+		refetchOnWindowFocus: false,
+	});
+
+	return (
+		<Card withBorder p="lg" radius="md" mb="md">
+			<Group mb="md">
+				<ThemeIcon size={32} radius="md" color="grape" variant="light">
+					<IconLayoutDashboard size={18} />
+				</ThemeIcon>
+				<div>
+					<Title order={4}>Video Wall</Title>
+					<Text size="xs" c="dimmed">
+						Atur widget yang tampil di layar /wall. Seret untuk menyusun ulang.
+					</Text>
+				</div>
+			</Group>
+			<Divider mb="md" />
+			<WallLayoutEditor snapshot={snapshot} seed={{ mode: "fetch" }} framed />
+		</Card>
+	);
+}
+
 function DashboardSettingsComponent() {
 	const [stats, setStats] = useState<SystemStats | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -542,7 +577,7 @@ function DashboardSettingsComponent() {
 					Pengaturan Sistem
 				</Title>
 				<Text size="sm" c="dimmed">
-					Informasi konfigurasi, status aplikasi, dan manajemen FAQ
+					Informasi konfigurasi, status aplikasi, video wall, dan manajemen FAQ
 				</Text>
 			</Stack>
 
@@ -692,6 +727,9 @@ function DashboardSettingsComponent() {
 				<Divider variant="dashed" />
 				<InfoRow label="Trust Proxy" value="Aktif" />
 			</Card>
+
+			{/* Video Wall layout */}
+			<WallLayoutSection />
 
 			{/* FAQ Management */}
 			<FaqSection />
