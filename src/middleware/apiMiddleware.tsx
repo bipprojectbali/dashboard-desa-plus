@@ -118,6 +118,13 @@ export function apiMiddleware(app: Elysia) {
 				return;
 			}
 
+			// Layout wall publik & read-only untuk TV kiosk. Hanya GET — isinya
+			// cuma array widget id (tanpa PII). PUT jatuh ke !user → 401 lalu
+			// guard admin di handler (src/api/wall-layout.ts).
+			if (url.pathname === "/api/wall-layout" && request.method === "GET") {
+				return;
+			}
+
 			if (!user) {
 				logger.warn(`[AUTH] Unauthorized: ${request.method} ${request.url}`);
 				set.status = 401;

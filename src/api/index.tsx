@@ -32,6 +32,7 @@ import { syncLog } from "./sync-log";
 import { systemStatsRoutes } from "./system-stats";
 import { umkm } from "./umkm";
 import { umumPreferences } from "./umum-preferences";
+import { wallLayout } from "./wall-layout";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -96,6 +97,7 @@ const api = new Elysia({
 	.use(keamanan)
 	.use(keamananPreferences)
 	.use(aksesPreferences)
+	.use(wallLayout)
 	.use(jennaChat)
 	.use(systemStatsRoutes)
 	.use(activityLog)
