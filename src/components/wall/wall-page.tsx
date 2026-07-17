@@ -35,14 +35,15 @@ export function WallPage({ accessKey }: WallPageProps) {
 
 	// Layout global (singleton DB). Stateless read: admin simpan → nyampe TV
 	// dalam 1 siklus refetch. Gagal fetch → resolveLayout(undefined) = default.
-	const { data: layoutOrder } = useQuery({
+	const { data: layout } = useQuery({
 		queryKey: ["wall", "layout"],
 		queryFn: fetchWallLayout,
 		refetchInterval: WALL_LAYOUT_REFETCH_MS,
 		refetchOnWindowFocus: false,
 	});
 
-	const order = resolveLayout(layoutOrder);
+	const order = resolveLayout(layout?.order);
+	const sizes = layout?.sizes ?? null;
 
 	// Admin login terdeteksi bahkan di route publik (__root beforeLoad selalu
 	// set authStore dari sesi). Publik/TV → user null → canEdit false.
@@ -80,6 +81,7 @@ export function WallPage({ accessKey }: WallPageProps) {
 					<WallShell
 						snapshot={data}
 						order={order}
+						sizes={sizes}
 						live={!isError}
 						canEdit={canEdit}
 					/>

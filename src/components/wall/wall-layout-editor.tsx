@@ -18,18 +18,20 @@ import {
 	moveWidget,
 	removeWidget,
 	resetToDefault,
+	resizeWidget,
 	saveLayout,
 	wallLayoutStore,
 } from "@/store/wall-layout";
 import type { WallSnapshot } from "@/types/wall";
 import { WallGrid } from "./wall-grid";
-import type { WidgetId } from "./wall-layout-utils";
+import type { WallSizeMap, WidgetId } from "./wall-layout-utils";
 import { WALL_THEME } from "./wall-theme";
 import { openWidgetGallery } from "./widget-gallery";
 
 type SeedMode =
 	| { mode: "fetch" } // ambil dari server (section admin, tak punya order awal)
-	| { mode: "order"; order: WidgetId[] }; // seed dari order tampil (inline /wall)
+	// seed dari order + sizes yang sedang tampil (inline /wall) — tanpa fetch.
+	| { mode: "order"; order: WidgetId[]; sizes?: WallSizeMap | null };
 
 interface WallLayoutEditorProps {
 	snapshot: WallSnapshot | null | undefined;
@@ -68,7 +70,7 @@ export function WallLayoutEditor({
 	// biome-ignore lint/correctness/useExhaustiveDependencies: seed sekali di mount saja
 	useEffect(() => {
 		if (seed.mode === "order") {
-			initBufferFrom(seed.order);
+			initBufferFrom(seed.order, seed.sizes);
 		} else {
 			loadLayout();
 		}
@@ -106,10 +108,12 @@ export function WallLayoutEditor({
 		<WallGrid
 			order={[...snap.order]}
 			snapshot={snapshot}
+			sizes={{ ...snap.sizes }}
 			mode="edit"
 			onReorder={moveWidget}
 			onRemove={(id) => removeWidget(id as WidgetId)}
 			onAdd={openGallery}
+			onResize={(id, geom) => resizeWidget(id as WidgetId, geom)}
 		/>
 	);
 

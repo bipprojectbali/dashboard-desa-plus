@@ -4,8 +4,17 @@
  * Dipisah dari `widget-registry.tsx` (yang berisi komponen React) supaya bisa
  * dipakai di server (validasi PUT) dan diuji tanpa render. `WidgetId` di sini
  * adalah single source of truth untuk id yang valid; registry memetakan id ini
- * ke komponen Body-nya.
+ * ke komponen Body-nya. Ukuran default tiap widget ({@link DEFAULT_WIDGET_SIZE})
+ * juga di sini supaya server bisa resolve geometri tanpa memuat komponen.
  */
+
+import {
+	clampGeom,
+	isValidGeom,
+	sizeToGeom,
+	type WallSize,
+	type WidgetGeom,
+} from "./wall-bento";
 
 /** Semua widget id yang dikenal. Urutan tak bermakna — cuma katalog. */
 export const ALL_WIDGET_IDS = [
@@ -34,6 +43,36 @@ export const ALL_WIDGET_IDS = [
 ] as const;
 
 export type WidgetId = (typeof ALL_WIDGET_IDS)[number];
+
+/**
+ * Ukuran preset default tiap widget — bobot visual kontennya. Jadi default seed
+ * saat admin belum pernah me-resize (DB tak punya `sizes`). Donut hero → `lg`,
+ * chart lebar → `wide`, list panjang → `tall`, KPI ringkas → `sm`. Admin boleh
+ * menimpa bebas via drag-resize; nilai override tersimpan terpisah di DB.
+ */
+export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
+	"keuangan-apbdes": "wide",
+	"keuangan-kepuasan": "lg",
+	"keuangan-sdgs": "tall",
+	"pengaduan-status": "sm",
+	"pengaduan-trend": "wide",
+	"pengaduan-service-type": "wide",
+	"pengaduan-kepuasan": "lg",
+	"demografi-gender": "lg",
+	"demografi-age": "wide",
+	"demografi-religion": "lg",
+	"demografi-occupation": "wide",
+	"demografi-stats": "sm",
+	"divisi-kinerja": "tall",
+	"divisi-documents": "wide",
+	"keamanan-status": "sm",
+	"ops-panel": "tall",
+};
+
+/** Geometri {w,h} default sebuah widget (dari preset {@link DEFAULT_WIDGET_SIZE}). */
+export function defaultGeom(id: WidgetId): WidgetGeom {
+	return sizeToGeom(DEFAULT_WIDGET_SIZE[id]);
+}
 
 /** Kategori untuk pengelompokan di galeri tambah-widget. */
 export type WallCategory =
@@ -132,6 +171,77 @@ export function validateLayout(ids: readonly string[]): LayoutValidation {
 			errors.push(`widget duplikat: ${id}`);
 		}
 		seen.add(id);
+	}
+
+	return { ok: errors.length === 0, errors };
+}
+
+/**
+ * Peta ukuran per widget seperti disimpan di DB: `{ [widgetId]: {w, h} }`.
+ * Partial — hanya widget yang di-resize admin yang punya entri; sisanya pakai
+ * default. Tipe longgar (`string` key, `unknown`-ish) karena berasal dari JSON
+ * DB / body request yang belum tepercaya; {@link resolveSizes} yang menyaring.
+ */
+export type WallSizeMap = Record<string, WidgetGeom>;
+
+/**
+ * Resolusi untuk RENDER — untuk tiap id di `order`, balikin geometri final:
+ * override tersimpan (bila valid & dikenal) di-clamp ke batas, selain itu
+ * default preset widget. Toleran: entri rusak/asing di `raw` diabaikan, id
+ * tanpa override jatuh ke default. Hasil selalu lengkap untuk tiap id valid.
+ */
+export function resolveSizes(
+	order: readonly string[],
+	raw?: WallSizeMap | null,
+): Record<string, WidgetGeom> {
+	const out: Record<string, WidgetGeom> = {};
+	for (const id of order) {
+		if (!isKnownWidgetId(id) || out[id]) continue;
+		const override = raw?.[id];
+		out[id] =
+			override && isGeomShape(override) ? clampGeom(override) : defaultGeom(id);
+	}
+	return out;
+}
+
+/** True bila objek punya bentuk {w:number, h:number} — belum tentu dalam batas. */
+function isGeomShape(v: unknown): v is WidgetGeom {
+	return (
+		typeof v === "object" &&
+		v !== null &&
+		typeof (v as WidgetGeom).w === "number" &&
+		typeof (v as WidgetGeom).h === "number"
+	);
+}
+
+/**
+ * Validasi STRICT peta sizes sebelum simpan (server + klien). Beda dari
+ * {@link resolveSizes} yang memperbaiki: ini TOLAK input cacat supaya klien tak
+ * diam-diam menyimpan geometri di luar batas. Aturan: tiap key adalah widget id
+ * dikenal, tiap nilai geometri integer dalam {@link GEOM_BOUNDS}. Peta kosong /
+ * tak ada (tak ada override) = valid.
+ */
+export function validateSizes(
+	raw: WallSizeMap | null | undefined,
+): LayoutValidation {
+	const errors: string[] = [];
+	if (raw == null) return { ok: true, errors };
+	if (typeof raw !== "object" || Array.isArray(raw)) {
+		return { ok: false, errors: ["sizes harus objek"] };
+	}
+
+	for (const [id, geom] of Object.entries(raw)) {
+		if (!isKnownWidgetId(id)) {
+			errors.push(`sizes: widget id tak dikenal: ${id}`);
+			continue;
+		}
+		if (!isGeomShape(geom)) {
+			errors.push(`sizes: geometri ${id} bukan {w,h} angka`);
+			continue;
+		}
+		if (!isValidGeom(geom)) {
+			errors.push(`sizes: ukuran ${id} di luar batas (${geom.w}×${geom.h})`);
+		}
 	}
 
 	return { ok: errors.length === 0, errors };

@@ -114,6 +114,10 @@ model WallLayout {
   // publik oleh TV kiosk — bukan per-user, jadi tak ada relasi User.
   id        String   @id @default("singleton")
   order     String[] // urutan widget id (Postgres text[])
+  // Override ukuran per widget: { [widgetId]: { w, h } } span kolom×baris.
+  // Nullable & partial: hanya widget yang di-resize admin punya entri; sisanya
+  // pakai default preset di kode. Layout lama tanpa kolom ini tetap valid.
+  sizes     Json?
   updatedAt DateTime @updatedAt
   updatedBy String?  // userId editor terakhir (audit; nullable saat baris pertama)
 

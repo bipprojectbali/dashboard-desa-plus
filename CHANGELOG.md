@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- **Atur ukuran widget di NOC Video Wall** (`/wall`, mode edit admin). Tiap widget kini punya handle ◢ di pojok kanan-bawah — tarik untuk mengubah ukuran tile: memanjang ke kanan (lebar), ke bawah (tinggi), atau keduanya. Ukuran nge-snap ke sel grid (lebar 1–4 kolom × tinggi 1–3 baris) dan tersimpan ke server, jadi TV langsung ikut ubah dalam satu siklus refresh — tanpa perlu ganti kode/deploy ulang.
+- Tombol **Reset default** kini juga mengembalikan ukuran tiap widget ke preset bawaannya (donut besar, chart lebar, daftar tinggi, KPI ringkas).
+
+### Changed
+- Layout bento wall beralih dari empat preset ukuran tetap (kecil/lebar/tinggi/besar) ke geometri bebas per widget. Layout lama tanpa ukuran tersimpan tetap tampil normal (jatuh ke ukuran preset default).
+
 ## [0.1.49] - 2026-07-14
 
 ### Changed

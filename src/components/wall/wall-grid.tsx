@@ -10,19 +10,24 @@ import { Text, UnstyledButton } from "@mantine/core";
 import type { WallSnapshot } from "@/types/wall";
 import { SortableWidgetCard } from "./sortable-widget-card";
 import {
-	bentoClass,
-	bentoCss,
+	spanStyle,
 	WALL_BENTO_COL,
 	WALL_BENTO_ROW,
+	type WidgetGeom,
 } from "./wall-bento";
-import { WALL_MAX_SLOTS } from "./wall-layout-utils";
+import {
+	resolveSizes,
+	WALL_MAX_SLOTS,
+	type WallSizeMap,
+} from "./wall-layout-utils";
 import { WALL_THEME } from "./wall-theme";
-import { getWidget } from "./widget-registry";
 import { WidgetSlot } from "./widget-slot";
 
 interface WallGridProps {
 	order: string[];
 	snapshot: WallSnapshot | null | undefined;
+	/** Override ukuran per widget; kosong/null → semua pakai default preset. */
+	sizes?: WallSizeMap | null;
 	mode: "display" | "edit";
 	/** edit: dipanggil saat drag selesai dengan index asal & tujuan. */
 	onReorder?: (from: number, to: number) => void;
@@ -30,14 +35,17 @@ interface WallGridProps {
 	onRemove?: (id: string) => void;
 	/** edit: dipanggil saat tile "＋ Tambah" diklik. */
 	onAdd?: () => void;
+	/** edit: dipanggil saat handle resize menggeser ukuran widget. */
+	onResize?: (id: string, geom: WidgetGeom) => void;
 }
 
 /**
  * Grid bento: kolom auto-fill unit dasar {@link WALL_BENTO_COL}px (jumlah kolom
  * mengikuti lebar layar), baris tetap {@link WALL_BENTO_ROW}px. Tiap tile
- * menempati span kolom×baris sesuai ukuran widget (via class {@link bentoCss}) —
- * donut hero 2×2, tren 2×1, list 1×2, KPI 1×1 — menghasilkan tata letak
- * asimetris. Di layar sempit, tile lebar collapse ke 1 kolom (media query).
+ * menempati span kolom×baris sesuai geometri widget (inline `span w/h`) —
+ * donut hero besar, tren lebar, list tinggi, KPI kecil — menghasilkan tata
+ * letak asimetris. `span` berlebih di layar sempit di-clamp otomatis oleh CSS
+ * Grid ke jumlah kolom yang muat, jadi tak pernah overflow horizontal.
  */
 const gridStyle: React.CSSProperties = {
 	display: "grid",
@@ -49,41 +57,40 @@ const gridStyle: React.CSSProperties = {
 	alignContent: "start",
 };
 
-/** Class span bento untuk sebuah widget id (kosong bila id tak dikenal → 1×1). */
-function slotClass(id: string): string {
-	const size = getWidget(id)?.size;
-	return size ? bentoClass(size) : "";
-}
-
 /**
  * Grid widget wall responsif. `display` = read-only (dipakai `/wall` 24/7).
- * `edit` = drag-and-drop reorder + ✕ hapus + tile "＋ Tambah" (dipakai mode
- * edit inline & preview halaman admin).
+ * `edit` = drag-and-drop reorder + ✕ hapus + ◢ resize + tile "＋ Tambah"
+ * (dipakai mode edit inline & preview halaman admin).
  */
 export function WallGrid({
 	order,
 	snapshot,
+	sizes,
 	mode,
 	onReorder,
 	onRemove,
 	onAdd,
+	onResize,
 }: WallGridProps) {
 	const sensors = useSensors(
 		useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
 	);
 
+	// Geometri final tiap widget (override tersimpan → clamp, selain itu default).
+	const geoms = resolveSizes(order, sizes);
+
 	if (mode === "display") {
 		return (
-			<>
-				<style>{bentoCss}</style>
-				<div style={gridStyle}>
-					{order.map((id) => (
-						<div key={id} className={slotClass(id)} style={{ minHeight: 0 }}>
-							<WidgetSlot id={id} snapshot={snapshot} />
-						</div>
-					))}
-				</div>
-			</>
+			<div data-wall-grid style={gridStyle}>
+				{order.map((id) => (
+					<div
+						key={id}
+						style={{ ...spanStyle(geoms[id] ?? { w: 1, h: 1 }), minHeight: 0 }}
+					>
+						<WidgetSlot id={id} snapshot={snapshot} />
+					</div>
+				))}
+			</div>
 		);
 	}
 
@@ -101,15 +108,15 @@ export function WallGrid({
 	return (
 		<DndContext sensors={sensors} onDragEnd={handleDragEnd}>
 			<SortableContext items={order} strategy={rectSortingStrategy}>
-				<style>{bentoCss}</style>
-				<div style={gridStyle}>
+				<div data-wall-grid style={gridStyle}>
 					{order.map((id) => (
 						<SortableWidgetCard
 							key={id}
 							id={id}
 							snapshot={snapshot}
-							className={slotClass(id)}
+							geom={geoms[id] ?? { w: 1, h: 1 }}
 							onRemove={(wid) => onRemove?.(wid)}
+							onResize={(wid, g) => onResize?.(wid, g)}
 						/>
 					))}
 					{canAdd ? (

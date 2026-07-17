@@ -10,6 +10,7 @@ import {
 	moveWidget,
 	removeWidget,
 	resetToDefault,
+	resizeWidget,
 	setOrder,
 	wallLayoutStore,
 } from "@/store/wall-layout";
@@ -18,6 +19,8 @@ import {
 beforeEach(() => {
 	wallLayoutStore.order = [...DEFAULT_LAYOUT];
 	wallLayoutStore.saved = [...DEFAULT_LAYOUT];
+	wallLayoutStore.sizes = {};
+	wallLayoutStore.savedSizes = {};
 	wallLayoutStore.status = "idle";
 	wallLayoutStore.error = null;
 });
@@ -78,5 +81,41 @@ describe("wall-layout store — mutasi buffer", () => {
 		initBufferFrom(["ops-panel", "keuangan-sdgs"]);
 		addWidget("demografi-age");
 		expect(isDirty()).toBe(true);
+	});
+});
+
+describe("wall-layout store — resize (ukuran widget)", () => {
+	it("resizeWidget menyetel geometri & menandai dirty", () => {
+		initBufferFrom(["ops-panel"]);
+		expect(isDirty()).toBe(false);
+		resizeWidget("ops-panel", { w: 3, h: 2 });
+		expect(wallLayoutStore.sizes["ops-panel"]).toEqual({ w: 3, h: 2 });
+		expect(isDirty()).toBe(true);
+	});
+
+	it("resizeWidget menjepit geometri di luar batas", () => {
+		initBufferFrom(["ops-panel"]);
+		resizeWidget("ops-panel", { w: 99, h: 99 });
+		expect(wallLayoutStore.sizes["ops-panel"]).toEqual({ w: 4, h: 3 });
+	});
+
+	it("initBufferFrom dengan sizes → isDirty false sampai diubah", () => {
+		initBufferFrom(["ops-panel"], { "ops-panel": { w: 2, h: 2 } });
+		expect(wallLayoutStore.sizes["ops-panel"]).toEqual({ w: 2, h: 2 });
+		expect(isDirty()).toBe(false);
+	});
+
+	it("removeWidget membuang override ukurannya juga", () => {
+		initBufferFrom(["ops-panel", "keuangan-sdgs"], {
+			"ops-panel": { w: 2, h: 2 },
+		});
+		removeWidget("ops-panel");
+		expect(wallLayoutStore.sizes["ops-panel"]).toBeUndefined();
+	});
+
+	it("resetToDefault mengosongkan override ukuran", () => {
+		initBufferFrom(["ops-panel"], { "ops-panel": { w: 3, h: 1 } });
+		resetToDefault();
+		expect(wallLayoutStore.sizes).toEqual({});
 	});
 });

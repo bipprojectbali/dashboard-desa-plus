@@ -8,12 +8,14 @@ import { LiveClock } from "./live-clock";
 import { WallGrid } from "./wall-grid";
 import { WallHeader } from "./wall-header";
 import { WallLayoutEditor } from "./wall-layout-editor";
-import type { WidgetId } from "./wall-layout-utils";
+import type { WallSizeMap, WidgetId } from "./wall-layout-utils";
 import { WALL_THEME } from "./wall-theme";
 
 interface WallShellProps {
 	snapshot: WallSnapshot | undefined;
 	order: string[];
+	/** Override ukuran per widget dari layout tersimpan; null → default preset. */
+	sizes?: WallSizeMap | null;
 	live: boolean;
 	/** true → admin login: tampilkan tombol Atur + izinkan mode edit inline. */
 	canEdit: boolean;
@@ -24,7 +26,13 @@ interface WallShellProps {
  * Admin (canEdit) → tombol Atur di header masuk mode edit inline (drag/drop),
  * TV/publik tak pernah lihat kontrol. Backend tetap gate PUT admin-only.
  */
-export function WallShell({ snapshot, order, live, canEdit }: WallShellProps) {
+export function WallShell({
+	snapshot,
+	order,
+	sizes,
+	live,
+	canEdit,
+}: WallShellProps) {
 	const [mode, setMode] = useState<"display" | "edit">("display");
 
 	// Kalau status admin hilang (mis. sesi habis), paksa kembali display.
@@ -33,7 +41,7 @@ export function WallShell({ snapshot, order, live, canEdit }: WallShellProps) {
 	}, [canEdit, mode]);
 
 	const enterEdit = () => {
-		initBufferFrom(order as WidgetId[]);
+		initBufferFrom(order as WidgetId[], sizes);
 		setMode("edit");
 	};
 
@@ -73,12 +81,17 @@ export function WallShell({ snapshot, order, live, canEdit }: WallShellProps) {
 				{mode === "edit" && canEdit ? (
 					<WallLayoutEditor
 						snapshot={snapshot}
-						seed={{ mode: "order", order: order as WidgetId[] }}
+						seed={{ mode: "order", order: order as WidgetId[], sizes }}
 						onDone={() => setMode("display")}
 						onSaved={() => setMode("display")}
 					/>
 				) : (
-					<WallGrid order={order} snapshot={snapshot} mode="display" />
+					<WallGrid
+						order={order}
+						snapshot={snapshot}
+						sizes={sizes}
+						mode="display"
+					/>
 				)}
 			</div>
 		</div>
