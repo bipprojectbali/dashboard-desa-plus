@@ -9,12 +9,15 @@ import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { Text, UnstyledButton } from "@mantine/core";
 import type { WallSnapshot } from "@/types/wall";
 import { SortableWidgetCard } from "./sortable-widget-card";
-import { WALL_MAX_SLOTS } from "./wall-layout-utils";
 import {
-	WALL_MIN_CARD_HEIGHT,
-	WALL_MIN_CARD_WIDTH,
-	WALL_THEME,
-} from "./wall-theme";
+	bentoClass,
+	bentoCss,
+	WALL_BENTO_COL,
+	WALL_BENTO_ROW,
+} from "./wall-bento";
+import { WALL_MAX_SLOTS } from "./wall-layout-utils";
+import { WALL_THEME } from "./wall-theme";
+import { getWidget } from "./widget-registry";
 import { WidgetSlot } from "./widget-slot";
 
 interface WallGridProps {
@@ -30,19 +33,27 @@ interface WallGridProps {
 }
 
 /**
- * Grid responsif auto-fill: jumlah kolom mengikuti lebar layar (tiap kartu
- * minimal {@link WALL_MIN_CARD_WIDTH}px). Baris memakai `auto-rows` bertinggi
- * minimum agar chart terbaca; saat widget sedikit mereka melar mengisi tinggi
- * (`minmax(H, 1fr)` via container), saat banyak grid tumbuh ke bawah & di-scroll.
+ * Grid bento: kolom auto-fill unit dasar {@link WALL_BENTO_COL}px (jumlah kolom
+ * mengikuti lebar layar), baris tetap {@link WALL_BENTO_ROW}px. Tiap tile
+ * menempati span kolom×baris sesuai ukuran widget (via class {@link bentoCss}) —
+ * donut hero 2×2, tren 2×1, list 1×2, KPI 1×1 — menghasilkan tata letak
+ * asimetris. Di layar sempit, tile lebar collapse ke 1 kolom (media query).
  */
 const gridStyle: React.CSSProperties = {
 	display: "grid",
-	gridTemplateColumns: `repeat(auto-fill, minmax(${WALL_MIN_CARD_WIDTH}px, 1fr))`,
-	gridAutoRows: `minmax(${WALL_MIN_CARD_HEIGHT}px, 1fr)`,
+	gridTemplateColumns: `repeat(auto-fill, minmax(${WALL_BENTO_COL}px, 1fr))`,
+	gridAutoRows: `${WALL_BENTO_ROW}px`,
+	gridAutoFlow: "dense",
 	gap: 18,
 	minHeight: "100%",
-	alignContent: "stretch",
+	alignContent: "start",
 };
+
+/** Class span bento untuk sebuah widget id (kosong bila id tak dikenal → 1×1). */
+function slotClass(id: string): string {
+	const size = getWidget(id)?.size;
+	return size ? bentoClass(size) : "";
+}
 
 /**
  * Grid widget wall responsif. `display` = read-only (dipakai `/wall` 24/7).
@@ -63,11 +74,16 @@ export function WallGrid({
 
 	if (mode === "display") {
 		return (
-			<div style={gridStyle}>
-				{order.map((id) => (
-					<WidgetSlot key={id} id={id} snapshot={snapshot} />
-				))}
-			</div>
+			<>
+				<style>{bentoCss}</style>
+				<div style={gridStyle}>
+					{order.map((id) => (
+						<div key={id} className={slotClass(id)} style={{ minHeight: 0 }}>
+							<WidgetSlot id={id} snapshot={snapshot} />
+						</div>
+					))}
+				</div>
+			</>
 		);
 	}
 
@@ -85,12 +101,14 @@ export function WallGrid({
 	return (
 		<DndContext sensors={sensors} onDragEnd={handleDragEnd}>
 			<SortableContext items={order} strategy={rectSortingStrategy}>
+				<style>{bentoCss}</style>
 				<div style={gridStyle}>
 					{order.map((id) => (
 						<SortableWidgetCard
 							key={id}
 							id={id}
 							snapshot={snapshot}
+							className={slotClass(id)}
 							onRemove={(wid) => onRemove?.(wid)}
 						/>
 					))}

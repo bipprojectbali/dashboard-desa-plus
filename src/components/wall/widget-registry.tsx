@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import type { WallSnapshot } from "@/types/wall";
+import type { WallSize } from "./wall-bento";
 import {
 	ALL_WIDGET_IDS,
 	isKnownWidgetId,
@@ -38,6 +39,11 @@ export interface WidgetDefinition<T = any> {
 	id: WidgetId;
 	title: string;
 	category: WallCategory;
+	/**
+	 * Bobot visual di grid bento. Ditetapkan per konten: donut hero → `lg`,
+	 * line/tren → `wide`, list panjang → `tall`, KPI ringkas → `sm`.
+	 */
+	size: WallSize;
 	selectData: (snap: WallSnapshot | null | undefined) => T | null;
 	Body: FC<{ data: T }>;
 }
@@ -52,6 +58,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "keuangan-apbdes",
 		title: "APBDes 2025",
 		category: "keuangan",
+		size: "wide",
 		selectData: (s) => nonEmpty(s?.keuangan?.apbdes),
 		Body: KeuanganApbdesBody,
 	},
@@ -59,6 +66,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "keuangan-kepuasan",
 		title: "Kepuasan Layanan (Keuangan)",
 		category: "keuangan",
+		size: "lg",
 		selectData: (s) => nonEmpty(s?.keuangan?.satisfaction),
 		Body: KeuanganKepuasanBody,
 	},
@@ -66,6 +74,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "keuangan-sdgs",
 		title: "Skor SDGs",
 		category: "keuangan",
+		size: "tall",
 		selectData: (s) => nonEmpty(s?.keuangan?.sdgs),
 		Body: KeuanganSdgsBody,
 	},
@@ -73,6 +82,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "pengaduan-status",
 		title: "Status Pengaduan",
 		category: "pengaduan",
+		size: "sm",
 		selectData: (s) => s?.pengaduan?.stats ?? null,
 		Body: PengaduanStatusBody,
 	},
@@ -80,6 +90,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "pengaduan-trend",
 		title: "Tren 7 Bulan",
 		category: "pengaduan",
+		size: "wide",
 		selectData: (s) => nonEmpty(s?.pengaduan?.trend7m),
 		Body: PengaduanTrendBody,
 	},
@@ -87,6 +98,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "pengaduan-service-type",
 		title: "Surat Layanan per Tipe",
 		category: "pengaduan",
+		size: "wide",
 		selectData: (s) => nonEmpty(s?.pengaduan?.serviceByType),
 		Body: PengaduanServiceTypeBody,
 	},
@@ -94,6 +106,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "pengaduan-kepuasan",
 		title: "Kepuasan Layanan (Pengaduan)",
 		category: "pengaduan",
+		size: "lg",
 		selectData: (s) => nonEmpty(s?.pengaduan?.kepuasan),
 		Body: PengaduanKepuasanBody,
 	},
@@ -101,6 +114,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "demografi-gender",
 		title: "Sebaran Gender",
 		category: "demografi",
+		size: "lg",
 		selectData: (s) => nonEmpty(s?.demografi?.gender),
 		Body: DemografiGenderBody,
 	},
@@ -108,6 +122,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "demografi-age",
 		title: "Kelompok Umur",
 		category: "demografi",
+		size: "wide",
 		selectData: (s) => nonEmpty(s?.demografi?.ageGroups),
 		Body: DemografiAgeBody,
 	},
@@ -115,6 +130,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "demografi-religion",
 		title: "Sebaran Agama",
 		category: "demografi",
+		size: "lg",
 		selectData: (s) => nonEmpty(s?.demografi?.religion),
 		Body: DemografiReligionBody,
 	},
@@ -122,6 +138,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "demografi-occupation",
 		title: "Pekerjaan Teratas",
 		category: "demografi",
+		size: "wide",
 		selectData: (s) => nonEmpty(s?.demografi?.occupationTop),
 		Body: DemografiOccupationBody,
 	},
@@ -129,6 +146,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "demografi-stats",
 		title: "Ringkasan Demografi",
 		category: "demografi",
+		size: "sm",
 		selectData: (s) => s?.demografi?.stats ?? null,
 		Body: DemografiStatsBody,
 	},
@@ -136,6 +154,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "divisi-kinerja",
 		title: "Kinerja Divisi",
 		category: "divisi",
+		size: "tall",
 		selectData: (s) => s?.divisi?.activities ?? null,
 		Body: DivisiKinerjaBody,
 	},
@@ -143,6 +162,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "divisi-documents",
 		title: "Dokumen per Jenis",
 		category: "divisi",
+		size: "wide",
 		selectData: (s) => nonEmpty(s?.divisi?.documents),
 		Body: DivisiDocumentsBody,
 	},
@@ -150,6 +170,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "keamanan-status",
 		title: "Laporan Keamanan",
 		category: "keamanan",
+		size: "sm",
 		selectData: (s) => s?.keamanan ?? null,
 		Body: KeamananStatusBody,
 	},
@@ -157,6 +178,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "ops-panel",
 		title: "Status Sistem",
 		category: "ops",
+		size: "tall",
 		selectData: (s) => s?.system ?? null,
 		Body: OpsBody,
 	},

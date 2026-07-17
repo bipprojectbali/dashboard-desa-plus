@@ -9,6 +9,8 @@ interface SortableWidgetCardProps {
 	id: string;
 	snapshot: WallSnapshot | null | undefined;
 	onRemove: (id: string) => void;
+	/** Class span bento (mis. `wall-bento-lg`) untuk sel grid. */
+	className?: string;
 }
 
 /**
@@ -20,6 +22,7 @@ export function SortableWidgetCard({
 	id,
 	snapshot,
 	onRemove,
+	className,
 }: SortableWidgetCardProps) {
 	const {
 		attributes,
@@ -41,7 +44,13 @@ export function SortableWidgetCard({
 	};
 
 	return (
-		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+		<div
+			ref={setNodeRef}
+			className={className}
+			style={style}
+			{...attributes}
+			{...listeners}
+		>
 			<WidgetSlot
 				id={id}
 				snapshot={snapshot}
