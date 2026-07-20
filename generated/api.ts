@@ -1484,6 +1484,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/wall-layout/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get global wall layout (public, read-only) */
+        get: operations["getApiWall-layout"];
+        /** Save global wall layout (admin-only) */
+        put: operations["putApiWall-layout"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/jenna/chat": {
         parameters: {
             query?: never;
@@ -6422,6 +6440,186 @@ export interface operations {
                     };
                     "text/plain": {
                         data: unknown;
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiWall-layout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            order: string[];
+                            sizes: {
+                                [key: string]: {
+                                    w: number;
+                                    h: number;
+                                };
+                            } | null;
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            order: string[];
+                            sizes: {
+                                [key: string]: {
+                                    w: number;
+                                    h: number;
+                                };
+                            } | null;
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            order: string[];
+                            sizes: {
+                                [key: string]: {
+                                    w: number;
+                                    h: number;
+                                };
+                            } | null;
+                        };
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "putApiWall-layout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    order: string[];
+                    sizes?: {
+                        [key: string]: {
+                            w: number;
+                            h: number;
+                        };
+                    } | null;
+                };
+                "multipart/form-data": {
+                    order: string[];
+                    sizes?: {
+                        [key: string]: {
+                            w: number;
+                            h: number;
+                        };
+                    } | null;
+                };
+                "text/plain": {
+                    order: string[];
+                    sizes?: {
+                        [key: string]: {
+                            w: number;
+                            h: number;
+                        };
+                    } | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            order: string[];
+                            sizes: {
+                                [key: string]: {
+                                    w: number;
+                                    h: number;
+                                };
+                            } | null;
+                        };
+                    };
+                    "multipart/form-data": {
+                        data: {
+                            order: string[];
+                            sizes: {
+                                [key: string]: {
+                                    w: number;
+                                    h: number;
+                                };
+                            } | null;
+                        };
+                    };
+                    "text/plain": {
+                        data: {
+                            order: string[];
+                            sizes: {
+                                [key: string]: {
+                                    w: number;
+                                    h: number;
+                                };
+                            } | null;
+                        };
+                    };
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                    "multipart/form-data": {
+                        error: string;
+                    };
+                    "text/plain": {
+                        error: string;
                     };
                 };
             };

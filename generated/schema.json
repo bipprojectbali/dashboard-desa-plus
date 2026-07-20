@@ -11591,6 +11591,604 @@
         }
       }
     },
+    "/api/wall-layout/": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "order",
+                        "sizes"
+                      ],
+                      "properties": {
+                        "order": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "sizes": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "patternProperties": {
+                                "^(.*)$": {
+                                  "type": "object",
+                                  "required": [
+                                    "w",
+                                    "h"
+                                  ],
+                                  "properties": {
+                                    "w": {
+                                      "type": "number"
+                                    },
+                                    "h": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "order",
+                        "sizes"
+                      ],
+                      "properties": {
+                        "order": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "sizes": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "patternProperties": {
+                                "^(.*)$": {
+                                  "type": "object",
+                                  "required": [
+                                    "w",
+                                    "h"
+                                  ],
+                                  "properties": {
+                                    "w": {
+                                      "type": "number"
+                                    },
+                                    "h": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "order",
+                        "sizes"
+                      ],
+                      "properties": {
+                        "order": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "sizes": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "patternProperties": {
+                                "^(.*)$": {
+                                  "type": "object",
+                                  "required": [
+                                    "w",
+                                    "h"
+                                  ],
+                                  "properties": {
+                                    "w": {
+                                      "type": "number"
+                                    },
+                                    "h": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiWall-layout",
+        "summary": "Get global wall layout (public, read-only)"
+      },
+      "put": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "order",
+                        "sizes"
+                      ],
+                      "properties": {
+                        "order": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "sizes": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "patternProperties": {
+                                "^(.*)$": {
+                                  "type": "object",
+                                  "required": [
+                                    "w",
+                                    "h"
+                                  ],
+                                  "properties": {
+                                    "w": {
+                                      "type": "number"
+                                    },
+                                    "h": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "order",
+                        "sizes"
+                      ],
+                      "properties": {
+                        "order": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "sizes": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "patternProperties": {
+                                "^(.*)$": {
+                                  "type": "object",
+                                  "required": [
+                                    "w",
+                                    "h"
+                                  ],
+                                  "properties": {
+                                    "w": {
+                                      "type": "number"
+                                    },
+                                    "h": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "order",
+                        "sizes"
+                      ],
+                      "properties": {
+                        "order": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "sizes": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "patternProperties": {
+                                "^(.*)$": {
+                                  "type": "object",
+                                  "required": [
+                                    "w",
+                                    "h"
+                                  ],
+                                  "properties": {
+                                    "w": {
+                                      "type": "number"
+                                    },
+                                    "h": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "putApiWall-layout",
+        "summary": "Save global wall layout (admin-only)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "order"
+                ],
+                "properties": {
+                  "order": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "sizes": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "patternProperties": {
+                          "^(.*)$": {
+                            "type": "object",
+                            "required": [
+                              "w",
+                              "h"
+                            ],
+                            "properties": {
+                              "w": {
+                                "type": "number"
+                              },
+                              "h": {
+                                "type": "number"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "order"
+                ],
+                "properties": {
+                  "order": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "sizes": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "patternProperties": {
+                          "^(.*)$": {
+                            "type": "object",
+                            "required": [
+                              "w",
+                              "h"
+                            ],
+                            "properties": {
+                              "w": {
+                                "type": "number"
+                              },
+                              "h": {
+                                "type": "number"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "order"
+                ],
+                "properties": {
+                  "order": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "sizes": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "patternProperties": {
+                          "^(.*)$": {
+                            "type": "object",
+                            "required": [
+                              "w",
+                              "h"
+                            ],
+                            "properties": {
+                              "w": {
+                                "type": "number"
+                              },
+                              "h": {
+                                "type": "number"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/jenna/chat": {
       "post": {
         "parameters": [],
