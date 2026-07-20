@@ -1,11 +1,11 @@
 import Elysia, { t } from "elysia";
+import { TTL, withCache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
-import { TTL, withCache } from "../utils/cache";
 import { platformFetch } from "../utils/platform-external-client";
 import {
-	EMPTY_COMPLAINT_STATS,
 	countSuratWeekly,
+	EMPTY_COMPLAINT_STATS,
 	mapComplaintStats,
 	mapSuratTrends,
 	type PlatformLaporan,
@@ -23,14 +23,18 @@ export const complaint = new Elysia({
 					"dashboard:complaint:stats",
 					TTL.DASHBOARD,
 					async () => {
-						const json =
-							await platformFetch<PlatformLaporan>("/api/noc/laporan?limit=1000");
+						const json = await platformFetch<PlatformLaporan>(
+							"/api/noc/laporan?limit=1000",
+						);
 						return mapComplaintStats(json.data, json.total);
 					},
 				);
 				return { data };
 			} catch (error) {
-				logger.error({ error }, "Failed to fetch complaint stats from platform");
+				logger.error(
+					{ error },
+					"Failed to fetch complaint stats from platform",
+				);
 				set.status = 500;
 				return { data: EMPTY_COMPLAINT_STATS };
 			}
@@ -192,8 +196,9 @@ export const complaint = new Elysia({
 					"dashboard:surat:trends",
 					TTL.DASHBOARD,
 					async () => {
-						const json =
-							await platformFetch<PlatformSurat>("/api/noc/surat?limit=1000");
+						const json = await platformFetch<PlatformSurat>(
+							"/api/noc/surat?limit=1000",
+						);
 						return mapSuratTrends(json.data);
 					},
 				);
@@ -207,9 +212,7 @@ export const complaint = new Elysia({
 		{
 			response: {
 				200: t.Object({
-					data: t.Array(
-						t.Object({ month: t.String(), count: t.Number() }),
-					),
+					data: t.Array(t.Object({ month: t.String(), count: t.Number() })),
 				}),
 				500: t.Object({ data: t.Array(t.Any()) }),
 			},
@@ -270,8 +273,9 @@ export const complaint = new Elysia({
 					"dashboard:surat:weekly",
 					TTL.DASHBOARD,
 					async () => {
-						const json =
-							await platformFetch<PlatformSurat>("/api/noc/surat?limit=1000");
+						const json = await platformFetch<PlatformSurat>(
+							"/api/noc/surat?limit=1000",
+						);
 						return { count: countSuratWeekly(json.data) };
 					},
 				);

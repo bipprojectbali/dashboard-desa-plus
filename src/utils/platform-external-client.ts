@@ -34,8 +34,7 @@ export async function platformFetch<T = unknown>(
 			Accept: "application/json",
 		},
 	});
-	if (!response.ok)
-		throw new Error(`Platform API error: ${response.status}`);
+	if (!response.ok) throw new Error(`Platform API error: ${response.status}`);
 	const json = (await response.json()) as PlatformListResponse<T>;
 	if (!json || !Array.isArray(json.data))
 		throw new Error("Invalid response from Platform API");
