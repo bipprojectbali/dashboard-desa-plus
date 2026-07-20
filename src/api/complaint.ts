@@ -1,6 +1,16 @@
 import Elysia, { t } from "elysia";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
+import { TTL, withCache } from "../utils/cache";
+import { platformFetch } from "../utils/platform-external-client";
+import {
+	EMPTY_COMPLAINT_STATS,
+	countSuratWeekly,
+	mapComplaintStats,
+	mapSuratTrends,
+	type PlatformLaporan,
+	type PlatformSurat,
+} from "./complaint-platform";
 
 export const complaint = new Elysia({
 	prefix: "/complaint",
@@ -9,17 +19,20 @@ export const complaint = new Elysia({
 		"/stats",
 		async ({ set }) => {
 			try {
-				const [total, baru, proses, selesai] = await Promise.all([
-					prisma.complaint.count(),
-					prisma.complaint.count({ where: { status: "BARU" } }),
-					prisma.complaint.count({ where: { status: "DIPROSES" } }),
-					prisma.complaint.count({ where: { status: "SELESAI" } }),
-				]);
-				return { data: { total, baru, proses, selesai } };
+				const data = await withCache(
+					"dashboard:complaint:stats",
+					TTL.DASHBOARD,
+					async () => {
+						const json =
+							await platformFetch<PlatformLaporan>("/api/noc/laporan?limit=1000");
+						return mapComplaintStats(json.data, json.total);
+					},
+				);
+				return { data };
 			} catch (error) {
-				logger.error({ error }, "Failed to fetch complaint stats");
+				logger.error({ error }, "Failed to fetch complaint stats from platform");
 				set.status = 500;
-				return { error: "Internal Server Error" };
+				return { data: EMPTY_COMPLAINT_STATS };
 			}
 		},
 		{
@@ -28,13 +41,20 @@ export const complaint = new Elysia({
 					data: t.Object({
 						total: t.Number(),
 						baru: t.Number(),
-						proses: t.Number(),
 						selesai: t.Number(),
+						ditolak: t.Number(),
 					}),
 				}),
-				500: t.Object({ error: t.String() }),
+				500: t.Object({
+					data: t.Object({
+						total: t.Number(),
+						baru: t.Number(),
+						selesai: t.Number(),
+						ditolak: t.Number(),
+					}),
+				}),
 			},
-			detail: { summary: "Get complaint statistics" },
+			detail: { summary: "Get complaint statistics (live platform)" },
 		},
 	)
 	.get(
@@ -168,34 +188,32 @@ export const complaint = new Elysia({
 		"/service-trends",
 		async ({ set }) => {
 			try {
-				// Get last 6 months trends for service letters
-				const trends = await prisma.$queryRaw<
-					{ month: string; month_num: number; count: number }[]
-				>`
-					SELECT 
-						TO_CHAR("createdAt", 'Mon') as month,
-						EXTRACT(MONTH FROM "createdAt") as month_num,
-						COUNT(*)::INTEGER as count
-					FROM service_letter
-					WHERE "createdAt" > NOW() - INTERVAL '6 months'
-					GROUP BY month, month_num
-					ORDER BY month_num ASC
-				`;
-				return { data: trends };
+				const data = await withCache(
+					"dashboard:surat:trends",
+					TTL.DASHBOARD,
+					async () => {
+						const json =
+							await platformFetch<PlatformSurat>("/api/noc/surat?limit=1000");
+						return mapSuratTrends(json.data);
+					},
+				);
+				return { data };
 			} catch (error) {
-				logger.error({ error }, "Failed to fetch service trends");
+				logger.error({ error }, "Failed to fetch surat trends from platform");
 				set.status = 500;
-				return { error: "Internal Server Error" };
+				return { data: [] };
 			}
 		},
 		{
 			response: {
 				200: t.Object({
-					data: t.Array(t.Any()),
+					data: t.Array(
+						t.Object({ month: t.String(), count: t.Number() }),
+					),
 				}),
-				500: t.Object({ error: t.String() }),
+				500: t.Object({ data: t.Array(t.Any()) }),
 			},
-			detail: { summary: "Get service letter trends for last 6 months" },
+			detail: { summary: "Get surat trends per month (live platform)" },
 		},
 	)
 	.get(
@@ -248,22 +266,20 @@ export const complaint = new Elysia({
 		"/service-weekly",
 		async ({ set }) => {
 			try {
-				const startOfWeek = new Date();
-				startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-				startOfWeek.setHours(0, 0, 0, 0);
-
-				const count = await prisma.serviceLetter.count({
-					where: {
-						createdAt: {
-							gte: startOfWeek,
-						},
+				const data = await withCache(
+					"dashboard:surat:weekly",
+					TTL.DASHBOARD,
+					async () => {
+						const json =
+							await platformFetch<PlatformSurat>("/api/noc/surat?limit=1000");
+						return { count: countSuratWeekly(json.data) };
 					},
-				});
-				return { data: { count } };
+				);
+				return { data };
 			} catch (error) {
-				logger.error({ error }, "Failed to fetch weekly service stats");
+				logger.error({ error }, "Failed to fetch weekly surat from platform");
 				set.status = 500;
-				return { error: "Internal Server Error" };
+				return { data: { count: 0 } };
 			}
 		},
 		{
@@ -273,8 +289,8 @@ export const complaint = new Elysia({
 						count: t.Number(),
 					}),
 				}),
-				500: t.Object({ error: t.String() }),
+				500: t.Object({ data: t.Object({ count: t.Number() }) }),
 			},
-			detail: { summary: "Get service letter count for current week" },
+			detail: { summary: "Get surat count for current week (live platform)" },
 		},
 	);
