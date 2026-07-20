@@ -28,7 +28,8 @@ interface DivisionApiResponse {
 }
 
 async function fetchDivisions(): Promise<DivisionData[]> {
-	const res = await apiClient.GET("/api/division/");
+	// Repoint ke /api/noc/active-divisions (live NOC proxy, idDesa dari server default)
+	const res = await apiClient.GET("/api/noc/active-divisions");
 	if (res.data?.data) {
 		return (res.data.data as DivisionApiResponse[]).map((d) => ({
 			name: d.name,

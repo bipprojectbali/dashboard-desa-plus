@@ -13,24 +13,31 @@ import { StatCard } from "./dashboard/stat-card";
 
 interface DashboardStats {
 	complaints: { total: number; baru: number; proses: number; selesai: number };
-	residents: { total: number; heads: number; poor: number };
+	residents: { total: number; heads: number };
 	weeklyService: number;
 }
 
 type SdgsItem = { title: string; score: number; image: string | null };
 
 async function fetchDashboardStats(): Promise<DashboardStats> {
-	const [complaintRes, residentRes, weeklyServiceRes] = await Promise.all([
+	const [complaintRes, demografiRes, weeklyServiceRes] = await Promise.all([
 		apiClient.GET("/api/complaint/stats"),
-		apiClient.GET("/api/resident/stats"),
+		apiClient.GET("/api/demografi/summary"),
 		apiClient.GET("/api/complaint/service-weekly"),
 	]);
 
+	const summary = (
+		demografiRes.data as {
+			data?: { summary?: { totalPenduduk?: number; totalKK?: number } };
+		}
+	)?.data?.summary;
 	return {
 		complaints: (complaintRes.data as { data: DashboardStats["complaints"] })
 			?.data || { total: 0, baru: 0, proses: 0, selesai: 0 },
-		residents: (residentRes.data as { data: DashboardStats["residents"] })
-			?.data || { total: 0, heads: 0, poor: 0 },
+		residents: {
+			total: summary?.totalPenduduk ?? 0,
+			heads: summary?.totalKK ?? 0,
+		},
 		weeklyService:
 			(weeklyServiceRes.data as { data: { count: number } })?.data?.count || 0,
 	};
@@ -43,7 +50,7 @@ async function fetchSdgs(): Promise<SdgsItem[]> {
 
 const EMPTY_STATS: DashboardStats = {
 	complaints: { total: 0, baru: 0, proses: 0, selesai: 0 },
-	residents: { total: 0, heads: 0, poor: 0 },
+	residents: { total: 0, heads: 0 },
 	weeklyService: 0,
 };
 

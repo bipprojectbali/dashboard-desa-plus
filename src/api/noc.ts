@@ -9,6 +9,20 @@ import { nocExternalClient } from "../utils/noc-external-client";
 import { buildWallSnapshot, isWallAuthorized } from "./wall-snapshot";
 
 const APBDES_ID = getEnv("DESA_APBDES_ID", "cmk-apbdes-001");
+const DEFAULT_VILLAGE_ID = getEnv("NOC_VILLAGE_ID", "desa1");
+
+// Warna statis per nama divisi (NOC external tidak kirim color).
+// Fallback #6B7280 untuk nama yang tidak dikenal.
+const DIVISION_COLOR_MAP: Record<string, string> = {
+	Pemerintahan: "#3B82F6",
+	Pembangunan: "#10B981",
+	Kemasyarakatan: "#F59E0B",
+	Pemberdayaan: "#8B5CF6",
+	"Kesejahteraan Sosial": "#EC4899",
+	"Keamanan & Ketertiban": "#EF4444",
+	"Adat & Budaya": "#F97316",
+};
+const DIVISION_COLOR_FALLBACK = "#6B7280";
 
 export const noc = new Elysia({ prefix: "/noc" })
 	.use(apiMiddleware)
@@ -126,35 +140,44 @@ export const noc = new Elysia({ prefix: "/noc" })
 	)
 	.get(
 		"/active-divisions",
-		async ({ query }) => {
-			const { idDesa, limit } = query;
-			const data = await prisma.division.findMany({
-				where: { villageId: idDesa },
-				include: {
-					_count: {
-						select: { activities: true },
+		async ({ query, set }) => {
+			const idDesa = query.idDesa || DEFAULT_VILLAGE_ID;
+			const { limit } = query;
+			try {
+				const data = await withCache(
+					`dashboard:active-divisions:${idDesa}`,
+					TTL.DASHBOARD,
+					async () => {
+						const { data: extData, error } = await nocExternalClient.GET(
+							"/api/noc/active-divisions",
+							{ params: { query: { idDesa, limit } } },
+						);
+						if (error || !extData) throw new Error("NOC API error");
+						const res = extData as any;
+						const divisi: Array<{
+							id: string;
+							division: string;
+							totalKegiatan: number;
+						}> = res?.data?.divisi;
+						if (!Array.isArray(divisi)) throw new Error("Invalid NOC response");
+						return divisi.map((d) => ({
+							id: d.id,
+							name: d.division,
+							activityCount: d.totalKegiatan,
+							color: DIVISION_COLOR_MAP[d.division] ?? DIVISION_COLOR_FALLBACK,
+						}));
 					},
-				},
-				orderBy: {
-					activities: {
-						_count: "desc",
-					},
-				},
-				take: limit ? Number.parseInt(limit) : 5,
-			});
-
-			return {
-				data: data.map((d) => ({
-					id: d.id,
-					name: d.name,
-					activityCount: d._count.activities,
-					color: d.color,
-				})),
-			};
+				);
+				return { data };
+			} catch (error) {
+				console.error("[NOC] Failed to fetch active-divisions:", error);
+				set.status = 500;
+				return { data: [] };
+			}
 		},
 		{
 			query: t.Object({
-				idDesa: t.String(),
+				idDesa: t.Optional(t.String()),
 				limit: t.Optional(t.String()),
 			}),
 			response: {
@@ -167,6 +190,9 @@ export const noc = new Elysia({ prefix: "/noc" })
 							color: t.String(),
 						}),
 					),
+				}),
+				500: t.Object({
+					data: t.Array(t.Unknown()),
 				}),
 			},
 		},
@@ -392,45 +418,50 @@ export const noc = new Elysia({ prefix: "/noc" })
 	)
 	.get(
 		"/upcoming-events",
-		async ({ query }) => {
-			const { idDesa, limit, filter } = query;
-			const now = new Date();
-			const where: any = { villageId: idDesa };
-
-			if (filter === "today") {
-				const startOfDay = new Date(now.setHours(0, 0, 0, 0));
-				const endOfDay = new Date(now.setHours(23, 59, 59, 999));
-				where.startDate = {
-					gte: startOfDay,
-					lte: endOfDay,
-				};
-			} else {
-				where.startDate = {
-					gte: now,
-				};
+		async ({ query, set }) => {
+			const idDesa = query.idDesa || DEFAULT_VILLAGE_ID;
+			const { limit, filter } = query;
+			try {
+				const data = await withCache(
+					`dashboard:upcoming-events:${idDesa}:${filter ?? "all"}`,
+					TTL.DASHBOARD,
+					async () => {
+						const { data: extData, error } = await nocExternalClient.GET(
+							"/api/noc/upcoming-events",
+							{ params: { query: { idDesa, limit, filter } } },
+						);
+						if (error || !extData) throw new Error("NOC API error");
+						const res = extData as any;
+						const upcoming: Array<{
+							id: string;
+							title: string;
+							startDate: string;
+							location?: string | null;
+							eventType?: string;
+						}> = res?.data?.upcoming;
+						if (!Array.isArray(upcoming))
+							throw new Error("Invalid NOC response");
+						return upcoming.map((e) => ({
+							id: e.id,
+							title: e.title,
+							startDate: e.startDate,
+							location: e.location ?? null,
+							eventType: e.eventType ?? "EVENT",
+						}));
+					},
+				);
+				return { data };
+			} catch (error) {
+				console.error("[NOC] Failed to fetch upcoming-events:", error);
+				set.status = 500;
+				return { data: [] };
 			}
-
-			const data = await prisma.event.findMany({
-				where,
-				orderBy: { startDate: "asc" },
-				take: limit ? Number.parseInt(limit) : 5,
-			});
-
-			return {
-				data: data.map((e) => ({
-					id: e.id,
-					title: e.title,
-					startDate: e.startDate.toISOString(),
-					location: e.location,
-					eventType: e.eventType,
-				})),
-			};
 		},
 		{
 			query: t.Object({
-				idDesa: t.String(),
+				idDesa: t.Optional(t.String()),
 				limit: t.Optional(t.String()),
-				filter: t.Optional(t.String()), // today/upcoming
+				filter: t.Optional(t.String()),
 			}),
 			response: {
 				200: t.Object({
@@ -443,6 +474,9 @@ export const noc = new Elysia({ prefix: "/noc" })
 							eventType: t.String(),
 						}),
 					),
+				}),
+				500: t.Object({
+					data: t.Array(t.Unknown()),
 				}),
 			},
 		},

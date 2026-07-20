@@ -39,11 +39,43 @@ export const dashboard = new Elysia({ prefix: "/dashboard" })
 	)
 	.get(
 		"/sdgs",
-		async () => {
-			const data = await prisma.sdgsScore.findMany({
-				orderBy: { score: "desc" },
-			});
-			return { data };
+		async ({ set }) => {
+			try {
+				const baseUrl =
+					process.env.DESA_API_URL || "https://desa-darmasaba-stg.wibudev.com";
+				const data = await withCache(
+					"dashboard:sdgs",
+					TTL.DASHBOARD,
+					async () => {
+						const response = await fetch(
+							`${baseUrl}/api/landingpage/sdgsdesa/findMany`,
+						);
+						if (!response.ok) {
+							throw new Error(`Desa API error: ${response.status}`);
+						}
+						const json = await response.json();
+						if (!json.success || !Array.isArray(json.data)) {
+							throw new Error("Invalid response from Desa API");
+						}
+						return json.data.map(
+							(item: {
+								name: string;
+								jumlah: string | number;
+								image: { link: string };
+							}) => ({
+								title: item.name,
+								score: Number(item.jumlah),
+								image: `${baseUrl}${item.image.link}`,
+							}),
+						);
+					},
+				);
+				return { data };
+			} catch (error) {
+				logger.error({ error }, "Failed to fetch SDGs from Desa API");
+				set.status = 500;
+				return { data: [] };
+			}
 		},
 		{
 			response: {
@@ -55,6 +87,9 @@ export const dashboard = new Elysia({ prefix: "/dashboard" })
 							image: t.Nullable(t.String()),
 						}),
 					),
+				}),
+				500: t.Object({
+					data: t.Array(t.Unknown()),
 				}),
 			},
 		},

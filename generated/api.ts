@@ -2434,7 +2434,7 @@ export interface operations {
     "getApiNocActive-divisions": {
         parameters: {
             query: {
-                idDesa: string;
+                idDesa?: string;
                 limit?: string;
             };
             header?: never;
@@ -2552,7 +2552,7 @@ export interface operations {
     "getApiNocUpcoming-events": {
         parameters: {
             query: {
-                idDesa: string;
+                idDesa?: string;
                 limit?: string;
                 filter?: string;
             };
