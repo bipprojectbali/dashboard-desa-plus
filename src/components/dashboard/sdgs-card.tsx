@@ -32,6 +32,13 @@ export function SDGSCard({ title, score, image }: SDGSCardProps) {
 						c={dark ? "white" : "gray.8"}
 						fw={500}
 						mb="xs"
+						lineClamp={2}
+						style={{
+							minHeight: "2.5em",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+						}}
 					>
 						{title}
 					</Text>

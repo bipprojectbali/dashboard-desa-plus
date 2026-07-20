@@ -141,7 +141,10 @@ export function DashboardContent() {
 				</Grid>
 			) : (
 				<Grid gutter="md">
-					{sdgsData.map((sdg) => (
+					{[...sdgsData]
+						.sort((a, b) => b.score - a.score)
+						.slice(0, 4)
+						.map((sdg) => (
 						<Grid.Col key={sdg.title} span={{ base: 9, md: 3 }}>
 							<SDGSCard
 								image={
