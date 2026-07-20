@@ -123,6 +123,7 @@ const en: TranslationKeys = {
 		pengaduanAktif: "Active Complaints",
 		baru: "new",
 		diproses: "in progress",
+		ditolak: "Rejected",
 		layananSelesai: "Completed Services",
 		totalDiselesaikan: "Total completed",
 		totalPenduduk: "Total Residents",

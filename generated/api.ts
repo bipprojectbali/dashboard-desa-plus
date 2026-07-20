@@ -3710,24 +3710,24 @@ export interface operations {
                         data: {
                             total: number;
                             baru: number;
-                            proses: number;
                             selesai: number;
+                            ditolak: number;
                         };
                     };
                     "multipart/form-data": {
                         data: {
                             total: number;
                             baru: number;
-                            proses: number;
                             selesai: number;
+                            ditolak: number;
                         };
                     };
                     "text/plain": {
                         data: {
                             total: number;
                             baru: number;
-                            proses: number;
                             selesai: number;
+                            ditolak: number;
                         };
                     };
                 };
@@ -3738,13 +3738,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        error: string;
+                        data: {
+                            total: number;
+                            baru: number;
+                            selesai: number;
+                            ditolak: number;
+                        };
                     };
                     "multipart/form-data": {
-                        error: string;
+                        data: {
+                            total: number;
+                            baru: number;
+                            selesai: number;
+                            ditolak: number;
+                        };
                     };
                     "text/plain": {
-                        error: string;
+                        data: {
+                            total: number;
+                            baru: number;
+                            selesai: number;
+                            ditolak: number;
+                        };
                     };
                 };
             };

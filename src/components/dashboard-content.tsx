@@ -12,7 +12,7 @@ import { SDGSCard } from "./dashboard/sdgs-card";
 import { StatCard } from "./dashboard/stat-card";
 
 interface DashboardStats {
-	complaints: { total: number; baru: number; proses: number; selesai: number };
+	complaints: { total: number; baru: number; selesai: number; ditolak: number };
 	residents: { total: number; heads: number };
 	weeklyService: number;
 }
@@ -33,7 +33,7 @@ async function fetchDashboardStats(): Promise<DashboardStats> {
 	)?.data?.summary;
 	return {
 		complaints: (complaintRes.data as { data: DashboardStats["complaints"] })
-			?.data || { total: 0, baru: 0, proses: 0, selesai: 0 },
+			?.data || { total: 0, baru: 0, selesai: 0, ditolak: 0 },
 		residents: {
 			total: summary?.totalPenduduk ?? 0,
 			heads: summary?.totalKK ?? 0,
@@ -49,7 +49,7 @@ async function fetchSdgs(): Promise<SdgsItem[]> {
 }
 
 const EMPTY_STATS: DashboardStats = {
-	complaints: { total: 0, baru: 0, proses: 0, selesai: 0 },
+	complaints: { total: 0, baru: 0, selesai: 0, ditolak: 0 },
 	residents: { total: 0, heads: 0 },
 	weeklyService: 0,
 };
@@ -84,8 +84,8 @@ export function DashboardContent() {
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
 						title={t.dashboard.pengaduanAktif}
-						value={stats.complaints.baru + stats.complaints.proses}
-						detail={`${stats.complaints.baru} ${t.dashboard.baru}, ${stats.complaints.proses} ${t.dashboard.diproses}`}
+						value={stats.complaints.baru}
+						detail={`${stats.complaints.baru} ${t.dashboard.baru}, ${stats.complaints.ditolak} ${t.dashboard.ditolak}`}
 						icon={<MessageCircle style={{ width: "70%", height: "70%" }} />}
 					/>
 				</Grid.Col>

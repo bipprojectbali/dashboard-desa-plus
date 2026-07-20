@@ -121,6 +121,7 @@ export type TranslationKeys = {
 		pengaduanAktif: string;
 		baru: string;
 		diproses: string;
+		ditolak: string;
 		layananSelesai: string;
 		totalDiselesaikan: string;
 		totalPenduduk: string;
@@ -585,6 +586,7 @@ const id: TranslationKeys = {
 		pengaduanAktif: "Pengaduan Aktif",
 		baru: "baru",
 		diproses: "diproses",
+		ditolak: "Ditolak",
 		layananSelesai: "Layanan Selesai",
 		totalDiselesaikan: "Total diselesaikan",
 		totalPenduduk: "Total Penduduk",
