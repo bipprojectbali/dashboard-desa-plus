@@ -181,10 +181,6 @@ export type TranslationKeys = {
 		statusBerjalan: string;
 		statusTertunda: string;
 		tidakAdaAktivitas: string;
-		suratKeputusan: string;
-		dokumentasi: string;
-		laporanKeuangan: string;
-		notulensiRapat: string;
 		diskusi: string;
 		tidakAdaDiskusi: string;
 		jumlahDokumen: string;
@@ -652,10 +648,6 @@ const id: TranslationKeys = {
 		statusBerjalan: "Berjalan",
 		statusTertunda: "Tertunda",
 		tidakAdaAktivitas: "Tidak ada aktivitas terbaru",
-		suratKeputusan: "Surat Keputusan",
-		dokumentasi: "Dokumentasi",
-		laporanKeuangan: "Laporan Keuangan",
-		notulensiRapat: "Notulensi Rapat",
 		diskusi: "Diskusi",
 		tidakAdaDiskusi: "Tidak ada diskusi",
 		jumlahDokumen: "Jumlah Dokumen",

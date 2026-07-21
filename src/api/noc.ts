@@ -7,6 +7,10 @@ import { desaExternalClient } from "../utils/desa-external-client";
 import { getEnv } from "../utils/env";
 import { nocExternalClient } from "../utils/noc-external-client";
 import {
+	mapDiscussions,
+	type NocDiscussionRaw,
+} from "./transforms/noc-discussions";
+import {
 	DIVISION_COLOR_FALLBACK,
 	DIVISION_COLOR_MAP,
 	mapActiveDivisions,
@@ -785,36 +789,33 @@ export const noc = new Elysia({ prefix: "/noc" })
 	)
 	.get(
 		"/latest-discussion",
-		async ({ query }) => {
-			const { idDesa, limit } = query;
-			const data = await prisma.discussion.findMany({
-				where: { villageId: idDesa },
-				orderBy: { createdAt: "desc" },
-				take: limit ? Number.parseInt(limit) : 5,
-				include: {
-					sender: {
-						select: { name: true, image: true },
+		async ({ query, set }) => {
+			const idDesa = query.idDesa || DEFAULT_VILLAGE_ID;
+			const { limit } = query;
+			try {
+				const data = await withCache(
+					`dashboard:latest-discussion:${idDesa}`,
+					TTL.DASHBOARD,
+					async () => {
+						const res = await nocExternalClient.GET(
+							"/api/noc/latest-discussion",
+							{ params: { query: { idDesa, limit } } },
+						);
+						const raw = (res?.data as any)?.data as NocDiscussionRaw[];
+						if (!Array.isArray(raw)) throw new Error("Invalid NOC response");
+						return mapDiscussions(raw);
 					},
-					division: {
-						select: { name: true },
-					},
-				},
-			});
-
-			return {
-				data: data.map((d) => ({
-					id: d.id,
-					message: d.message,
-					senderName: d.sender.name || "Anonymous",
-					senderImage: d.sender.image,
-					divisionName: d.division?.name || "General",
-					createdAt: d.createdAt.toISOString(),
-				})),
-			};
+				);
+				return { data };
+			} catch (error) {
+				console.error("[NOC] Failed to fetch latest-discussion:", error);
+				set.status = 500;
+				return { data: [] };
+			}
 		},
 		{
 			query: t.Object({
-				idDesa: t.String(),
+				idDesa: t.Optional(t.String()),
 				limit: t.Optional(t.String()),
 			}),
 			response: {
@@ -829,6 +830,9 @@ export const noc = new Elysia({ prefix: "/noc" })
 							createdAt: t.String(),
 						}),
 					),
+				}),
+				500: t.Object({
+					data: t.Array(t.Unknown()),
 				}),
 			},
 		},

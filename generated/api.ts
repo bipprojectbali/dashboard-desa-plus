@@ -627,7 +627,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get complaint statistics */
+        /** Get complaint statistics (live platform) */
         get: operations["getApiComplaintStats"];
         put?: never;
         post?: never;
@@ -712,7 +712,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get service letter trends for last 6 months */
+        /** Get surat trends per month (live platform) */
         get: operations["getApiComplaintService-trends"];
         put?: never;
         post?: never;
@@ -746,7 +746,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get service letter count for current week */
+        /** Get surat count for current week (live platform) */
         get: operations["getApiComplaintService-weekly"];
         put?: never;
         post?: never;
@@ -799,40 +799,6 @@ export interface paths {
         };
         /** Get demographics including religion, gender, occupation and age */
         get: operations["getApiResidentDemographics"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/event/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get upcoming events */
-        get: operations["getApiEvent"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/event/today": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get events for today */
-        get: operations["getApiEventToday"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2433,7 +2399,7 @@ export interface operations {
     };
     "getApiNocActive-divisions": {
         parameters: {
-            query: {
+            query?: {
                 idDesa?: string;
                 limit?: string;
             };
@@ -2471,6 +2437,22 @@ export interface operations {
                             activityCount: number;
                             color: string;
                         }[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
                     };
                 };
             };
@@ -2551,7 +2533,7 @@ export interface operations {
     };
     "getApiNocUpcoming-events": {
         parameters: {
-            query: {
+            query?: {
                 idDesa?: string;
                 limit?: string;
                 filter?: string;
@@ -2593,6 +2575,22 @@ export interface operations {
                             location: (string | null) | null;
                             eventType: string;
                         }[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
                     };
                 };
             };
@@ -2750,8 +2748,8 @@ export interface operations {
     };
     "getApiNocLatest-discussion": {
         parameters: {
-            query: {
-                idDesa: string;
+            query?: {
+                idDesa?: string;
                 limit?: string;
             };
             header?: never;
@@ -2794,6 +2792,22 @@ export interface operations {
                             divisionName: string;
                             createdAt: string;
                         }[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
                     };
                 };
             };
@@ -3964,13 +3978,22 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: unknown[];
+                        data: {
+                            month: string;
+                            count: number;
+                        }[];
                     };
                     "multipart/form-data": {
-                        data: unknown[];
+                        data: {
+                            month: string;
+                            count: number;
+                        }[];
                     };
                     "text/plain": {
-                        data: unknown[];
+                        data: {
+                            month: string;
+                            count: number;
+                        }[];
                     };
                 };
             };
@@ -3980,13 +4003,13 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        error: string;
+                        data: unknown[];
                     };
                     "multipart/form-data": {
-                        error: string;
+                        data: unknown[];
                     };
                     "text/plain": {
-                        error: string;
+                        data: unknown[];
                     };
                 };
             };
@@ -4046,13 +4069,19 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        error: string;
+                        data: {
+                            count: number;
+                        };
                     };
                     "multipart/form-data": {
-                        error: string;
+                        data: {
+                            count: number;
+                        };
                     };
                     "text/plain": {
-                        error: string;
+                        data: {
+                            count: number;
+                        };
                     };
                 };
             };
@@ -4214,92 +4243,6 @@ export interface operations {
             };
         };
     };
-    getApiEvent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: unknown[];
-                    };
-                    "multipart/form-data": {
-                        data: unknown[];
-                    };
-                    "text/plain": {
-                        data: unknown[];
-                    };
-                };
-            };
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        error: string;
-                    };
-                    "multipart/form-data": {
-                        error: string;
-                    };
-                    "text/plain": {
-                        error: string;
-                    };
-                };
-            };
-        };
-    };
-    getApiEventToday: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: unknown[];
-                    };
-                    "multipart/form-data": {
-                        data: unknown[];
-                    };
-                    "text/plain": {
-                        data: unknown[];
-                    };
-                };
-            };
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        error: string;
-                    };
-                    "multipart/form-data": {
-                        error: string;
-                    };
-                    "text/plain": {
-                        error: string;
-                    };
-                };
-            };
-        };
-    };
     getApiDashboardBudget: {
         parameters: {
             query?: never;
@@ -4376,6 +4319,22 @@ export interface operations {
                             score: number;
                             image: (string | null) | null;
                         }[];
+                    };
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                    "multipart/form-data": {
+                        data: unknown[];
+                    };
+                    "text/plain": {
+                        data: unknown[];
                     };
                 };
             };
