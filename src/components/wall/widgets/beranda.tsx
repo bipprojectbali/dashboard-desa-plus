@@ -56,10 +56,16 @@ function KpiTile({ tile, icon }: { tile: WallBerandaKpiTile; icon: TileIcon }) {
 				<icon.Icon size={20} color={icon.color} />
 			</div>
 			<div style={{ minWidth: 0 }}>
-				<Text fw={800} style={{ fontSize: 26, color: WALL_THEME.TEXT, lineHeight: 1.1 }}>
+				<Text
+					fw={800}
+					style={{ fontSize: 26, color: WALL_THEME.TEXT, lineHeight: 1.1 }}
+				>
 					{tile.value.toLocaleString("id-ID")}
 				</Text>
-				<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM, whiteSpace: "nowrap" }}>
+				<Text
+					size="xs"
+					style={{ color: WALL_THEME.TEXT_DIM, whiteSpace: "nowrap" }}
+				>
 					{tile.label}
 				</Text>
 				<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }}>
@@ -75,7 +81,11 @@ export function BerandaKpiBody({ data }: { data: WallBeranda["kpi"] }) {
 	return (
 		<SimpleGrid cols={2} spacing="sm" style={{ height: "100%" }}>
 			{data.slice(0, 4).map((tile, i) => (
-				<KpiTile key={tile.label} tile={tile} icon={KPI_ICONS[i % KPI_ICONS.length]!} />
+				<KpiTile
+					key={tile.label}
+					tile={tile}
+					icon={KPI_ICONS[i % KPI_ICONS.length]!}
+				/>
 			))}
 		</SimpleGrid>
 	);
@@ -84,7 +94,11 @@ export function BerandaKpiBody({ data }: { data: WallBeranda["kpi"] }) {
 // ── SURAT TREND ───────────────────────────────────────────────────────────────
 
 /** Tren pengajuan surat 7 bulan (bar). */
-export function BerandaSuratTrendBody({ data }: { data: WallBeranda["suratTrend"] }) {
+export function BerandaSuratTrendBody({
+	data,
+}: {
+	data: WallBeranda["suratTrend"];
+}) {
 	return (
 		<BarChart
 			h="100%"
@@ -99,8 +113,16 @@ export function BerandaSuratTrendBody({ data }: { data: WallBeranda["suratTrend"
 // ── KEPUASAN ─────────────────────────────────────────────────────────────────
 
 /** Tingkat kepuasan (donut + legenda). */
-export function BerandaKepuasanBody({ data }: { data: WallBeranda["kepuasan"] }) {
-	const rows = data.map((s) => ({ name: s.category, value: s.value, color: s.color }));
+export function BerandaKepuasanBody({
+	data,
+}: {
+	data: WallBeranda["kepuasan"];
+}) {
+	const rows = data.map((s) => ({
+		name: s.category,
+		value: s.value,
+		color: s.color,
+	}));
 	return <DonutBody data={rows} unit="responden" />;
 }
 
@@ -130,11 +152,19 @@ export function BerandaDivisiBody({ data }: { data: WallBeranda["divisi"] }) {
 function formatDate(iso: string): string {
 	const d = new Date(iso);
 	if (Number.isNaN(d.getTime())) return iso;
-	return d.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+	return d.toLocaleDateString("id-ID", {
+		day: "numeric",
+		month: "short",
+		year: "numeric",
+	});
 }
 
 /** Kalender kegiatan mendatang (daftar event). */
-export function BerandaKalenderBody({ data }: { data: WallBeranda["kalender"] }) {
+export function BerandaKalenderBody({
+	data,
+}: {
+	data: WallBeranda["kalender"];
+}) {
 	return (
 		<Stack gap="sm" style={{ height: "100%", overflowY: "auto" }}>
 			{data.slice(0, 8).map((ev, i) => (
@@ -145,12 +175,16 @@ export function BerandaKalenderBody({ data }: { data: WallBeranda["kalender"] })
 						paddingLeft: 10,
 					}}
 				>
-					<Text size="sm" fw={600} style={{ color: WALL_THEME.TEXT, lineHeight: 1.3 }}>
+					<Text
+						size="sm"
+						fw={600}
+						style={{ color: WALL_THEME.TEXT, lineHeight: 1.3 }}
+					>
 						{ev.title}
 					</Text>
 					<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }}>
 						{formatDate(ev.startDate)}
-						{ev.location ? ` · ${ev.location}` : ""}
+						{ev.divisi ? ` · ${ev.divisi}` : ""}
 					</Text>
 				</div>
 			))}
@@ -172,8 +206,16 @@ export function BerandaApbdesBody({ data }: { data: WallBeranda["apbdes"] }) {
 						color={item.color}
 						fraction={item.anggaran > 0 ? item.realisasi / item.anggaran : 0}
 					/>
-					<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM, marginTop: 2, paddingLeft: 16 }}>
-						Rp {item.realisasi.toLocaleString("id-ID")} / {item.anggaran.toLocaleString("id-ID")}
+					<Text
+						size="xs"
+						style={{
+							color: WALL_THEME.TEXT_DIM,
+							marginTop: 2,
+							paddingLeft: 16,
+						}}
+					>
+						Rp {item.realisasi.toLocaleString("id-ID")} /{" "}
+						{item.anggaran.toLocaleString("id-ID")}
 					</Text>
 				</div>
 			))}

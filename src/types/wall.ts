@@ -87,13 +87,18 @@ export interface WallBeranda {
 	kpi: WallBerandaKpiTile[];
 	suratTrend: Array<{ month: string; count: number }>;
 	kepuasan: Array<{ category: string; value: number; color: string }>;
-	divisi: Array<{ id: string; name: string; activityCount: number; color: string }>;
+	divisi: Array<{
+		id: string;
+		name: string;
+		activityCount: number;
+		color: string;
+	}>;
 	kalender: Array<{
 		id: string;
 		title: string;
 		startDate: string;
-		location: string | null;
-		eventType: string;
+		time: string;
+		divisi: string | null;
 	}>;
 	apbdes: Array<{
 		category: string;
