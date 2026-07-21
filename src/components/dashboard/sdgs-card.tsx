@@ -1,4 +1,4 @@
-import { Box, Card, Group, Text } from "@mantine/core";
+import { Card, Stack, Text } from "@mantine/core";
 import type { ReactNode } from "react";
 import { useIsDark } from "@/hooks/useIsDark";
 
@@ -23,16 +23,15 @@ export function SDGSCard({ title, score, image }: SDGSCardProps) {
 			}}
 			h="100%"
 		>
-			<Group justify="space-between" align="flex-start" w="100%">
-				<Box>{image}</Box>
-				<Box style={{ flex: 1 }}>
+			<Stack align="center" gap="xs" h="100%" justify="space-between">
+				<Stack align="center" gap="xs">
+					{image}
 					<Text
-						ta={"center"}
+						ta="center"
 						size="sm"
 						c={dark ? "white" : "gray.8"}
 						fw={500}
-						mb="xs"
-						lineClamp={2}
+						lineClamp={3}
 						style={{
 							minHeight: "2.5em",
 							display: "flex",
@@ -42,11 +41,11 @@ export function SDGSCard({ title, score, image }: SDGSCardProps) {
 					>
 						{title}
 					</Text>
-					<Text ta={"center"} size="xl" c={dark ? "white" : "gray.8"} fw={700}>
-						{score.toFixed(2)}
-					</Text>
-				</Box>
-			</Group>
+				</Stack>
+				<Text ta="center" size="xl" c={dark ? "white" : "gray.8"} fw={700}>
+					{score.toFixed(2)}
+				</Text>
+			</Stack>
 		</Card>
 	);
 }
