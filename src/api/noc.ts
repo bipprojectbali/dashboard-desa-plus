@@ -6,23 +6,17 @@ import { prisma } from "../utils/db";
 import { desaExternalClient } from "../utils/desa-external-client";
 import { getEnv } from "../utils/env";
 import { nocExternalClient } from "../utils/noc-external-client";
+import {
+	DIVISION_COLOR_FALLBACK,
+	DIVISION_COLOR_MAP,
+	mapActiveDivisions,
+	type NocDivisionRaw,
+} from "./transforms/noc-divisions";
+import { mapUpcomingEvents, type NocEventRaw } from "./transforms/noc-events";
 import { buildWallSnapshot, isWallAuthorized } from "./wall-snapshot";
 
 const APBDES_ID = getEnv("DESA_APBDES_ID", "cmk-apbdes-001");
 const DEFAULT_VILLAGE_ID = getEnv("NOC_VILLAGE_ID", "desa1");
-
-// Warna statis per nama divisi (NOC external tidak kirim color).
-// Fallback #6B7280 untuk nama yang tidak dikenal.
-const DIVISION_COLOR_MAP: Record<string, string> = {
-	Pemerintahan: "#3B82F6",
-	Pembangunan: "#10B981",
-	Kemasyarakatan: "#F59E0B",
-	Pemberdayaan: "#8B5CF6",
-	"Kesejahteraan Sosial": "#EC4899",
-	"Keamanan & Ketertiban": "#EF4444",
-	"Adat & Budaya": "#F97316",
-};
-const DIVISION_COLOR_FALLBACK = "#6B7280";
 
 export const noc = new Elysia({ prefix: "/noc" })
 	.use(apiMiddleware)
@@ -154,18 +148,9 @@ export const noc = new Elysia({ prefix: "/noc" })
 						);
 						if (error || !extData) throw new Error("NOC API error");
 						const res = extData as any;
-						const divisi: Array<{
-							id: string;
-							division: string;
-							totalKegiatan: number;
-						}> = res?.data?.divisi;
+						const divisi: NocDivisionRaw[] = res?.data?.divisi;
 						if (!Array.isArray(divisi)) throw new Error("Invalid NOC response");
-						return divisi.map((d) => ({
-							id: d.id,
-							name: d.division,
-							activityCount: d.totalKegiatan,
-							color: DIVISION_COLOR_MAP[d.division] ?? DIVISION_COLOR_FALLBACK,
-						}));
+						return mapActiveDivisions(divisi);
 					},
 				);
 				return { data };
@@ -432,22 +417,10 @@ export const noc = new Elysia({ prefix: "/noc" })
 						);
 						if (error || !extData) throw new Error("NOC API error");
 						const res = extData as any;
-						const upcoming: Array<{
-							id: string;
-							title: string;
-							startDate: string;
-							location?: string | null;
-							eventType?: string;
-						}> = res?.data?.upcoming;
+						const upcoming: NocEventRaw[] = res?.data?.upcoming;
 						if (!Array.isArray(upcoming))
 							throw new Error("Invalid NOC response");
-						return upcoming.map((e) => ({
-							id: e.id,
-							title: e.title,
-							startDate: e.startDate,
-							location: e.location ?? null,
-							eventType: e.eventType ?? "EVENT",
-						}));
+						return mapUpcomingEvents(upcoming);
 					},
 				);
 				return { data };

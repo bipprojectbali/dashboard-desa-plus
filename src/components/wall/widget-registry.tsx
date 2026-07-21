@@ -7,6 +7,15 @@ import {
 	type WidgetId,
 } from "./wall-layout-utils";
 import {
+	BerandaApbdesBody,
+	BerandaDivisiBody,
+	BerandaKalenderBody,
+	BerandaKepuasanBody,
+	BerandaKpiBody,
+	BerandaSdgsBody,
+	BerandaSuratTrendBody,
+} from "./widgets/beranda";
+import {
 	DemografiAgeBody,
 	DemografiGenderBody,
 	DemografiOccupationBody,
@@ -48,6 +57,57 @@ function nonEmpty<T>(arr: T[] | undefined | null): T[] | null {
 }
 
 const WIDGETS: Record<WidgetId, WidgetDefinition> = {
+	// ── Beranda ──────────────────────────────────────────────────────────────
+	"beranda-kpi": {
+		id: "beranda-kpi",
+		title: "KPI Beranda",
+		category: "beranda",
+		selectData: (s) => nonEmpty(s?.beranda?.kpi),
+		Body: BerandaKpiBody,
+	},
+	"beranda-surat-trend": {
+		id: "beranda-surat-trend",
+		title: "Statistik Pengajuan Surat",
+		category: "beranda",
+		selectData: (s) => nonEmpty(s?.beranda?.suratTrend),
+		Body: BerandaSuratTrendBody,
+	},
+	"beranda-kepuasan": {
+		id: "beranda-kepuasan",
+		title: "Tingkat Kepuasan",
+		category: "beranda",
+		selectData: (s) => nonEmpty(s?.beranda?.kepuasan),
+		Body: BerandaKepuasanBody,
+	},
+	"beranda-divisi": {
+		id: "beranda-divisi",
+		title: "Divisi Teraktif",
+		category: "beranda",
+		selectData: (s) => nonEmpty(s?.beranda?.divisi),
+		Body: BerandaDivisiBody,
+	},
+	"beranda-kalender": {
+		id: "beranda-kalender",
+		title: "Kalender & Kegiatan Mendatang",
+		category: "beranda",
+		selectData: (s) => nonEmpty(s?.beranda?.kalender),
+		Body: BerandaKalenderBody,
+	},
+	"beranda-apbdes": {
+		id: "beranda-apbdes",
+		title: "Realisasi APBDes",
+		category: "beranda",
+		selectData: (s) => nonEmpty(s?.beranda?.apbdes),
+		Body: BerandaApbdesBody,
+	},
+	"beranda-sdgs": {
+		id: "beranda-sdgs",
+		title: "SDGs Desa",
+		category: "beranda",
+		selectData: (s) => nonEmpty(s?.beranda?.sdgs),
+		Body: BerandaSdgsBody,
+	},
+	// ── Keuangan ─────────────────────────────────────────────────────────────
 	"keuangan-apbdes": {
 		id: "keuangan-apbdes",
 		title: "APBDes 2025",

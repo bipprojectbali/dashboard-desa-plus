@@ -1,18 +1,12 @@
 import { TTL, withCache } from "@/utils/cache";
 import { prisma } from "@/utils/db";
 
-// TODO(wall): buildSatisfaction() belum di-wire ke wall-snapshot/index.ts —
-// widget kepuasan masih pakai sumber lokal di build-keuangan.ts. Ganti ke
-// builder ini agar angka wall == dashboard. Lihat MIND/SUMMARY/16-Jul-26/
-// audit-sumber-data-wall-per-widget.md (transisi data lokal → API live).
-
 /**
- * Kepuasan layanan untuk wall — SAMA sumber & cache key dengan dashboard
- * (`/api/dashboard/satisfaction-responden`) supaya angka wall == angka halaman.
+ * Kepuasan layanan untuk wall — sumber sama dengan dashboard (NOC responden
+ * eksternal), tapi cache key BERBEDA (`wall:satisfaction:responden`) karena
+ * dashboard.ts menyimpan shape `{apiName,...}` sedangkan builder ini perlu
+ * `{category,...}`. Key terpisah mencegah bentrok shape di cache shared.
  * Primary: agregasi responden NOC eksternal; fallback: tabel lokal.
- *
- * Cache key `dashboard:satisfaction:responden` sengaja identik dengan
- * dashboard.ts → hit cache yang sama, tak dobel fetch ke NOC.
  */
 
 // Mirror RATING_COLOR_MAP di dashboard.ts (nama rating NOC → warna + urutan).
@@ -40,7 +34,7 @@ export interface WallSatisfactionRow {
 
 async function fetchRespondenAggregated(): Promise<WallSatisfactionRow[]> {
 	return withCache(
-		"dashboard:satisfaction:responden",
+		"wall:satisfaction:responden",
 		TTL.DASHBOARD,
 		async () => {
 			const baseUrl =

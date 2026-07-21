@@ -18,6 +18,14 @@ import {
 
 /** Semua widget id yang dikenal. Urutan tak bermakna — cuma katalog. */
 export const ALL_WIDGET_IDS = [
+	// Beranda — 7 widget live meniru card halaman utama
+	"beranda-kpi",
+	"beranda-surat-trend",
+	"beranda-kepuasan",
+	"beranda-divisi",
+	"beranda-kalender",
+	"beranda-apbdes",
+	"beranda-sdgs",
 	// Keuangan
 	"keuangan-apbdes",
 	"keuangan-kepuasan",
@@ -51,6 +59,13 @@ export type WidgetId = (typeof ALL_WIDGET_IDS)[number];
  * menimpa bebas via drag-resize; nilai override tersimpan terpisah di DB.
  */
 export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
+	"beranda-kpi": "wide",
+	"beranda-surat-trend": "wide",
+	"beranda-kepuasan": "lg",
+	"beranda-divisi": "tall",
+	"beranda-kalender": "tall",
+	"beranda-apbdes": "wide",
+	"beranda-sdgs": "tall",
 	"keuangan-apbdes": "wide",
 	"keuangan-kepuasan": "lg",
 	"keuangan-sdgs": "tall",
@@ -76,6 +91,7 @@ export function defaultGeom(id: WidgetId): WidgetGeom {
 
 /** Kategori untuk pengelompokan di galeri tambah-widget. */
 export type WallCategory =
+	| "beranda"
 	| "keuangan"
 	| "pengaduan"
 	| "demografi"

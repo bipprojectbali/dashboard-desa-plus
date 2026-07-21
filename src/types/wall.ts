@@ -5,8 +5,10 @@ import type { SystemHealth } from "@/utils/system-health";
  * Satu sumber kebenaran dipakai server (builder) dan klien (widget).
  *
  * Semua slice domain NULLABLE: partial-failure di satu builder hanya
- * mematikan satu panel, bukan seluruh wall. TANPA field PII —
- * hanya angka agregat, tidak ada nama/NIK/isi pesan.
+ * mematikan satu panel, bukan seluruh wall. Mayoritas slice hanya angka
+ * agregat tanpa PII. PENGECUALIAN: slice `beranda` sengaja memuat teks
+ * operasional publik (divisi[].name, kalender[].title, kalender[].location)
+ * — setara data yang sudah tampil di website desa, bukan PII-orang.
  */
 
 export interface WallKpi {
@@ -70,6 +72,39 @@ export interface WallKeamanan {
 	selesai: number;
 }
 
+export interface WallBerandaKpiTile {
+	label: string;
+	value: number;
+	sublabel: string;
+}
+
+/**
+ * Slice "Beranda" — 7 widget yang meniru card halaman utama dashboard.
+ * Teks operasional publik (divisi[].name, kalender[].title/location) disertakan
+ * secara sengaja; bukan PII-orang. Guard PII test memeriksa field nested ini.
+ */
+export interface WallBeranda {
+	kpi: WallBerandaKpiTile[];
+	suratTrend: Array<{ month: string; count: number }>;
+	kepuasan: Array<{ category: string; value: number; color: string }>;
+	divisi: Array<{ id: string; name: string; activityCount: number; color: string }>;
+	kalender: Array<{
+		id: string;
+		title: string;
+		startDate: string;
+		location: string | null;
+		eventType: string;
+	}>;
+	apbdes: Array<{
+		category: string;
+		anggaran: number;
+		realisasi: number;
+		percentage: number;
+		color: string;
+	}>;
+	sdgs: Array<{ title: string; score: number; image: string | null }>;
+}
+
 export interface WallSnapshot {
 	generatedAt: string;
 	kpi: WallKpi | null;
@@ -78,5 +113,6 @@ export interface WallSnapshot {
 	demografi: WallDemografi | null;
 	divisi: WallDivisi | null;
 	keamanan: WallKeamanan | null;
+	beranda: WallBeranda | null;
 	system: SystemHealth | null;
 }

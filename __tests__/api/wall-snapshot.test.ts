@@ -26,6 +26,9 @@ const ALLOWED_KEYS: Record<string, string[]> = {
 	demografi: ["stats", "gender", "religion", "ageGroups", "occupationTop"],
 	divisi: ["activities", "documents"],
 	keamanan: ["total", "baru", "diproses", "selesai"],
+	// beranda: teks operasional publik (name, title, location) disertakan sengaja
+	// (setara website desa). Field PII-orang dilarang — dijaga oleh test nested di bawah.
+	beranda: ["kpi", "suratTrend", "kepuasan", "divisi", "kalender", "apbdes", "sdgs"],
 };
 
 describe("GET /api/noc/wall-snapshot", () => {
@@ -85,5 +88,35 @@ describe("GET /api/noc/wall-snapshot", () => {
 			new Request("http://localhost/api/noc/wall-snapshot?key=rahasia-wall"),
 		);
 		expect(allowed.status).toBe(200);
+	});
+
+	it("beranda nested — hanya field teks operasional publik, bukan PII-orang", async () => {
+		delete process.env.WALL_ACCESS_TOKEN;
+		const res = await api.handle(
+			new Request("http://localhost/api/noc/wall-snapshot"),
+		);
+		const { data } = await res.json();
+		const beranda = data.beranda;
+		if (beranda === null || beranda === undefined) return; // builder gagal = skip
+
+		// divisi[] hanya boleh punya field operasional; nik/email/telepon dilarang
+		const DIVISI_ALLOWED = ["id", "name", "activityCount", "color"];
+		const DIVISI_PII_BANNED = ["nik", "email", "phone", "telepon", "nama_lengkap"];
+		for (const item of beranda.divisi ?? []) {
+			for (const key of Object.keys(item)) {
+				expect(DIVISI_ALLOWED).toContain(key);
+				expect(DIVISI_PII_BANNED).not.toContain(key);
+			}
+		}
+
+		// kalender[] hanya boleh punya field operasional publik
+		const KALENDER_ALLOWED = ["id", "title", "startDate", "location", "eventType"];
+		const KALENDER_PII_BANNED = ["nik", "email", "phone", "createdBy", "userId"];
+		for (const item of beranda.kalender ?? []) {
+			for (const key of Object.keys(item)) {
+				expect(KALENDER_ALLOWED).toContain(key);
+				expect(KALENDER_PII_BANNED).not.toContain(key);
+			}
+		}
 	});
 });

@@ -5,6 +5,7 @@ import { WALL_THEME } from "./wall-theme";
 import { unplacedWidgets } from "./widget-registry";
 
 const CATEGORY_LABELS: Record<WallCategory, string> = {
+	beranda: "Beranda",
 	keuangan: "Keuangan",
 	pengaduan: "Pengaduan & Layanan",
 	demografi: "Demografi",
