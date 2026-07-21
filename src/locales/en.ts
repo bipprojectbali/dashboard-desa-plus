@@ -12,6 +12,7 @@ const en: TranslationKeys = {
 		kesalahan: "Error",
 		administrator: "Administrator",
 		pengguna: "User",
+		wallNoc: "NOC Wall",
 	},
 	breadcrumb: {
 		home: "Desa Darmasaba",

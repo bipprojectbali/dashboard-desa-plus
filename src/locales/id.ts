@@ -10,6 +10,7 @@ export type TranslationKeys = {
 		kesalahan: string;
 		administrator: string;
 		pengguna: string;
+		wallNoc: string;
 	};
 	breadcrumb: {
 		home: string;
@@ -475,6 +476,7 @@ const id: TranslationKeys = {
 		kesalahan: "Kesalahan",
 		administrator: "Administrator",
 		pengguna: "Pengguna",
+		wallNoc: "Wall NOC",
 	},
 	breadcrumb: {
 		home: "Desa Darmasaba",

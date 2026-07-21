@@ -8,9 +8,11 @@ import {
 	Divider,
 	Group,
 	Text,
+	Tooltip,
 	useMantineColorScheme,
 } from "@mantine/core";
 import {
+	IconDeviceDesktopAnalytics,
 	IconLayoutSidebarLeftCollapse,
 	IconUserShield,
 } from "@tabler/icons-react";
@@ -296,6 +298,24 @@ export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 								</Badge>
 							)}
 						</ActionIcon>
+
+						<Tooltip label={t.common.wallNoc} withArrow>
+							<ActionIcon
+								component="a"
+								href="/wall"
+								target="_blank"
+								rel="noopener noreferrer"
+								variant="subtle"
+								size="lg"
+								radius="xl"
+								aria-label={t.common.wallNoc}
+							>
+								<IconDeviceDesktopAnalytics
+									color="white"
+									style={{ width: "70%", height: "70%" }}
+								/>
+							</ActionIcon>
+						</Tooltip>
 
 						{isAdmin && (
 							<ActionIcon
