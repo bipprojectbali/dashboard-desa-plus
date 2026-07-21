@@ -1,8 +1,12 @@
 import type { WallBeranda } from "@/types/wall";
-import { TTL, withCache } from "@/utils/cache";
+import { TTL, cache, withCache } from "@/utils/cache";
 import { prisma } from "@/utils/db";
 import { getEnv } from "@/utils/env";
 import { nocExternalClient } from "@/utils/noc-external-client";
+import {
+	mapApbdesList,
+	type ApbdesEntryRaw,
+} from "../transforms/apbdes";
 import {
 	mapActiveDivisions,
 	type NocDivisionRaw,
@@ -11,13 +15,6 @@ import { mapUpcomingEvents, type NocEventRaw } from "../transforms/noc-events";
 import { buildSatisfaction } from "./external-satisfaction";
 
 const DEFAULT_VILLAGE_ID = getEnv("NOC_VILLAGE_ID", "desa1");
-const APBDES_ID = getEnv("DESA_APBDES_ID", "cmk-apbdes-001");
-
-const APBDES_COLOR_MAP: Record<string, string> = {
-	pendapatan: "#10B981",
-	belanja: "#3B82F6",
-	pembiayaan: "#F59E0B",
-};
 
 async function fetchKpi(): Promise<WallBeranda["kpi"]> {
 	const now = new Date();
@@ -116,58 +113,26 @@ async function fetchKalender(): Promise<WallBeranda["kalender"]> {
 }
 
 async function fetchApbdes(): Promise<WallBeranda["apbdes"]> {
-	return withCache(`apbdes:${APBDES_ID}`, TTL.APBDES, async () => {
+	// Reuse shared cache populated by sync job / endpoint; fetch findMany on miss
+	const cached = cache.get<ApbdesEntryRaw[]>("apbdes:all");
+	let entries: ApbdesEntryRaw[];
+
+	if (cached) {
+		entries = cached;
+	} else {
 		const baseUrl =
 			process.env.DESA_API_URL || "https://desa-darmasaba-stg.wibudev.com";
 		const response = await fetch(
-			`${baseUrl}/api/landingpage/apbdes/${APBDES_ID}`,
+			`${baseUrl}/api/landingpage/apbdes/findMany`,
 		);
 		if (!response.ok) throw new Error(`Desa API error: ${response.status}`);
 		const json = await response.json();
-		const apbdesData = json.data || json;
+		entries = (json.data ?? json) as ApbdesEntryRaw[];
+		cache.set("apbdes:all", entries, TTL.APBDES);
+	}
 
-		if (apbdesData?.items && Array.isArray(apbdesData.items)) {
-			const grouped: Record<
-				string,
-				{ totalAnggaran: number; totalRealisasi: number }
-			> = {};
-			for (const item of apbdesData.items) {
-				const tipe = item.tipe?.toLowerCase() || "lainnya";
-				if (!grouped[tipe])
-					grouped[tipe] = { totalAnggaran: 0, totalRealisasi: 0 };
-				if (item.level === 1) grouped[tipe].totalAnggaran += item.anggaran || 0;
-				const itemRealisasi = (item.realisasiItems ?? []).reduce(
-					(acc: number, r: any) => acc + (r.jumlah || 0),
-					0,
-				);
-				grouped[tipe].totalRealisasi += itemRealisasi;
-			}
-			return Object.entries(grouped)
-				.filter(([tipe]) => tipe !== "lainnya")
-				.map(([tipe, stats]) => ({
-					category: tipe.charAt(0).toUpperCase() + tipe.slice(1),
-					anggaran: stats.totalAnggaran,
-					realisasi: stats.totalRealisasi,
-					percentage:
-						stats.totalAnggaran > 0
-							? (stats.totalRealisasi / stats.totalAnggaran) * 100
-							: 0,
-					color: APBDES_COLOR_MAP[tipe] ?? "#6B7280",
-				}));
-		}
-
-		if (Array.isArray(apbdesData)) {
-			return apbdesData.map((item: any) => ({
-				category: item.category || "Unknown",
-				anggaran: item.anggaran || 0,
-				realisasi: item.realisasi || 0,
-				percentage: item.percentage || 0,
-				color: item.color || "#3B82F6",
-			}));
-		}
-
-		return [];
-	});
+	// Pick tahun terbaru (list sudah desc dari mapApbdesList)
+	return mapApbdesList(entries)[0]?.data ?? [];
 }
 
 async function fetchSdgs(): Promise<WallBeranda["sdgs"]> {
