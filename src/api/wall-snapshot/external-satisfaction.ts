@@ -33,39 +33,35 @@ export interface WallSatisfactionRow {
 }
 
 async function fetchRespondenAggregated(): Promise<WallSatisfactionRow[]> {
-	return withCache(
-		"wall:satisfaction:responden",
-		TTL.DASHBOARD,
-		async () => {
-			const baseUrl =
-				process.env.DESA_API_URL || "https://desa-darmasaba-stg.wibudev.com";
-			const response = await fetch(
-				`${baseUrl}/api/landingpage/responden/findMany`,
-			);
-			if (!response.ok) {
-				throw new Error(`External API error: ${response.status}`);
-			}
-			const json = await response.json();
-			if (!json.success || !Array.isArray(json.data)) {
-				throw new Error("Invalid response from external API");
-			}
+	return withCache("wall:satisfaction:responden", TTL.DASHBOARD, async () => {
+		const baseUrl =
+			process.env.DESA_API_URL || "https://desa-darmasaba-stg.wibudev.com";
+		const response = await fetch(
+			`${baseUrl}/api/landingpage/responden/findMany`,
+		);
+		if (!response.ok) {
+			throw new Error(`External API error: ${response.status}`);
+		}
+		const json = await response.json();
+		if (!json.success || !Array.isArray(json.data)) {
+			throw new Error("Invalid response from external API");
+		}
 
-			const counts: Record<string, number> = {};
-			for (const r of json.data as Array<{ rating?: { name?: string } }>) {
-				const name = r.rating?.name;
-				if (name) counts[name] = (counts[name] ?? 0) + 1;
-			}
+		const counts: Record<string, number> = {};
+		for (const r of json.data as Array<{ rating?: { name?: string } }>) {
+			const name = r.rating?.name;
+			if (name) counts[name] = (counts[name] ?? 0) + 1;
+		}
 
-			return Object.entries(RATING_COLOR_MAP)
-				.filter(([apiName]) => counts[apiName])
-				.sort((a, b) => a[1].order - b[1].order)
-				.map(([apiName, mapping]) => ({
-					category: apiName,
-					value: counts[apiName] ?? 0,
-					color: mapping.color,
-				}));
-		},
-	);
+		return Object.entries(RATING_COLOR_MAP)
+			.filter(([apiName]) => counts[apiName])
+			.sort((a, b) => a[1].order - b[1].order)
+			.map(([apiName, mapping]) => ({
+				category: apiName,
+				value: counts[apiName] ?? 0,
+				color: mapping.color,
+			}));
+	});
 }
 
 /**

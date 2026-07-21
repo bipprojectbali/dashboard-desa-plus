@@ -6,26 +6,34 @@
 export interface NocEventRaw {
 	id: string;
 	title: string;
-	startDate: string;
-	location?: string | null;
-	eventType?: string;
+	dateStart: string;
+	timeStart?: string;
+	desc?: string;
+	linkMeet?: string;
+	divisi?: { id: string; name: string } | null;
 }
 
 export interface MappedEvent {
 	id: string;
 	title: string;
+	/** ISO datetime gabungan dateStart + timeStart, e.g. "2026-07-22T08:30:00" */
 	startDate: string;
-	location: string | null;
-	eventType: string;
+	time: string;
+	divisi: string | null;
 }
 
 /** Map raw NOC upcoming-events response → MappedEvent[]. */
 export function mapUpcomingEvents(upcoming: NocEventRaw[]): MappedEvent[] {
-	return upcoming.map((e) => ({
-		id: e.id,
-		title: e.title,
-		startDate: e.startDate,
-		location: e.location ?? null,
-		eventType: e.eventType ?? "EVENT",
-	}));
+	return upcoming.map((e) => {
+		const startDate = e.timeStart
+			? `${e.dateStart}T${e.timeStart}:00`
+			: e.dateStart;
+		return {
+			id: e.id,
+			title: e.title,
+			startDate,
+			time: e.timeStart ?? "",
+			divisi: e.divisi?.name ?? null,
+		};
+	});
 }

@@ -141,7 +141,7 @@ export function DashboardContent() {
 			{sdgsLoading ? (
 				<Grid gutter="md">
 					{Array.from({ length: 4 }).map((_, i) => (
-						<Grid.Col key={i} span={{ base: 9, md: 3 }}>
+						<Grid.Col key={i} span={{ base: 6, md: 3 }}>
 							<Skeleton height={160} radius="xl" />
 						</Grid.Col>
 					))}
@@ -152,11 +152,11 @@ export function DashboardContent() {
 						.sort((a, b) => b.score - a.score)
 						.slice(0, 4)
 						.map((sdg) => (
-							<Grid.Col key={sdg.title} span={{ base: 9, md: 3 }}>
+							<Grid.Col key={sdg.title} span={{ base: 6, md: 3 }}>
 								<SDGSCard
 									image={
 										sdg.image ? (
-											<AspectRatio ratio={1} w={64}>
+											<AspectRatio ratio={1} w={{ base: 52, md: 64 }}>
 												<Image
 													src={sdg.image}
 													alt={sdg.title}

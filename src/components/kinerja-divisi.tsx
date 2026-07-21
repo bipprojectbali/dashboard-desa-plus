@@ -6,7 +6,6 @@ import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { apiClient } from "@/utils/api-client";
 import { ActivityCard } from "./kinerja-divisi/activity-card";
-import { ArchiveCard } from "./kinerja-divisi/archive-card";
 import { DiscussionPanel } from "./kinerja-divisi/discussion-panel";
 import { DivisionList } from "./kinerja-divisi/division-list";
 import { DocumentChart } from "./kinerja-divisi/document-chart";
@@ -21,32 +20,18 @@ interface Activity {
 	status: "SELESAI" | "BERJALAN" | "TERTUNDA";
 }
 
-interface EventData {
-	id: string;
-	title: string;
-	startDate: string;
-}
-
 interface KinerjaOverview {
 	activities: Activity[];
-	todayEvents: EventData[];
 }
 
 async function fetchKinerjaOverview(): Promise<KinerjaOverview> {
-	const [activityRes, eventRes] = await Promise.all([
-		apiClient.GET("/api/noc/latest-projects", {
-			params: { query: { idDesa: "desa1", limit: "10" } },
-		}),
-		apiClient.GET("/api/event/today"),
-	]);
-
-	return {
-		activities: (activityRes.data?.data as Activity[]) ?? [],
-		todayEvents: (eventRes.data?.data as EventData[]) ?? [],
-	};
+	const res = await apiClient.GET("/api/noc/latest-projects", {
+		params: { query: { idDesa: "desa1", limit: "10" } },
+	});
+	return { activities: (res.data?.data as Activity[]) ?? [] };
 }
 
-const EMPTY_OVERVIEW: KinerjaOverview = { activities: [], todayEvents: [] };
+const EMPTY_OVERVIEW: KinerjaOverview = { activities: [] };
 
 const KinerjaDivisi = () => {
 	const t = useTranslate();
@@ -60,22 +45,10 @@ const KinerjaDivisi = () => {
 	} = useApiQuery(["kinerja", "overview"], fetchKinerjaOverview, {
 		autoRefresh: true,
 	});
-	const { activities, todayEvents } = data;
+	const { activities } = data;
 	const error = isError
 		? "Gagal memuat data kinerja divisi. Periksa koneksi dan coba lagi."
 		: null;
-
-	const formattedEvents = todayEvents.map((event) => ({
-		time: dayjs(event.startDate).format("HH:mm"),
-		event: event.title,
-	}));
-
-	const archiveData = [
-		{ name: t.kinerjaDivisi.suratKeputusan },
-		{ name: t.kinerjaDivisi.dokumentasi },
-		{ name: t.kinerjaDivisi.laporanKeuangan },
-		{ name: t.kinerjaDivisi.notulensiRapat },
-	];
 
 	return (
 		<Stack gap="lg">
@@ -160,31 +133,7 @@ const KinerjaDivisi = () => {
 			{loading ? <Skeleton height={200} radius="xl" /> : <DiscussionPanel />}
 
 			{/* SECTION 4 — ACARA HARI INI */}
-			{loading ? (
-				<Skeleton height={180} radius="xl" />
-			) : formattedEvents.length > 0 ? (
-				<EventCard agendas={formattedEvents} />
-			) : (
-				<Card
-					p="md"
-					radius="xl"
-					withBorder
-					ta="center"
-					c="dimmed"
-					bg={dark ? "#1F293A" : undefined}
-				>
-					Tidak ada acara hari ini.
-				</Card>
-			)}
-
-			{/* SECTION 5 — ARSIP DIGITAL PERANGKAT DESA */}
-			<Grid gutter="md">
-				{archiveData.map((item) => (
-					<Grid.Col key={item.name} span={{ base: 12, md: 6 }}>
-						<ArchiveCard item={item} />
-					</Grid.Col>
-				))}
-			</Grid>
+			{loading ? <Skeleton height={180} radius="xl" /> : <EventCard />}
 		</Stack>
 	);
 };

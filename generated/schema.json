@@ -863,7 +863,7 @@
             },
             "in": "query",
             "name": "idDesa",
-            "required": true
+            "required": false
           },
           {
             "schema": {
@@ -978,6 +978,52 @@
                           }
                         }
                       }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
                     }
                   },
                   "required": [
@@ -1189,7 +1235,7 @@
             },
             "in": "query",
             "name": "idDesa",
-            "required": true
+            "required": false
           },
           {
             "schema": {
@@ -1223,8 +1269,8 @@
                           "id",
                           "title",
                           "startDate",
-                          "location",
-                          "eventType"
+                          "time",
+                          "divisi"
                         ],
                         "properties": {
                           "id": {
@@ -1236,7 +1282,10 @@
                           "startDate": {
                             "type": "string"
                           },
-                          "location": {
+                          "time": {
+                            "type": "string"
+                          },
+                          "divisi": {
                             "nullable": true,
                             "anyOf": [
                               {
@@ -1246,9 +1295,6 @@
                                 "type": "null"
                               }
                             ]
-                          },
-                          "eventType": {
-                            "type": "string"
                           }
                         }
                       }
@@ -1271,8 +1317,8 @@
                           "id",
                           "title",
                           "startDate",
-                          "location",
-                          "eventType"
+                          "time",
+                          "divisi"
                         ],
                         "properties": {
                           "id": {
@@ -1284,7 +1330,10 @@
                           "startDate": {
                             "type": "string"
                           },
-                          "location": {
+                          "time": {
+                            "type": "string"
+                          },
+                          "divisi": {
                             "nullable": true,
                             "anyOf": [
                               {
@@ -1294,9 +1343,6 @@
                                 "type": "null"
                               }
                             ]
-                          },
-                          "eventType": {
-                            "type": "string"
                           }
                         }
                       }
@@ -1319,8 +1365,8 @@
                           "id",
                           "title",
                           "startDate",
-                          "location",
-                          "eventType"
+                          "time",
+                          "divisi"
                         ],
                         "properties": {
                           "id": {
@@ -1332,7 +1378,10 @@
                           "startDate": {
                             "type": "string"
                           },
-                          "location": {
+                          "time": {
+                            "type": "string"
+                          },
+                          "divisi": {
                             "nullable": true,
                             "anyOf": [
                               {
@@ -1342,12 +1391,55 @@
                                 "type": "null"
                               }
                             ]
-                          },
-                          "eventType": {
-                            "type": "string"
                           }
                         }
                       }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
                     }
                   },
                   "required": [
@@ -1655,7 +1747,7 @@
             },
             "in": "query",
             "name": "idDesa",
-            "required": true
+            "required": false
           }
         ],
         "responses": {
@@ -1671,32 +1763,59 @@
                     "message": {
                       "type": "string"
                     },
-                    "data": {
+                    "years": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "required": [
-                          "category",
-                          "anggaran",
-                          "realisasi",
-                          "percentage",
-                          "color"
+                          "id",
+                          "tahun",
+                          "name",
+                          "title",
+                          "data"
                         ],
                         "properties": {
-                          "category": {
+                          "id": {
                             "type": "string"
                           },
-                          "anggaran": {
+                          "tahun": {
                             "type": "number"
                           },
-                          "realisasi": {
-                            "type": "number"
-                          },
-                          "percentage": {
-                            "type": "number"
-                          },
-                          "color": {
+                          "name": {
                             "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "data": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "category",
+                                "anggaran",
+                                "realisasi",
+                                "percentage",
+                                "color"
+                              ],
+                              "properties": {
+                                "category": {
+                                  "type": "string"
+                                },
+                                "anggaran": {
+                                  "type": "number"
+                                },
+                                "realisasi": {
+                                  "type": "number"
+                                },
+                                "percentage": {
+                                  "type": "number"
+                                },
+                                "color": {
+                                  "type": "string"
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -1705,7 +1824,7 @@
                   "required": [
                     "success",
                     "message",
-                    "data"
+                    "years"
                   ]
                 }
               },
@@ -1719,32 +1838,59 @@
                     "message": {
                       "type": "string"
                     },
-                    "data": {
+                    "years": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "required": [
-                          "category",
-                          "anggaran",
-                          "realisasi",
-                          "percentage",
-                          "color"
+                          "id",
+                          "tahun",
+                          "name",
+                          "title",
+                          "data"
                         ],
                         "properties": {
-                          "category": {
+                          "id": {
                             "type": "string"
                           },
-                          "anggaran": {
+                          "tahun": {
                             "type": "number"
                           },
-                          "realisasi": {
-                            "type": "number"
-                          },
-                          "percentage": {
-                            "type": "number"
-                          },
-                          "color": {
+                          "name": {
                             "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "data": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "category",
+                                "anggaran",
+                                "realisasi",
+                                "percentage",
+                                "color"
+                              ],
+                              "properties": {
+                                "category": {
+                                  "type": "string"
+                                },
+                                "anggaran": {
+                                  "type": "number"
+                                },
+                                "realisasi": {
+                                  "type": "number"
+                                },
+                                "percentage": {
+                                  "type": "number"
+                                },
+                                "color": {
+                                  "type": "string"
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -1753,7 +1899,7 @@
                   "required": [
                     "success",
                     "message",
-                    "data"
+                    "years"
                   ]
                 }
               },
@@ -1767,32 +1913,59 @@
                     "message": {
                       "type": "string"
                     },
-                    "data": {
+                    "years": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "required": [
-                          "category",
-                          "anggaran",
-                          "realisasi",
-                          "percentage",
-                          "color"
+                          "id",
+                          "tahun",
+                          "name",
+                          "title",
+                          "data"
                         ],
                         "properties": {
-                          "category": {
+                          "id": {
                             "type": "string"
                           },
-                          "anggaran": {
+                          "tahun": {
                             "type": "number"
                           },
-                          "realisasi": {
-                            "type": "number"
-                          },
-                          "percentage": {
-                            "type": "number"
-                          },
-                          "color": {
+                          "name": {
                             "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "data": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "category",
+                                "anggaran",
+                                "realisasi",
+                                "percentage",
+                                "color"
+                              ],
+                              "properties": {
+                                "category": {
+                                  "type": "string"
+                                },
+                                "anggaran": {
+                                  "type": "number"
+                                },
+                                "realisasi": {
+                                  "type": "number"
+                                },
+                                "percentage": {
+                                  "type": "number"
+                                },
+                                "color": {
+                                  "type": "string"
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -1801,7 +1974,7 @@
                   "required": [
                     "success",
                     "message",
-                    "data"
+                    "years"
                   ]
                 }
               }
@@ -1820,7 +1993,7 @@
             },
             "in": "query",
             "name": "idDesa",
-            "required": true
+            "required": false
           },
           {
             "schema": {
@@ -1983,6 +2156,52 @@
                           }
                         }
                       }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
                     }
                   },
                   "required": [
@@ -4602,8 +4821,8 @@
                       "required": [
                         "total",
                         "baru",
-                        "proses",
-                        "selesai"
+                        "selesai",
+                        "ditolak"
                       ],
                       "properties": {
                         "total": {
@@ -4612,10 +4831,10 @@
                         "baru": {
                           "type": "number"
                         },
-                        "proses": {
+                        "selesai": {
                           "type": "number"
                         },
-                        "selesai": {
+                        "ditolak": {
                           "type": "number"
                         }
                       }
@@ -4635,8 +4854,8 @@
                       "required": [
                         "total",
                         "baru",
-                        "proses",
-                        "selesai"
+                        "selesai",
+                        "ditolak"
                       ],
                       "properties": {
                         "total": {
@@ -4645,10 +4864,10 @@
                         "baru": {
                           "type": "number"
                         },
-                        "proses": {
+                        "selesai": {
                           "type": "number"
                         },
-                        "selesai": {
+                        "ditolak": {
                           "type": "number"
                         }
                       }
@@ -4668,8 +4887,8 @@
                       "required": [
                         "total",
                         "baru",
-                        "proses",
-                        "selesai"
+                        "selesai",
+                        "ditolak"
                       ],
                       "properties": {
                         "total": {
@@ -4678,10 +4897,10 @@
                         "baru": {
                           "type": "number"
                         },
-                        "proses": {
+                        "selesai": {
                           "type": "number"
                         },
-                        "selesai": {
+                        "ditolak": {
                           "type": "number"
                         }
                       }
@@ -4700,12 +4919,32 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "total",
+                        "baru",
+                        "selesai",
+                        "ditolak"
+                      ],
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "baru": {
+                          "type": "number"
+                        },
+                        "selesai": {
+                          "type": "number"
+                        },
+                        "ditolak": {
+                          "type": "number"
+                        }
+                      }
                     }
                   },
                   "required": [
-                    "error"
+                    "data"
                   ]
                 }
               },
@@ -4713,12 +4952,32 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "total",
+                        "baru",
+                        "selesai",
+                        "ditolak"
+                      ],
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "baru": {
+                          "type": "number"
+                        },
+                        "selesai": {
+                          "type": "number"
+                        },
+                        "ditolak": {
+                          "type": "number"
+                        }
+                      }
                     }
                   },
                   "required": [
-                    "error"
+                    "data"
                   ]
                 }
               },
@@ -4726,12 +4985,32 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "total",
+                        "baru",
+                        "selesai",
+                        "ditolak"
+                      ],
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "baru": {
+                          "type": "number"
+                        },
+                        "selesai": {
+                          "type": "number"
+                        },
+                        "ditolak": {
+                          "type": "number"
+                        }
+                      }
                     }
                   },
                   "required": [
-                    "error"
+                    "data"
                   ]
                 }
               }
@@ -4739,7 +5018,7 @@
           }
         },
         "operationId": "getApiComplaintStats",
-        "summary": "Get complaint statistics"
+        "summary": "Get complaint statistics (live platform)"
       }
     },
     "/api/complaint/recent": {
@@ -5195,7 +5474,21 @@
                   "properties": {
                     "data": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "month",
+                          "count"
+                        ],
+                        "properties": {
+                          "month": {
+                            "type": "string"
+                          },
+                          "count": {
+                            "type": "number"
+                          }
+                        }
+                      }
                     }
                   },
                   "required": [
@@ -5209,7 +5502,21 @@
                   "properties": {
                     "data": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "month",
+                          "count"
+                        ],
+                        "properties": {
+                          "month": {
+                            "type": "string"
+                          },
+                          "count": {
+                            "type": "number"
+                          }
+                        }
+                      }
                     }
                   },
                   "required": [
@@ -5223,7 +5530,21 @@
                   "properties": {
                     "data": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "month",
+                          "count"
+                        ],
+                        "properties": {
+                          "month": {
+                            "type": "string"
+                          },
+                          "count": {
+                            "type": "number"
+                          }
+                        }
+                      }
                     }
                   },
                   "required": [
@@ -5239,12 +5560,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
+                    "data": {
+                      "type": "array",
+                      "items": {}
                     }
                   },
                   "required": [
-                    "error"
+                    "data"
                   ]
                 }
               },
@@ -5252,12 +5574,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
+                    "data": {
+                      "type": "array",
+                      "items": {}
                     }
                   },
                   "required": [
-                    "error"
+                    "data"
                   ]
                 }
               },
@@ -5265,12 +5588,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
+                    "data": {
+                      "type": "array",
+                      "items": {}
                     }
                   },
                   "required": [
-                    "error"
+                    "data"
                   ]
                 }
               }
@@ -5278,7 +5602,7 @@
           }
         },
         "operationId": "getApiComplaintService-trends",
-        "summary": "Get service letter trends for last 6 months"
+        "summary": "Get surat trends per month (live platform)"
       }
     },
     "/api/complaint/export": {
@@ -5366,12 +5690,20 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "count"
+                      ],
+                      "properties": {
+                        "count": {
+                          "type": "number"
+                        }
+                      }
                     }
                   },
                   "required": [
-                    "error"
+                    "data"
                   ]
                 }
               },
@@ -5379,12 +5711,20 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "count"
+                      ],
+                      "properties": {
+                        "count": {
+                          "type": "number"
+                        }
+                      }
                     }
                   },
                   "required": [
-                    "error"
+                    "data"
                   ]
                 }
               },
@@ -5392,12 +5732,20 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "count"
+                      ],
+                      "properties": {
+                        "count": {
+                          "type": "number"
+                        }
+                      }
                     }
                   },
                   "required": [
-                    "error"
+                    "data"
                   ]
                 }
               }
@@ -5405,7 +5753,7 @@
           }
         },
         "operationId": "getApiComplaintService-weekly",
-        "summary": "Get service letter count for current week"
+        "summary": "Get surat count for current week (live platform)"
       }
     },
     "/api/resident/stats": {
@@ -5813,200 +6161,6 @@
         "summary": "Get demographics including religion, gender, occupation and age"
       }
     },
-    "/api/event/": {
-      "get": {
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {}
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              },
-              "multipart/form-data": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {}
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {}
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              },
-              "multipart/form-data": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "operationId": "getApiEvent",
-        "summary": "Get upcoming events"
-      }
-    },
-    "/api/event/today": {
-      "get": {
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {}
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              },
-              "multipart/form-data": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {}
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {}
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              },
-              "multipart/form-data": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "operationId": "getApiEventToday",
-        "summary": "Get events for today"
-      }
-    },
     "/api/dashboard/budget": {
       "get": {
         "responses": {
@@ -6244,6 +6398,52 @@
                           }
                         }
                       }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {}
                     }
                   },
                   "required": [

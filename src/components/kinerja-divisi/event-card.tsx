@@ -19,15 +19,10 @@ async function fetchTodayEvents(): Promise<AgendaItem[]> {
 		params: { query: { idDesa: "desa1", filter: "today" } },
 	});
 	if (res.data?.data) {
-		return (res.data.data as { startDate: string; title: string }[]).map(
-			(e) => ({
-				time: new Date(e.startDate).toLocaleTimeString("id-ID", {
-					hour: "2-digit",
-					minute: "2-digit",
-				}),
-				event: e.title,
-			}),
-		);
+		return (res.data.data as { time: string; title: string }[]).map((e) => ({
+			time: e.time,
+			event: e.title,
+		}));
 	}
 	return [];
 }

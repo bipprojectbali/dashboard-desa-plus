@@ -52,7 +52,9 @@ export function DiscussionPanel() {
 
 	const formatDate = (dateString: string) => {
 		try {
-			return format(new Date(dateString), "dd MMM yyyy", { locale: id });
+			const d = new Date(dateString);
+			if (Number.isNaN(d.getTime())) return dateString;
+			return format(d, "dd MMM yyyy", { locale: id });
 		} catch {
 			return dateString;
 		}

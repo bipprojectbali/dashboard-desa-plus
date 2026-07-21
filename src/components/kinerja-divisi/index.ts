@@ -1,5 +1,4 @@
 export { ActivityCard } from "./activity-card";
-export { ArchiveCard } from "./archive-card";
 export { DiscussionPanel } from "./discussion-panel";
 export { DivisionList } from "./division-list";
 export { DocumentChart } from "./document-chart";

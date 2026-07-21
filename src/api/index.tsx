@@ -15,7 +15,6 @@ import { complaint } from "./complaint";
 import { dashboard } from "./dashboard";
 import { demografi } from "./demografi";
 import { division } from "./division";
-import { event } from "./event";
 import { invitationRoutes } from "./invitation";
 import { ipWhitelist } from "./ip-whitelist";
 import { jennaChat } from "./jenna";
@@ -87,7 +86,6 @@ const api = new Elysia({
 	.use(division)
 	.use(complaint)
 	.use(resident)
-	.use(event)
 	.use(dashboard)
 	.use(demografi)
 	.use(notificationPreferences)

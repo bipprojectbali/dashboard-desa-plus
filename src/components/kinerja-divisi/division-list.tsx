@@ -10,23 +10,12 @@ interface DivisionItem {
 	count: number;
 }
 
-interface DivisionApiResponse {
-	name: string;
-	activityCount: number;
-	_count?: {
-		activities: number;
-	};
-}
-
 async function fetchDivisionList(): Promise<DivisionItem[]> {
-	const { data } = await apiClient.GET("/api/division/");
-	if (data?.data) {
-		return (data.data as DivisionApiResponse[]).map((div) => ({
-			name: div.name,
-			count: div.activityCount || 0,
-		}));
-	}
-	return [];
+	const { data } = await apiClient.GET("/api/noc/active-divisions");
+	return (data?.data ?? []).map((d) => ({
+		name: d.name,
+		count: d.activityCount || 0,
+	}));
 }
 
 export function DivisionList() {

@@ -38,17 +38,25 @@ async function settle<T>(
  * Degradasi anggun: slice yang gagal jadi null, panel lain tetap render.
  */
 export async function buildWallSnapshot(): Promise<WallSnapshot> {
-	const [kpi, keuangan, pengaduan, demografi, divisi, keamanan, beranda, system] =
-		await Promise.all([
-			settle("kpi", buildKpi),
-			settle("keuangan", buildKeuangan),
-			settle("pengaduan", buildPengaduan),
-			settle("demografi", buildDemografi),
-			settle("divisi", buildDivisi),
-			settle("keamanan", buildKeamanan),
-			settle("beranda", buildBeranda),
-			settle("system", computeSystemStats),
-		]);
+	const [
+		kpi,
+		keuangan,
+		pengaduan,
+		demografi,
+		divisi,
+		keamanan,
+		beranda,
+		system,
+	] = await Promise.all([
+		settle("kpi", buildKpi),
+		settle("keuangan", buildKeuangan),
+		settle("pengaduan", buildPengaduan),
+		settle("demografi", buildDemografi),
+		settle("divisi", buildDivisi),
+		settle("keamanan", buildKeamanan),
+		settle("beranda", buildBeranda),
+		settle("system", computeSystemStats),
+	]);
 
 	return {
 		generatedAt: new Date().toISOString(),
