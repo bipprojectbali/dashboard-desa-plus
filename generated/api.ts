@@ -2554,8 +2554,8 @@ export interface operations {
                             id: string;
                             title: string;
                             startDate: string;
-                            location: (string | null) | null;
-                            eventType: string;
+                            time: string;
+                            divisi: (string | null) | null;
                         }[];
                     };
                     "multipart/form-data": {
@@ -2563,8 +2563,8 @@ export interface operations {
                             id: string;
                             title: string;
                             startDate: string;
-                            location: (string | null) | null;
-                            eventType: string;
+                            time: string;
+                            divisi: (string | null) | null;
                         }[];
                     };
                     "text/plain": {
@@ -2572,8 +2572,8 @@ export interface operations {
                             id: string;
                             title: string;
                             startDate: string;
-                            location: (string | null) | null;
-                            eventType: string;
+                            time: string;
+                            divisi: (string | null) | null;
                         }[];
                     };
                 };
@@ -2695,8 +2695,8 @@ export interface operations {
     };
     "getApiNocApbdes-data": {
         parameters: {
-            query: {
-                idDesa: string;
+            query?: {
+                idDesa?: string;
             };
             header?: never;
             path?: never;
@@ -2712,34 +2712,52 @@ export interface operations {
                     "application/json": {
                         success: boolean;
                         message: string;
-                        data: {
-                            category: string;
-                            anggaran: number;
-                            realisasi: number;
-                            percentage: number;
-                            color: string;
+                        years: {
+                            id: string;
+                            tahun: number;
+                            name: string;
+                            title: string;
+                            data: {
+                                category: string;
+                                anggaran: number;
+                                realisasi: number;
+                                percentage: number;
+                                color: string;
+                            }[];
                         }[];
                     };
                     "multipart/form-data": {
                         success: boolean;
                         message: string;
-                        data: {
-                            category: string;
-                            anggaran: number;
-                            realisasi: number;
-                            percentage: number;
-                            color: string;
+                        years: {
+                            id: string;
+                            tahun: number;
+                            name: string;
+                            title: string;
+                            data: {
+                                category: string;
+                                anggaran: number;
+                                realisasi: number;
+                                percentage: number;
+                                color: string;
+                            }[];
                         }[];
                     };
                     "text/plain": {
                         success: boolean;
                         message: string;
-                        data: {
-                            category: string;
-                            anggaran: number;
-                            realisasi: number;
-                            percentage: number;
-                            color: string;
+                        years: {
+                            id: string;
+                            tahun: number;
+                            name: string;
+                            title: string;
+                            data: {
+                                category: string;
+                                anggaran: number;
+                                realisasi: number;
+                                percentage: number;
+                                color: string;
+                            }[];
                         }[];
                     };
                 };

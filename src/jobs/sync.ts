@@ -85,9 +85,7 @@ async function runDemografiSync(): Promise<void> {
 			desaExternalClient.GET("/api/kesehatan/kematian/findMany"),
 			desaExternalClient.GET("/api/kependudukan/migrasipenduduk/find-many"),
 			desaExternalClient.GET("/api/ekonomi/sektourunggulandesa/find-many"),
-			desaExternalClient.GET("/api/landingpage/apbdes/{id}", {
-				params: { path: { id: APBDES_ID } },
-			}),
+			(desaExternalClient as any).GET("/api/landingpage/apbdes/findMany"),
 		]);
 
 		const failed = [
@@ -104,6 +102,7 @@ async function runDemografiSync(): Promise<void> {
 		].filter((r) => r.error).length;
 
 		const apbdesData = apbdes.data?.data ?? apbdes.data ?? null;
+		// apbdesData is the raw array of entries — transform lives in the endpoint
 		if (!summary.error && summary.data?.data != null)
 			cache.set("demografi:summary", summary.data.data, TTL.DEMOGRAFI);
 		if (!banjar.error && banjar.data?.data != null)
@@ -123,7 +122,7 @@ async function runDemografiSync(): Promise<void> {
 		if (!sectors.error && sectors.data?.data != null)
 			cache.set("demografi:sectors", sectors.data.data, TTL.DEMOGRAFI);
 		if (!apbdes.error && apbdesData != null)
-			cache.set(`apbdes:${APBDES_ID}`, apbdesData, TTL.APBDES);
+			cache.set("apbdes:all", apbdesData, TTL.APBDES);
 
 		const durationMs = Date.now() - startedAt.getTime();
 		const recordsAffected = 10 - failed;

@@ -16,6 +16,10 @@ import {
 	mapActiveDivisions,
 	type NocDivisionRaw,
 } from "./transforms/noc-divisions";
+import {
+	mapApbdesList,
+	type ApbdesEntryRaw,
+} from "./transforms/apbdes";
 import { mapUpcomingEvents, type NocEventRaw } from "./transforms/noc-events";
 import { buildWallSnapshot, isWallAuthorized } from "./wall-snapshot";
 
@@ -629,158 +633,72 @@ export const noc = new Elysia({ prefix: "/noc" })
 	)
 	.get(
 		"/apbdes-data",
-		async ({ query }) => {
-			const { idDesa } = query;
-
+		async () => {
 			try {
-				let apbdesData: any = null;
+				const cached = cache.get<ApbdesEntryRaw[]>("apbdes:all");
+				let entries: ApbdesEntryRaw[];
 
-				// 1. Check Cache first if ID matches
-				const cachedApbdes = cache.get<any>(`apbdes:${APBDES_ID}`);
-				if (idDesa === APBDES_ID && cachedApbdes) {
+				if (cached) {
 					console.log("[APBDes API] Returning cached APBDes data");
-					apbdesData = cachedApbdes;
+					entries = cached;
 				} else {
-					// 2. Coba tarik data dari External Desa Website API
-					console.log("[APBDes API] Fetching live data for ID:", idDesa);
+					console.log("[APBDes API] Fetching findMany from Desa API");
 					const client = desaExternalClient as any;
 					const { data: extData, error } = await client.GET(
-						"/api/landingpage/apbdes/" + idDesa,
+						"/api/landingpage/apbdes/findMany",
 					);
 
 					if (error || !extData) {
 						return {
 							success: false,
 							message: "Gagal mengambil data APBDes dari website desa",
-							data: [],
+							years: [],
 						};
 					}
 
-					apbdesData = extData.data || extData;
+					entries = (extData.data ?? extData) as ApbdesEntryRaw[];
+					cache.set("apbdes:all", entries, TTL.APBDES);
 				}
 
-				if (apbdesData) {
-					// Check if data has items array (new structure)
-					if (apbdesData.items && Array.isArray(apbdesData.items)) {
-						console.log(
-							"[APBDes] Processing items array:",
-							apbdesData.items.length,
-							"items",
-						);
-
-						// Group by tipe (pendapatan, belanja, pembiayaan)
-						const groupedByType: Record<
-							string,
-							{ totalAnggaran: number; totalRealisasi: number; count: number }
-						> = {};
-
-						for (const item of apbdesData.items) {
-							const tipe = item.tipe?.toLowerCase() || "lainnya";
-							const level = item.level;
-
-							// Only add to totalAnggaran if it's a top-level item to avoid double counting
-							const anggaran = level === 1 ? item.anggaran || 0 : 0;
-
-							// Calculate realisasi from realisasiItems
-							let itemRealisasi = 0;
-							if (item.realisasiItems && Array.isArray(item.realisasiItems)) {
-								itemRealisasi = item.realisasiItems.reduce(
-									(acc: number, r: any) => acc + (r.jumlah || 0),
-									0,
-								);
-							}
-
-							if (!groupedByType[tipe]) {
-								groupedByType[tipe] = {
-									totalAnggaran: 0,
-									totalRealisasi: 0,
-									count: 0,
-								};
-							}
-							groupedByType[tipe].totalAnggaran += anggaran;
-							groupedByType[tipe].totalRealisasi += itemRealisasi;
-							groupedByType[tipe].count += 1;
-						}
-
-						// Color mapping for APBDes types
-						const colorMap: Record<string, string> = {
-							pendapatan: "#10B981", // Green
-							belanja: "#3B82F6", // Blue
-							pembiayaan: "#F59E0B", // Amber
-							lainnya: "#6B7280", // Gray
-						};
-
-						// Transform to chart format with realisasi data
-						const chartData = Object.entries(groupedByType)
-							.filter(([tipe]) => tipe !== "lainnya") // Filter out unknowns
-							.map(([tipe, stats]) => {
-								const persentaseRealisasi =
-									stats.totalAnggaran > 0
-										? (stats.totalRealisasi / stats.totalAnggaran) * 100
-										: 0;
-
-								return {
-									category: tipe.charAt(0).toUpperCase() + tipe.slice(1),
-									anggaran: stats.totalAnggaran,
-									realisasi: stats.totalRealisasi,
-									percentage: persentaseRealisasi,
-									color: colorMap[tipe] || "#6B7280",
-								};
-							});
-
-						console.log("[APBDes] Transformed chart data:", chartData);
-
-						// `name` already includes "APBDes ... Tahun <year>", so don't
-						// re-prepend "APBDes" or re-append the year (avoids redundancy).
-						return {
-							success: true,
-							message: `Berhasil mendapatkan data ${apbdesData.name || "APBDes"}`,
-							data: chartData,
-						};
-					}
-
-					// Fallback: If it's already an array, use it directly
-					if (Array.isArray(apbdesData)) {
-						return {
-							success: true,
-							message: "Berhasil mendapatkan data APBDes dari website desa",
-							data: apbdesData.map((item: any) => ({
-								category: item.category || item.name || item.label || "Unknown",
-								anggaran:
-									item.anggaran || item.amount || item.value || item.total || 0,
-								realisasi: item.realisasi || 0,
-								percentage: item.percentage || item.percent || 0,
-								color: item.color || "#3B82F6",
-							})),
-						};
-					}
-				}
+				const years = mapApbdesList(entries);
+				return {
+					success: true,
+					message: "Berhasil mendapatkan data APBDes",
+					years,
+				};
 			} catch (err) {
 				console.error("Failed to fetch APBDes from external Desa API:", err);
 			}
 
-			// Return empty array if external API fails
 			return {
 				success: false,
 				message: "Gagal mengambil data APBDes dari website desa",
-				data: [],
+				years: [],
 			};
 		},
 		{
 			query: t.Object({
-				idDesa: t.String(),
+				idDesa: t.Optional(t.String()),
 			}),
 			response: {
 				200: t.Object({
 					success: t.Boolean(),
 					message: t.String(),
-					data: t.Array(
+					years: t.Array(
 						t.Object({
-							category: t.String(),
-							anggaran: t.Number(),
-							realisasi: t.Number(),
-							percentage: t.Number(),
-							color: t.String(),
+							id: t.String(),
+							tahun: t.Number(),
+							name: t.String(),
+							title: t.String(),
+							data: t.Array(
+								t.Object({
+									category: t.String(),
+									anggaran: t.Number(),
+									realisasi: t.Number(),
+									percentage: t.Number(),
+									color: t.String(),
+								}),
+							),
 						}),
 					),
 				}),
