@@ -28,7 +28,15 @@ const ALLOWED_KEYS: Record<string, string[]> = {
 	keamanan: ["total", "baru", "diproses", "selesai"],
 	// beranda: teks operasional publik (name, title, location) disertakan sengaja
 	// (setara website desa). Field PII-orang dilarang — dijaga oleh test nested di bawah.
-	beranda: ["kpi", "suratTrend", "kepuasan", "divisi", "kalender", "apbdes", "sdgs"],
+	beranda: [
+		"kpi",
+		"suratTrend",
+		"kepuasan",
+		"divisi",
+		"kalender",
+		"apbdes",
+		"sdgs",
+	],
 };
 
 describe("GET /api/noc/wall-snapshot", () => {
@@ -101,7 +109,13 @@ describe("GET /api/noc/wall-snapshot", () => {
 
 		// divisi[] hanya boleh punya field operasional; nik/email/telepon dilarang
 		const DIVISI_ALLOWED = ["id", "name", "activityCount", "color"];
-		const DIVISI_PII_BANNED = ["nik", "email", "phone", "telepon", "nama_lengkap"];
+		const DIVISI_PII_BANNED = [
+			"nik",
+			"email",
+			"phone",
+			"telepon",
+			"nama_lengkap",
+		];
 		for (const item of beranda.divisi ?? []) {
 			for (const key of Object.keys(item)) {
 				expect(DIVISI_ALLOWED).toContain(key);
@@ -110,8 +124,14 @@ describe("GET /api/noc/wall-snapshot", () => {
 		}
 
 		// kalender[] hanya boleh punya field operasional publik
-		const KALENDER_ALLOWED = ["id", "title", "startDate", "location", "eventType"];
-		const KALENDER_PII_BANNED = ["nik", "email", "phone", "createdBy", "userId"];
+		const KALENDER_ALLOWED = ["id", "title", "startDate", "time", "divisi"];
+		const KALENDER_PII_BANNED = [
+			"nik",
+			"email",
+			"phone",
+			"createdBy",
+			"userId",
+		];
 		for (const item of beranda.kalender ?? []) {
 			for (const key of Object.keys(item)) {
 				expect(KALENDER_ALLOWED).toContain(key);
