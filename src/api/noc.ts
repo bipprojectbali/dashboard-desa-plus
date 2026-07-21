@@ -421,10 +421,10 @@ export const noc = new Elysia({ prefix: "/noc" })
 						);
 						if (error || !extData) throw new Error("NOC API error");
 						const res = extData as any;
-						const upcoming: NocEventRaw[] = res?.data?.upcoming;
-						if (!Array.isArray(upcoming))
-							throw new Error("Invalid NOC response");
-						return mapUpcomingEvents(upcoming);
+						const list: NocEventRaw[] =
+							res?.data?.upcoming ?? res?.data?.events ?? res?.data?.today;
+						if (!Array.isArray(list)) throw new Error("Invalid NOC response");
+						return mapUpcomingEvents(list);
 					},
 				);
 				return { data };
@@ -447,8 +447,8 @@ export const noc = new Elysia({ prefix: "/noc" })
 							id: t.String(),
 							title: t.String(),
 							startDate: t.String(),
-							location: t.Nullable(t.String()),
-							eventType: t.String(),
+							time: t.String(),
+							divisi: t.Nullable(t.String()),
 						}),
 					),
 				}),

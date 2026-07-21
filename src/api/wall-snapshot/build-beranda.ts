@@ -3,7 +3,10 @@ import { TTL, withCache } from "@/utils/cache";
 import { prisma } from "@/utils/db";
 import { getEnv } from "@/utils/env";
 import { nocExternalClient } from "@/utils/noc-external-client";
-import { mapActiveDivisions, type NocDivisionRaw } from "../transforms/noc-divisions";
+import {
+	mapActiveDivisions,
+	type NocDivisionRaw,
+} from "../transforms/noc-divisions";
 import { mapUpcomingEvents, type NocEventRaw } from "../transforms/noc-events";
 import { buildSatisfaction } from "./external-satisfaction";
 
@@ -22,24 +25,38 @@ async function fetchKpi(): Promise<WallBeranda["kpi"]> {
 	startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
 	startOfWeek.setHours(0, 0, 0, 0);
 
-	const [weeklyService, pengaduanBaru, pengaduanDitolak, layananSelesai, totalPenduduk, totalKK] =
-		await Promise.all([
-			prisma.serviceLetter.count({ where: { createdAt: { gte: startOfWeek } } }),
-			prisma.complaint.count({ where: { status: "BARU" } }),
-			prisma.complaint.count({ where: { status: "DITOLAK" } }),
-			prisma.complaint.count({ where: { status: "SELESAI" } }),
-			prisma.resident.count(),
-			prisma.resident.count({ where: { isHeadOfHousehold: true } }),
-		]);
+	const [
+		weeklyService,
+		pengaduanBaru,
+		pengaduanDitolak,
+		layananSelesai,
+		totalPenduduk,
+		totalKK,
+	] = await Promise.all([
+		prisma.serviceLetter.count({ where: { createdAt: { gte: startOfWeek } } }),
+		prisma.complaint.count({ where: { status: "BARU" } }),
+		prisma.complaint.count({ where: { status: "DITOLAK" } }),
+		prisma.complaint.count({ where: { status: "SELESAI" } }),
+		prisma.resident.count(),
+		prisma.resident.count({ where: { isHeadOfHousehold: true } }),
+	]);
 
 	return [
-		{ label: "Surat Minggu Ini", value: weeklyService, sublabel: "Total surat diajukan" },
+		{
+			label: "Surat Minggu Ini",
+			value: weeklyService,
+			sublabel: "Total surat diajukan",
+		},
 		{
 			label: "Pengaduan Aktif",
 			value: pengaduanBaru,
 			sublabel: `${pengaduanBaru} baru, ${pengaduanDitolak} ditolak`,
 		},
-		{ label: "Layanan Selesai", value: layananSelesai, sublabel: "Total diselesaikan" },
+		{
+			label: "Layanan Selesai",
+			value: layananSelesai,
+			sublabel: "Total diselesaikan",
+		},
 		{
 			label: "Total Penduduk",
 			value: totalPenduduk,
@@ -90,9 +107,10 @@ async function fetchKalender(): Promise<WallBeranda["kalender"]> {
 			);
 			if (error || !extData) throw new Error("NOC API error");
 			const res = extData as any;
-			const upcoming: NocEventRaw[] = res?.data?.upcoming;
-			if (!Array.isArray(upcoming)) throw new Error("Invalid NOC response");
-			return mapUpcomingEvents(upcoming);
+			const list: NocEventRaw[] =
+				res?.data?.upcoming ?? res?.data?.events ?? res?.data?.today;
+			if (!Array.isArray(list)) throw new Error("Invalid NOC response");
+			return mapUpcomingEvents(list);
 		},
 	);
 }
@@ -101,16 +119,22 @@ async function fetchApbdes(): Promise<WallBeranda["apbdes"]> {
 	return withCache(`apbdes:${APBDES_ID}`, TTL.APBDES, async () => {
 		const baseUrl =
 			process.env.DESA_API_URL || "https://desa-darmasaba-stg.wibudev.com";
-		const response = await fetch(`${baseUrl}/api/landingpage/apbdes/${APBDES_ID}`);
+		const response = await fetch(
+			`${baseUrl}/api/landingpage/apbdes/${APBDES_ID}`,
+		);
 		if (!response.ok) throw new Error(`Desa API error: ${response.status}`);
 		const json = await response.json();
 		const apbdesData = json.data || json;
 
 		if (apbdesData?.items && Array.isArray(apbdesData.items)) {
-			const grouped: Record<string, { totalAnggaran: number; totalRealisasi: number }> = {};
+			const grouped: Record<
+				string,
+				{ totalAnggaran: number; totalRealisasi: number }
+			> = {};
 			for (const item of apbdesData.items) {
 				const tipe = item.tipe?.toLowerCase() || "lainnya";
-				if (!grouped[tipe]) grouped[tipe] = { totalAnggaran: 0, totalRealisasi: 0 };
+				if (!grouped[tipe])
+					grouped[tipe] = { totalAnggaran: 0, totalRealisasi: 0 };
 				if (item.level === 1) grouped[tipe].totalAnggaran += item.anggaran || 0;
 				const itemRealisasi = (item.realisasiItems ?? []).reduce(
 					(acc: number, r: any) => acc + (r.jumlah || 0),
@@ -150,15 +174,24 @@ async function fetchSdgs(): Promise<WallBeranda["sdgs"]> {
 	return withCache("dashboard:sdgs", TTL.DASHBOARD, async () => {
 		const baseUrl =
 			process.env.DESA_API_URL || "https://desa-darmasaba-stg.wibudev.com";
-		const response = await fetch(`${baseUrl}/api/landingpage/sdgsdesa/findMany`);
+		const response = await fetch(
+			`${baseUrl}/api/landingpage/sdgsdesa/findMany`,
+		);
 		if (!response.ok) throw new Error(`Desa API error: ${response.status}`);
 		const json = await response.json();
-		if (!json.success || !Array.isArray(json.data)) throw new Error("Invalid SDGs response");
-		return json.data.map((item: { name: string; jumlah: string | number; image: { link: string } }) => ({
-			title: item.name,
-			score: Number(item.jumlah),
-			image: `${baseUrl}${item.image.link}`,
-		}));
+		if (!json.success || !Array.isArray(json.data))
+			throw new Error("Invalid SDGs response");
+		return json.data.map(
+			(item: {
+				name: string;
+				jumlah: string | number;
+				image: { link: string };
+			}) => ({
+				title: item.name,
+				score: Number(item.jumlah),
+				image: `${baseUrl}${item.image.link}`,
+			}),
+		);
 	});
 }
 
