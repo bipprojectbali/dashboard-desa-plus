@@ -4,6 +4,7 @@ import { prisma } from "@/utils/db";
 import { desaExternalClient } from "@/utils/desa-external-client";
 import { getEnv } from "@/utils/env";
 import { apiMiddleware } from "../middleware/apiMiddleware";
+import { getDemografiSummary } from "./dashboard-cache";
 
 const APBDES_ID = getEnv("DESA_APBDES_ID", "cmk-apbdes-001");
 
@@ -22,17 +23,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/summary",
 		async () => {
 			try {
-				const data = await withCache(
-					"demografi:summary",
-					TTL.DEMOGRAFI,
-					async () => {
-						const response = await desaExternalClient.GET(
-							"/api/kependudukan/dashboard/summary",
-						);
-						if (response.error) throw new Error(extractError(response.error));
-						return response.data?.data ?? null;
-					},
-				);
+				const data = await getDemografiSummary();
 				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Summary error:", error);

@@ -1,16 +1,12 @@
 import Elysia, { t } from "elysia";
-import { TTL, withCache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
-import { platformFetch } from "../utils/platform-external-client";
+import { EMPTY_COMPLAINT_STATS } from "./complaint-platform";
 import {
-	countSuratWeekly,
-	EMPTY_COMPLAINT_STATS,
-	mapComplaintStats,
-	mapSuratTrends,
-	type PlatformLaporan,
-	type PlatformSurat,
-} from "./complaint-platform";
+	getComplaintStats,
+	getSuratTrends,
+	getSuratWeekly,
+} from "./dashboard-cache";
 
 export const complaint = new Elysia({
 	prefix: "/complaint",
@@ -19,16 +15,7 @@ export const complaint = new Elysia({
 		"/stats",
 		async ({ set }) => {
 			try {
-				const data = await withCache(
-					"dashboard:complaint:stats",
-					TTL.DASHBOARD,
-					async () => {
-						const json = await platformFetch<PlatformLaporan>(
-							"/api/noc/laporan?limit=1000",
-						);
-						return mapComplaintStats(json.data, json.total);
-					},
-				);
+				const data = await getComplaintStats();
 				return { data };
 			} catch (error) {
 				logger.error(
@@ -192,16 +179,7 @@ export const complaint = new Elysia({
 		"/service-trends",
 		async ({ set }) => {
 			try {
-				const data = await withCache(
-					"dashboard:surat:trends",
-					TTL.DASHBOARD,
-					async () => {
-						const json = await platformFetch<PlatformSurat>(
-							"/api/noc/surat?limit=1000",
-						);
-						return mapSuratTrends(json.data);
-					},
-				);
+				const data = await getSuratTrends();
 				return { data };
 			} catch (error) {
 				logger.error({ error }, "Failed to fetch surat trends from platform");
@@ -269,16 +247,7 @@ export const complaint = new Elysia({
 		"/service-weekly",
 		async ({ set }) => {
 			try {
-				const data = await withCache(
-					"dashboard:surat:weekly",
-					TTL.DASHBOARD,
-					async () => {
-						const json = await platformFetch<PlatformSurat>(
-							"/api/noc/surat?limit=1000",
-						);
-						return { count: countSuratWeekly(json.data) };
-					},
-				);
+				const data = await getSuratWeekly();
 				return { data };
 			} catch (error) {
 				logger.error({ error }, "Failed to fetch weekly surat from platform");
