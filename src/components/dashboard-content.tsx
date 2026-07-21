@@ -1,4 +1,4 @@
-import { Grid, Image, Skeleton, Stack } from "@mantine/core";
+import { AspectRatio, Grid, Image, Skeleton, Stack } from "@mantine/core";
 import { CheckCircle, FileText, MessageCircle, Users } from "lucide-react";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { useTranslate } from "@/hooks/useTranslate";
@@ -31,9 +31,16 @@ async function fetchDashboardStats(): Promise<DashboardStats> {
 			data?: { summary?: { totalPenduduk?: number; totalKK?: number } };
 		}
 	)?.data?.summary;
+	const complaints = (
+		complaintRes.data as { data?: Partial<DashboardStats["complaints"]> }
+	)?.data;
 	return {
-		complaints: (complaintRes.data as { data: DashboardStats["complaints"] })
-			?.data || { total: 0, baru: 0, selesai: 0, ditolak: 0 },
+		complaints: {
+			total: complaints?.total ?? 0,
+			baru: complaints?.baru ?? 0,
+			selesai: complaints?.selesai ?? 0,
+			ditolak: complaints?.ditolak ?? 0,
+		},
 		residents: {
 			total: summary?.totalPenduduk ?? 0,
 			heads: summary?.totalKK ?? 0,
@@ -145,16 +152,25 @@ export function DashboardContent() {
 						.sort((a, b) => b.score - a.score)
 						.slice(0, 4)
 						.map((sdg) => (
-						<Grid.Col key={sdg.title} span={{ base: 9, md: 3 }}>
-							<SDGSCard
-								image={
-									sdg.image ? <Image src={sdg.image} alt={sdg.title} /> : null
-								}
-								title={sdg.title}
-								score={sdg.score}
-							/>
-						</Grid.Col>
-					))}
+							<Grid.Col key={sdg.title} span={{ base: 9, md: 3 }}>
+								<SDGSCard
+									image={
+										sdg.image ? (
+											<AspectRatio ratio={1} w={64}>
+												<Image
+													src={sdg.image}
+													alt={sdg.title}
+													fit="cover"
+													radius="md"
+												/>
+											</AspectRatio>
+										) : null
+									}
+									title={sdg.title}
+									score={sdg.score}
+								/>
+							</Grid.Col>
+						))}
 				</Grid>
 			)}
 		</Stack>
