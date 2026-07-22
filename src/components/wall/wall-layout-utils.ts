@@ -34,6 +34,8 @@ export const ALL_WIDGET_IDS = [
 	"pengaduan-status",
 	"pengaduan-trend",
 	"pengaduan-service-type",
+	"pengaduan-terbaru",
+	"pengaduan-musrenbang",
 	// Demografi
 	"demografi-gender",
 	"demografi-age",
@@ -73,6 +75,8 @@ export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
 	"pengaduan-status": "sm",
 	"pengaduan-trend": "wide",
 	"pengaduan-service-type": "wide",
+	"pengaduan-terbaru": "tall",
+	"pengaduan-musrenbang": "tall",
 	"demografi-gender": "lg",
 	"demografi-age": "wide",
 	"demografi-religion": "lg",

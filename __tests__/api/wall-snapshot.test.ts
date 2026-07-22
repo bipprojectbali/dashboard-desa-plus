@@ -22,7 +22,7 @@ const KPI_KEYS = [
 const ALLOWED_KEYS: Record<string, string[]> = {
 	kpi: [...KPI_KEYS],
 	keuangan: ["apbdes", "satisfaction", "sdgs"],
-	pengaduan: ["stats", "trend7m", "serviceByType", "kepuasan"],
+	pengaduan: ["stats", "trend7m", "serviceByType", "pengajuanTerbaru", "musrenbang"],
 	demografi: ["stats", "gender", "religion", "ageGroups", "occupationTop"],
 	divisi: ["activities", "documents", "projects", "discussions"],
 	keamanan: ["total", "baru", "diproses", "selesai"],

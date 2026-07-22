@@ -2,8 +2,10 @@ import type { WallPengaduan } from "@/types/wall";
 import { TTL, withCache } from "@/utils/cache";
 import {
 	type JennaPengaduanRaw,
+	mapMusrenbang,
 	mapPengaduanService,
 	mapPengaduanStats,
+	mapPengaduanTerbaru,
 	mapPengaduanTrend,
 } from "../transforms/noc-pengaduan";
 
@@ -26,6 +28,8 @@ async function fetchPengaduanFromJenna(): Promise<WallPengaduan> {
 			stats: mapPengaduanStats(d),
 			trend7m: mapPengaduanTrend(d.trends),
 			serviceByType: mapPengaduanService(d.surat_terbanyak),
+			pengajuanTerbaru: mapPengaduanTerbaru(d.pengajuan_terbaru),
+			musrenbang: mapMusrenbang(d.musrenbang),
 		};
 	});
 }

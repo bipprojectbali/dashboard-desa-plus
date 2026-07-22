@@ -8,6 +8,19 @@ export interface JennaPengaduanRaw {
 	};
 	trends?: Array<{ bulan?: string; count?: number | string }>;
 	surat_terbanyak?: Array<{ jenis?: string; count?: number | string }>;
+	pengajuan_terbaru?: Array<{
+		id?: string;
+		kategori?: string;
+		sub_kategori?: string | null;
+		status?: string;
+		created_at?: string;
+	}>;
+	musrenbang?: Array<{
+		id?: string;
+		judul?: string;
+		nama_pengusul?: string;
+		created_at?: string;
+	}>;
 }
 
 /** Map `.stats` Jenna → `WallPengaduan["stats"]`. Null-safe, default 0. */
@@ -45,5 +58,32 @@ export function mapPengaduanService(
 	return rows.map((r) => ({
 		letterType: r.jenis ?? "",
 		count: Number(r.count ?? 0),
+	}));
+}
+
+/** Map `.pengajuan_terbaru` Jenna → `WallPengaduan["pengajuanTerbaru"]`. Non-array → `[]`. */
+export function mapPengaduanTerbaru(
+	rows: JennaPengaduanRaw["pengajuan_terbaru"] | null | undefined,
+): Array<{ id: string; kategori: string; subKategori: string | null; status: string; createdAt: string }> {
+	if (!Array.isArray(rows)) return [];
+	return rows.map((r) => ({
+		id: r.id ?? "",
+		kategori: r.kategori ?? "",
+		subKategori: r.sub_kategori ?? null,
+		status: r.status ?? "",
+		createdAt: r.created_at ?? "",
+	}));
+}
+
+/** Map `.musrenbang` Jenna → `WallPengaduan["musrenbang"]`. Non-array → `[]`. */
+export function mapMusrenbang(
+	rows: JennaPengaduanRaw["musrenbang"] | null | undefined,
+): Array<{ id: string; judul: string; namaPengusul: string; createdAt: string }> {
+	if (!Array.isArray(rows)) return [];
+	return rows.map((r) => ({
+		id: r.id ?? "",
+		judul: r.judul ?? "",
+		namaPengusul: r.nama_pengusul ?? "",
+		createdAt: r.created_at ?? "",
 	}));
 }
