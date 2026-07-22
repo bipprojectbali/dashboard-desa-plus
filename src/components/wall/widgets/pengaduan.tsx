@@ -6,13 +6,14 @@ import { StatRow } from "../stat-row";
 import { WALL_THEME } from "../wall-theme";
 
 const STATUS_ITEMS: Array<{
-	key: "baru" | "proses" | "selesai";
+	key: "baru" | "proses" | "selesai" | "ditolak";
 	label: string;
 	color: string;
 }> = [
 	{ key: "baru", label: "Baru", color: WALL_THEME.WARN },
 	{ key: "proses", label: "Diproses", color: WALL_THEME.ACCENT },
 	{ key: "selesai", label: "Selesai", color: WALL_THEME.OK },
+	{ key: "ditolak", label: "Ditolak", color: WALL_THEME.DANGER },
 ];
 
 /** Status pengaduan: total + bar proporsi per status (bukan angka telanjang). */
@@ -85,11 +86,15 @@ export function PengaduanServiceTypeBody({
 
 function statusColor(status: string): string {
 	switch (status.toLowerCase()) {
-		case "baru": return WALL_THEME.WARN;
+		case "baru":
+			return WALL_THEME.WARN;
 		case "diproses":
-		case "proses": return WALL_THEME.ACCENT;
-		case "selesai": return WALL_THEME.OK;
-		default: return WALL_THEME.TEXT_DIM;
+		case "proses":
+			return WALL_THEME.ACCENT;
+		case "selesai":
+			return WALL_THEME.OK;
+		default:
+			return WALL_THEME.TEXT_DIM;
 	}
 }
 
@@ -127,7 +132,10 @@ export function PengaduanTerbaruBody({
 							{item.subKategori && (
 								<Text
 									size="xs"
-									style={{ color: WALL_THEME.TEXT_DIM, textTransform: "capitalize" }}
+									style={{
+										color: WALL_THEME.TEXT_DIM,
+										textTransform: "capitalize",
+									}}
 								>
 									{item.subKategori}
 								</Text>

@@ -15,6 +15,7 @@ describe("mapPengaduanStats", () => {
 		expect(result.total).toBe(10);
 		expect(result.baru).toBe(3);
 		expect(result.selesai).toBe(2);
+		expect(result.ditolak).toBe(0); // 10 - 3 - 5 - 2
 	});
 
 	it("defaults missing fields to 0", () => {
@@ -27,14 +28,33 @@ describe("mapPengaduanStats", () => {
 
 	it("handles null/undefined input", () => {
 		const result = mapPengaduanStats(null);
-		expect(result).toEqual({ total: 0, baru: 0, proses: 0, selesai: 0 });
+		expect(result).toEqual({
+			total: 0,
+			baru: 0,
+			proses: 0,
+			selesai: 0,
+			ditolak: 0,
+		});
 	});
 
-	it("passthrough when all fields present", () => {
+	it("passthrough when all fields present, derives ditolak", () => {
 		const result = mapPengaduanStats({
 			stats: { total: 100, baru: 20, diproses: 30, selesai: 50 },
 		});
-		expect(result).toEqual({ total: 100, baru: 20, proses: 30, selesai: 50 });
+		expect(result).toEqual({
+			total: 100,
+			baru: 20,
+			proses: 30,
+			selesai: 50,
+			ditolak: 0,
+		});
+	});
+
+	it("carries ditolak from selisih (kasus wall: 21-16-0-3=2)", () => {
+		const result = mapPengaduanStats({
+			stats: { total: 21, baru: 16, diproses: 0, selesai: 3 },
+		});
+		expect(result.ditolak).toBe(2);
 	});
 });
 

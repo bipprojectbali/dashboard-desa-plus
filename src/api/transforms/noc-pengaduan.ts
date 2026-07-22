@@ -30,6 +30,7 @@ export function mapPengaduanStats(raw: JennaPengaduanRaw | null | undefined): {
 	baru: number;
 	proses: number;
 	selesai: number;
+	ditolak: number;
 } {
 	const s = raw?.stats;
 	return {
@@ -37,6 +38,7 @@ export function mapPengaduanStats(raw: JennaPengaduanRaw | null | undefined): {
 		baru: s?.baru ?? 0,
 		proses: s?.diproses ?? 0, // mismatch: Jenna "diproses" → WallPengaduan "proses"
 		selesai: s?.selesai ?? 0,
+		ditolak: deriveDitolak(s),
 	};
 }
 
