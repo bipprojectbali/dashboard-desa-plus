@@ -26,26 +26,27 @@ export const ALL_WIDGET_IDS = [
 	"beranda-kalender",
 	"beranda-apbdes",
 	"beranda-sdgs",
-	// Keuangan
-	"keuangan-apbdes",
-	"keuangan-kepuasan",
-	"keuangan-sdgs",
+	// Kinerja divisi
+	"divisi-kinerja",
+	"divisi-documents",
+	"divisi-kegiatan",
+	"divisi-diskusi",
 	// Pengaduan & layanan
 	"pengaduan-status",
 	"pengaduan-trend",
 	"pengaduan-service-type",
-	"pengaduan-kepuasan",
+	"pengaduan-terbaru",
+	"pengaduan-musrenbang",
 	// Demografi
 	"demografi-gender",
 	"demografi-age",
 	"demografi-religion",
 	"demografi-occupation",
 	"demografi-stats",
-	// Kinerja divisi
-	"divisi-kinerja",
-	"divisi-documents",
-	"divisi-kegiatan",
-	"divisi-diskusi",
+	// Keuangan
+	"keuangan-apbdes",
+	"keuangan-kepuasan",
+	"keuangan-sdgs",
 	// Keamanan
 	"keamanan-status",
 	// Ops / sistem
@@ -74,7 +75,8 @@ export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
 	"pengaduan-status": "sm",
 	"pengaduan-trend": "wide",
 	"pengaduan-service-type": "wide",
-	"pengaduan-kepuasan": "lg",
+	"pengaduan-terbaru": "tall",
+	"pengaduan-musrenbang": "tall",
 	"demografi-gender": "lg",
 	"demografi-age": "wide",
 	"demografi-religion": "lg",

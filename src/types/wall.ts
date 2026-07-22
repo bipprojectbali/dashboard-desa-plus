@@ -35,7 +35,19 @@ export interface WallPengaduan {
 	stats: { total: number; baru: number; proses: number; selesai: number };
 	trend7m: Array<{ month: string; count: number }>;
 	serviceByType: Array<{ letterType: string; count: number }>;
-	kepuasan: Array<{ category: string; value: number; color: string }>;
+	pengajuanTerbaru: Array<{
+		id: string;
+		kategori: string;
+		subKategori: string | null;
+		status: string;
+		createdAt: string;
+	}>;
+	musrenbang: Array<{
+		id: string;
+		judul: string;
+		namaPengusul: string;
+		createdAt: string;
+	}>;
 }
 
 export interface WallDemografi {

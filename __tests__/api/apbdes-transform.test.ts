@@ -1,9 +1,9 @@
 import { describe, expect, it } from "bun:test";
 import {
-	mapApbdesEntry,
-	mapApbdesList,
 	type ApbdesEntryRaw,
 	type ApbdesItemRaw,
+	mapApbdesEntry,
+	mapApbdesList,
 } from "@/api/transforms/apbdes";
 
 // Fixture 2025: campuran level 1, 2, 3
@@ -12,8 +12,20 @@ import {
 // pembiayaan: leaf = item-pf3 (anggaran 350_000_000, realisasi 0)
 const ITEMS_2025: ApbdesItemRaw[] = [
 	// pendapatan tree
-	{ id: "item-p1", tipe: "pendapatan", level: 1, anggaran: 1_500_000_000, parentId: null },
-	{ id: "item-p2", tipe: "pendapatan", level: 2, anggaran: 1_500_000_000, parentId: "item-p1" },
+	{
+		id: "item-p1",
+		tipe: "pendapatan",
+		level: 1,
+		anggaran: 1_500_000_000,
+		parentId: null,
+	},
+	{
+		id: "item-p2",
+		tipe: "pendapatan",
+		level: 2,
+		anggaran: 1_500_000_000,
+		parentId: "item-p1",
+	},
 	{
 		id: "item-p3",
 		tipe: "pendapatan",
@@ -23,8 +35,20 @@ const ITEMS_2025: ApbdesItemRaw[] = [
 		realisasiItems: [{ jumlah: 100_000_000 }, { jumlah: 32_000_000 }],
 	},
 	// belanja tree
-	{ id: "item-b1", tipe: "belanja", level: 1, anggaran: 1_500_000_000, parentId: null },
-	{ id: "item-b2", tipe: "belanja", level: 2, anggaran: 1_500_000_000, parentId: "item-b1" },
+	{
+		id: "item-b1",
+		tipe: "belanja",
+		level: 1,
+		anggaran: 1_500_000_000,
+		parentId: null,
+	},
+	{
+		id: "item-b2",
+		tipe: "belanja",
+		level: 2,
+		anggaran: 1_500_000_000,
+		parentId: "item-b1",
+	},
 	{
 		id: "item-b3",
 		tipe: "belanja",
@@ -34,7 +58,13 @@ const ITEMS_2025: ApbdesItemRaw[] = [
 		realisasiItems: [{ jumlah: 385_000_000 }],
 	},
 	// pembiayaan tree
-	{ id: "item-pf1", tipe: "pembiayaan", level: 1, anggaran: 350_000_000, parentId: null },
+	{
+		id: "item-pf1",
+		tipe: "pembiayaan",
+		level: 1,
+		anggaran: 350_000_000,
+		parentId: null,
+	},
 	{
 		id: "item-pf3",
 		tipe: "pembiayaan",
@@ -133,9 +163,15 @@ describe("mapApbdesEntry", () => {
 
 	it("assigns correct colors", () => {
 		const result = mapApbdesEntry(ENTRY_2025);
-		expect(result.data.find((d) => d.category === "Pendapatan")?.color).toBe("#10B981");
-		expect(result.data.find((d) => d.category === "Belanja")?.color).toBe("#3B82F6");
-		expect(result.data.find((d) => d.category === "Pembiayaan")?.color).toBe("#F59E0B");
+		expect(result.data.find((d) => d.category === "Pendapatan")?.color).toBe(
+			"#10B981",
+		);
+		expect(result.data.find((d) => d.category === "Belanja")?.color).toBe(
+			"#3B82F6",
+		);
+		expect(result.data.find((d) => d.category === "Pembiayaan")?.color).toBe(
+			"#F59E0B",
+		);
 	});
 
 	it("handles entry with no items gracefully", () => {

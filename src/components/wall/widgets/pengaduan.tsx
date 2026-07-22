@@ -1,7 +1,6 @@
 import { LineChart } from "@mantine/charts";
-import { Group, Stack, Text } from "@mantine/core";
+import { Badge, Box, Group, Stack, Text } from "@mantine/core";
 import type { WallPengaduan } from "@/types/wall";
-import { DonutBody } from "../donut-body";
 import { HorizontalBar } from "../horizontal-bar";
 import { StatRow } from "../stat-row";
 import { WALL_THEME } from "../wall-theme";
@@ -84,16 +83,107 @@ export function PengaduanServiceTypeBody({
 	);
 }
 
-/** Kepuasan versi Pengaduan (donut besar + legenda) — sumber beda dari Keuangan. */
-export function PengaduanKepuasanBody({
+function statusColor(status: string): string {
+	switch (status.toLowerCase()) {
+		case "baru": return WALL_THEME.WARN;
+		case "diproses":
+		case "proses": return WALL_THEME.ACCENT;
+		case "selesai": return WALL_THEME.OK;
+		default: return WALL_THEME.TEXT_DIM;
+	}
+}
+
+/** Pengajuan terbaru: daftar item dengan kategori + badge status. */
+export function PengaduanTerbaruBody({
 	data,
 }: {
-	data: WallPengaduan["kepuasan"];
+	data: WallPengaduan["pengajuanTerbaru"];
 }) {
-	const rows = data.map((s) => ({
-		name: s.category,
-		value: s.value,
-		color: s.color,
-	}));
-	return <DonutBody data={rows} />;
+	return (
+		<Stack gap="xs" style={{ height: "100%", overflow: "hidden" }}>
+			{data.map((item) => (
+				<Box
+					key={item.id}
+					style={{
+						borderLeft: `3px solid ${statusColor(item.status)}`,
+						paddingLeft: 10,
+					}}
+				>
+					<Group justify="space-between" align="flex-start">
+						<Stack gap={0} style={{ flex: 1, minWidth: 0 }}>
+							<Text
+								size="sm"
+								fw={600}
+								style={{
+									color: WALL_THEME.TEXT,
+									textTransform: "capitalize",
+									overflow: "hidden",
+									textOverflow: "ellipsis",
+									whiteSpace: "nowrap",
+								}}
+							>
+								{item.kategori}
+							</Text>
+							{item.subKategori && (
+								<Text
+									size="xs"
+									style={{ color: WALL_THEME.TEXT_DIM, textTransform: "capitalize" }}
+								>
+									{item.subKategori}
+								</Text>
+							)}
+						</Stack>
+						<Badge
+							size="xs"
+							radius="sm"
+							style={{
+								backgroundColor: statusColor(item.status),
+								color: "#fff",
+								flexShrink: 0,
+							}}
+						>
+							{item.status}
+						</Badge>
+					</Group>
+				</Box>
+			))}
+		</Stack>
+	);
+}
+
+/** Musrenbang: daftar ajuan ide warga. */
+export function MusrenbangBody({
+	data,
+}: {
+	data: WallPengaduan["musrenbang"];
+}) {
+	return (
+		<Stack gap="xs" style={{ height: "100%", overflow: "hidden" }}>
+			{data.map((item) => (
+				<Box
+					key={item.id}
+					style={{
+						borderLeft: `3px solid ${WALL_THEME.ACCENT}`,
+						paddingLeft: 10,
+					}}
+				>
+					<Text
+						size="sm"
+						fw={600}
+						style={{
+							color: WALL_THEME.TEXT,
+							overflow: "hidden",
+							textOverflow: "ellipsis",
+							whiteSpace: "nowrap",
+						}}
+					>
+						{item.judul}
+					</Text>
+					<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }}>
+						{item.namaPengusul}
+					</Text>
+				</Box>
+			))}
+		</Stack>
+	);
 }
