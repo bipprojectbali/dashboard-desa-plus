@@ -16,6 +16,7 @@ import {
 	Switch,
 	Table,
 	Text,
+	TextInput,
 	ThemeIcon,
 	Title,
 } from "@mantine/core";
@@ -39,22 +40,24 @@ import {
 } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
+import {
+	APP_TIMEZONE,
+	APP_TIMEZONE_LABEL,
+	APP_TIMEZONE_OFFSET_MINUTES,
+} from "@/config/timezone";
 import { useIsDark } from "@/hooks/useIsDark";
 import "dayjs/locale/id";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
 import { useCallback, useEffect, useState } from "react";
-import { useSnapshot } from "valtio";
 import { useApprovalGuard } from "@/hooks/useApprovalGuard";
 import { useTranslate } from "@/hooks/useTranslate";
 import { protectedRouteMiddleware } from "@/middleware/authMiddleware";
 import {
 	type FormatTanggal,
-	i18nStore,
 	setDashboardPrefs,
 	setFormatTanggal,
 	setLang,
-	setZonaWaktu,
 } from "@/store/i18n";
 import { apiClient } from "@/utils/api-client";
 
@@ -71,12 +74,6 @@ type SyncLogEntry = {
 	recordsAffected: number | null;
 	errorMessage: string | null;
 	startedAt: string;
-};
-
-const ZONA_OFFSET: Record<string, number> = {
-	"Asia/Jakarta": 420,
-	"Asia/Makassar": 480,
-	"Asia/Jayapura": 540,
 };
 
 export const Route = createFileRoute("/admin/preferences")({
@@ -96,7 +93,7 @@ type Prefs = {
 
 const DEFAULT_PREFS: Prefs = {
 	bahasa: "id",
-	zonaWaktu: "Asia/Jakarta",
+	zonaWaktu: APP_TIMEZONE,
 	formatTanggal: "DD/MM/YYYY",
 	refreshOtomatis: true,
 	intervalRefresh: "1",
@@ -107,10 +104,8 @@ const DEFAULT_PREFS: Prefs = {
 function AdminSyncSection() {
 	const [loading, setLoading] = useState(false);
 	const [demografiLoading, setDemografiLoading] = useState(false);
-	const { zonaWaktu } = useSnapshot(i18nStore);
-	const tzOffset = ZONA_OFFSET[zonaWaktu] ?? 420;
 	const fmtTs = (ts: string, format: string) =>
-		dayjs.utc(ts).utcOffset(tzOffset).format(format);
+		dayjs.utc(ts).utcOffset(APP_TIMEZONE_OFFSET_MINUTES).format(format);
 
 	const [lastSync, setLastSync] = useState<string | null>(null);
 	const [demografiLastSync, setDemografiLastSync] = useState<string | null>(
@@ -852,7 +847,6 @@ function AdminPreferencesPage() {
 				setPrefs(data);
 				setSavedPrefs(data);
 				setLang(data.bahasa === "en" ? "en" : "id");
-				setZonaWaktu(data.zonaWaktu);
 				setFormatTanggal(data.formatTanggal as FormatTanggal);
 				setDashboardPrefs({
 					refreshOtomatis: data.refreshOtomatis,
@@ -913,7 +907,6 @@ function AdminPreferencesPage() {
 	const handleBatal = () => {
 		setPrefs(savedPrefs);
 		setLang(savedPrefs.bahasa === "en" ? "en" : "id");
-		setZonaWaktu(savedPrefs.zonaWaktu);
 		setFormatTanggal(savedPrefs.formatTanggal as FormatTanggal);
 		setDashboardPrefs({
 			refreshOtomatis: savedPrefs.refreshOtomatis,
@@ -1127,7 +1120,7 @@ function AdminPreferencesPage() {
 									styles={inputStyles}
 								/>
 
-								<Select
+								<TextInput
 									label={
 										<Group gap={6} mb={4} align="center">
 											<IconClock size={14} stroke={1.5} />
@@ -1136,27 +1129,9 @@ function AdminPreferencesPage() {
 											</Text>
 										</Group>
 									}
-									description="Zona waktu untuk menampilkan tanggal dan jam di dashboard"
-									data={[
-										{
-											value: "Asia/Jakarta",
-											label: "Asia/Jakarta — WIB (GMT+7)",
-										},
-										{
-											value: "Asia/Makassar",
-											label: "Asia/Makassar — WITA (GMT+8)",
-										},
-										{
-											value: "Asia/Jayapura",
-											label: "Asia/Jayapura — WIT (GMT+9)",
-										},
-									]}
-									value={prefs.zonaWaktu}
-									onChange={(v) => {
-										const zona = v ?? "Asia/Jakarta";
-										updatePref("zonaWaktu", zona);
-										setZonaWaktu(zona);
-									}}
+									description="Mengikuti lokasi desa (Bali) — tidak dapat diubah"
+									value="Asia/Makassar — WITA (GMT+8)"
+									readOnly
 									radius="md"
 									styles={inputStyles}
 								/>
@@ -1215,7 +1190,7 @@ function AdminPreferencesPage() {
 									{prefs.bahasa === "en" ? "English" : "Bahasa Indonesia"}
 								</Badge>
 								<Badge variant="outline" color="orange" size="sm" radius="sm">
-									{prefs.zonaWaktu.replace("Asia/", "")}
+									{APP_TIMEZONE_LABEL}
 								</Badge>
 								<Badge variant="outline" color="orange" size="sm" radius="sm">
 									{new Date().toLocaleDateString(

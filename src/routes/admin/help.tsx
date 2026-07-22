@@ -433,7 +433,7 @@ function AdminHelpPage() {
 
 									<Text fw={500}>Jam Kerja</Text>
 									<Text size="sm" c="dimmed">
-										Senin – Jumat, 09:00 – 17:00 WIB
+										Senin – Jumat, 09:00 – 17:00 WITA
 									</Text>
 
 									<Text fw={500} mt="md">

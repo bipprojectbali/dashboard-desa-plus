@@ -23,7 +23,6 @@ import {
 	setDashboardPrefs,
 	setFormatTanggal,
 	setLang,
-	setZonaWaktu,
 } from "@/store/i18n";
 import { resetPermissions, setPermissions } from "@/store/permission";
 
@@ -117,7 +116,6 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 				if (!json?.data) return;
 				const d = json.data;
 				setLang(d.bahasa === "en" ? "en" : "id");
-				setZonaWaktu(d.zonaWaktu);
 				setFormatTanggal(d.formatTanggal as FormatTanggal);
 				setDashboardPrefs({
 					refreshOtomatis: d.refreshOtomatis,

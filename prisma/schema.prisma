@@ -69,7 +69,7 @@ model UmumPreference {
   id                String   @id @default(cuid())
   userId            String   @unique
   bahasa            String   @default("id")
-  zonaWaktu         String   @default("Asia/Jakarta")
+  zonaWaktu         String   @default("Asia/Makassar")
   formatTanggal     String   @default("DD/MM/YYYY")
   refreshOtomatis   Boolean  @default(true)
   intervalRefresh   String   @default("1")

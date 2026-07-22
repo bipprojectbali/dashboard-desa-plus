@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { APP_TIMEZONE, APP_TIMEZONE_LABEL } from "../config/timezone";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -67,7 +68,7 @@ export async function sendSupportTicketEmail(
 					<hr style="border: none; border-top: 1px solid #e2e8f0; margin: 16px 0;" />
 					<p style="color: #64748b; font-size: 13px; margin: 0 0 8px;">Deskripsi Masalah:</p>
 					<div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 16px; color: #1e293b; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${deskripsi}</div>
-					<p style="color: #94a3b8; font-size: 12px; margin: 16px 0 0;">Diterima pada: ${new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })} WIB</p>
+					<p style="color: #94a3b8; font-size: 12px; margin: 16px 0 0;">Diterima pada: ${new Date().toLocaleString("id-ID", { timeZone: APP_TIMEZONE })} ${APP_TIMEZONE_LABEL}</p>
 				</div>
 			</div>
 		`,
