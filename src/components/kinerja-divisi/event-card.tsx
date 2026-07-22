@@ -16,7 +16,7 @@ interface EventCardProps {
 
 async function fetchTodayEvents(): Promise<AgendaItem[]> {
 	const res = await apiClient.GET("/api/noc/upcoming-events", {
-		params: { query: { idDesa: "desa1", filter: "today" } },
+		params: { query: { idDesa: "desa1", filter: "today", limit: "5" } },
 	});
 	if (res.data?.data) {
 		return (res.data.data as { time: string; title: string }[]).map((e) => ({
