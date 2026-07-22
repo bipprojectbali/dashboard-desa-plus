@@ -1,78 +1,50 @@
 import type { WallBeranda } from "@/types/wall";
-import { TTL, cache, withCache } from "@/utils/cache";
-import { prisma } from "@/utils/db";
+import { cache, TTL, withCache } from "@/utils/cache";
 import { getEnv } from "@/utils/env";
 import { nocExternalClient } from "@/utils/noc-external-client";
+import { EMPTY_COMPLAINT_STATS } from "../complaint-platform";
 import {
-	mapApbdesList,
-	type ApbdesEntryRaw,
-} from "../transforms/apbdes";
+	getComplaintStats,
+	getDemografiSummary,
+	getSuratTrends,
+	getSuratWeekly,
+} from "../dashboard-cache";
+import { type ApbdesEntryRaw, mapApbdesList } from "../transforms/apbdes";
 import {
 	mapActiveDivisions,
 	type NocDivisionRaw,
 } from "../transforms/noc-divisions";
 import { mapUpcomingEvents, type NocEventRaw } from "../transforms/noc-events";
+import { buildBerandaKpiTiles } from "./beranda-kpi";
 import { buildSatisfaction } from "./external-satisfaction";
 
 const DEFAULT_VILLAGE_ID = getEnv("NOC_VILLAGE_ID", "desa1");
 
 async function fetchKpi(): Promise<WallBeranda["kpi"]> {
-	const now = new Date();
-	const startOfWeek = new Date(now);
-	startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-	startOfWeek.setHours(0, 0, 0, 0);
-
-	const [
-		weeklyService,
-		pengaduanBaru,
-		pengaduanDitolak,
-		layananSelesai,
-		totalPenduduk,
-		totalKK,
-	] = await Promise.all([
-		prisma.serviceLetter.count({ where: { createdAt: { gte: startOfWeek } } }),
-		prisma.complaint.count({ where: { status: "BARU" } }),
-		prisma.complaint.count({ where: { status: "DITOLAK" } }),
-		prisma.complaint.count({ where: { status: "SELESAI" } }),
-		prisma.resident.count(),
-		prisma.resident.count({ where: { isHeadOfHousehold: true } }),
+	const [stats, weekly, summaryPayload] = await Promise.all([
+		getComplaintStats().catch(() => EMPTY_COMPLAINT_STATS),
+		getSuratWeekly().catch(() => ({ count: 0 })),
+		getDemografiSummary().catch(() => null),
 	]);
-
-	return [
-		{
-			label: "Surat Minggu Ini",
-			value: weeklyService,
-			sublabel: "Total surat diajukan",
+	const summary = (
+		summaryPayload as {
+			summary?: { totalPenduduk?: number; totalKK?: number };
+		} | null
+	)?.summary;
+	return buildBerandaKpiTiles({
+		weeklyService: weekly.count,
+		complaints: {
+			baru: stats.baru,
+			selesai: stats.selesai,
+			ditolak: stats.ditolak,
 		},
-		{
-			label: "Pengaduan Aktif",
-			value: pengaduanBaru,
-			sublabel: `${pengaduanBaru} baru, ${pengaduanDitolak} ditolak`,
-		},
-		{
-			label: "Layanan Selesai",
-			value: layananSelesai,
-			sublabel: "Total diselesaikan",
-		},
-		{
-			label: "Total Penduduk",
-			value: totalPenduduk,
-			sublabel: `${totalKK} kepala keluarga`,
-		},
-	];
+		totalPenduduk: summary?.totalPenduduk ?? 0,
+		totalKK: summary?.totalKK ?? 0,
+	});
 }
 
 async function fetchSuratTrend(): Promise<WallBeranda["suratTrend"]> {
-	const rows = await prisma.$queryRaw<{ month: string; count: number }[]>`
-		SELECT
-			TO_CHAR("createdAt", 'Mon') AS month,
-			COUNT(*)::INTEGER AS count
-		FROM service_letter
-		WHERE "createdAt" > NOW() - INTERVAL '7 months'
-		GROUP BY month, EXTRACT(MONTH FROM "createdAt")
-		ORDER BY EXTRACT(MONTH FROM "createdAt") ASC
-	`;
-	return rows.map((r) => ({ month: r.month, count: Number(r.count) }));
+	return getSuratTrends().catch(() => []);
 }
 
 async function fetchDivisi(): Promise<WallBeranda["divisi"]> {
@@ -122,9 +94,7 @@ async function fetchApbdes(): Promise<WallBeranda["apbdes"]> {
 	} else {
 		const baseUrl =
 			process.env.DESA_API_URL || "https://desa-darmasaba-stg.wibudev.com";
-		const response = await fetch(
-			`${baseUrl}/api/landingpage/apbdes/findMany`,
-		);
+		const response = await fetch(`${baseUrl}/api/landingpage/apbdes/findMany`);
 		if (!response.ok) throw new Error(`Desa API error: ${response.status}`);
 		const json = await response.json();
 		entries = (json.data ?? json) as ApbdesEntryRaw[];

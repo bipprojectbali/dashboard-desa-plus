@@ -22,7 +22,12 @@ import {
 	DemografiReligionBody,
 	DemografiStatsBody,
 } from "./widgets/demografi";
-import { DivisiDocumentsBody, DivisiKinerjaBody } from "./widgets/divisi";
+import {
+	DivisiDiskusiBody,
+	DivisiDocumentsBody,
+	DivisiKegiatanBody,
+	DivisiKinerjaBody,
+} from "./widgets/divisi";
 import { KeamananStatusBody } from "./widgets/keamanan";
 import {
 	KeuanganApbdesBody,
@@ -196,7 +201,7 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		id: "divisi-kinerja",
 		title: "Kinerja Divisi",
 		category: "divisi",
-		selectData: (s) => s?.divisi?.activities ?? null,
+		selectData: (s) => nonEmpty(s?.divisi?.activities),
 		Body: DivisiKinerjaBody,
 	},
 	"divisi-documents": {
@@ -205,6 +210,20 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		category: "divisi",
 		selectData: (s) => nonEmpty(s?.divisi?.documents),
 		Body: DivisiDocumentsBody,
+	},
+	"divisi-kegiatan": {
+		id: "divisi-kegiatan",
+		title: "Kegiatan Terbaru",
+		category: "divisi",
+		selectData: (s) => nonEmpty(s?.divisi?.projects),
+		Body: DivisiKegiatanBody,
+	},
+	"divisi-diskusi": {
+		id: "divisi-diskusi",
+		title: "Diskusi Terbaru",
+		category: "divisi",
+		selectData: (s) => nonEmpty(s?.divisi?.discussions),
+		Body: DivisiDiskusiBody,
 	},
 	"keamanan-status": {
 		id: "keamanan-status",

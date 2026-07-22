@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- **KPI wall beranda sinkron dengan dashboard.** Sebelumnya panel Beranda di `/wall` (NOC TV) membaca data dari DB lokal (Prisma seed minim) sehingga angka berbeda jauh dari dashboard `/`. Kini keduanya menggunakan shared loader (`dashboard-cache.ts`) yang menulis ke cache key yang sama — satu sumber kebenaran untuk stat surat mingguan, pengaduan, dan total penduduk.
+
 ### Added
 - **Atur ukuran widget di NOC Video Wall** (`/wall`, mode edit admin). Tiap widget kini punya handle ◢ di pojok kanan-bawah — tarik untuk mengubah ukuran tile: memanjang ke kanan (lebar), ke bawah (tinggi), atau keduanya. Ukuran nge-snap ke sel grid (lebar 1–4 kolom × tinggi 1–3 baris) dan tersimpan ke server, jadi TV langsung ikut ubah dalam satu siklus refresh — tanpa perlu ganti kode/deploy ulang.
 - Tombol **Reset default** kini juga mengembalikan ukuran tiap widget ke preset bawaannya (donut besar, chart lebar, daftar tinggi, KPI ringkas).
