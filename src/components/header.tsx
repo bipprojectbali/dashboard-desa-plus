@@ -21,6 +21,7 @@ import { Bell, Moon, Search, Sun, User as UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
 import { GlobalSearch, useGlobalSearch } from "@/components/global-search";
+import { APP_TIMEZONE_LABEL } from "@/config/timezone";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { authStore } from "@/store/auth";
@@ -92,8 +93,8 @@ export function Header({ onSidebarToggle, unreadCount = 0 }: HeaderProps) {
 	const displayName = snap.user?.name ?? snap.user?.email ?? "";
 	const initials = displayName.charAt(0).toUpperCase();
 
-	// Ambil nama kota dari timezone, tangani semua format (Asia/Jakarta, America/New_York, dll)
-	const kotaLabel = zonaWaktu.split("/").pop()?.replace(/_/g, " ") ?? zonaWaktu;
+	// Zona waktu desa tetap (WITA) — tampilkan label singkat, bukan nama kota
+	const kotaLabel = APP_TIMEZONE_LABEL;
 
 	// ── Breadcrumb ─────────────────────────────────────────────────────────────
 	const pathnames = location.pathname.split("/").filter(Boolean);

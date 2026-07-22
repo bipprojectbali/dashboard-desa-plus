@@ -1,4 +1,5 @@
 import Elysia, { t } from "elysia";
+import { APP_TIMEZONE } from "../config/timezone";
 import { apiMiddleware } from "../middleware/apiMiddleware";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
@@ -37,7 +38,7 @@ export const umumPreferences = new Elysia({
 					return {
 						data: {
 							bahasa: "id",
-							zonaWaktu: "Asia/Jakarta",
+							zonaWaktu: APP_TIMEZONE,
 							formatTanggal: "DD/MM/YYYY",
 							refreshOtomatis: true,
 							intervalRefresh: "1",
@@ -55,7 +56,7 @@ export const umumPreferences = new Elysia({
 					return {
 						data: {
 							bahasa: "id",
-							zonaWaktu: "Asia/Jakarta",
+							zonaWaktu: APP_TIMEZONE,
 							formatTanggal: "DD/MM/YYYY",
 							refreshOtomatis: true,
 							intervalRefresh: "1",

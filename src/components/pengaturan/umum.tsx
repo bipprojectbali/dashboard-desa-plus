@@ -12,6 +12,7 @@ import {
 	Stack,
 	Switch,
 	Text,
+	TextInput,
 	ThemeIcon,
 	Title,
 } from "@mantine/core";
@@ -26,6 +27,7 @@ import {
 	IconX,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import { APP_TIMEZONE } from "@/config/timezone";
 import { useApprovalGuard } from "@/hooks/useApprovalGuard";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
@@ -34,7 +36,6 @@ import {
 	setDashboardPrefs,
 	setFormatTanggal,
 	setLang,
-	setZonaWaktu,
 } from "@/store/i18n";
 
 type Prefs = {
@@ -49,7 +50,7 @@ type Prefs = {
 
 const DEFAULT_PREFS: Prefs = {
 	bahasa: "id",
-	zonaWaktu: "Asia/Jakarta",
+	zonaWaktu: APP_TIMEZONE,
 	formatTanggal: "DD/MM/YYYY",
 	refreshOtomatis: true,
 	intervalRefresh: "1",
@@ -78,9 +79,8 @@ const UmumSettings = () => {
 				const data = json.data as Prefs;
 				setPrefs(data);
 				setSavedPrefs(data);
-				// Sync bahasa & zona waktu ke store saat load
+				// Sync bahasa ke store saat load (zona waktu tetap WITA)
 				setLang(data.bahasa === "en" ? "en" : "id");
-				setZonaWaktu(data.zonaWaktu);
 				setFormatTanggal(data.formatTanggal as FormatTanggal);
 				setDashboardPrefs({
 					refreshOtomatis: data.refreshOtomatis,
@@ -145,7 +145,6 @@ const UmumSettings = () => {
 	const handleBatal = () => {
 		setPrefs(savedPrefs);
 		setLang(savedPrefs.bahasa === "en" ? "en" : "id");
-		setZonaWaktu(savedPrefs.zonaWaktu);
 		setFormatTanggal(savedPrefs.formatTanggal as FormatTanggal);
 		setDashboardPrefs({
 			refreshOtomatis: savedPrefs.refreshOtomatis,
@@ -304,7 +303,7 @@ const UmumSettings = () => {
 								}}
 							/>
 
-							<Select
+							<TextInput
 								label={
 									<Group gap={6} mb={4}>
 										<IconClock size={14} />
@@ -313,28 +312,9 @@ const UmumSettings = () => {
 										</Text>
 									</Group>
 								}
-								description="Zona waktu untuk menampilkan tanggal dan jam di dashboard"
-								data={[
-									{
-										value: "Asia/Jakarta",
-										label: "Asia/Jakarta — WIB (GMT+7)",
-									},
-									{
-										value: "Asia/Makassar",
-										label: "Asia/Makassar — WITA (GMT+8)",
-									},
-									{
-										value: "Asia/Jayapura",
-										label: "Asia/Jayapura — WIT (GMT+9)",
-									},
-								]}
-								value={prefs.zonaWaktu}
-								onChange={(v) => {
-									const zona = v ?? "Asia/Jakarta";
-									updatePref("zonaWaktu", zona);
-									setZonaWaktu(zona);
-								}}
-								disabled={loading}
+								description="Mengikuti lokasi desa (Bali) — tidak dapat diubah"
+								value="Asia/Makassar — WITA (GMT+8)"
+								readOnly
 								radius="md"
 								styles={{
 									input: {

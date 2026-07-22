@@ -1,4 +1,5 @@
 import { proxy } from "valtio";
+import { APP_TIMEZONE } from "../config/timezone";
 import en from "../locales/en";
 import id from "../locales/id";
 
@@ -29,7 +30,7 @@ interface I18nState {
 
 export const i18nStore = proxy<I18nState>({
 	lang: "id",
-	zonaWaktu: "Asia/Jakarta",
+	zonaWaktu: APP_TIMEZONE,
 	formatTanggal: "DD/MM/YYYY",
 	refreshOtomatis: true,
 	intervalRefresh: "1",
@@ -41,10 +42,6 @@ export const translations = { id, en };
 
 export function setLang(lang: Lang) {
 	i18nStore.lang = lang;
-}
-
-export function setZonaWaktu(zona: string) {
-	i18nStore.zonaWaktu = zona;
 }
 
 export function setFormatTanggal(fmt: FormatTanggal) {
