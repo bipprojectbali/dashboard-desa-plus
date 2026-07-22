@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- **Zona waktu dashboard dikunci ke WITA (GMT+8), mengikuti lokasi desa (Bali).** Sebelumnya default zona `Asia/Jakarta` (WIB) membuat jam & tanggal di header menampilkan "Jakarta" padahal preferensi diset WITA — tidak konsisten. Kini zona waktu tidak lagi bisa dipilih per-pengguna; pilihan Zona Waktu di halaman Preferensi & Pengaturan berubah jadi tampilan baca-saja ("Mengikuti lokasi desa"). Semua timestamp (sinkronisasi, kegiatan, email pengaduan) ditampilkan konsisten dalam WITA untuk semua pengguna, tanpa bergantung lokasi yang mengakses.
+
 ### Fixed
 - **KPI wall beranda sinkron dengan dashboard.** Sebelumnya panel Beranda di `/wall` (NOC TV) membaca data dari DB lokal (Prisma seed minim) sehingga angka berbeda jauh dari dashboard `/`. Kini keduanya menggunakan shared loader (`dashboard-cache.ts`) yang menulis ke cache key yang sama — satu sumber kebenaran untuk stat surat mingguan, pengaduan, dan total penduduk.
 
