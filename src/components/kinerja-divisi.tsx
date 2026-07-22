@@ -26,7 +26,7 @@ interface KinerjaOverview {
 
 async function fetchKinerjaOverview(): Promise<KinerjaOverview> {
 	const res = await apiClient.GET("/api/noc/latest-projects", {
-		params: { query: { idDesa: "desa1", limit: "10" } },
+		params: { query: { idDesa: "desa1", limit: "4" } },
 	});
 	return { activities: (res.data?.data as Activity[]) ?? [] };
 }

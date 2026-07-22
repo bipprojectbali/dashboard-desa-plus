@@ -11,7 +11,9 @@ interface DivisionItem {
 }
 
 async function fetchDivisionList(): Promise<DivisionItem[]> {
-	const { data } = await apiClient.GET("/api/noc/active-divisions");
+	const { data } = await apiClient.GET("/api/noc/active-divisions", {
+		params: { query: { idDesa: "desa1", limit: "5" } },
+	});
 	return (data?.data ?? []).map((d) => ({
 		name: d.name,
 		count: d.activityCount || 0,

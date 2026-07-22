@@ -18,7 +18,7 @@ interface DiscussionItem {
 
 async function fetchDiscussions(): Promise<DiscussionItem[]> {
 	const res = await apiClient.GET("/api/noc/latest-discussion", {
-		params: { query: { idDesa: "desa1", limit: "6" } },
+		params: { query: { idDesa: "desa1", limit: "5" } },
 	});
 	if (res.data?.data) {
 		const rawData = res.data.data as {
