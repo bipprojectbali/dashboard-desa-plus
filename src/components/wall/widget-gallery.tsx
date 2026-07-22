@@ -6,10 +6,10 @@ import { unplacedWidgets } from "./widget-registry";
 
 const CATEGORY_LABELS: Record<WallCategory, string> = {
 	beranda: "Beranda",
-	keuangan: "Keuangan",
+	divisi: "Kinerja Divisi",
 	pengaduan: "Pengaduan & Layanan",
 	demografi: "Demografi",
-	divisi: "Kinerja Divisi",
+	keuangan: "Keuangan",
 	keamanan: "Keamanan",
 	ops: "Sistem",
 };

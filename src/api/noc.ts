@@ -6,6 +6,7 @@ import { prisma } from "../utils/db";
 import { desaExternalClient } from "../utils/desa-external-client";
 import { getEnv } from "../utils/env";
 import { nocExternalClient } from "../utils/noc-external-client";
+import { type ApbdesEntryRaw, mapApbdesList } from "./transforms/apbdes";
 import {
 	mapDiscussions,
 	type NocDiscussionRaw,
@@ -16,10 +17,6 @@ import {
 	mapActiveDivisions,
 	type NocDivisionRaw,
 } from "./transforms/noc-divisions";
-import {
-	mapApbdesList,
-	type ApbdesEntryRaw,
-} from "./transforms/apbdes";
 import { mapUpcomingEvents, type NocEventRaw } from "./transforms/noc-events";
 import { buildWallSnapshot, isWallAuthorized } from "./wall-snapshot";
 

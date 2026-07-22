@@ -26,10 +26,11 @@ export const ALL_WIDGET_IDS = [
 	"beranda-kalender",
 	"beranda-apbdes",
 	"beranda-sdgs",
-	// Keuangan
-	"keuangan-apbdes",
-	"keuangan-kepuasan",
-	"keuangan-sdgs",
+	// Kinerja divisi
+	"divisi-kinerja",
+	"divisi-documents",
+	"divisi-kegiatan",
+	"divisi-diskusi",
 	// Pengaduan & layanan
 	"pengaduan-status",
 	"pengaduan-trend",
@@ -42,11 +43,10 @@ export const ALL_WIDGET_IDS = [
 	"demografi-religion",
 	"demografi-occupation",
 	"demografi-stats",
-	// Kinerja divisi
-	"divisi-kinerja",
-	"divisi-documents",
-	"divisi-kegiatan",
-	"divisi-diskusi",
+	// Keuangan
+	"keuangan-apbdes",
+	"keuangan-kepuasan",
+	"keuangan-sdgs",
 	// Keamanan
 	"keamanan-status",
 	// Ops / sistem
