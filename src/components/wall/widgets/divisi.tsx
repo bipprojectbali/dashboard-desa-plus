@@ -1,49 +1,19 @@
-import { Group, Stack, Text } from "@mantine/core";
+import { Badge, Box, Group, Progress, Stack, Text } from "@mantine/core";
 import type { WallDivisi } from "@/types/wall";
+import { DonutBody } from "../donut-body";
 import { HorizontalBar } from "../horizontal-bar";
-import { StatRow } from "../stat-row";
 import { WALL_THEME } from "../wall-theme";
 
-/** Kinerja divisi: total kegiatan + breakdown status dgn bar proporsi. */
+/** Kinerja divisi: donut progres kegiatan per status (% live dari NOC). */
 export function DivisiKinerjaBody({
 	data,
 }: {
 	data: WallDivisi["activities"];
 }) {
-	const total = data.total || 0;
-	const rows = [
-		["Selesai", data.counts.selesai, WALL_THEME.OK],
-		["Berjalan", data.counts.berjalan, WALL_THEME.ACCENT],
-		["Tertunda", data.counts.tertunda, WALL_THEME.WARN],
-		["Dibatalkan", data.counts.dibatalkan, WALL_THEME.DANGER],
-	] as const;
-	const rate = total > 0 ? Math.round((data.counts.selesai / total) * 100) : 0;
-	return (
-		<Stack gap="md" justify="space-between" style={{ height: "100%" }}>
-			<Stack gap="md">
-				{rows.map(([label, count, color]) => (
-					<StatRow
-						key={label}
-						label={label}
-						value={count}
-						color={color}
-						fraction={total > 0 ? count / total : 0}
-					/>
-				))}
-			</Stack>
-			<Group justify="space-between" align="baseline">
-				<Text size="sm" style={{ color: WALL_THEME.TEXT_DIM }}>
-					{total} kegiatan · Rampung
-				</Text>
-				<Text fw={800} style={{ fontSize: 20, color: WALL_THEME.OK }}>
-					{rate}%
-				</Text>
-			</Group>
-		</Stack>
-	);
+	return <DonutBody data={data} unit="kegiatan" />;
 }
 
-/** Dokumen per jenis (bar horizontal). Slice yang sebelumnya nganggur. */
+/** Dokumen per jenis (bar horizontal). */
 export function DivisiDocumentsBody({
 	data,
 }: {
@@ -57,5 +27,104 @@ export function DivisiDocumentsBody({
 			valueKey="jumlah"
 			color={WALL_THEME.ACCENT}
 		/>
+	);
+}
+
+function statusColor(status: string): string {
+	if (status === "SELESAI") return WALL_THEME.OK;
+	if (status === "BERJALAN") return WALL_THEME.ACCENT;
+	return WALL_THEME.WARN;
+}
+
+/** Kegiatan terbaru: list title + progress bar + status badge. */
+export function DivisiKegiatanBody({ data }: { data: WallDivisi["projects"] }) {
+	return (
+		<Stack gap="sm" style={{ height: "100%", overflow: "hidden" }}>
+			{data.map((p) => (
+				<Box key={p.id}>
+					<Group justify="space-between" mb={4}>
+						<Text
+							size="sm"
+							fw={600}
+							style={{
+								color: WALL_THEME.TEXT,
+								overflow: "hidden",
+								textOverflow: "ellipsis",
+								whiteSpace: "nowrap",
+								flex: 1,
+							}}
+						>
+							{p.title}
+						</Text>
+						<Badge
+							size="xs"
+							radius="xl"
+							style={{
+								backgroundColor: statusColor(p.status),
+								color: "#fff",
+								flexShrink: 0,
+							}}
+						>
+							{p.status === "SELESAI" ? "Selesai" : "Berjalan"}
+						</Badge>
+					</Group>
+					<Progress
+						value={p.progress}
+						size="sm"
+						radius="xl"
+						color={statusColor(p.status)}
+						styles={{ root: { backgroundColor: WALL_THEME.TRACK } }}
+					/>
+					<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }} mt={2}>
+						{p.divisi}
+					</Text>
+				</Box>
+			))}
+		</Stack>
+	);
+}
+
+/** Diskusi terbaru: list pesan + divisi + tanggal (tanpa nama pengirim). */
+export function DivisiDiskusiBody({
+	data,
+}: {
+	data: WallDivisi["discussions"];
+}) {
+	return (
+		<Stack gap="sm" style={{ height: "100%", overflow: "hidden" }}>
+			{data.map((d) => (
+				<Box
+					key={d.id}
+					style={{
+						borderLeft: `3px solid ${WALL_THEME.ACCENT}`,
+						paddingLeft: 10,
+					}}
+				>
+					<Text
+						size="sm"
+						style={{
+							color: WALL_THEME.TEXT,
+							overflow: "hidden",
+							display: "-webkit-box",
+							WebkitLineClamp: 2,
+							WebkitBoxOrient: "vertical",
+						}}
+					>
+						{d.message}
+					</Text>
+					<Group gap="xs" mt={2}>
+						<Text size="xs" style={{ color: WALL_THEME.ACCENT }}>
+							{d.divisi}
+						</Text>
+						<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }}>
+							·
+						</Text>
+						<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }}>
+							{d.date ? new Date(d.date).toLocaleDateString("id-ID") : "—"}
+						</Text>
+					</Group>
+				</Box>
+			))}
+		</Stack>
 	);
 }

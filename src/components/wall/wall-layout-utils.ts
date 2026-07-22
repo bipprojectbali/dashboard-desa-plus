@@ -44,6 +44,8 @@ export const ALL_WIDGET_IDS = [
 	// Kinerja divisi
 	"divisi-kinerja",
 	"divisi-documents",
+	"divisi-kegiatan",
+	"divisi-diskusi",
 	// Keamanan
 	"keamanan-status",
 	// Ops / sistem
@@ -80,6 +82,8 @@ export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
 	"demografi-stats": "sm",
 	"divisi-kinerja": "tall",
 	"divisi-documents": "wide",
+	"divisi-kegiatan": "tall",
+	"divisi-diskusi": "tall",
 	"keamanan-status": "sm",
 	"ops-panel": "tall",
 };

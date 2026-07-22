@@ -47,22 +47,22 @@ export interface WallDemografi {
 }
 
 export interface WallDivisi {
-	activities: {
-		total: number;
-		counts: {
-			selesai: number;
-			berjalan: number;
-			tertunda: number;
-			dibatalkan: number;
-		};
-		percentages: {
-			selesai: number;
-			berjalan: number;
-			tertunda: number;
-			dibatalkan: number;
-		};
-	};
+	activities: Array<{ name: string; value: number; color: string }>;
 	documents: Array<{ name: string; jumlah: number; color: string }>;
+	projects: Array<{
+		id: string;
+		title: string;
+		status: string;
+		progress: number;
+		divisi: string;
+		date: string;
+	}>;
+	discussions: Array<{
+		id: string;
+		message: string;
+		divisi: string;
+		date: string;
+	}>;
 }
 
 export interface WallKeamanan {

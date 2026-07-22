@@ -27,3 +27,20 @@ export function mapDiscussions(raw: NocDiscussionRaw[]): MappedDiscussion[] {
 		createdAt: d.date,
 	}));
 }
+
+export interface WallDiscussion {
+	id: string;
+	message: string;
+	divisi: string;
+	date: string;
+}
+
+/** Map raw NOC latest-discussion → wall slice (tanpa PII senderName/user). */
+export function mapWallDiscussions(raw: NocDiscussionRaw[]): WallDiscussion[] {
+	return raw.map((d) => ({
+		id: d.id,
+		message: d.desc || d.title,
+		divisi: d.group || "General",
+		date: d.date,
+	}));
+}

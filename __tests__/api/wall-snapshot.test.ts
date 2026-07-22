@@ -24,7 +24,7 @@ const ALLOWED_KEYS: Record<string, string[]> = {
 	keuangan: ["apbdes", "satisfaction", "sdgs"],
 	pengaduan: ["stats", "trend7m", "serviceByType", "kepuasan"],
 	demografi: ["stats", "gender", "religion", "ageGroups", "occupationTop"],
-	divisi: ["activities", "documents"],
+	divisi: ["activities", "documents", "projects", "discussions"],
 	keamanan: ["total", "baru", "diproses", "selesai"],
 	// beranda: teks operasional publik (name, title, location) disertakan sengaja
 	// (setara website desa). Field PII-orang dilarang — dijaga oleh test nested di bawah.
