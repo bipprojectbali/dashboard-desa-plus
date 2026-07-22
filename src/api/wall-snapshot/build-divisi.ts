@@ -60,7 +60,7 @@ async function fetchProjects(): Promise<WallDivisi["projects"]> {
 		async () => {
 			const { data: extData, error } = await nocExternalClient.GET(
 				"/api/noc/latest-projects",
-				{ params: { query: { idDesa: DEFAULT_VILLAGE_ID, limit: "8" } } },
+				{ params: { query: { idDesa: DEFAULT_VILLAGE_ID, limit: "3" } } },
 			);
 			if (error || !extData) throw new Error("NOC API error: latest-projects");
 			const res = extData as any;
@@ -79,7 +79,7 @@ async function fetchDiscussions(): Promise<WallDivisi["discussions"]> {
 		async () => {
 			const { data: extData, error } = await nocExternalClient.GET(
 				"/api/noc/latest-discussion",
-				{ params: { query: { idDesa: DEFAULT_VILLAGE_ID, limit: "8" } } },
+				{ params: { query: { idDesa: DEFAULT_VILLAGE_ID, limit: "3" } } },
 			);
 			if (error || !extData)
 				throw new Error("NOC API error: latest-discussion");
