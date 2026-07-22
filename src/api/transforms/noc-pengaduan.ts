@@ -61,12 +61,14 @@ export function mapPengaduanService(
 	}));
 }
 
-/** Map `.pengajuan_terbaru` Jenna → `WallPengaduan["pengajuanTerbaru"]`. Non-array → `[]`. */
+const LIST_LIMIT = 5;
+
+/** Map `.pengajuan_terbaru` Jenna → `WallPengaduan["pengajuanTerbaru"]`. Non-array → `[]`. Max 5. */
 export function mapPengaduanTerbaru(
 	rows: JennaPengaduanRaw["pengajuan_terbaru"] | null | undefined,
 ): Array<{ id: string; kategori: string; subKategori: string | null; status: string; createdAt: string }> {
 	if (!Array.isArray(rows)) return [];
-	return rows.map((r) => ({
+	return rows.slice(0, LIST_LIMIT).map((r) => ({
 		id: r.id ?? "",
 		kategori: r.kategori ?? "",
 		subKategori: r.sub_kategori ?? null,
@@ -75,12 +77,12 @@ export function mapPengaduanTerbaru(
 	}));
 }
 
-/** Map `.musrenbang` Jenna → `WallPengaduan["musrenbang"]`. Non-array → `[]`. */
+/** Map `.musrenbang` Jenna → `WallPengaduan["musrenbang"]`. Non-array → `[]`. Max 5. */
 export function mapMusrenbang(
 	rows: JennaPengaduanRaw["musrenbang"] | null | undefined,
 ): Array<{ id: string; judul: string; namaPengusul: string; createdAt: string }> {
 	if (!Array.isArray(rows)) return [];
-	return rows.map((r) => ({
+	return rows.slice(0, LIST_LIMIT).map((r) => ({
 		id: r.id ?? "",
 		judul: r.judul ?? "",
 		namaPengusul: r.nama_pengusul ?? "",

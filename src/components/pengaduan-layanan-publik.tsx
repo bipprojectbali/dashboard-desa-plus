@@ -143,8 +143,8 @@ const PengaduanLayananPublik = () => {
 		jenis: item.jenis,
 		jumlah: item.count,
 	}));
-	const pengajuanTerbaru = data?.pengajuan_terbaru ?? [];
-	const musrenbang = data?.musrenbang ?? [];
+	const pengajuanTerbaru = (data?.pengajuan_terbaru ?? []).slice(0, 5);
+	const musrenbang = (data?.musrenbang ?? []).slice(0, 5);
 
 	const summaryData = [
 		{
