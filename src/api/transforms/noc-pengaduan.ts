@@ -5,6 +5,7 @@ export interface JennaPengaduanRaw {
 		baru?: number;
 		diproses?: number; // Jenna pakai "diproses", WallPengaduan pakai "proses"
 		selesai?: number;
+		ditolak?: number;
 	};
 	trends?: Array<{ bulan?: string; count?: number | string }>;
 	surat_terbanyak?: Array<{ jenis?: string; count?: number | string }>;
@@ -39,6 +40,34 @@ export function mapPengaduanStats(raw: JennaPengaduanRaw | null | undefined): {
 	};
 }
 
+/**
+ * Hitung jumlah pengaduan "ditolak" untuk kartu ringkasan.
+ *
+ * Jenna `total` sudah mencakup pengaduan yang ditolak, tetapi status ini tidak
+ * ikut diringkas di `baru/diproses/selesai` — sehingga penjumlahan tiga kartu
+ * tidak pernah sama dengan `total`. Pakai field `ditolak` dari API jika tersedia;
+ * jika tidak, derive dari selisih `total - baru - diproses - selesai`
+ * (di-clamp ≥ 0) agar keempat kartu ter-rekonsiliasi dengan total.
+ */
+export function deriveDitolak(
+	stats:
+		| {
+				total?: number;
+				baru?: number;
+				diproses?: number;
+				selesai?: number;
+				ditolak?: number;
+		  }
+		| null
+		| undefined,
+): number {
+	const total = stats?.total ?? 0;
+	const baru = stats?.baru ?? 0;
+	const diproses = stats?.diproses ?? 0;
+	const selesai = stats?.selesai ?? 0;
+	return stats?.ditolak ?? Math.max(0, total - baru - diproses - selesai);
+}
+
 /** Map `.trends` Jenna → `WallPengaduan["trend7m"]`. Non-array → `[]`. */
 export function mapPengaduanTrend(
 	rows: JennaPengaduanRaw["trends"] | null | undefined,
@@ -66,7 +95,13 @@ const LIST_LIMIT = 5;
 /** Map `.pengajuan_terbaru` Jenna → `WallPengaduan["pengajuanTerbaru"]`. Non-array → `[]`. Max 5. */
 export function mapPengaduanTerbaru(
 	rows: JennaPengaduanRaw["pengajuan_terbaru"] | null | undefined,
-): Array<{ id: string; kategori: string; subKategori: string | null; status: string; createdAt: string }> {
+): Array<{
+	id: string;
+	kategori: string;
+	subKategori: string | null;
+	status: string;
+	createdAt: string;
+}> {
 	if (!Array.isArray(rows)) return [];
 	return rows.slice(0, LIST_LIMIT).map((r) => ({
 		id: r.id ?? "",
@@ -80,7 +115,12 @@ export function mapPengaduanTerbaru(
 /** Map `.musrenbang` Jenna → `WallPengaduan["musrenbang"]`. Non-array → `[]`. Max 5. */
 export function mapMusrenbang(
 	rows: JennaPengaduanRaw["musrenbang"] | null | undefined,
-): Array<{ id: string; judul: string; namaPengusul: string; createdAt: string }> {
+): Array<{
+	id: string;
+	judul: string;
+	namaPengusul: string;
+	createdAt: string;
+}> {
 	if (!Array.isArray(rows)) return [];
 	return rows.slice(0, LIST_LIMIT).map((r) => ({
 		id: r.id ?? "",

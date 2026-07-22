@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import {
+	deriveDitolak,
 	mapPengaduanService,
 	mapPengaduanStats,
 	mapPengaduanTrend,
@@ -34,6 +35,47 @@ describe("mapPengaduanStats", () => {
 			stats: { total: 100, baru: 20, diproses: 30, selesai: 50 },
 		});
 		expect(result).toEqual({ total: 100, baru: 20, proses: 30, selesai: 50 });
+	});
+});
+
+describe("deriveDitolak", () => {
+	it("derives from selisih when ditolak absent (kasus dashboard: 21-16-0-3=2)", () => {
+		expect(
+			deriveDitolak({ total: 21, baru: 16, diproses: 0, selesai: 3 }),
+		).toBe(2);
+	});
+
+	it("prefers explicit ditolak field over derivation", () => {
+		expect(
+			deriveDitolak({
+				total: 21,
+				baru: 16,
+				diproses: 0,
+				selesai: 3,
+				ditolak: 5,
+			}),
+		).toBe(5);
+	});
+
+	it("clamps to 0 when selisih would be negative", () => {
+		expect(deriveDitolak({ total: 10, baru: 6, diproses: 3, selesai: 4 })).toBe(
+			0,
+		);
+	});
+
+	it("returns 0 for empty stats", () => {
+		expect(deriveDitolak({})).toBe(0);
+	});
+
+	it("handles null/undefined input", () => {
+		expect(deriveDitolak(null)).toBe(0);
+		expect(deriveDitolak(undefined)).toBe(0);
+	});
+
+	it("reconciles: baru + diproses + selesai + ditolak === total", () => {
+		const s = { total: 21, baru: 16, diproses: 0, selesai: 3 };
+		const ditolak = deriveDitolak(s);
+		expect(s.baru + s.diproses + s.selesai + ditolak).toBe(s.total);
 	});
 });
 

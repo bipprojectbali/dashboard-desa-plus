@@ -200,6 +200,8 @@ export type TranslationKeys = {
 		sedangDitangani: string;
 		selesai: string;
 		terselesaikan: string;
+		ditolak: string;
+		tidakDitindaklanjuti: string;
 		trenPengaduan: string;
 		tidakAdaDataPengaduan: string;
 		suratTerbanyak: string;
@@ -667,6 +669,8 @@ const id: TranslationKeys = {
 		sedangDitangani: "Sedang ditangani",
 		selesai: "Selesai",
 		terselesaikan: "Terselesaikan",
+		ditolak: "Ditolak",
+		tidakDitindaklanjuti: "Tidak ditindaklanjuti",
 		trenPengaduan: "Tren Pengaduan",
 		tidakAdaDataPengaduan: "Tidak ada data pengaduan 7 bulan terakhir",
 		suratTerbanyak: "Surat Terbanyak",

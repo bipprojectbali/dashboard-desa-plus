@@ -205,6 +205,8 @@ const en: TranslationKeys = {
 		sedangDitangani: "Being handled",
 		selesai: "Completed",
 		terselesaikan: "Resolved",
+		ditolak: "Rejected",
+		tidakDitindaklanjuti: "Not followed up",
 		trenPengaduan: "Complaint Trends",
 		tidakAdaDataPengaduan: "No complaint data for the last 7 months",
 		suratTerbanyak: "Most Requested Letters",
