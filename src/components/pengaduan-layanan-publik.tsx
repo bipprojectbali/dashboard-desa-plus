@@ -21,6 +21,7 @@ import {
 	FileText,
 	Inbox,
 	MessageCircle,
+	XCircle,
 } from "lucide-react";
 import {
 	Bar,
@@ -34,6 +35,7 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
+import { deriveDitolak } from "@/api/transforms/noc-pengaduan";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
@@ -49,6 +51,7 @@ type PengaduanData = {
 		baru: number;
 		diproses: number;
 		selesai: number;
+		ditolak?: number;
 	};
 	trends: { bulan: string; count: number }[];
 	surat_terbanyak: { jenis: string; count: number }[];
@@ -135,6 +138,7 @@ const PengaduanLayananPublik = () => {
 	const { data, loading, error, refresh } = usePengaduanNoc();
 
 	const stats = data?.stats ?? { total: 0, baru: 0, diproses: 0, selesai: 0 };
+	const ditolak = deriveDitolak(stats);
 	const trends = (data?.trends ?? []).map((item) => ({
 		bulan: item.bulan,
 		jumlah: item.count,
@@ -175,6 +179,13 @@ const PengaduanLayananPublik = () => {
 			icon: CheckCircle,
 			color: "darmasaba-navy.7",
 		},
+		{
+			title: t.pengaduanLayanan.ditolak,
+			value: ditolak,
+			subtitle: t.pengaduanLayanan.tidakDitindaklanjuti,
+			icon: XCircle,
+			color: "darmasaba-navy.7",
+		},
 	];
 
 	return (
@@ -203,14 +214,14 @@ const PengaduanLayananPublik = () => {
 			{/* TOP SECTION - 4 STAT CARDS */}
 			<Grid gutter="md">
 				{loading
-					? Array.from({ length: 4 }).map((_, i) => (
+					? Array.from({ length: 5 }).map((_, i) => (
 							// biome-ignore lint/suspicious/noArrayIndexKey: static skeleton array
-							<Grid.Col key={i} span={{ base: 12, sm: 6, lg: 3 }}>
+							<Grid.Col key={i} span={{ base: 12, sm: 6, lg: 2.4 }}>
 								<Skeleton height={100} radius="xl" />
 							</Grid.Col>
 						))
 					: summaryData.map((item) => (
-							<Grid.Col key={item.title} span={{ base: 12, sm: 6, lg: 3 }}>
+							<Grid.Col key={item.title} span={{ base: 12, sm: 6, lg: 2.4 }}>
 								<Card
 									p="md"
 									radius="xl"
