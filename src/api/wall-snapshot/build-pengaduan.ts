@@ -1,43 +1,36 @@
 import type { WallPengaduan } from "@/types/wall";
-import { prisma } from "@/utils/db";
+import { TTL, withCache } from "@/utils/cache";
+import {
+	type JennaPengaduanRaw,
+	mapPengaduanService,
+	mapPengaduanStats,
+	mapPengaduanTrend,
+} from "../transforms/noc-pengaduan";
 
-/**
- * Pengaduan + layanan: stats status, trend 7 bulan, surat layanan per tipe,
- * kepuasan. Query sama dengan complaint.ts + dashboard.ts, tanpa field PII.
- */
+/** Fetch & cache data pengaduan dari Jenna. Guard: env kosong → throw → settle() → null. */
+async function fetchPengaduanFromJenna(): Promise<WallPengaduan> {
+	return withCache("dashboard:pengaduan", TTL.DASHBOARD, async () => {
+		const apiUrl = process.env.VITE_JENNA_API_URL ?? "";
+		const token = process.env.VITE_JENNA_API_TOKEN ?? "";
+		if (!apiUrl || !token) throw new Error("VITE_JENNA_API_URL/TOKEN not set");
+
+		const res = await fetch(`${apiUrl}/api/noc/pengaduan`, {
+			headers: { Authorization: `Bearer ${token}` },
+		});
+		if (!res.ok) throw new Error(`Jenna pengaduan error: ${res.status}`);
+
+		const json = await res.json();
+		const d = (json?.data ?? json) as JennaPengaduanRaw;
+
+		return {
+			stats: mapPengaduanStats(d),
+			trend7m: mapPengaduanTrend(d.trends),
+			serviceByType: mapPengaduanService(d.surat_terbanyak),
+		};
+	});
+}
+
+/** Rakit slice pengaduan dari Jenna (sumber sama dgn halaman /pengaduan-layanan-publik). */
 export async function buildPengaduan(): Promise<WallPengaduan> {
-	const [total, baru, proses, selesai, trendRows, serviceRows, kepuasan] =
-		await Promise.all([
-			prisma.complaint.count(),
-			prisma.complaint.count({ where: { status: "BARU" } }),
-			prisma.complaint.count({ where: { status: "DIPROSES" } }),
-			prisma.complaint.count({ where: { status: "SELESAI" } }),
-			prisma.$queryRaw<{ month: string; count: number }[]>`
-				SELECT
-					TO_CHAR("createdAt", 'Mon') as month,
-					COUNT(*)::INTEGER as count
-				FROM complaint
-				WHERE "createdAt" > NOW() - INTERVAL '7 months'
-				GROUP BY month, EXTRACT(MONTH FROM "createdAt")
-				ORDER BY EXTRACT(MONTH FROM "createdAt") ASC
-			`,
-			prisma.serviceLetter.groupBy({
-				by: ["letterType"],
-				_count: { _all: true },
-			}),
-			prisma.satisfactionRating.findMany({
-				orderBy: { value: "desc" },
-				select: { category: true, value: true, color: true },
-			}),
-		]);
-
-	return {
-		stats: { total, baru, proses, selesai },
-		trend7m: trendRows.map((r) => ({ month: r.month, count: Number(r.count) })),
-		serviceByType: serviceRows.map((r) => ({
-			letterType: r.letterType,
-			count: r._count._all,
-		})),
-		kepuasan,
-	};
+	return fetchPengaduanFromJenna();
 }

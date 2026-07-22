@@ -36,7 +36,6 @@ import {
 } from "./widgets/keuangan";
 import { OpsBody } from "./widgets/ops";
 import {
-	PengaduanKepuasanBody,
 	PengaduanServiceTypeBody,
 	PengaduanStatusBody,
 	PengaduanTrendBody,
@@ -154,13 +153,6 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		category: "pengaduan",
 		selectData: (s) => nonEmpty(s?.pengaduan?.serviceByType),
 		Body: PengaduanServiceTypeBody,
-	},
-	"pengaduan-kepuasan": {
-		id: "pengaduan-kepuasan",
-		title: "Kepuasan Layanan (Pengaduan)",
-		category: "pengaduan",
-		selectData: (s) => nonEmpty(s?.pengaduan?.kepuasan),
-		Body: PengaduanKepuasanBody,
 	},
 	"demografi-gender": {
 		id: "demografi-gender",
