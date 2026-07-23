@@ -8,9 +8,9 @@ import {
 
 describe("resolveSizes — geometri final per widget", () => {
 	it("tanpa override → tiap widget pakai default preset", () => {
-		const order = ["demografi-gender", "pengaduan-status"];
+		const order = ["demografi-age", "pengaduan-status"];
 		const out = resolveSizes(order, null);
-		expect(out["demografi-gender"]).toEqual(defaultGeom("demografi-gender"));
+		expect(out["demografi-age"]).toEqual(defaultGeom("demografi-age"));
 		expect(out["pengaduan-status"]).toEqual(defaultGeom("pengaduan-status"));
 	});
 

@@ -4,7 +4,17 @@ import { prisma } from "@/utils/db";
 import { desaExternalClient } from "@/utils/desa-external-client";
 import { getEnv } from "@/utils/env";
 import { apiMiddleware } from "../middleware/apiMiddleware";
-import { getDemografiSummary } from "./dashboard-cache";
+import {
+	getDemografiAge,
+	getDemografiBanjar,
+	getDemografiBirths,
+	getDemografiDeaths,
+	getDemografiMigration,
+	getDemografiOccupation,
+	getDemografiReligion,
+	getDemografiSectors,
+	getDemografiSummary,
+} from "./dashboard-cache";
 
 const APBDES_ID = getEnv("DESA_APBDES_ID", "cmk-apbdes-001");
 
@@ -51,17 +61,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/banjar",
 		async () => {
 			try {
-				const data = await withCache(
-					"demografi:banjar",
-					TTL.DEMOGRAFI,
-					async () => {
-						const response = await desaExternalClient.GET(
-							"/api/kependudukan/databanjar/find-many",
-						);
-						if (response.error) throw new Error(extractError(response.error));
-						return response.data?.data ?? null;
-					},
-				);
+				const data = await getDemografiBanjar();
 				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Banjar error:", error);
@@ -89,17 +89,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/age",
 		async () => {
 			try {
-				const data = await withCache(
-					"demografi:age",
-					TTL.DEMOGRAFI,
-					async () => {
-						const response = await desaExternalClient.GET(
-							"/api/kependudukan/distribusiumur/find-many",
-						);
-						if (response.error) throw new Error(extractError(response.error));
-						return response.data?.data ?? null;
-					},
-				);
+				const data = await getDemografiAge();
 				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Age error:", error);
@@ -127,17 +117,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/occupation",
 		async () => {
 			try {
-				const data = await withCache(
-					"demografi:occupation",
-					TTL.DEMOGRAFI,
-					async () => {
-						const response = await desaExternalClient.GET(
-							"/api/ekonomi/demografipekerjaan/find-many",
-						);
-						if (response.error) throw new Error(extractError(response.error));
-						return response.data?.data ?? null;
-					},
-				);
+				const data = await getDemografiOccupation();
 				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Occupation error:", error);
@@ -165,17 +145,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/religion",
 		async () => {
 			try {
-				const data = await withCache(
-					"demografi:religion",
-					TTL.DEMOGRAFI,
-					async () => {
-						const response = await desaExternalClient.GET(
-							"/api/kependudukan/distribusiagama/find-many",
-						);
-						if (response.error) throw new Error(extractError(response.error));
-						return response.data?.data ?? null;
-					},
-				);
+				const data = await getDemografiReligion();
 				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Religion error:", error);
@@ -203,17 +173,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/births",
 		async () => {
 			try {
-				const data = await withCache(
-					"demografi:births",
-					TTL.DEMOGRAFI,
-					async () => {
-						const response = await desaExternalClient.GET(
-							"/api/kesehatan/kelahiran/findMany",
-						);
-						if (response.error) throw new Error(extractError(response.error));
-						return response.data?.data ?? null;
-					},
-				);
+				const data = await getDemografiBirths();
 				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Births error:", error);
@@ -241,17 +201,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/deaths",
 		async () => {
 			try {
-				const data = await withCache(
-					"demografi:deaths",
-					TTL.DEMOGRAFI,
-					async () => {
-						const response = await desaExternalClient.GET(
-							"/api/kesehatan/kematian/findMany",
-						);
-						if (response.error) throw new Error(extractError(response.error));
-						return response.data?.data ?? null;
-					},
-				);
+				const data = await getDemografiDeaths();
 				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Deaths error:", error);
@@ -279,17 +229,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/migration",
 		async () => {
 			try {
-				const data = await withCache(
-					"demografi:migration",
-					TTL.DEMOGRAFI,
-					async () => {
-						const response = await desaExternalClient.GET(
-							"/api/kependudukan/migrasipenduduk/find-many",
-						);
-						if (response.error) throw new Error(extractError(response.error));
-						return response.data?.data ?? null;
-					},
-				);
+				const data = await getDemografiMigration();
 				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Migration error:", error);
@@ -317,30 +257,7 @@ export const demografi = new Elysia({ prefix: "/demografi" })
 		"/sectors",
 		async () => {
 			try {
-				const data = await withCache(
-					"demografi:sectors",
-					TTL.DEMOGRAFI,
-					async () => {
-						console.log(
-							"[Demografi API] Fetching sectors from external API...",
-						);
-						const response = await desaExternalClient.GET(
-							"/api/ekonomi/sektourunggulandesa/find-many",
-						);
-						if (response.error) {
-							console.error(
-								"[Demografi API] External sectors error:",
-								response.error,
-							);
-							throw new Error(extractError(response.error));
-						}
-						const items = response.data?.data || [];
-						console.log(
-							`[Demografi API] Sectors fetched successfully: ${Array.isArray(items) ? items.length : 0} items`,
-						);
-						return items;
-					},
-				);
+				const data = await getDemografiSectors();
 				return { success: true, data, lastSyncedAt };
 			} catch (error) {
 				console.error("[Demografi API] Sectors error:", error);

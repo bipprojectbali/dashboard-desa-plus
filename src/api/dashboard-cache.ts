@@ -56,3 +56,62 @@ export async function getDemografiSummary(): Promise<unknown | null> {
 		return res.data?.data ?? null;
 	});
 }
+
+/**
+ * Loader per-slice demografi. Satu modul ini = satu penulis shape per cache key
+ * `demografi:*` → dibaca oleh route dashboard (demografi.ts) DAN wall builder
+ * (build-demografi.ts). Semua mengembalikan `data.data` mentah (array) atau null.
+ * Throw (tidak swallow) supaya try/catch pemanggil tetap bekerja.
+ */
+function makeDemografiLoader(cacheKey: string, path: DemografiPath) {
+	return () =>
+		withCache(cacheKey, TTL.DEMOGRAFI, async () => {
+			const res = await desaExternalClient.GET(path);
+			if (res.error) throw new Error(`Desa API error: ${path}`);
+			return res.data?.data ?? null;
+		});
+}
+
+/** Path Desa API yang dipakai loader demografi (union sempit untuk type-safety). */
+type DemografiPath =
+	| "/api/kependudukan/databanjar/find-many"
+	| "/api/kependudukan/distribusiumur/find-many"
+	| "/api/ekonomi/demografipekerjaan/find-many"
+	| "/api/kependudukan/distribusiagama/find-many"
+	| "/api/kesehatan/kelahiran/findMany"
+	| "/api/kesehatan/kematian/findMany"
+	| "/api/kependudukan/migrasipenduduk/find-many"
+	| "/api/ekonomi/sektourunggulandesa/find-many";
+
+export const getDemografiBanjar = makeDemografiLoader(
+	"demografi:banjar",
+	"/api/kependudukan/databanjar/find-many",
+);
+export const getDemografiAge = makeDemografiLoader(
+	"demografi:age",
+	"/api/kependudukan/distribusiumur/find-many",
+);
+export const getDemografiOccupation = makeDemografiLoader(
+	"demografi:occupation",
+	"/api/ekonomi/demografipekerjaan/find-many",
+);
+export const getDemografiReligion = makeDemografiLoader(
+	"demografi:religion",
+	"/api/kependudukan/distribusiagama/find-many",
+);
+export const getDemografiBirths = makeDemografiLoader(
+	"demografi:births",
+	"/api/kesehatan/kelahiran/findMany",
+);
+export const getDemografiDeaths = makeDemografiLoader(
+	"demografi:deaths",
+	"/api/kesehatan/kematian/findMany",
+);
+export const getDemografiMigration = makeDemografiLoader(
+	"demografi:migration",
+	"/api/kependudukan/migrasipenduduk/find-many",
+);
+export const getDemografiSectors = makeDemografiLoader(
+	"demografi:sectors",
+	"/api/ekonomi/sektourunggulandesa/find-many",
+);
