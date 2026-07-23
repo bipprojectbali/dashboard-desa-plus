@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - **KPI wall beranda sinkron dengan dashboard.** Sebelumnya panel Beranda di `/wall` (NOC TV) membaca data dari DB lokal (Prisma seed minim) sehingga angka berbeda jauh dari dashboard `/`. Kini keduanya menggunakan shared loader (`dashboard-cache.ts`) yang menulis ke cache key yang sama — satu sumber kebenaran untuk stat surat mingguan, pengaduan, dan total penduduk.
 
 ### Added
+- **Kategori & 4 widget Jenna Analytic di NOC Video Wall** (`/wall`, mode edit admin). Menu "Tambah Widget" kini punya seksi **Jenna Analytic** berisi: **KPI Chatbot** (interaksi hari ini, jawaban otomatis %, belum ditindak, waktu respon), **Interaksi Chatbot** (bar mingguan), **Topik Pertanyaan Terbanyak**, dan **Jam Tersibuk**. Data live dari sumber yang sama dengan halaman `/jenna-analytic` (NOC/Jenna API) — angka wall identik dengan halaman. Tiap panel diisolasi: bila API Jenna tak tersetel/gagal, hanya panel Jenna yang kosong, wall lain tetap render.
 - **Atur ukuran widget di NOC Video Wall** (`/wall`, mode edit admin). Tiap widget kini punya handle ◢ di pojok kanan-bawah — tarik untuk mengubah ukuran tile: memanjang ke kanan (lebar), ke bawah (tinggi), atau keduanya. Ukuran nge-snap ke sel grid (lebar 1–4 kolom × tinggi 1–3 baris) dan tersimpan ke server, jadi TV langsung ikut ubah dalam satu siklus refresh — tanpa perlu ganti kode/deploy ulang.
 - Tombol **Reset default** kini juga mengembalikan ukuran tiap widget ke preset bawaannya (donut besar, chart lebar, daftar tinggi, KPI ringkas).
 
