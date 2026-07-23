@@ -1,12 +1,12 @@
 import { $ } from "bun";
 import { Elysia, t } from "elysia";
 import { apiMiddleware } from "../middleware/apiMiddleware";
-import { cache, TTL, withCache } from "../utils/cache";
+import { TTL, withCache } from "../utils/cache";
 import { prisma } from "../utils/db";
-import { desaExternalClient } from "../utils/desa-external-client";
 import { getEnv } from "../utils/env";
 import { nocExternalClient } from "../utils/noc-external-client";
-import { type ApbdesEntryRaw, mapApbdesList } from "./transforms/apbdes";
+import { fetchApbdesEntriesRaw } from "./sources/apbdes";
+import { mapApbdesList } from "./transforms/apbdes";
 import {
 	mapDiscussions,
 	type NocDiscussionRaw,
@@ -632,31 +632,7 @@ export const noc = new Elysia({ prefix: "/noc" })
 		"/apbdes-data",
 		async () => {
 			try {
-				const cached = cache.get<ApbdesEntryRaw[]>("apbdes:all");
-				let entries: ApbdesEntryRaw[];
-
-				if (cached) {
-					console.log("[APBDes API] Returning cached APBDes data");
-					entries = cached;
-				} else {
-					console.log("[APBDes API] Fetching findMany from Desa API");
-					const client = desaExternalClient as any;
-					const { data: extData, error } = await client.GET(
-						"/api/landingpage/apbdes/findMany",
-					);
-
-					if (error || !extData) {
-						return {
-							success: false,
-							message: "Gagal mengambil data APBDes dari website desa",
-							years: [],
-						};
-					}
-
-					entries = (extData.data ?? extData) as ApbdesEntryRaw[];
-					cache.set("apbdes:all", entries, TTL.APBDES);
-				}
-
+				const entries = await fetchApbdesEntriesRaw();
 				const years = mapApbdesList(entries);
 				return {
 					success: true,

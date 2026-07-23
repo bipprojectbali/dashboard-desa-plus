@@ -11,7 +11,7 @@ export interface ApbdesItemRaw {
 	tipe?: string;
 	level?: number;
 	parentId?: string | null;
-	realisasiItems?: { jumlah?: number }[];
+	realisasiItems?: { jumlah?: number; tanggal?: string }[];
 }
 
 export interface ApbdesEntryRaw {
