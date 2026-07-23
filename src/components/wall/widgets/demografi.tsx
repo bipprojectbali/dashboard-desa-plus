@@ -122,7 +122,7 @@ export function DemografiDinamikaBody({
 	);
 }
 
-/** Data per banjar: tabel penduduk/KK/miskin, sorted terpadat. */
+/** Data per banjar: tabel penduduk/KK/miskin, 5 terpadat (sort di mapBanjar). */
 export function DemografiBanjarBody({
 	data,
 }: {
@@ -211,7 +211,7 @@ export function DemografiBanjarBody({
 	);
 }
 
-/** Sektor unggulan desa (bar horizontal). Sumber: Desa API. */
+/** Sektor unggulan desa (bar horizontal), 5 teratas (sort di mapSectors). Sumber: Desa API. */
 export function DemografiSectorsBody({
 	data,
 }: {
