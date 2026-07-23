@@ -12389,6 +12389,557 @@
         }
       }
     },
+    "/api/keuangan/apbdes-detail": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "years": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "tahun",
+                          "name",
+                          "totalBudget",
+                          "totalIncomeReal",
+                          "totalExpenseReal",
+                          "realisasiPercent",
+                          "monthly",
+                          "allocation",
+                          "report",
+                          "aid"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "tahun": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "totalBudget": {
+                            "type": "number"
+                          },
+                          "totalIncomeReal": {
+                            "type": "number"
+                          },
+                          "totalExpenseReal": {
+                            "type": "number"
+                          },
+                          "realisasiPercent": {
+                            "type": "number"
+                          },
+                          "monthly": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "income",
+                                "expense"
+                              ],
+                              "properties": {
+                                "income": {
+                                  "type": "number"
+                                },
+                                "expense": {
+                                  "type": "number"
+                                }
+                              }
+                            }
+                          },
+                          "allocation": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "sector",
+                                "amount"
+                              ],
+                              "properties": {
+                                "sector": {
+                                  "type": "string"
+                                },
+                                "amount": {
+                                  "type": "number"
+                                }
+                              }
+                            }
+                          },
+                          "report": {
+                            "type": "object",
+                            "required": [
+                              "income",
+                              "expenses",
+                              "totalIncome",
+                              "totalExpense"
+                            ],
+                            "properties": {
+                              "income": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "required": [
+                                    "category",
+                                    "amount"
+                                  ],
+                                  "properties": {
+                                    "category": {
+                                      "type": "string"
+                                    },
+                                    "amount": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              },
+                              "expenses": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "required": [
+                                    "category",
+                                    "amount"
+                                  ],
+                                  "properties": {
+                                    "category": {
+                                      "type": "string"
+                                    },
+                                    "amount": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              },
+                              "totalIncome": {
+                                "type": "number"
+                              },
+                              "totalExpense": {
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "aid": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "source",
+                                "amount",
+                                "status"
+                              ],
+                              "properties": {
+                                "source": {
+                                  "type": "string"
+                                },
+                                "amount": {
+                                  "type": "number"
+                                },
+                                "status": {
+                                  "anyOf": [
+                                    {
+                                      "const": "cair",
+                                      "type": "string"
+                                    },
+                                    {
+                                      "const": "proses",
+                                      "type": "string"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "years"
+                  ]
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "years": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "tahun",
+                          "name",
+                          "totalBudget",
+                          "totalIncomeReal",
+                          "totalExpenseReal",
+                          "realisasiPercent",
+                          "monthly",
+                          "allocation",
+                          "report",
+                          "aid"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "tahun": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "totalBudget": {
+                            "type": "number"
+                          },
+                          "totalIncomeReal": {
+                            "type": "number"
+                          },
+                          "totalExpenseReal": {
+                            "type": "number"
+                          },
+                          "realisasiPercent": {
+                            "type": "number"
+                          },
+                          "monthly": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "income",
+                                "expense"
+                              ],
+                              "properties": {
+                                "income": {
+                                  "type": "number"
+                                },
+                                "expense": {
+                                  "type": "number"
+                                }
+                              }
+                            }
+                          },
+                          "allocation": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "sector",
+                                "amount"
+                              ],
+                              "properties": {
+                                "sector": {
+                                  "type": "string"
+                                },
+                                "amount": {
+                                  "type": "number"
+                                }
+                              }
+                            }
+                          },
+                          "report": {
+                            "type": "object",
+                            "required": [
+                              "income",
+                              "expenses",
+                              "totalIncome",
+                              "totalExpense"
+                            ],
+                            "properties": {
+                              "income": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "required": [
+                                    "category",
+                                    "amount"
+                                  ],
+                                  "properties": {
+                                    "category": {
+                                      "type": "string"
+                                    },
+                                    "amount": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              },
+                              "expenses": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "required": [
+                                    "category",
+                                    "amount"
+                                  ],
+                                  "properties": {
+                                    "category": {
+                                      "type": "string"
+                                    },
+                                    "amount": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              },
+                              "totalIncome": {
+                                "type": "number"
+                              },
+                              "totalExpense": {
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "aid": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "source",
+                                "amount",
+                                "status"
+                              ],
+                              "properties": {
+                                "source": {
+                                  "type": "string"
+                                },
+                                "amount": {
+                                  "type": "number"
+                                },
+                                "status": {
+                                  "anyOf": [
+                                    {
+                                      "const": "cair",
+                                      "type": "string"
+                                    },
+                                    {
+                                      "const": "proses",
+                                      "type": "string"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "years"
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "years": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "tahun",
+                          "name",
+                          "totalBudget",
+                          "totalIncomeReal",
+                          "totalExpenseReal",
+                          "realisasiPercent",
+                          "monthly",
+                          "allocation",
+                          "report",
+                          "aid"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "tahun": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "totalBudget": {
+                            "type": "number"
+                          },
+                          "totalIncomeReal": {
+                            "type": "number"
+                          },
+                          "totalExpenseReal": {
+                            "type": "number"
+                          },
+                          "realisasiPercent": {
+                            "type": "number"
+                          },
+                          "monthly": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "income",
+                                "expense"
+                              ],
+                              "properties": {
+                                "income": {
+                                  "type": "number"
+                                },
+                                "expense": {
+                                  "type": "number"
+                                }
+                              }
+                            }
+                          },
+                          "allocation": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "sector",
+                                "amount"
+                              ],
+                              "properties": {
+                                "sector": {
+                                  "type": "string"
+                                },
+                                "amount": {
+                                  "type": "number"
+                                }
+                              }
+                            }
+                          },
+                          "report": {
+                            "type": "object",
+                            "required": [
+                              "income",
+                              "expenses",
+                              "totalIncome",
+                              "totalExpense"
+                            ],
+                            "properties": {
+                              "income": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "required": [
+                                    "category",
+                                    "amount"
+                                  ],
+                                  "properties": {
+                                    "category": {
+                                      "type": "string"
+                                    },
+                                    "amount": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              },
+                              "expenses": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "required": [
+                                    "category",
+                                    "amount"
+                                  ],
+                                  "properties": {
+                                    "category": {
+                                      "type": "string"
+                                    },
+                                    "amount": {
+                                      "type": "number"
+                                    }
+                                  }
+                                }
+                              },
+                              "totalIncome": {
+                                "type": "number"
+                              },
+                              "totalExpense": {
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "aid": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "source",
+                                "amount",
+                                "status"
+                              ],
+                              "properties": {
+                                "source": {
+                                  "type": "string"
+                                },
+                                "amount": {
+                                  "type": "number"
+                                },
+                                "status": {
+                                  "anyOf": [
+                                    {
+                                      "const": "cair",
+                                      "type": "string"
+                                    },
+                                    {
+                                      "const": "proses",
+                                      "type": "string"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "years"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiKeuanganApbdes-detail"
+      }
+    },
     "/api/jenna/chat": {
       "post": {
         "parameters": [],

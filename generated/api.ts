@@ -1468,6 +1468,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/keuangan/apbdes-detail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiKeuanganApbdes-detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/jenna/chat": {
         parameters: {
             query?: never;
@@ -6628,6 +6644,138 @@ export interface operations {
                     };
                     "text/plain": {
                         error: string;
+                    };
+                };
+            };
+        };
+    };
+    "getApiKeuanganApbdes-detail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        years: {
+                            id: string;
+                            tahun: number;
+                            name: string;
+                            totalBudget: number;
+                            totalIncomeReal: number;
+                            totalExpenseReal: number;
+                            realisasiPercent: number;
+                            monthly: {
+                                income: number;
+                                expense: number;
+                            }[];
+                            allocation: {
+                                sector: string;
+                                amount: number;
+                            }[];
+                            report: {
+                                income: {
+                                    category: string;
+                                    amount: number;
+                                }[];
+                                expenses: {
+                                    category: string;
+                                    amount: number;
+                                }[];
+                                totalIncome: number;
+                                totalExpense: number;
+                            };
+                            aid: {
+                                source: string;
+                                amount: number;
+                                status: "cair" | "proses";
+                            }[];
+                        }[];
+                    };
+                    "multipart/form-data": {
+                        success: boolean;
+                        message: string;
+                        years: {
+                            id: string;
+                            tahun: number;
+                            name: string;
+                            totalBudget: number;
+                            totalIncomeReal: number;
+                            totalExpenseReal: number;
+                            realisasiPercent: number;
+                            monthly: {
+                                income: number;
+                                expense: number;
+                            }[];
+                            allocation: {
+                                sector: string;
+                                amount: number;
+                            }[];
+                            report: {
+                                income: {
+                                    category: string;
+                                    amount: number;
+                                }[];
+                                expenses: {
+                                    category: string;
+                                    amount: number;
+                                }[];
+                                totalIncome: number;
+                                totalExpense: number;
+                            };
+                            aid: {
+                                source: string;
+                                amount: number;
+                                status: "cair" | "proses";
+                            }[];
+                        }[];
+                    };
+                    "text/plain": {
+                        success: boolean;
+                        message: string;
+                        years: {
+                            id: string;
+                            tahun: number;
+                            name: string;
+                            totalBudget: number;
+                            totalIncomeReal: number;
+                            totalExpenseReal: number;
+                            realisasiPercent: number;
+                            monthly: {
+                                income: number;
+                                expense: number;
+                            }[];
+                            allocation: {
+                                sector: string;
+                                amount: number;
+                            }[];
+                            report: {
+                                income: {
+                                    category: string;
+                                    amount: number;
+                                }[];
+                                expenses: {
+                                    category: string;
+                                    amount: number;
+                                }[];
+                                totalIncome: number;
+                                totalExpense: number;
+                            };
+                            aid: {
+                                source: string;
+                                amount: number;
+                                status: "cair" | "proses";
+                            }[];
+                        }[];
                     };
                 };
             };
