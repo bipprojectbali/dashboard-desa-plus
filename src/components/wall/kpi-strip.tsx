@@ -2,7 +2,6 @@ import { SimpleGrid, Text } from "@mantine/core";
 import {
 	IconBuildingStore,
 	IconCalendarEvent,
-	IconFileText,
 	IconMessage2,
 	IconShieldHalf,
 	IconUsers,
@@ -56,12 +55,6 @@ const KPI_ITEMS: Array<{
 		color: WALL_THEME.INFO,
 		Icon: IconShieldHalf,
 	},
-	{
-		key: "documents",
-		label: "Dokumen",
-		color: WALL_THEME.TEXT_DIM,
-		Icon: IconFileText,
-	},
 ];
 
 /**
@@ -71,7 +64,7 @@ const KPI_ITEMS: Array<{
  */
 export function KpiStrip({ kpi }: KpiStripProps) {
 	return (
-		<SimpleGrid cols={6} spacing="md">
+		<SimpleGrid cols={5} spacing="md">
 			{KPI_ITEMS.map(({ key, label, color, Icon }) => (
 				<div
 					key={key}
