@@ -61,6 +61,25 @@ export interface WallDemografi {
 	religion: Array<{ label: string; count: number }>;
 	ageGroups: Array<{ range: string; count: number }>;
 	occupationTop: Array<{ label: string; count: number }>;
+	/** Dinamika penduduk tahun berjalan: kelahiran/kematian/pindah masuk/keluar. */
+	dinamika: {
+		births: number;
+		deaths: number;
+		moveIn: number;
+		moveOut: number;
+	};
+	/**
+	 * Data agregat per banjar (penduduk/KK/miskin). Nama banjar = data wilayah
+	 * publik, bukan PII-orang (setara yang tampil di halaman Demografi).
+	 */
+	banjar: Array<{
+		name: string;
+		population: number;
+		kk: number;
+		poor: number;
+	}>;
+	/** Sektor ekonomi unggulan desa (label + nilai) untuk bar horizontal. */
+	sectors: Array<{ label: string; value: number }>;
 }
 
 export interface WallDivisi {

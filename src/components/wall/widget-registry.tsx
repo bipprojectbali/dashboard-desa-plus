@@ -17,9 +17,12 @@ import {
 } from "./widgets/beranda";
 import {
 	DemografiAgeBody,
+	DemografiBanjarBody,
+	DemografiDinamikaBody,
 	DemografiGenderBody,
 	DemografiOccupationBody,
 	DemografiReligionBody,
+	DemografiSectorsBody,
 	DemografiStatsBody,
 } from "./widgets/demografi";
 import {
@@ -204,6 +207,27 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		category: "demografi",
 		selectData: (s) => s?.demografi?.stats ?? null,
 		Body: DemografiStatsBody,
+	},
+	"demografi-dinamika": {
+		id: "demografi-dinamika",
+		title: "Dinamika Penduduk",
+		category: "demografi",
+		selectData: (s) => s?.demografi?.dinamika ?? null,
+		Body: DemografiDinamikaBody,
+	},
+	"demografi-banjar": {
+		id: "demografi-banjar",
+		title: "Data per Banjar",
+		category: "demografi",
+		selectData: (s) => nonEmpty(s?.demografi?.banjar),
+		Body: DemografiBanjarBody,
+	},
+	"demografi-sektor": {
+		id: "demografi-sektor",
+		title: "Sektor Unggulan",
+		category: "demografi",
+		selectData: (s) => nonEmpty(s?.demografi?.sectors),
+		Body: DemografiSectorsBody,
 	},
 	"divisi-kinerja": {
 		id: "divisi-kinerja",

@@ -28,7 +28,16 @@ const ALLOWED_KEYS: Record<string, string[]> = {
 		"pengajuanTerbaru",
 		"musrenbang",
 	],
-	demografi: ["stats", "gender", "religion", "ageGroups", "occupationTop"],
+	demografi: [
+		"stats",
+		"gender",
+		"religion",
+		"ageGroups",
+		"occupationTop",
+		"dinamika",
+		"banjar",
+		"sectors",
+	],
 	divisi: ["activities", "documents", "projects", "discussions"],
 	keamanan: ["total", "baru", "diproses", "selesai"],
 	// beranda: teks operasional publik (name, title, location) disertakan sengaja
@@ -142,6 +151,36 @@ describe("GET /api/noc/wall-snapshot", () => {
 				expect(KALENDER_ALLOWED).toContain(key);
 				expect(KALENDER_PII_BANNED).not.toContain(key);
 			}
+		}
+	});
+
+	it("demografi nested — banjar[] hanya data wilayah agregat, bukan PII-orang", async () => {
+		delete process.env.WALL_ACCESS_TOKEN;
+		const res = await api.handle(
+			new Request("http://localhost/api/noc/wall-snapshot"),
+		);
+		const { data } = await res.json();
+		const demografi = data.demografi;
+		if (demografi === null || demografi === undefined) return; // builder gagal = skip
+
+		// banjar[] = nama wilayah + angka agregat; nik/nama-orang dilarang
+		const BANJAR_ALLOWED = ["name", "population", "kk", "poor"];
+		const BANJAR_PII_BANNED = ["nik", "kk_number", "residentName", "address"];
+		for (const item of demografi.banjar ?? []) {
+			for (const key of Object.keys(item)) {
+				expect(BANJAR_ALLOWED).toContain(key);
+				expect(BANJAR_PII_BANNED).not.toContain(key);
+			}
+		}
+
+		// dinamika = 4 angka agregat, tak boleh membawa nama warga
+		if (demografi.dinamika) {
+			expect(Object.keys(demografi.dinamika).sort()).toEqual([
+				"births",
+				"deaths",
+				"moveIn",
+				"moveOut",
+			]);
 		}
 	});
 });
