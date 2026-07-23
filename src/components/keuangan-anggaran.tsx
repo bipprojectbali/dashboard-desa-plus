@@ -641,7 +641,15 @@ const KeuanganAnggaran = () => {
 								<Grid gutter="md">
 									{/* Pendapatan */}
 									<Grid.Col span={6}>
-										<Card p="sm" radius="lg" bg={dark ? "green.9" : "green.1"}>
+										<Card
+											p="sm"
+											radius="lg"
+											withBorder
+											bg="var(--mantine-color-green-light)"
+											style={{
+												borderColor: "var(--mantine-color-green-light-color)",
+											}}
+										>
 											<Title order={5} c="green.5" mb="sm">
 												{t.keuanganAnggaran.pendapatan}
 											</Title>
@@ -661,7 +669,8 @@ const KeuanganAnggaran = () => {
 													mt="sm"
 													pt="sm"
 													style={{
-														borderTop: `1px solid var(--mantine-color-green-${dark ? "8" : "3"})`,
+														borderTop:
+															"1px solid var(--mantine-color-green-light-color)",
 													}}
 												>
 													<Text fw={700} c="green.5">
@@ -677,7 +686,15 @@ const KeuanganAnggaran = () => {
 
 									{/* Belanja */}
 									<Grid.Col span={6}>
-										<Card p="sm" radius="lg" bg={dark ? "red.9" : "red.1"}>
+										<Card
+											p="sm"
+											radius="lg"
+											withBorder
+											bg="var(--mantine-color-red-light)"
+											style={{
+												borderColor: "var(--mantine-color-red-light-color)",
+											}}
+										>
 											<Title order={5} c="red.5" mb="sm">
 												{t.keuanganAnggaran.belanja}
 											</Title>
@@ -697,7 +714,8 @@ const KeuanganAnggaran = () => {
 													mt="sm"
 													pt="sm"
 													style={{
-														borderTop: `1px solid var(--mantine-color-red-${dark ? "8" : "3"})`,
+														borderTop:
+															"1px solid var(--mantine-color-red-light-color)",
 													}}
 												>
 													<Text fw={700} c="red.5">
