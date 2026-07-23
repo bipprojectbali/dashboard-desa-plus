@@ -57,4 +57,43 @@ describe("mapUpcomingEvents", () => {
 	it("handles empty array", () => {
 		expect(mapUpcomingEvents([])).toEqual([]);
 	});
+
+	// Regresi 422: item cacat dari upstream harus dibuang, bukan dilewatkan
+	// apa adanya — kalau lolos, response schema strict Elysia menolak (422).
+	it("drops item with null title", () => {
+		const bad = {
+			...BASE,
+			id: "evt-bad",
+			title: null,
+		} as unknown as NocEventRaw;
+		const result = mapUpcomingEvents([BASE, bad]);
+		expect(result).toHaveLength(1);
+		expect(result[0]?.id).toBe("evt-1");
+	});
+
+	it("drops item with missing dateStart", () => {
+		const bad = {
+			...BASE,
+			id: "evt-bad",
+			dateStart: undefined,
+		} as unknown as NocEventRaw;
+		const result = mapUpcomingEvents([BASE, bad]);
+		expect(result).toHaveLength(1);
+		expect(result[0]?.id).toBe("evt-1");
+	});
+
+	it("drops item with non-string id", () => {
+		const bad = { ...BASE, id: 123 } as unknown as NocEventRaw;
+		expect(mapUpcomingEvents([bad])).toEqual([]);
+	});
+
+	it("keeps every field a valid string for surviving items", () => {
+		const bad = { ...BASE, id: "x", title: null } as unknown as NocEventRaw;
+		for (const ev of mapUpcomingEvents([BASE, bad])) {
+			expect(typeof ev.id).toBe("string");
+			expect(typeof ev.title).toBe("string");
+			expect(typeof ev.startDate).toBe("string");
+			expect(typeof ev.time).toBe("string");
+		}
+	});
 });
