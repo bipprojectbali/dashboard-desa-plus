@@ -51,6 +51,11 @@ export const ALL_WIDGET_IDS = [
 	"keuangan-sdgs",
 	// Keamanan
 	"keamanan-status",
+	// Jenna Analytic — mirror halaman /jenna-analytic
+	"jenna-kpi",
+	"jenna-interaksi",
+	"jenna-topik",
+	"jenna-jam-sibuk",
 	// Ops / sistem
 	"ops-panel",
 ] as const;
@@ -91,6 +96,10 @@ export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
 	"divisi-kegiatan": "tall",
 	"divisi-diskusi": "tall",
 	"keamanan-status": "sm",
+	"jenna-kpi": "wide",
+	"jenna-interaksi": "wide",
+	"jenna-topik": "tall",
+	"jenna-jam-sibuk": "tall",
 	"ops-panel": "tall",
 };
 
@@ -107,6 +116,7 @@ export type WallCategory =
 	| "demografi"
 	| "divisi"
 	| "keamanan"
+	| "jenna"
 	| "ops";
 
 /**

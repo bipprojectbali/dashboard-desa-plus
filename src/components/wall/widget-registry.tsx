@@ -30,6 +30,12 @@ import {
 	DivisiKegiatanBody,
 	DivisiKinerjaBody,
 } from "./widgets/divisi";
+import {
+	JennaInteraksiBody,
+	JennaJamSibukBody,
+	JennaKpiBody,
+	JennaTopikBody,
+} from "./widgets/jenna";
 import { KeamananStatusBody } from "./widgets/keamanan";
 import {
 	KeuanganApbdesBody,
@@ -255,6 +261,34 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		category: "keamanan",
 		selectData: (s) => s?.keamanan ?? null,
 		Body: KeamananStatusBody,
+	},
+	"jenna-kpi": {
+		id: "jenna-kpi",
+		title: "KPI Chatbot",
+		category: "jenna",
+		selectData: (s) => s?.jenna?.kpi ?? null,
+		Body: JennaKpiBody,
+	},
+	"jenna-interaksi": {
+		id: "jenna-interaksi",
+		title: "Interaksi Chatbot",
+		category: "jenna",
+		selectData: (s) => nonEmpty(s?.jenna?.mingguan),
+		Body: JennaInteraksiBody,
+	},
+	"jenna-topik": {
+		id: "jenna-topik",
+		title: "Topik Pertanyaan Terbanyak",
+		category: "jenna",
+		selectData: (s) => nonEmpty(s?.jenna?.topik),
+		Body: JennaTopikBody,
+	},
+	"jenna-jam-sibuk": {
+		id: "jenna-jam-sibuk",
+		title: "Jam Tersibuk",
+		category: "jenna",
+		selectData: (s) => nonEmpty(s?.jenna?.jamSibuk),
+		Body: JennaJamSibukBody,
 	},
 	"ops-panel": {
 		id: "ops-panel",

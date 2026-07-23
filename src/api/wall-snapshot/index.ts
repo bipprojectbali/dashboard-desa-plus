@@ -4,6 +4,7 @@ import { computeSystemStats } from "@/utils/system-health";
 import { buildBeranda } from "./build-beranda";
 import { buildDemografi } from "./build-demografi";
 import { buildDivisi } from "./build-divisi";
+import { buildJenna } from "./build-jenna";
 import { buildKeamanan } from "./build-keamanan";
 import { buildKeuangan } from "./build-keuangan";
 import { buildKpi } from "./build-kpi";
@@ -46,6 +47,7 @@ export async function buildWallSnapshot(): Promise<WallSnapshot> {
 		divisi,
 		keamanan,
 		beranda,
+		jenna,
 		system,
 	] = await Promise.all([
 		settle("kpi", buildKpi),
@@ -55,6 +57,7 @@ export async function buildWallSnapshot(): Promise<WallSnapshot> {
 		settle("divisi", buildDivisi),
 		settle("keamanan", buildKeamanan),
 		settle("beranda", buildBeranda),
+		settle("jenna", buildJenna),
 		settle("system", computeSystemStats),
 	]);
 
@@ -67,6 +70,7 @@ export async function buildWallSnapshot(): Promise<WallSnapshot> {
 		divisi,
 		keamanan,
 		beranda,
+		jenna,
 		system,
 	};
 }
