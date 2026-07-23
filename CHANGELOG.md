@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.55] - 2026-07-23
+
+### Changed
+- **Widget "Sektor Unggulan" & "Data per Banjar" di NOC Video Wall dibatasi 5 teratas.** Sebelumnya kedua panel menampilkan seluruh baris tanpa urutan: pada Sektor Unggulan, banyaknya bar melampaui tinggi kartu membuat Recharts men-skip sebagian label sumbu-Y (bar tampil, teksnya hilang); pada Data per Banjar, tabel memanjang melebihi kartu. Kini keduanya diurutkan menurun (sektor by nilai, banjar by populasi) lalu diambil 5 teratas — semua label terbaca dan tabel ringkas.
+
 ## [Unreleased]
 
 ### Changed
