@@ -138,7 +138,7 @@ export function BerandaDivisiBody({ data }: { data: WallBeranda["divisi"] }) {
 					key={d.id}
 					label={d.name}
 					value={d.activityCount}
-					color={d.color}
+					color={WALL_THEME.ACCENT}
 					fraction={d.activityCount / max}
 					numeric
 				/>
