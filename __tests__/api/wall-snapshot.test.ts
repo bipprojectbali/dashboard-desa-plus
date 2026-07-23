@@ -16,13 +16,18 @@ const KPI_KEYS = [
 	"complaints",
 	"activities",
 	"securityReports",
-	"documents",
 ] as const;
 
 const ALLOWED_KEYS: Record<string, string[]> = {
 	kpi: [...KPI_KEYS],
 	keuangan: ["apbdes", "satisfaction", "sdgs"],
-	pengaduan: ["stats", "trend7m", "serviceByType", "pengajuanTerbaru", "musrenbang"],
+	pengaduan: [
+		"stats",
+		"trend7m",
+		"serviceByType",
+		"pengajuanTerbaru",
+		"musrenbang",
+	],
 	demografi: ["stats", "gender", "religion", "ageGroups", "occupationTop"],
 	divisi: ["activities", "documents", "projects", "discussions"],
 	keamanan: ["total", "baru", "diproses", "selesai"],
@@ -51,7 +56,7 @@ describe("GET /api/noc/wall-snapshot", () => {
 		expect(body.data).toBeTruthy();
 	});
 
-	it("kpi punya 6 key & system punya field health", async () => {
+	it("kpi punya 5 key & system punya field health", async () => {
 		delete process.env.WALL_ACCESS_TOKEN;
 		const res = await api.handle(
 			new Request("http://localhost/api/noc/wall-snapshot"),

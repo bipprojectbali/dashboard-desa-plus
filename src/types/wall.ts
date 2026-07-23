@@ -17,7 +17,6 @@ export interface WallKpi {
 	complaints: number;
 	activities: number;
 	securityReports: number;
-	documents: number;
 }
 
 export interface WallKeuangan {
