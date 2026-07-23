@@ -25,7 +25,7 @@ async function fetchUmkmAktif(): Promise<number> {
 
 async function fetchUpcomingCount(): Promise<number> {
 	return withCache(
-		`dashboard:upcoming-events:${DEFAULT_VILLAGE_ID}:all`,
+		`wall:kpi:upcoming-count:${DEFAULT_VILLAGE_ID}`,
 		TTL.DASHBOARD,
 		async () => {
 			const { data, error } = await nocExternalClient.GET(
