@@ -63,14 +63,20 @@ export function mapAge(raw: unknown): WallDemografi["ageGroups"] {
 	}));
 }
 
-/** Data per banjar → { name, population, kk, poor }. */
-export function mapBanjar(raw: unknown): WallDemografi["banjar"] {
-	return asArray(raw).map((b) => ({
-		name: str("-", b.nama, b.name),
-		population: num(b.penduduk, b.totalPopulation),
-		kk: num(b.kk, b.totalKK),
-		poor: num(b.miskin, b.totalPoor),
-	}));
+/**
+ * Data per banjar → { name, population, kk, poor }, sorted desc by populasi,
+ * ambil `take` terpadat. Wall widget tinggi tetap → batasi agar tak overflow.
+ */
+export function mapBanjar(raw: unknown, take = 5): WallDemografi["banjar"] {
+	return asArray(raw)
+		.map((b) => ({
+			name: str("-", b.nama, b.name),
+			population: num(b.penduduk, b.totalPopulation),
+			kk: num(b.kk, b.totalKK),
+			poor: num(b.miskin, b.totalPoor),
+		}))
+		.sort((a, b) => b.population - a.population)
+		.slice(0, take);
 }
 
 /**
@@ -122,10 +128,17 @@ export function countDinamika(args: {
 	};
 }
 
-/** Sektor unggulan → { label, value }. */
-export function mapSectors(raw: unknown): WallDemografi["sectors"] {
-	return asArray(raw).map((s) => ({
-		label: str("-", s.name, s.nama, s.sektor, s.sektorUnggulan, s.namaSektor),
-		value: num(s.value, s.nilai, s.jumlah, s.total, s.count),
-	}));
+/**
+ * Sektor unggulan → { label, value }, sorted desc, ambil `take` teratas. Bar
+ * chart wall tinggi tetap → banyak baris bikin tick label sumbu-Y ke-skip
+ * Recharts (bar tampil, teks hilang); top-N menjaga semua label terbaca.
+ */
+export function mapSectors(raw: unknown, take = 5): WallDemografi["sectors"] {
+	return asArray(raw)
+		.map((s) => ({
+			label: str("-", s.name, s.nama, s.sektor, s.sektorUnggulan, s.namaSektor),
+			value: num(s.value, s.nilai, s.jumlah, s.total, s.count),
+		}))
+		.sort((a, b) => b.value - a.value)
+		.slice(0, take);
 }

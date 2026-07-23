@@ -70,6 +70,38 @@ describe("mapBanjar", () => {
 			{ name: "Banjar Adat Kangin", population: 520, kk: 145, poor: 30 },
 		]);
 	});
+
+	it("sorted desc by population, ambil take teratas", () => {
+		const raw = [
+			{ nama: "A", penduduk: 300, kk: 80, miskin: 10 },
+			{ nama: "B", penduduk: 520, kk: 145, miskin: 30 },
+			{ nama: "C", penduduk: 405, kk: 115, miskin: 28 },
+		];
+		expect(mapBanjar(raw, 2)).toEqual([
+			{ name: "B", population: 520, kk: 145, poor: 30 },
+			{ name: "C", population: 405, kk: 115, poor: 28 },
+		]);
+	});
+
+	it("default take 5 → batasi maksimal 5 baris", () => {
+		const raw = Array.from({ length: 8 }, (_, i) => ({
+			nama: `B${i}`,
+			penduduk: (i + 1) * 100,
+			kk: 10,
+			miskin: 1,
+		}));
+		expect(mapBanjar(raw)).toHaveLength(5);
+		expect(mapBanjar(raw)[0]).toEqual({
+			name: "B7",
+			population: 800,
+			kk: 10,
+			poor: 1,
+		});
+	});
+
+	it("non-array → []", () => {
+		expect(mapBanjar(null)).toEqual([]);
+	});
 });
 
 describe("mapOccupation", () => {
@@ -129,5 +161,30 @@ describe("mapSectors", () => {
 		expect(mapSectors([{ sektor: "Peternakan", nilai: 30 }])).toEqual([
 			{ label: "Peternakan", value: 30 },
 		]);
+	});
+
+	it("sorted desc by value, ambil take teratas", () => {
+		const raw = [
+			{ name: "Kuliner", value: 15 },
+			{ name: "Pertanian", value: 90 },
+			{ name: "Peternakan", value: 40 },
+		];
+		expect(mapSectors(raw, 2)).toEqual([
+			{ label: "Pertanian", value: 90 },
+			{ label: "Peternakan", value: 40 },
+		]);
+	});
+
+	it("default take 5 → batasi maksimal 5 bar", () => {
+		const raw = Array.from({ length: 9 }, (_, i) => ({
+			name: `S${i}`,
+			value: (i + 1) * 10,
+		}));
+		expect(mapSectors(raw)).toHaveLength(5);
+		expect(mapSectors(raw)[0]).toEqual({ label: "S8", value: 90 });
+	});
+
+	it("non-array → []", () => {
+		expect(mapSectors(null)).toEqual([]);
 	});
 });
