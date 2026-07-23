@@ -57,7 +57,6 @@ export interface WallPengaduan {
 
 export interface WallDemografi {
 	stats: { total: number; heads: number; poor: number };
-	gender: Array<{ label: string; count: number }>;
 	religion: Array<{ label: string; count: number }>;
 	ageGroups: Array<{ range: string; count: number }>;
 	occupationTop: Array<{ label: string; count: number }>;

@@ -43,10 +43,6 @@ async function settle<T>(
  * Demografi wall: sumber = Desa API live (identik dengan halaman Demografi),
  * dibaca lewat shared loaders `getDemografi*` (satu penulis shape per cache key
  * `demografi:*`). Semua slice diisolasi via settle() agar tahan gagal sebagian.
- *
- * Catatan: `gender` sengaja kosong — Desa API tidak menyediakan endpoint sebaran
- * gender, dan halaman Demografi pun tidak menampilkannya. Widget gender di wall
- * menampilkan empty state ("Belum ada data") sampai sumbernya tersedia.
  */
 export async function buildDemografi(): Promise<WallDemografi> {
 	const [
@@ -78,7 +74,6 @@ export async function buildDemografi(): Promise<WallDemografi> {
 
 	return {
 		stats: summary,
-		gender: [],
 		religion,
 		ageGroups,
 		occupationTop,

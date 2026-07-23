@@ -154,11 +154,6 @@ describe("wall demografi parity", () => {
 		});
 	});
 
-	it("gender sengaja kosong (Desa API tak sediakan)", async () => {
-		const demografi = await buildDemografi();
-		expect(demografi.gender).toEqual([]);
-	});
-
 	it("cache di-share: loader & builder pakai key demografi:* yang sama", async () => {
 		await buildDemografi();
 		// setelah build, cache demografi:summary terisi payload ber-.summary

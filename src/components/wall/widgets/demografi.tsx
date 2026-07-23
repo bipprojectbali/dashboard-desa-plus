@@ -14,15 +14,6 @@ function toDonut(rows: Array<{ label: string; count: number }>) {
 	}));
 }
 
-/** Sebaran gender (donut besar + legenda). */
-export function DemografiGenderBody({
-	data,
-}: {
-	data: WallDemografi["gender"];
-}) {
-	return <DonutBody data={toDonut(data)} unit="jiwa" />;
-}
-
 /** Kelompok umur (bar). */
 export function DemografiAgeBody({
 	data,

@@ -30,7 +30,6 @@ const ALLOWED_KEYS: Record<string, string[]> = {
 	],
 	demografi: [
 		"stats",
-		"gender",
 		"religion",
 		"ageGroups",
 		"occupationTop",

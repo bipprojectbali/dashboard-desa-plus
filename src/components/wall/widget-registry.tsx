@@ -19,7 +19,6 @@ import {
 	DemografiAgeBody,
 	DemografiBanjarBody,
 	DemografiDinamikaBody,
-	DemografiGenderBody,
 	DemografiOccupationBody,
 	DemografiReligionBody,
 	DemografiSectorsBody,
@@ -172,13 +171,6 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		category: "pengaduan",
 		selectData: (s) => nonEmpty(s?.pengaduan?.musrenbang),
 		Body: MusrenbangBody,
-	},
-	"demografi-gender": {
-		id: "demografi-gender",
-		title: "Sebaran Gender",
-		category: "demografi",
-		selectData: (s) => nonEmpty(s?.demografi?.gender),
-		Body: DemografiGenderBody,
 	},
 	"demografi-age": {
 		id: "demografi-age",

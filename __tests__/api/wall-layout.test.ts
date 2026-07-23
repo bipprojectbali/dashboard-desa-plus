@@ -42,7 +42,7 @@ describe("resolveLayout — daftar valid tanpa batas atas (selain katalog)", () 
 			"keuangan-sdgs",
 			"pengaduan-status",
 			"pengaduan-trend",
-			"demografi-gender",
+			"demografi-age",
 			"ops-panel",
 		];
 		const out = resolveLayout(seven);
@@ -76,7 +76,7 @@ describe("validateLayout — strict guard sebelum simpan", () => {
 			"keuangan-sdgs",
 			"pengaduan-status",
 			"pengaduan-trend",
-			"demografi-gender",
+			"demografi-age",
 			"ops-panel",
 		];
 		expect(validateLayout(seven).ok).toBe(true);
