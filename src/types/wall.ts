@@ -107,6 +107,29 @@ export interface WallKeamanan {
 	selesai: number;
 }
 
+/**
+ * Slice "Jenna Analytic" — mirror halaman `/jenna-analytic`. Sumber = NOC/Jenna
+ * API (`/api/noc/jenna/analytics`), sama seperti slice pengaduan. Hanya angka
+ * agregat interaksi chatbot, tanpa PII. Nullable: env Jenna tak diset → slice
+ * null → panel tampil empty, wall lain tetap render.
+ */
+export interface WallJenna {
+	/** Kartu KPI ringkas interaksi chatbot hari ini. */
+	kpi: {
+		interaksiHariIni: number;
+		changeFromYesterday: number;
+		jawabanOtomatis: number;
+		belumDitindak: number;
+		waktuRespon: string;
+	};
+	/** Interaksi chatbot mingguan (Jum–Kam) untuk bar chart. */
+	mingguan: Array<{ day: string; count: number }>;
+	/** Topik pertanyaan terbanyak (label + hitungan). */
+	topik: Array<{ topic: string; count: number }>;
+	/** Distribusi jam tersibuk (slot + persen 0..100). */
+	jamSibuk: Array<{ slot: string; pct: number }>;
+}
+
 export interface WallBerandaKpiTile {
 	label: string;
 	value: number;
@@ -154,5 +177,6 @@ export interface WallSnapshot {
 	divisi: WallDivisi | null;
 	keamanan: WallKeamanan | null;
 	beranda: WallBeranda | null;
+	jenna: WallJenna | null;
 	system: SystemHealth | null;
 }

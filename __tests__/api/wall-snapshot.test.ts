@@ -50,6 +50,8 @@ const ALLOWED_KEYS: Record<string, string[]> = {
 		"apbdes",
 		"sdgs",
 	],
+	// jenna: hanya angka agregat interaksi chatbot, tanpa PII-orang.
+	jenna: ["kpi", "mingguan", "topik", "jamSibuk"],
 };
 
 describe("GET /api/noc/wall-snapshot", () => {
