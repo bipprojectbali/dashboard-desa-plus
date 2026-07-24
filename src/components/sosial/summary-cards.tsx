@@ -68,7 +68,7 @@ const SummaryCard = ({
 						</Text>
 					)}
 				</Stack>
-				<ThemeIcon bg={backgroundColor} color={color} size="xl" radius="xl">
+				<ThemeIcon bg={backgroundColor} size="xl" radius="xl" style={{ color }}>
 					{icon}
 				</ThemeIcon>
 			</Group>
