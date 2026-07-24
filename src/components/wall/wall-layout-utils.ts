@@ -58,6 +58,11 @@ export const ALL_WIDGET_IDS = [
 	"jenna-interaksi",
 	"jenna-topik",
 	"jenna-jam-sibuk",
+	// Bumdes & UMKM Desa
+	"bumdes-kpi",
+	"bumdes-ringkasan",
+	"bumdes-top-produk",
+	"bumdes-detail",
 	// Ops / sistem
 	"ops-panel",
 ] as const;
@@ -104,6 +109,10 @@ export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
 	"jenna-interaksi": "wide",
 	"jenna-topik": "tall",
 	"jenna-jam-sibuk": "tall",
+	"bumdes-kpi": "wide",
+	"bumdes-ringkasan": "lg",
+	"bumdes-top-produk": "tall",
+	"bumdes-detail": "wide",
 	"ops-panel": "tall",
 };
 
@@ -121,6 +130,7 @@ export type WallCategory =
 	| "divisi"
 	| "keamanan"
 	| "jenna"
+	| "bumdes"
 	| "ops";
 
 /**

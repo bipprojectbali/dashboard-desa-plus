@@ -12,6 +12,7 @@ const CATEGORY_LABELS: Record<WallCategory, string> = {
 	keuangan: "Keuangan",
 	keamanan: "Keamanan",
 	jenna: "Jenna Analytic",
+	bumdes: "Bumdes & UMKM Desa",
 	ops: "Sistem",
 };
 

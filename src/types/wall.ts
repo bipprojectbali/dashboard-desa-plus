@@ -174,6 +174,38 @@ export interface WallBeranda {
 	sdgs: Array<{ title: string; score: number; image: string | null }>;
 }
 
+export interface WallBumdes {
+	kpi: {
+		umkmAktif: number;
+		totalUmkm: number;
+		omzetBulanan: number;
+		kategoriTerbanyak: string;
+		jumlahKategoriTerbanyak: number;
+	};
+	ringkasan: {
+		totalPenjualan: number;
+		persentasePerubahan: number;
+		kategoriAktif: number;
+		totalTransaksi: number;
+	};
+	topProduk: Array<{
+		namaProduk: string;
+		namaUmkm: string;
+		totalPenjualan: number;
+		jumlahTerjual: number;
+		growth: number;
+	}>;
+	detail: Array<{
+		namaProduk: string;
+		penjualanBulanIni: number;
+		penjualanBulanLalu: number;
+		trend: "up" | "down";
+		trendPersen: number;
+		stok: number;
+		statusStok: string;
+	}>;
+}
+
 export interface WallSnapshot {
 	generatedAt: string;
 	kpi: WallKpi | null;
@@ -184,5 +216,6 @@ export interface WallSnapshot {
 	keamanan: WallKeamanan | null;
 	beranda: WallBeranda | null;
 	jenna: WallJenna | null;
+	bumdes: WallBumdes | null;
 	system: SystemHealth | null;
 }

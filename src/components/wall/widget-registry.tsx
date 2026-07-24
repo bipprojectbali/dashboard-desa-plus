@@ -16,6 +16,12 @@ import {
 	BerandaSuratTrendBody,
 } from "./widgets/beranda";
 import {
+	BumdesDetailBody,
+	BumdesKpiBody,
+	BumdesRingkasanBody,
+	BumdesTopProdukBody,
+} from "./widgets/bumdes";
+import {
 	DemografiAgeBody,
 	DemografiBanjarBody,
 	DemografiDinamikaBody,
@@ -305,6 +311,35 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		category: "jenna",
 		selectData: (s) => nonEmpty(s?.jenna?.jamSibuk),
 		Body: JennaJamSibukBody,
+	},
+	// ── Bumdes & UMKM ────────────────────────────────────────────────────────
+	"bumdes-kpi": {
+		id: "bumdes-kpi",
+		title: "KPI Bumdes & UMKM",
+		category: "bumdes",
+		selectData: (s) => s?.bumdes?.kpi ?? null,
+		Body: BumdesKpiBody,
+	},
+	"bumdes-ringkasan": {
+		id: "bumdes-ringkasan",
+		title: "Ringkasan Penjualan",
+		category: "bumdes",
+		selectData: (s) => s?.bumdes?.ringkasan ?? null,
+		Body: BumdesRingkasanBody,
+	},
+	"bumdes-top-produk": {
+		id: "bumdes-top-produk",
+		title: "Top Produk Terlaris",
+		category: "bumdes",
+		selectData: (s) => nonEmpty(s?.bumdes?.topProduk),
+		Body: BumdesTopProdukBody,
+	},
+	"bumdes-detail": {
+		id: "bumdes-detail",
+		title: "Detail Penjualan Produk",
+		category: "bumdes",
+		selectData: (s) => nonEmpty(s?.bumdes?.detail),
+		Body: BumdesDetailBody,
 	},
 	"ops-panel": {
 		id: "ops-panel",
