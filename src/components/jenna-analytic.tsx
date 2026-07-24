@@ -36,6 +36,7 @@ import { useApiQuery } from "@/hooks/useApiQuery";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
+import { CHART } from "@/theme";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -104,7 +105,7 @@ const JennaAnalytic = () => {
 		return (
 			<Center h={400}>
 				<Stack align="center" gap="sm">
-					<AlertTriangle size={32} color="#ef4444" />
+					<AlertTriangle size={32} color={CHART.red} />
 					<Text c="red" fw={500}>
 						{error}
 					</Text>
@@ -187,7 +188,7 @@ const JennaAnalytic = () => {
 									</Text>
 									<Group gap={4} align="flex-start">
 										{item.trend === "positive" && (
-											<TrendingUp size={14} color="#22C55E" />
+											<TrendingUp size={14} color={CHART.green} />
 										)}
 										<Text
 											size="xs"

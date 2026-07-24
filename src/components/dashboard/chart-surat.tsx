@@ -19,6 +19,7 @@ import {
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
+import { CHART } from "@/theme";
 import { apiClient } from "@/utils/api-client";
 
 interface ChartData {
@@ -129,11 +130,7 @@ export function ChartSurat() {
 								itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 								labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 							/>
-							<Bar
-								dataKey="value"
-								fill={dark ? "#60A5FA" : "#3B82F6"}
-								radius={[4, 4, 0, 0]}
-							/>
+							<Bar dataKey="value" fill={CHART.blue} radius={[4, 4, 0, 0]} />
 						</BarChart>
 					</ResponsiveContainer>
 				) : (

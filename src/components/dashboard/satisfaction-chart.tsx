@@ -3,6 +3,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
+import { CHART } from "@/theme";
 import { apiClient } from "@/utils/api-client";
 
 interface SatisfactionData {
@@ -20,10 +21,10 @@ const RATING_NAME_MAP: Record<
 		key: "sangatPuas" | "puas" | "cukup" | "kurang";
 	}
 > = {
-	"Sangat Baik": { color: "#10B981", order: 0, key: "sangatPuas" },
-	Baik: { color: "#3B82F6", order: 1, key: "puas" },
-	"Kurang Baik": { color: "#F59E0B", order: 2, key: "cukup" },
-	"Sangat Kurang Baik": { color: "#EF4444", order: 3, key: "kurang" },
+	"Sangat Baik": { color: CHART.green, order: 0, key: "sangatPuas" },
+	Baik: { color: CHART.blue, order: 1, key: "puas" },
+	"Kurang Baik": { color: CHART.amber, order: 2, key: "cukup" },
+	"Sangat Kurang Baik": { color: CHART.red, order: 3, key: "kurang" },
 };
 
 // Alias nama kategori seed DB (fallback) → key RATING_NAME_MAP.

@@ -1,6 +1,7 @@
 import { $ } from "bun";
 import { Elysia, t } from "elysia";
 import { apiMiddleware } from "../middleware/apiMiddleware";
+import { CHART } from "../theme";
 import { TTL, withCache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import { getEnv } from "../utils/env";
@@ -507,10 +508,10 @@ export const noc = new Elysia({ prefix: "/noc" })
 			});
 
 			const colorMap: Record<string, string> = {
-				Gambar: "#fac858",
-				Dokumen: "#92cc76",
-				PDF: "#3B82F6",
-				Excel: "#10B981",
+				Gambar: CHART.amber,
+				Dokumen: CHART.green,
+				PDF: CHART.blue,
+				Excel: CHART.cyan,
 			};
 
 			return {

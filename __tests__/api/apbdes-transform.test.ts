@@ -5,6 +5,7 @@ import {
 	mapApbdesEntry,
 	mapApbdesList,
 } from "@/api/transforms/apbdes";
+import { CHART } from "@/theme";
 
 // Fixture 2025: campuran level 1, 2, 3
 // pendapatan: leaf = item-p3 (anggaran 1_500_000, realisasi 132_000_000 → 8.8%)
@@ -164,13 +165,13 @@ describe("mapApbdesEntry", () => {
 	it("assigns correct colors", () => {
 		const result = mapApbdesEntry(ENTRY_2025);
 		expect(result.data.find((d) => d.category === "Pendapatan")?.color).toBe(
-			"#10B981",
+			CHART.green,
 		);
 		expect(result.data.find((d) => d.category === "Belanja")?.color).toBe(
-			"#3B82F6",
+			CHART.blue,
 		);
 		expect(result.data.find((d) => d.category === "Pembiayaan")?.color).toBe(
-			"#F59E0B",
+			CHART.amber,
 		);
 	});
 

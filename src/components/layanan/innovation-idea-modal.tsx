@@ -23,6 +23,7 @@ import {
 import dayjs from "dayjs";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
+import { CHART } from "@/theme";
 
 export interface InnovationIdea {
 	id: string;
@@ -61,15 +62,15 @@ const getStatusMeta = (status: string): { color: string; label: string } => {
 const getCategoryColor = (category: string): string => {
 	switch (category.toLowerCase()) {
 		case "teknologi":
-			return "#7C3AED";
+			return CHART.violet;
 		case "ekonomi":
-			return "#059669";
+			return CHART.green;
 		case "kesehatan":
-			return "#DC2626";
+			return CHART.red;
 		case "pendidikan":
-			return "#D97706";
+			return CHART.orange;
 		default:
-			return "#1e3a5f";
+			return CHART.blue;
 	}
 };
 

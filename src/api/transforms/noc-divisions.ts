@@ -3,18 +3,20 @@
  * dipakai di wall-snapshot builder tanpa import Elysia/route.
  */
 
+import { CHART } from "@/theme";
+
 /** Warna statis per nama divisi (NOC external tidak kirim color). */
 export const DIVISION_COLOR_MAP: Record<string, string> = {
-	Pemerintahan: "#3B82F6",
-	Pembangunan: "#10B981",
-	Kemasyarakatan: "#F59E0B",
-	Pemberdayaan: "#8B5CF6",
-	"Kesejahteraan Sosial": "#EC4899",
-	"Keamanan & Ketertiban": "#EF4444",
-	"Adat & Budaya": "#F97316",
+	Pemerintahan: CHART.blue,
+	Pembangunan: CHART.green,
+	Kemasyarakatan: CHART.amber,
+	Pemberdayaan: CHART.violet,
+	"Kesejahteraan Sosial": CHART.pink,
+	"Keamanan & Ketertiban": CHART.red,
+	"Adat & Budaya": CHART.orange,
 };
 
-export const DIVISION_COLOR_FALLBACK = "#6B7280";
+export const DIVISION_COLOR_FALLBACK = CHART.gray;
 
 export interface NocDivisionRaw {
 	id: string;

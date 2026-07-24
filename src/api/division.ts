@@ -1,4 +1,5 @@
 import Elysia, { t } from "elysia";
+import { CHART } from "../theme";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
 
@@ -155,8 +156,8 @@ export const division = new Elysia({
 
 				return {
 					data: [
-						{ name: "Gambar", jumlah: gambarCount, color: "#FACC15" },
-						{ name: "Dokumen", jumlah: dokumenCount, color: "#22C55E" },
+						{ name: "Gambar", jumlah: gambarCount, color: CHART.amber },
+						{ name: "Dokumen", jumlah: dokumenCount, color: CHART.green },
 					],
 				};
 			} catch (error) {

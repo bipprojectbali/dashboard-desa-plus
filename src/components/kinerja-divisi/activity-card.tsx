@@ -1,6 +1,7 @@
 import { Box, Card, Group, Progress, Text } from "@mantine/core";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
+import { CHART } from "@/theme";
 
 interface ActivityCardProps {
 	title: string;
@@ -25,13 +26,13 @@ export function ActivityCard({
 	const getStatusColor = () => {
 		switch (status) {
 			case "SELESAI":
-				return "#22C55E";
+				return CHART.green;
 			case "BERJALAN":
-				return "#3B82F6";
+				return CHART.blue;
 			case "TERTUNDA":
-				return "#EF4444";
+				return CHART.red;
 			default:
-				return "#9CA3AF";
+				return CHART.gray;
 		}
 	};
 

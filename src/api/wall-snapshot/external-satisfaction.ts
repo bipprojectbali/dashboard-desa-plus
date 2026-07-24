@@ -1,3 +1,4 @@
+import { CHART } from "@/theme";
 import { TTL, withCache } from "@/utils/cache";
 import { prisma } from "@/utils/db";
 
@@ -11,10 +12,10 @@ import { prisma } from "@/utils/db";
 
 // Mirror RATING_COLOR_MAP di dashboard.ts (nama rating NOC → warna + urutan).
 const RATING_COLOR_MAP: Record<string, { color: string; order: number }> = {
-	"Sangat Baik": { color: "#10B981", order: 0 },
-	Baik: { color: "#3B82F6", order: 1 },
-	"Kurang Baik": { color: "#F59E0B", order: 2 },
-	"Sangat Kurang Baik": { color: "#EF4444", order: 3 },
+	"Sangat Baik": { color: CHART.green, order: 0 },
+	Baik: { color: CHART.blue, order: 1 },
+	"Kurang Baik": { color: CHART.amber, order: 2 },
+	"Sangat Kurang Baik": { color: CHART.red, order: 3 },
 };
 
 // Alias kategori seed lokal lama → nama NOC (mirror FALLBACK_CATEGORY_ALIAS
