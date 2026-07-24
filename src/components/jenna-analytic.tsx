@@ -169,9 +169,9 @@ const JennaAnalytic = () => {
 							p="md"
 							radius="xl"
 							withBorder
-							bg={dark ? "#1E293B" : "white"}
 							style={{
-								borderColor: dark ? "#334155" : "white",
+								backgroundColor: "var(--app-card)",
+								borderColor: "var(--app-border)",
 								boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
 								transition: "transform 0.15s ease, box-shadow 0.15s ease",
 							}}
@@ -222,9 +222,9 @@ const JennaAnalytic = () => {
 				p="md"
 				radius="xl"
 				withBorder
-				bg={dark ? "#1E293B" : "white"}
 				style={{
-					borderColor: dark ? "#334155" : "white",
+					backgroundColor: "var(--app-card)",
+					borderColor: "var(--app-border)",
 					boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
 				}}
 			>
@@ -239,29 +239,29 @@ const JennaAnalytic = () => {
 							<CartesianGrid
 								strokeDasharray="3 3"
 								vertical={false}
-								stroke={dark ? "#334155" : "#e5e7eb"}
+								stroke="var(--app-border)"
 							/>
 						)}
 						<XAxis
 							dataKey="day"
 							axisLine={false}
 							tickLine={false}
-							tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
+							tick={{ fill: "var(--app-text)" }}
 						/>
 						<YAxis
 							axisLine={false}
 							tickLine={false}
-							tick={{ fill: dark ? "#E2E8F0" : "#374151" }}
+							tick={{ fill: "var(--app-text)" }}
 						/>
 						<Tooltip
 							contentStyle={{
-								backgroundColor: dark ? "#1E293B" : "white",
-								borderColor: dark ? "#334155" : "#e5e7eb",
+								backgroundColor: "var(--app-card)",
+								borderColor: "var(--app-border)",
 								borderRadius: "8px",
 							}}
-							itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
-							labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
-							cursor={{ fill: dark ? "#334155" : "#f3f4f6" }}
+							itemStyle={{ color: "var(--app-text)" }}
+							labelStyle={{ color: "var(--app-text)" }}
+							cursor={{ fill: "var(--app-track)" }}
 						/>
 						<Bar
 							dataKey="total"
@@ -295,7 +295,7 @@ const JennaAnalytic = () => {
 								<Box
 									key={item.topic}
 									p="sm"
-									bg={dark ? "#334155" : "#F1F5F9"}
+									bg="var(--app-card-alt)"
 									style={{
 										transition: "background-color 0.15s ease",
 										cursor: "pointer",
