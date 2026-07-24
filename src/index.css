@@ -14,9 +14,12 @@
 	--app-text-dim: #5f6b7a;
 	--app-primary: #2f6bc4;
 	--app-success: #3e9b6b;
+	--app-success-subtle: #edf7f1;
 	--app-warning: #d89a3c;
 	--app-danger: #d14d4d;
+	--app-danger-subtle: #fef2f2;
 	--app-info: #3e8199;
+	--app-info-subtle: #e8f2fb;
 	--app-violet: #7060b8;
 }
 
@@ -30,9 +33,12 @@
 	--app-text-dim: #93a0b4;
 	--app-primary: #5a8dd6;
 	--app-success: #57a773;
+	--app-success-subtle: #1b2c23;
 	--app-warning: #dfa94e;
 	--app-danger: #d46a6a;
+	--app-danger-subtle: #2c1e1e;
 	--app-info: #5c9db8;
+	--app-info-subtle: #1b2d3e;
 	--app-violet: #9385d1;
 }
 

@@ -28,9 +28,9 @@ export function DanaBantuanCard({ aid, loading }: DanaBantuanCardProps) {
 			p="md"
 			radius="xl"
 			withBorder
-			bg={dark ? "#1E293B" : "white"}
 			style={{
-				borderColor: dark ? "#374b6aff" : "var(--mantine-color-white)",
+				backgroundColor: "var(--app-card)",
+				borderColor: "var(--app-border)",
 				boxShadow: "var(--mantine-shadow-xs)",
 			}}
 			h="100%"
@@ -58,8 +58,8 @@ export function DanaBantuanCard({ aid, loading }: DanaBantuanCardProps) {
 								key={fund.source}
 								p="sm"
 								radius="lg"
-								bg={dark ? "#1e3a5f" : "#eaf1fb"}
 								style={{
+									backgroundColor: "var(--app-info-subtle)",
 									borderColor: "transparent",
 									transition: "background-color 0.15s ease",
 								}}

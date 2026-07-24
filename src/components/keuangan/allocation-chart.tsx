@@ -52,9 +52,9 @@ export function AllocationChart({
 			p="md"
 			radius="xl"
 			withBorder
-			bg={dark ? "#1E293B" : "white"}
 			style={{
-				borderColor: dark ? "#374b6aff" : "var(--mantine-color-white)",
+				backgroundColor: "var(--app-card)",
+				borderColor: "var(--app-border)",
 				boxShadow: "var(--mantine-shadow-xs)",
 			}}
 			h="100%"
