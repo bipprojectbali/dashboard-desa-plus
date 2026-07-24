@@ -38,9 +38,11 @@ import {
 } from "./widgets/jenna";
 import { KeamananStatusBody } from "./widgets/keamanan";
 import {
-	KeuanganApbdesBody,
-	KeuanganKepuasanBody,
-	KeuanganSdgsBody,
+	KeuanganAlokasiBody,
+	KeuanganArusBody,
+	KeuanganBantuanBody,
+	KeuanganKpiBody,
+	KeuanganLaporanBody,
 } from "./widgets/keuangan";
 import { OpsBody } from "./widgets/ops";
 import {
@@ -122,26 +124,40 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		Body: BerandaSdgsBody,
 	},
 	// ── Keuangan ─────────────────────────────────────────────────────────────
-	"keuangan-apbdes": {
-		id: "keuangan-apbdes",
-		title: "APBDes 2025",
+	"keuangan-kpi": {
+		id: "keuangan-kpi",
+		title: "KPI Keuangan",
 		category: "keuangan",
-		selectData: (s) => nonEmpty(s?.keuangan?.apbdes),
-		Body: KeuanganApbdesBody,
+		selectData: (s) => s?.keuangan ?? null,
+		Body: KeuanganKpiBody,
 	},
-	"keuangan-kepuasan": {
-		id: "keuangan-kepuasan",
-		title: "Kepuasan Layanan (Keuangan)",
+	"keuangan-arus": {
+		id: "keuangan-arus",
+		title: "Pemasukan / Pengeluaran",
 		category: "keuangan",
-		selectData: (s) => nonEmpty(s?.keuangan?.satisfaction),
-		Body: KeuanganKepuasanBody,
+		selectData: (s) => nonEmpty(s?.keuangan?.monthly),
+		Body: KeuanganArusBody,
 	},
-	"keuangan-sdgs": {
-		id: "keuangan-sdgs",
-		title: "Skor SDGs",
+	"keuangan-alokasi": {
+		id: "keuangan-alokasi",
+		title: "Alokasi per Bidang",
 		category: "keuangan",
-		selectData: (s) => nonEmpty(s?.keuangan?.sdgs),
-		Body: KeuanganSdgsBody,
+		selectData: (s) => nonEmpty(s?.keuangan?.allocation),
+		Body: KeuanganAlokasiBody,
+	},
+	"keuangan-laporan": {
+		id: "keuangan-laporan",
+		title: "Laporan APBDes",
+		category: "keuangan",
+		selectData: (s) => s?.keuangan?.report ?? null,
+		Body: KeuanganLaporanBody,
+	},
+	"keuangan-bantuan": {
+		id: "keuangan-bantuan",
+		title: "Dana Bantuan & Hibah",
+		category: "keuangan",
+		selectData: (s) => nonEmpty(s?.keuangan?.aid),
+		Body: KeuanganBantuanBody,
 	},
 	"pengaduan-status": {
 		id: "pengaduan-status",

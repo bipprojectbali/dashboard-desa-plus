@@ -20,7 +20,17 @@ const KPI_KEYS = [
 
 const ALLOWED_KEYS: Record<string, string[]> = {
 	kpi: [...KPI_KEYS],
-	keuangan: ["apbdes", "satisfaction", "sdgs"],
+	keuangan: [
+		"tahun",
+		"totalBudget",
+		"totalIncomeReal",
+		"totalExpenseReal",
+		"realisasiPercent",
+		"monthly",
+		"allocation",
+		"report",
+		"aid",
+	],
 	pengaduan: [
 		"stats",
 		"trend7m",
