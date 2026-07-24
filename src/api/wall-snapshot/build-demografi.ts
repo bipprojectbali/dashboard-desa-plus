@@ -63,7 +63,7 @@ export async function buildDemografi(): Promise<WallDemografi> {
 		}),
 		settle("religion", getDemografiReligion, mapReligion, []),
 		settle("age", getDemografiAge, mapAge, []),
-		settle("occupation", getDemografiOccupation, (r) => mapOccupation(r), []),
+		settle("occupation", getDemografiOccupation, (r) => mapOccupation(r, 5), []),
 		settle("banjar", getDemografiBanjar, mapBanjar, []),
 		settle("sectors", getDemografiSectors, mapSectors, []),
 		// Dinamika: 3 endpoint terpisah, diambil mentah lalu digabung di bawah.
