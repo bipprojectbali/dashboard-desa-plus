@@ -7,7 +7,10 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - **Widget "Sektor Unggulan" & "Data per Banjar" di NOC Video Wall dibatasi 5 teratas.** Sebelumnya kedua panel menampilkan seluruh baris tanpa urutan: pada Sektor Unggulan, banyaknya bar melampaui tinggi kartu membuat Recharts men-skip sebagian label sumbu-Y (bar tampil, teksnya hilang); pada Data per Banjar, tabel memanjang melebihi kartu. Kini keduanya diurutkan menurun (sektor by nilai, banjar by populasi) lalu diambil 5 teratas — semua label terbaca dan tabel ringkas.
 
-## [Unreleased]
+## [0.1.56] - 2026-07-24
+
+### Fixed
+- **Garis (stroke) ikon di kartu ringkasan Sosial kini benar-benar putih.** Sebelumnya prop `color="white"` pada `ThemeIcon` tidak berefek karena Mantine memakai autoContrast — `color` dianggap warna latar badge sehingga ikon foreground malah dipaksa gelap agar kontras. Kini warna di-set langsung lewat `style={{ color }}` sehingga stroke ikon (`currentColor`) mengikuti warna yang di-pass. Prop `borderColor` yang tak terpakai dihapus.
 
 ### Changed
 - **Warna chart, video wall, & status diredam (soft) agar tidak "ngejreng" di TV Vivid mode.** Sebelumnya warna chart & status memakai hex Tailwind-500 saturated (`#EF4444`, `#3B82F6`, `#22C55E`, `#F59E0B`, `#F97316`, dll) yang di layar TV besar terlihat menyala dan tidak selaras dengan badge/komponen lain yang sudah pakai palette lembut. Kini seluruh warna chart & status ditarik ke satu sumber `src/theme/chart-colors.ts` (`CHART`) dengan chroma diturunkan (mis. merah `#EF4444` → `#D25E5E`, biru → `#5A8DD6`, hijau → `#57A773`). Terpengaruh: Distribusi Agama, Dinamika Penduduk, kepuasan layanan, warna divisi NOC, APBDes, status kegiatan, dokumen, kategori inovasi, dan token `WALL_THEME` (seluruh video wall). Hue tetap dibedakan (merah≠hijau≠kuning) sehingga status tetap terbaca & aman colorblind. Tidak ada perubahan logika atau data.
