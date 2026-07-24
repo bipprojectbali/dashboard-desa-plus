@@ -46,9 +46,11 @@ export const ALL_WIDGET_IDS = [
 	"demografi-banjar",
 	"demografi-sektor",
 	// Keuangan
-	"keuangan-apbdes",
-	"keuangan-kepuasan",
-	"keuangan-sdgs",
+	"keuangan-kpi",
+	"keuangan-arus",
+	"keuangan-alokasi",
+	"keuangan-laporan",
+	"keuangan-bantuan",
 	// Keamanan
 	"keamanan-status",
 	// Jenna Analytic — mirror halaman /jenna-analytic
@@ -56,6 +58,11 @@ export const ALL_WIDGET_IDS = [
 	"jenna-interaksi",
 	"jenna-topik",
 	"jenna-jam-sibuk",
+	// Bumdes & UMKM Desa
+	"bumdes-kpi",
+	"bumdes-ringkasan",
+	"bumdes-top-produk",
+	"bumdes-detail",
 	// Ops / sistem
 	"ops-panel",
 ] as const;
@@ -76,9 +83,11 @@ export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
 	"beranda-kalender": "tall",
 	"beranda-apbdes": "wide",
 	"beranda-sdgs": "tall",
-	"keuangan-apbdes": "wide",
-	"keuangan-kepuasan": "lg",
-	"keuangan-sdgs": "tall",
+	"keuangan-kpi": "wide",
+	"keuangan-arus": "wide",
+	"keuangan-alokasi": "lg",
+	"keuangan-laporan": "lg",
+	"keuangan-bantuan": "tall",
 	"pengaduan-status": "sm",
 	"pengaduan-trend": "wide",
 	"pengaduan-service-type": "wide",
@@ -100,6 +109,10 @@ export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
 	"jenna-interaksi": "wide",
 	"jenna-topik": "tall",
 	"jenna-jam-sibuk": "tall",
+	"bumdes-kpi": "wide",
+	"bumdes-ringkasan": "lg",
+	"bumdes-top-produk": "tall",
+	"bumdes-detail": "wide",
 	"ops-panel": "tall",
 };
 
@@ -117,6 +130,7 @@ export type WallCategory =
 	| "divisi"
 	| "keamanan"
 	| "jenna"
+	| "bumdes"
 	| "ops";
 
 /**
@@ -137,7 +151,7 @@ export const WALL_LAYOUT_ID = "singleton";
  * Satu widget mewakili tiap kategori utama + status sistem.
  */
 export const DEFAULT_LAYOUT: WidgetId[] = [
-	"keuangan-apbdes",
+	"keuangan-kpi",
 	"pengaduan-status",
 	"pengaduan-trend",
 	"demografi-age",

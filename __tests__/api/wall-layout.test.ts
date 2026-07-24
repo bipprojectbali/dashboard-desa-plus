@@ -21,8 +21,8 @@ describe("resolveLayout — daftar valid tanpa batas atas (selain katalog)", () 
 	});
 
 	it("buang id tak dikenal, pertahankan yang valid (tanpa backfill)", () => {
-		const out = resolveLayout(["keuangan-sdgs", "tidak-ada", "bukan-widget"]);
-		expect(out).toEqual(["keuangan-sdgs"]);
+		const out = resolveLayout(["keuangan-kpi", "tidak-ada", "bukan-widget"]);
+		expect(out).toEqual(["keuangan-kpi"]);
 	});
 
 	it("semua id rusak → fallback DEFAULT_LAYOUT (wall tak boot kosong)", () => {
@@ -37,9 +37,9 @@ describe("resolveLayout — daftar valid tanpa batas atas (selain katalog)", () 
 
 	it("TIDAK cap: 7 widget valid tetap 7", () => {
 		const seven: WidgetId[] = [
-			"keuangan-apbdes",
-			"keuangan-kepuasan",
-			"keuangan-sdgs",
+			"keuangan-kpi",
+			"keuangan-arus",
+			"keuangan-alokasi",
 			"pengaduan-status",
 			"pengaduan-trend",
 			"demografi-age",
@@ -64,16 +64,16 @@ describe("resolveLayout — daftar valid tanpa batas atas (selain katalog)", () 
 
 describe("validateLayout — strict guard sebelum simpan", () => {
 	it("layout valid → ok", () => {
-		const res = validateLayout(["keuangan-apbdes", "ops-panel"]);
+		const res = validateLayout(["keuangan-kpi", "ops-panel"]);
 		expect(res.ok).toBe(true);
 		expect(res.errors).toHaveLength(0);
 	});
 
 	it("terima 7 widget (di atas default 6, di bawah maks)", () => {
 		const seven: WidgetId[] = [
-			"keuangan-apbdes",
-			"keuangan-kepuasan",
-			"keuangan-sdgs",
+			"keuangan-kpi",
+			"keuangan-arus",
+			"keuangan-alokasi",
 			"pengaduan-status",
 			"pengaduan-trend",
 			"demografi-age",

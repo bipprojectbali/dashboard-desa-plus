@@ -20,14 +20,20 @@ export interface WallKpi {
 }
 
 export interface WallKeuangan {
-	apbdes: Array<{
-		category: string;
-		amount: number;
-		percentage: number;
-		color: string;
-	}>;
-	satisfaction: Array<{ category: string; value: number; color: string }>;
-	sdgs: Array<{ title: string; score: number; image: string | null }>;
+	tahun: number;
+	totalBudget: number;
+	totalIncomeReal: number;
+	totalExpenseReal: number;
+	realisasiPercent: number;
+	monthly: Array<{ income: number; expense: number }>;
+	allocation: Array<{ sector: string; amount: number }>;
+	report: {
+		income: Array<{ category: string; amount: number }>;
+		expenses: Array<{ category: string; amount: number }>;
+		totalIncome: number;
+		totalExpense: number;
+	};
+	aid: Array<{ source: string; amount: number; status: "cair" | "proses" }>;
 }
 
 export interface WallPengaduan {
@@ -168,6 +174,38 @@ export interface WallBeranda {
 	sdgs: Array<{ title: string; score: number; image: string | null }>;
 }
 
+export interface WallBumdes {
+	kpi: {
+		umkmAktif: number;
+		totalUmkm: number;
+		omzetBulanan: number;
+		kategoriTerbanyak: string;
+		jumlahKategoriTerbanyak: number;
+	};
+	ringkasan: {
+		totalPenjualan: number;
+		persentasePerubahan: number;
+		kategoriAktif: number;
+		totalTransaksi: number;
+	};
+	topProduk: Array<{
+		namaProduk: string;
+		namaUmkm: string;
+		totalPenjualan: number;
+		jumlahTerjual: number;
+		growth: number;
+	}>;
+	detail: Array<{
+		namaProduk: string;
+		penjualanBulanIni: number;
+		penjualanBulanLalu: number;
+		trend: "up" | "down";
+		trendPersen: number;
+		stok: number;
+		statusStok: string;
+	}>;
+}
+
 export interface WallSnapshot {
 	generatedAt: string;
 	kpi: WallKpi | null;
@@ -178,5 +216,6 @@ export interface WallSnapshot {
 	keamanan: WallKeamanan | null;
 	beranda: WallBeranda | null;
 	jenna: WallJenna | null;
+	bumdes: WallBumdes | null;
 	system: SystemHealth | null;
 }

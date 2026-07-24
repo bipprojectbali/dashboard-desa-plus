@@ -1,0 +1,5 @@
+title,description,kind,priority,startsAt,dueAt,estimateHours,assigneeEmail,tagNames
+Hapus field documents dari WallKpi,"Hapus field documents dari interface WallKpi di src/types/wall.ts. Field tersisa: residents, umkm, complaints, activities, securityReports",TASK,HIGH,,,0.5,nicoarya20@gmail.com
+Rewrite build-kpi.ts — ganti prisma ke API live,"Buang semua prisma.*.count() di src/api/wall-snapshot/build-kpi.ts. Fetch paralel 5 sumber: getDemografiSummary (warga), desaExternalClient /umkm/dashboard/kpi (umkm), buildPengaduan (complaints), NOC upcoming-events (activities), cctv/stats (securityReports). Tiap fetch dibungkus .catch(() => 0)",TASK,HIGH,,,2,nicoarya20@gmail.com
+Hapus card Dokumen dari kpi-strip,Hapus entry documents dari KPI_ITEMS + hapus import IconFileText di src/components/wall/kpi-strip.tsx. Ubah Grid cols={6} menjadi cols={5},TASK,HIGH,,,0.5,nicoarya20@gmail.com
+Update wall-snapshot.test.ts — hapus documents,Hapus string documents dari KPI_KEYS di __tests__/api/wall-snapshot.test.ts. Ubah assertion 6 key menjadi 5 key,TASK,HIGH,,,0.5,nicoarya20@gmail.com

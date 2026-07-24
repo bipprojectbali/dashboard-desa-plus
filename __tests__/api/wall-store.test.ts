@@ -32,8 +32,8 @@ describe("wall-layout store — mutasi buffer", () => {
 
 	it("addWidget menambah widget belum terpasang → dirty", () => {
 		setOrder(["ops-panel"]);
-		addWidget("keuangan-sdgs");
-		expect(wallLayoutStore.order).toEqual(["ops-panel", "keuangan-sdgs"]);
+		addWidget("keuangan-kpi");
+		expect(wallLayoutStore.order).toEqual(["ops-panel", "keuangan-kpi"]);
 		expect(isDirty()).toBe(true);
 	});
 
@@ -44,9 +44,9 @@ describe("wall-layout store — mutasi buffer", () => {
 	});
 
 	it("removeWidget membuang widget", () => {
-		setOrder(["ops-panel", "keuangan-sdgs"]);
+		setOrder(["ops-panel", "keuangan-kpi"]);
 		removeWidget("ops-panel");
-		expect(wallLayoutStore.order).toEqual(["keuangan-sdgs"]);
+		expect(wallLayoutStore.order).toEqual(["keuangan-kpi"]);
 	});
 
 	it("moveWidget menukar posisi", () => {
@@ -68,7 +68,7 @@ describe("wall-layout store — mutasi buffer", () => {
 	});
 
 	it("initBufferFrom seed order + baseline saved (isDirty false)", () => {
-		const custom: WidgetId[] = ["ops-panel", "keuangan-sdgs", "demografi-age"];
+		const custom: WidgetId[] = ["ops-panel", "keuangan-kpi", "demografi-age"];
 		initBufferFrom(custom);
 		expect(wallLayoutStore.order).toEqual(custom);
 		expect(wallLayoutStore.saved).toEqual(custom);
@@ -78,7 +78,7 @@ describe("wall-layout store — mutasi buffer", () => {
 	});
 
 	it("initBufferFrom lalu ubah → dirty", () => {
-		initBufferFrom(["ops-panel", "keuangan-sdgs"]);
+		initBufferFrom(["ops-panel", "keuangan-kpi"]);
 		addWidget("demografi-age");
 		expect(isDirty()).toBe(true);
 	});
@@ -106,7 +106,7 @@ describe("wall-layout store — resize (ukuran widget)", () => {
 	});
 
 	it("removeWidget membuang override ukurannya juga", () => {
-		initBufferFrom(["ops-panel", "keuangan-sdgs"], {
+		initBufferFrom(["ops-panel", "keuangan-kpi"], {
 			"ops-panel": { w: 2, h: 2 },
 		});
 		removeWidget("ops-panel");
