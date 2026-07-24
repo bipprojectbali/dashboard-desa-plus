@@ -1,6 +1,47 @@
 @import "tailwindcss";
 @custom-variant dark (&:where([data-mantine-color-scheme="dark"] *));
 
+/* ===== Palette Tokens (semantic, TV-robust) =====
+ * Chroma diturunkan agar tidak ngejreng di TV Vivid mode.
+ * Komponen pakai var(--app-*) — tidak perlu hook isDark untuk surface. */
+:root {
+	--app-bg: #f8f9fb;
+	--app-card: #ffffff;
+	--app-card-alt: #f3f5f8;
+	--app-border: #e3e7ed;
+	--app-track: #e8ebf0;
+	--app-text: #1e2733;
+	--app-text-dim: #5f6b7a;
+	--app-primary: #2f6bc4;
+	--app-success: #3e9b6b;
+	--app-success-subtle: #edf7f1;
+	--app-warning: #d89a3c;
+	--app-danger: #d14d4d;
+	--app-danger-subtle: #fef2f2;
+	--app-info: #3e8199;
+	--app-info-subtle: #e8f2fb;
+	--app-violet: #7060b8;
+}
+
+[data-mantine-color-scheme="dark"] {
+	--app-bg: #161d2e;
+	--app-card: #1f2839;
+	--app-card-alt: #243044;
+	--app-border: #364356;
+	--app-track: #2a3446;
+	--app-text: #dce3ec;
+	--app-text-dim: #93a0b4;
+	--app-primary: #5a8dd6;
+	--app-success: #57a773;
+	--app-success-subtle: #1b2c23;
+	--app-warning: #dfa94e;
+	--app-danger: #d46a6a;
+	--app-danger-subtle: #2c1e1e;
+	--app-info: #5c9db8;
+	--app-info-subtle: #1b2d3e;
+	--app-violet: #9385d1;
+}
+
 @media print {
 	/* Sembunyikan chrome navigasi */
 	.mantine-AppShell-header,

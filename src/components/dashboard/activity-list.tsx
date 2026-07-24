@@ -41,20 +41,15 @@ export function ActivityList() {
 			p="md"
 			radius="xl"
 			withBorder
-			bg={dark ? "#1E293B" : "white"}
 			style={{
-				borderColor: dark ? "#334155" : "white",
-				boxShadow: dark
-					? "0 1px 3px 0 rgb(0 0 0 / 0.1)"
-					: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				backgroundColor: "var(--app-card)",
+				borderColor: "var(--app-border)",
+				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
 			}}
 			h="100%"
 		>
 			<Group gap="xs" mb="lg">
-				<Calendar
-					style={{ width: 20, height: 20 }}
-					color={dark ? "#E2E8F0" : "#1E3A5F"}
-				/>
+				<Calendar style={{ width: 20, height: 20, color: "var(--app-text)" }} />
 				<Title order={4} c={dark ? "white" : "gray.9"}>
 					{t.dashboard.kalenderKegiatan}
 				</Title>

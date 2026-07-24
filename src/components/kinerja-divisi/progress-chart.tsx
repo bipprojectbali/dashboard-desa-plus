@@ -68,6 +68,7 @@ export function ProgressChart() {
 								outerRadius={80}
 								paddingAngle={2}
 								dataKey="value"
+								stroke="none"
 							>
 								{data.map((entry) => (
 									<Cell key={`cell-${entry.name}`} fill={entry.color} />

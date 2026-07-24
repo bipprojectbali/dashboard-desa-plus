@@ -5,12 +5,12 @@ export const WALL_THEME = {
 	BORDER: "#334155",
 	TEXT: "#E2E8F0",
 	TEXT_DIM: "#94A3B8",
-	ACCENT: "#3B82F6", // darmasaba-blue
-	OK: "#22C55E",
-	WARN: "#F59E0B",
-	DANGER: "#EF4444",
-	INFO: "#38BDF8", // cyan-sky untuk aksen sekunder
-	VIOLET: "#A78BFA", // ungu untuk kategori/ KPI tambahan
+	ACCENT: "#5A8DD6", // darmasaba-blue (soft)
+	OK: "#57A773",
+	WARN: "#DFA94E",
+	DANGER: "#D25E5E",
+	INFO: "#5C9DB8", // cyan-sky untuk aksen sekunder (soft)
+	VIOLET: "#9385D1", // ungu untuk kategori/ KPI tambahan
 	TRACK: "#273449", // rel progress bar di atas CARD
 } as const;
 

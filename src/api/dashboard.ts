@@ -1,4 +1,5 @@
 import { Elysia, t } from "elysia";
+import { CHART } from "../theme";
 import { TTL, withCache } from "../utils/cache";
 import { prisma } from "../utils/db";
 import logger from "../utils/logger";
@@ -6,10 +7,10 @@ import logger from "../utils/logger";
 // Mapping nama rating dari NOC API → warna chart.
 // Key harus sama dengan RATING_NAME_MAP di satisfaction-chart.tsx.
 const RATING_COLOR_MAP: Record<string, { color: string; order: number }> = {
-	"Sangat Baik": { color: "#10B981", order: 0 },
-	Baik: { color: "#3B82F6", order: 1 },
-	"Kurang Baik": { color: "#F59E0B", order: 2 },
-	"Sangat Kurang Baik": { color: "#EF4444", order: 3 },
+	"Sangat Baik": { color: CHART.green, order: 0 },
+	Baik: { color: CHART.blue, order: 1 },
+	"Kurang Baik": { color: CHART.amber, order: 2 },
+	"Sangat Kurang Baik": { color: CHART.red, order: 3 },
 };
 
 export const dashboard = new Elysia({ prefix: "/dashboard" })

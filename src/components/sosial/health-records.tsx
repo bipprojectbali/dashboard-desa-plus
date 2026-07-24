@@ -169,12 +169,12 @@ function tableStyles(dark: boolean) {
 			fontWeight: 600,
 			textTransform: "uppercase" as const,
 			letterSpacing: "0.05em",
-			borderBottom: `1px solid ${dark ? "#334155" : "#E2E8F0"}`,
+			borderBottom: "1px solid var(--app-border)",
 			paddingBottom: 8,
 		},
 		td: {
-			borderBottom: `1px solid ${dark ? "#1E293B" : "#F1F5F9"}`,
-			color: dark ? "#E2E8F0" : "#334155",
+			borderBottom: "1px solid var(--app-card)",
+			color: "var(--app-text)",
 		},
 	};
 }
@@ -538,9 +538,9 @@ export const HealthRecords = () => {
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#1E293B" : "white"}
 			style={{
-				borderColor: dark ? "#334155" : "white",
+				backgroundColor: "var(--app-card)",
+				borderColor: "var(--app-border)",
 				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
 			}}
 		>

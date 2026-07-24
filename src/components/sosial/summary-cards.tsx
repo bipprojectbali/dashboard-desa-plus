@@ -43,9 +43,9 @@ const SummaryCard = ({
 			radius="xl"
 			withBorder
 			shadow="sm"
-			bg={dark ? "#1E293B" : "white"}
 			style={{
-				borderColor: dark ? "#334155" : "white",
+				backgroundColor: "var(--app-card)",
+				borderColor: "var(--app-border)",
 				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
 				transition: "transform 0.15s ease, box-shadow 0.15s ease",
 			}}
@@ -68,7 +68,7 @@ const SummaryCard = ({
 						</Text>
 					)}
 				</Stack>
-				<ThemeIcon bg={backgroundColor} color={color} size="xl" radius="xl">
+				<ThemeIcon bg={backgroundColor} size="xl" radius="xl" style={{ color }}>
 					{icon}
 				</ThemeIcon>
 			</Group>

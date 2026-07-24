@@ -22,7 +22,10 @@ export function DashboardCard({
 	badge,
 }: DashboardCardProps) {
 	return (
-		<Card className="p-6 bg-gray-50 dark:bg-gray-800 border-none relative">
+		<Card
+			className="p-6 border-none relative"
+			style={{ backgroundColor: "var(--app-card-alt)" }}
+		>
 			<Group justify="space-between" align="flex-start" w="100%">
 				<div style={{ flex: 1 }}>
 					<Text size="sm" c="dimmed" mb="xs">

@@ -43,7 +43,7 @@ export function KpiCards({ year, loading }: KpiCardsProps) {
 					withBorder
 					ta="center"
 					c="dimmed"
-					bg={dark ? "#1F293A" : undefined}
+					style={{ backgroundColor: "var(--app-card)" }}
 				>
 					Belum ada data APBDes.
 				</Card>
@@ -94,9 +94,9 @@ export function KpiCards({ year, loading }: KpiCardsProps) {
 						p="md"
 						radius="xl"
 						withBorder
-						bg={dark ? "#1E293B" : "white"}
 						style={{
-							borderColor: dark ? "#374b6aff" : "var(--mantine-color-white)",
+							backgroundColor: "var(--app-card)",
+							borderColor: "var(--app-border)",
 							boxShadow: "var(--mantine-shadow-xs)",
 							transition: "transform 0.15s ease, box-shadow 0.15s ease",
 						}}

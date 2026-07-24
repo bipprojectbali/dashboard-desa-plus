@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+- **Warna chart, video wall, & status diredam (soft) agar tidak "ngejreng" di TV Vivid mode.** Sebelumnya warna chart & status memakai hex Tailwind-500 saturated (`#EF4444`, `#3B82F6`, `#22C55E`, `#F59E0B`, `#F97316`, dll) yang di layar TV besar terlihat menyala dan tidak selaras dengan badge/komponen lain yang sudah pakai palette lembut. Kini seluruh warna chart & status ditarik ke satu sumber `src/theme/chart-colors.ts` (`CHART`) dengan chroma diturunkan (mis. merah `#EF4444` → `#D25E5E`, biru → `#5A8DD6`, hijau → `#57A773`). Terpengaruh: Distribusi Agama, Dinamika Penduduk, kepuasan layanan, warna divisi NOC, APBDes, status kegiatan, dokumen, kategori inovasi, dan token `WALL_THEME` (seluruh video wall). Hue tetap dibedakan (merah≠hijau≠kuning) sehingga status tetap terbaca & aman colorblind. Tidak ada perubahan logika atau data.
 - **Zona waktu dashboard dikunci ke WITA (GMT+8), mengikuti lokasi desa (Bali).** Sebelumnya default zona `Asia/Jakarta` (WIB) membuat jam & tanggal di header menampilkan "Jakarta" padahal preferensi diset WITA — tidak konsisten. Kini zona waktu tidak lagi bisa dipilih per-pengguna; pilihan Zona Waktu di halaman Preferensi & Pengaturan berubah jadi tampilan baca-saja ("Mengikuti lokasi desa"). Semua timestamp (sinkronisasi, kegiatan, email pengaduan) ditampilkan konsisten dalam WITA untuk semua pengguna, tanpa bergantung lokasi yang mengakses.
 
 ### Fixed

@@ -30,12 +30,10 @@ export function StatCard({
 			p="md"
 			radius="xl"
 			withBorder
-			bg={dark ? "#1E293B" : "white"}
 			style={{
-				borderColor: dark ? "#334155" : "white",
-				boxShadow: dark
-					? "0 1px 3px 0 rgb(0 0 0 / 0.1)"
-					: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				backgroundColor: "var(--app-card)",
+				borderColor: "var(--app-border)",
+				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
 			}}
 			h="100%"
 		>

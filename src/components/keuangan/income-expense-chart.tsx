@@ -38,8 +38,8 @@ export function IncomeExpenseChart({
 	const theme = useMantineTheme();
 	const dark = useIsDark();
 
-	const incomeColor = theme.colors.green[5];
-	const expenseColor = theme.colors.red[5];
+	const incomeColor = dark ? "#57A773" : "#3E9B6B";
+	const expenseColor = dark ? "#D46A6A" : "#D14D4D";
 	const gridStroke = dark ? theme.colors.dark[4] : theme.colors.gray[2];
 	const axisTick = dark ? theme.colors.dark[1] : theme.colors.gray[7];
 	const tooltipBg = dark ? theme.colors.dark[6] : theme.white;
@@ -58,9 +58,9 @@ export function IncomeExpenseChart({
 			p="md"
 			radius="xl"
 			withBorder
-			bg={dark ? "#1E293B" : "white"}
 			style={{
-				borderColor: dark ? "#374b6aff" : "var(--mantine-color-white)",
+				backgroundColor: "var(--app-card)",
+				borderColor: "var(--app-border)",
 				boxShadow: "var(--mantine-shadow-xs)",
 			}}
 			h="100%"

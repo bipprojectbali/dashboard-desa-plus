@@ -3,6 +3,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
+import { CHART } from "@/theme";
 import { apiClient } from "@/utils/api-client";
 
 interface SatisfactionData {
@@ -20,10 +21,10 @@ const RATING_NAME_MAP: Record<
 		key: "sangatPuas" | "puas" | "cukup" | "kurang";
 	}
 > = {
-	"Sangat Baik": { color: "#10B981", order: 0, key: "sangatPuas" },
-	Baik: { color: "#3B82F6", order: 1, key: "puas" },
-	"Kurang Baik": { color: "#F59E0B", order: 2, key: "cukup" },
-	"Sangat Kurang Baik": { color: "#EF4444", order: 3, key: "kurang" },
+	"Sangat Baik": { color: CHART.green, order: 0, key: "sangatPuas" },
+	Baik: { color: CHART.blue, order: 1, key: "puas" },
+	"Kurang Baik": { color: CHART.amber, order: 2, key: "cukup" },
+	"Sangat Kurang Baik": { color: CHART.red, order: 3, key: "kurang" },
 };
 
 // Alias nama kategori seed DB (fallback) → key RATING_NAME_MAP.
@@ -78,12 +79,10 @@ export function SatisfactionChart() {
 			p="md"
 			radius="xl"
 			withBorder
-			bg={dark ? "#1E293B" : "white"}
 			style={{
-				borderColor: dark ? "#334155" : "white",
-				boxShadow: dark
-					? "0 1px 3px 0 rgb(0 0 0 / 0.1)"
-					: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+				backgroundColor: "var(--app-card)",
+				borderColor: "var(--app-border)",
+				boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
 			}}
 			h="100%"
 		>
@@ -111,6 +110,7 @@ export function SatisfactionChart() {
 							outerRadius={120}
 							paddingAngle={2}
 							dataKey="value"
+							stroke="none"
 						>
 							{data.map((entry) => (
 								<Cell key={`cell-${entry.apiName}`} fill={entry.color} />
@@ -118,12 +118,12 @@ export function SatisfactionChart() {
 						</Pie>
 						<Tooltip
 							contentStyle={{
-								backgroundColor: dark ? "#1E293B" : "white",
-								borderColor: dark ? "#334155" : "#e5e7eb",
+								backgroundColor: "var(--app-card)",
+								borderColor: "var(--app-border)",
 								borderRadius: "8px",
 							}}
-							itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
-							labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
+							itemStyle={{ color: "var(--app-text)" }}
+							labelStyle={{ color: "var(--app-text)" }}
 						/>
 					</PieChart>
 				</ResponsiveContainer>

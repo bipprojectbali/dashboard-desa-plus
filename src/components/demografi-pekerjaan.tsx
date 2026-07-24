@@ -39,6 +39,7 @@ import { useApiQuery } from "@/hooks/useApiQuery";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 import { i18nStore } from "@/store/i18n";
+import { CHART } from "@/theme";
 import { apiClient } from "@/utils/api-client";
 
 // Data Interfaces
@@ -228,18 +229,18 @@ async function fetchDemografiAll(): Promise<DemografiAll> {
 	const religionList = parseRes(religionRes, "Religion Distribution");
 	if (religionList && Array.isArray(religionList)) {
 		const religionColors: Record<string, string> = {
-			HINDU: "#EF4444",
-			ISLAM: "#3B82F6",
-			KRISTEN: "#22C55E",
-			KATOLIK: "#A855F7",
-			BUDDHA: "#FACC15",
-			KONGHUCU: "#F97316",
-			LAINNYA: "#94A3B8",
+			HINDU: CHART.red,
+			ISLAM: CHART.blue,
+			KRISTEN: CHART.green,
+			KATOLIK: CHART.grape,
+			BUDDHA: CHART.amber,
+			KONGHUCU: CHART.orange,
+			LAINNYA: CHART.gray,
 		};
 		result.religionData = religionList.map((r: any) => ({
 			name: r.agama || r.religion || r.name || "Unknown",
 			value: Number(r.jumlah || r.value || r.count || 0),
-			color: religionColors[r.agama || r.religion || r.name] || "#94A3B8",
+			color: religionColors[r.agama || r.religion || r.name] || CHART.gray,
 		}));
 	}
 
@@ -385,25 +386,25 @@ const DemografiPekerjaan = () => {
 			title: t.demografiPekerjaan.kelahiran,
 			value: births.toString(),
 			icon: Baby,
-			color: "#22C55E",
+			color: CHART.green,
 		},
 		{
 			title: t.demografiPekerjaan.kematian,
 			value: deaths.toString(),
 			icon: TrendingDown,
-			color: "#EF4444",
+			color: CHART.red,
 		},
 		{
 			title: t.demografiPekerjaan.pindahMasuk,
 			value: moveIn.toString(),
 			icon: Users,
-			color: "#3B82F6",
+			color: CHART.blue,
 		},
 		{
 			title: t.demografiPekerjaan.pindahKeluar,
 			value: moveOut.toString(),
 			icon: Users,
-			color: "#F97316",
+			color: CHART.orange,
 		},
 	];
 
@@ -482,7 +483,7 @@ const DemografiPekerjaan = () => {
 											</Text>
 											<Group gap={4} align="flex-start">
 												{item.trend === "positive" && (
-													<TrendingDown size={14} color="#22C55E" />
+													<TrendingDown size={14} color={CHART.green} />
 												)}
 												<Text
 													size="xs"
@@ -800,6 +801,7 @@ const DemografiPekerjaan = () => {
 											outerRadius={90}
 											paddingAngle={2}
 											dataKey="value"
+											stroke="none"
 										>
 											{religionData.map((entry) => (
 												<Cell key={`cell-${entry.name}`} fill={entry.color} />
@@ -981,7 +983,7 @@ const DemografiPekerjaan = () => {
 														padding: "10px 8px",
 														textAlign: "right",
 														fontSize: "13px",
-														color: "#EF4444",
+														color: CHART.red,
 														fontWeight: 600,
 													}}
 												>

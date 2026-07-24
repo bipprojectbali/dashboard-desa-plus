@@ -3,6 +3,8 @@
  * Dipisah dari noc.ts agar bisa dipakai lintas modul dan di-test.
  */
 
+import { CHART } from "@/theme";
+
 export interface ApbdesItemRaw {
 	id: string;
 	kode?: string;
@@ -38,9 +40,9 @@ export interface ApbdesYear {
 }
 
 const colorMap: Record<string, string> = {
-	pendapatan: "#10B981",
-	belanja: "#3B82F6",
-	pembiayaan: "#F59E0B",
+	pendapatan: CHART.green,
+	belanja: CHART.blue,
+	pembiayaan: CHART.amber,
 };
 
 export function mapApbdesEntry(entry: ApbdesEntryRaw): ApbdesYear {

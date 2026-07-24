@@ -74,9 +74,9 @@ export const SalesDetailModal = ({
 	const pctBulanIni = Math.round((product.penjualanBulanIni / max) * 100);
 	const pctBulanLalu = Math.round((product.bulanLalu / max) * 100);
 
-	const cardBg = dark ? "#0F172A" : "#F8FAFC";
-	const sectionBg = dark ? "#1E293B" : "white";
-	const borderColor = dark ? "#334155" : "#E2E8F0";
+	const cardBg = "var(--app-bg)";
+	const sectionBg = "var(--app-card)";
+	const borderColor = "var(--app-border)";
 	const labelColor = dark ? "dark.2" : "dimmed";
 
 	return (
@@ -336,20 +336,12 @@ const StatCard = ({
 	dark,
 	valueColor,
 }: StatCardProps) => {
-	const bg = highlight
-		? dark
-			? "#1e3a5f"
-			: "#EFF6FF"
-		: dark
-			? "#1E293B"
-			: "white";
+	const bg = highlight ? (dark ? "#1e3a5f" : "#EFF6FF") : "var(--app-card)";
 	const borderColor = highlight
 		? dark
-			? "#2563eb"
+			? "var(--app-primary)"
 			: "#BFDBFE"
-		: dark
-			? "#334155"
-			: "#E2E8F0";
+		: "var(--app-border)";
 
 	return (
 		<Paper radius="lg" p="md" bg={bg} withBorder style={{ borderColor }}>

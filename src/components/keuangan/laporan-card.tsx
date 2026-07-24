@@ -44,9 +44,9 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 			p="md"
 			radius="xl"
 			withBorder
-			bg={dark ? "#1E293B" : "white"}
 			style={{
-				borderColor: dark ? "#374b6aff" : "var(--mantine-color-white)",
+				backgroundColor: "var(--app-card)",
+				borderColor: "var(--app-border)",
 				boxShadow: "var(--mantine-shadow-xs)",
 			}}
 			h="100%"
@@ -81,12 +81,16 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 								p="sm"
 								radius="lg"
 								withBorder
-								bg="var(--mantine-color-green-light)"
 								style={{
-									borderColor: "var(--mantine-color-green-light-color)",
+									backgroundColor: "var(--app-success-subtle)",
+									borderColor: "var(--app-success)",
 								}}
 							>
-								<Title order={5} c="green.5" mb="sm">
+								<Title
+									order={5}
+									style={{ color: "var(--app-success)" }}
+									mb="sm"
+								>
 									{t.keuanganAnggaran.pendapatan}
 								</Title>
 								<Stack gap="xs">
@@ -95,7 +99,11 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 											<Text size="sm" c={dark ? "gray.3" : "gray.7"}>
 												{item.category}
 											</Text>
-											<Text size="sm" fw={600} c="green.5">
+											<Text
+												size="sm"
+												fw={600}
+												style={{ color: "var(--app-success)" }}
+											>
 												Rp {item.amountM.toLocaleString()}jt
 											</Text>
 										</Group>
@@ -105,14 +113,13 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 										mt="sm"
 										pt="sm"
 										style={{
-											borderTop:
-												"1px solid var(--mantine-color-green-light-color)",
+											borderTop: "1px solid var(--app-success)",
 										}}
 									>
-										<Text fw={700} c="green.5">
+										<Text fw={700} style={{ color: "var(--app-success)" }}>
 											{t.keuanganAnggaran.total}
 										</Text>
-										<Text fw={700} c="green.5">
+										<Text fw={700} style={{ color: "var(--app-success)" }}>
 											Rp {totalIncomeM.toLocaleString()}jt
 										</Text>
 									</Group>
@@ -125,12 +132,12 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 								p="sm"
 								radius="lg"
 								withBorder
-								bg="var(--mantine-color-red-light)"
 								style={{
-									borderColor: "var(--mantine-color-red-light-color)",
+									backgroundColor: "var(--app-danger-subtle)",
+									borderColor: "var(--app-danger)",
 								}}
 							>
-								<Title order={5} c="red.5" mb="sm">
+								<Title order={5} style={{ color: "var(--app-danger)" }} mb="sm">
 									{t.keuanganAnggaran.belanja}
 								</Title>
 								<Stack gap="xs">
@@ -139,7 +146,11 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 											<Text size="sm" c={dark ? "gray.3" : "gray.7"}>
 												{item.category}
 											</Text>
-											<Text size="sm" fw={600} c="red.5">
+											<Text
+												size="sm"
+												fw={600}
+												style={{ color: "var(--app-danger)" }}
+											>
 												Rp {item.amountM.toLocaleString()}jt
 											</Text>
 										</Group>
@@ -149,14 +160,13 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 										mt="sm"
 										pt="sm"
 										style={{
-											borderTop:
-												"1px solid var(--mantine-color-red-light-color)",
+											borderTop: "1px solid var(--app-danger)",
 										}}
 									>
-										<Text fw={700} c="red.5">
+										<Text fw={700} style={{ color: "var(--app-danger)" }}>
 											{t.keuanganAnggaran.total}
 										</Text>
-										<Text fw={700} c="red.5">
+										<Text fw={700} style={{ color: "var(--app-danger)" }}>
 											Rp {totalExpenseM.toLocaleString()}jt
 										</Text>
 									</Group>
@@ -176,7 +186,13 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 						<Text fw={700} c={dark ? "white" : "gray.9"}>
 							{t.keuanganAnggaran.saldo}
 						</Text>
-						<Text fw={700} size="lg" c={saldoM >= 0 ? "green.5" : "red.5"}>
+						<Text
+							fw={700}
+							size="lg"
+							style={{
+								color: saldoM >= 0 ? "var(--app-success)" : "var(--app-danger)",
+							}}
+						>
 							Rp {saldoM.toLocaleString()}jt
 						</Text>
 					</Group>

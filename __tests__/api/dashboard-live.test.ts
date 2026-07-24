@@ -1,5 +1,10 @@
 import { describe, expect, it } from "bun:test";
 import api from "@/api";
+import {
+	DIVISION_COLOR_FALLBACK,
+	DIVISION_COLOR_MAP,
+} from "@/api/transforms/noc-divisions";
+import { CHART } from "@/theme";
 
 // ---------------------------------------------------------------------------
 // Unit: SDGs image URL transform
@@ -30,17 +35,6 @@ describe("SDGs image URL transform", () => {
 // Unit: Divisi color-map transform
 // ---------------------------------------------------------------------------
 
-const DIVISION_COLOR_MAP: Record<string, string> = {
-	Pemerintahan: "#3B82F6",
-	Pembangunan: "#10B981",
-	Kemasyarakatan: "#F59E0B",
-	Pemberdayaan: "#8B5CF6",
-	"Kesejahteraan Sosial": "#EC4899",
-	"Keamanan & Ketertiban": "#EF4444",
-	"Adat & Budaya": "#F97316",
-};
-const DIVISION_COLOR_FALLBACK = "#6B7280";
-
 type NocDivisi = { id: string; division: string; totalKegiatan: number };
 
 function mapDivisi(divisi: NocDivisi[]) {
@@ -57,10 +51,10 @@ describe("Divisi color-map transform", () => {
 		const result = mapDivisi([
 			{ id: "1", division: "Pemerintahan", totalKegiatan: 10 },
 		]);
-		expect(result[0].color).toBe("#3B82F6");
+		expect(result[0].color).toBe(CHART.blue);
 	});
 
-	it("nama tidak dikenal pakai fallback #6B7280", () => {
+	it("nama tidak dikenal pakai fallback netral", () => {
 		const result = mapDivisi([
 			{ id: "x", division: "Divisi Baru", totalKegiatan: 3 },
 		]);
