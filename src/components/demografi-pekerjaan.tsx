@@ -801,6 +801,7 @@ const DemografiPekerjaan = () => {
 											outerRadius={90}
 											paddingAngle={2}
 											dataKey="value"
+											stroke="none"
 										>
 											{religionData.map((entry) => (
 												<Cell key={`cell-${entry.name}`} fill={entry.color} />

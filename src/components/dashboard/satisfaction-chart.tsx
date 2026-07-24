@@ -110,6 +110,7 @@ export function SatisfactionChart() {
 							outerRadius={120}
 							paddingAngle={2}
 							dataKey="value"
+							stroke="none"
 						>
 							{data.map((entry) => (
 								<Cell key={`cell-${entry.apiName}`} fill={entry.color} />
