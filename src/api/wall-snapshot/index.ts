@@ -10,6 +10,7 @@ import { buildKeamanan } from "./build-keamanan";
 import { buildKeuangan } from "./build-keuangan";
 import { buildKpi } from "./build-kpi";
 import { buildPengaduan } from "./build-pengaduan";
+import { buildSosial } from "./build-sosial";
 
 /**
  * Otorisasi akses wall. Token unset ⇒ terbuka (mulai longgar, bisa diperketat
@@ -50,6 +51,7 @@ export async function buildWallSnapshot(): Promise<WallSnapshot> {
 		beranda,
 		jenna,
 		bumdes,
+		sosial,
 		system,
 	] = await Promise.all([
 		settle("kpi", buildKpi),
@@ -61,6 +63,7 @@ export async function buildWallSnapshot(): Promise<WallSnapshot> {
 		settle("beranda", buildBeranda),
 		settle("jenna", buildJenna),
 		settle("bumdes", buildBumdes),
+		settle("sosial", buildSosial),
 		settle("system", computeSystemStats),
 	]);
 
@@ -75,6 +78,7 @@ export async function buildWallSnapshot(): Promise<WallSnapshot> {
 		beranda,
 		jenna,
 		bumdes,
+		sosial,
 		system,
 	};
 }

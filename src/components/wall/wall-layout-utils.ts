@@ -63,6 +63,13 @@ export const ALL_WIDGET_IDS = [
 	"bumdes-ringkasan",
 	"bumdes-top-produk",
 	"bumdes-detail",
+	// Sosial — mirror halaman /sosial
+	"sosial-kpi",
+	"sosial-kesehatan",
+	"sosial-posyandu",
+	"sosial-pendidikan",
+	"sosial-beasiswa",
+	"sosial-event",
 	// Ops / sistem
 	"ops-panel",
 ] as const;
@@ -113,6 +120,13 @@ export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
 	"bumdes-ringkasan": "lg",
 	"bumdes-top-produk": "tall",
 	"bumdes-detail": "wide",
+	// ── Sosial ──
+	"sosial-kpi": "wide",
+	"sosial-kesehatan": "lg",
+	"sosial-posyandu": "tall",
+	"sosial-pendidikan": "lg",
+	"sosial-beasiswa": "sm",
+	"sosial-event": "tall",
 	"ops-panel": "tall",
 };
 
@@ -131,6 +145,7 @@ export type WallCategory =
 	| "keamanan"
 	| "jenna"
 	| "bumdes"
+	| "sosial"
 	| "ops";
 
 /**
