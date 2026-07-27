@@ -44,7 +44,11 @@ async function fetchUpcomingCount(): Promise<number> {
 }
 
 async function fetchCctvLaporan(): Promise<number> {
-	return withCache("keamanan:cctv:stats", TTL.KEAMANAN, async () => {
+	// Key unik: JANGAN pakai "keamanan:cctv:stats" — key itu dipakai
+	// keamanan.ts /cctv/stats yang meng-cache OBJECT penuh {cctvOnline,
+	// laporanMingguIni}. Collision bikin securityReports jadi object →
+	// KPI render "[object Object]". Lihat commit 98a587c (bug serupa).
+	return withCache("wall:kpi:cctv-laporan", TTL.KEAMANAN, async () => {
 		const res = await desaExternalClient.GET("/api/keamanan/cctv/stats");
 		if (res.error) throw new Error("CCTV stats API error");
 		return (
