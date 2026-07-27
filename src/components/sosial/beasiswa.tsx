@@ -1,29 +1,35 @@
-import { Card, Group, Stack, Text, ThemeIcon } from "@mantine/core";
+import { Card, Group, Skeleton, Stack, Text, ThemeIcon } from "@mantine/core";
 import { IconAward } from "@tabler/icons-react";
+import { useApiQuery } from "@/hooks/useApiQuery";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
+import { apiClient } from "@/utils/api-client";
 
-interface ScholarshipData {
-	penerima: number;
-	dana: string;
-	tahunAjaran: string;
+interface BeasiswaStats {
+	total: number;
+	lakiLaki: number;
+	perempuan: number;
+	periode: string | null;
 }
 
-interface BeasiswaProps {
-	data?: ScholarshipData;
+// Proxy server-side (/api/sosial/beasiswa/stats) — PII pendaftar tidak
+// diteruskan ke browser; hanya agregat (total, L/P, periode).
+async function fetchBeasiswa(): Promise<BeasiswaStats | null> {
+	const res = await apiClient.GET("/api/sosial/beasiswa/stats");
+	const body = res.data as
+		| { success: boolean; data: BeasiswaStats | null }
+		| undefined;
+	return body?.success ? (body.data ?? null) : null;
 }
 
-export const Beasiswa = ({ data }: BeasiswaProps) => {
+export const Beasiswa = () => {
 	const t = useTranslate();
 	const dark = useIsDark();
 
-	const defaultData: ScholarshipData = {
-		penerima: 45,
-		dana: "Rp 1.200.000.000",
-		tahunAjaran: "2025/2026",
-	};
-
-	const displayData = data || defaultData;
+	const { data: stats = null, isLoading: loading } = useApiQuery(
+		["sosial-ext", "beasiswa"],
+		fetchBeasiswa,
+	);
 
 	return (
 		<Card
@@ -44,9 +50,13 @@ export const Beasiswa = ({ data }: BeasiswaProps) => {
 					<Text size="sm" c={dark ? "white" : "dimmed"} fw={500}>
 						{t.sosial.beasiswaDesa}
 					</Text>
-					<Text size="xl" fw={700} c={dark ? "white" : "#1e3a5f"}>
-						{t.sosial.penerima}: {displayData.penerima}
-					</Text>
+					{loading ? (
+						<Skeleton height={28} width={120} radius="sm" />
+					) : (
+						<Text size="xl" fw={700} c={dark ? "white" : "#1e3a5f"}>
+							{t.sosial.penerima}: {stats?.total ?? 0}
+						</Text>
+					)}
 				</Stack>
 				<ThemeIcon
 					variant="light"
@@ -59,14 +69,32 @@ export const Beasiswa = ({ data }: BeasiswaProps) => {
 			</Group>
 			<Stack gap="xs" mt="md">
 				<Group justify="space-between">
-					<Text c={dark ? "white" : "dimmed"}>{t.sosial.danaTersalurkan}:</Text>
-					<Text fw={700} c={dark ? "white" : "#1e3a5f"}>
-						{displayData.dana}
-					</Text>
+					<Text c={dark ? "white" : "dimmed"}>{t.sosial.lakiLaki}:</Text>
+					{loading ? (
+						<Skeleton height={20} width={40} radius="sm" />
+					) : (
+						<Text fw={700} c={dark ? "white" : "#1e3a5f"}>
+							{stats?.lakiLaki ?? 0}
+						</Text>
+					)}
 				</Group>
 				<Group justify="space-between">
-					<Text c={dark ? "white" : "dimmed"}>{t.sosial.tahunAjaran}:</Text>
-					<Text c={dark ? "white" : "#1e3a5f"}>{displayData.tahunAjaran}</Text>
+					<Text c={dark ? "white" : "dimmed"}>{t.sosial.perempuan}:</Text>
+					{loading ? (
+						<Skeleton height={20} width={40} radius="sm" />
+					) : (
+						<Text fw={700} c={dark ? "white" : "#1e3a5f"}>
+							{stats?.perempuan ?? 0}
+						</Text>
+					)}
+				</Group>
+				<Group justify="space-between">
+					<Text c={dark ? "white" : "dimmed"}>{t.sosial.periode}:</Text>
+					{loading ? (
+						<Skeleton height={20} width={40} radius="sm" />
+					) : (
+						<Text c={dark ? "white" : "#1e3a5f"}>{stats?.periode ?? "—"}</Text>
+					)}
 				</Group>
 			</Stack>
 		</Card>

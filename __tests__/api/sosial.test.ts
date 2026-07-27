@@ -24,6 +24,13 @@ describe("Sosial API Proxy", () => {
 		expect([401, 422]).toContain(response.status);
 	});
 
+	it("beasiswa proxy ter-mount (protected → 401 tanpa auth)", async () => {
+		const response = await api.handle(
+			new Request("http://localhost/api/sosial/beasiswa/stats"),
+		);
+		expect([401, 422]).toContain(response.status);
+	});
+
 	it("route sosial tak dikenal mengembalikan 404", async () => {
 		const response = await api.handle(
 			new Request("http://localhost/api/sosial/does-not-exist"),
