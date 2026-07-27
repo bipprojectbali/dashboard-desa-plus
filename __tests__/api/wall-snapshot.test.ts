@@ -48,7 +48,7 @@ const ALLOWED_KEYS: Record<string, string[]> = {
 		"sectors",
 	],
 	divisi: ["activities", "documents", "projects", "discussions"],
-	keamanan: ["total", "baru", "diproses", "selesai"],
+	keamanan: ["kpi", "cctv", "laporanPublik"],
 	// beranda: teks operasional publik (name, title, location) disertakan sengaja
 	// (setara website desa). Field PII-orang dilarang — dijaga oleh test nested di bawah.
 	beranda: [
@@ -194,6 +194,57 @@ describe("GET /api/noc/wall-snapshot", () => {
 				"deaths",
 				"moveIn",
 				"moveOut",
+			]);
+		}
+	});
+
+	it("keamanan nested — cctv[] & laporanPublik[] hanya field operasional, bukan PII-orang", async () => {
+		delete process.env.WALL_ACCESS_TOKEN;
+		const res = await api.handle(
+			new Request("http://localhost/api/noc/wall-snapshot"),
+		);
+		const { data } = await res.json();
+		const keamanan = data.keamanan;
+		if (keamanan === null || keamanan === undefined) return; // builder gagal = skip
+
+		const CCTV_ALLOWED = [
+			"id",
+			"kode",
+			"nama",
+			"lokasi",
+			"latitude",
+			"longitude",
+			"status",
+		];
+		const LAPORAN_ALLOWED = ["id", "judul", "lokasi", "tanggalWaktu", "status"];
+		const PII_BANNED = [
+			"nik",
+			"nama_lengkap",
+			"email",
+			"phone",
+			"reportedBy",
+			"userId",
+			"createdBy",
+		];
+
+		for (const item of keamanan.cctv ?? []) {
+			for (const key of Object.keys(item)) {
+				expect(CCTV_ALLOWED).toContain(key);
+				expect(PII_BANNED).not.toContain(key);
+			}
+		}
+		for (const item of keamanan.laporanPublik ?? []) {
+			for (const key of Object.keys(item)) {
+				expect(LAPORAN_ALLOWED).toContain(key);
+				expect(PII_BANNED).not.toContain(key);
+			}
+		}
+
+		// kpi hanya 2 field angka
+		if (keamanan.kpi !== null && keamanan.kpi !== undefined) {
+			expect(Object.keys(keamanan.kpi).sort()).toEqual([
+				"cctvOnline",
+				"laporanMingguIni",
 			]);
 		}
 	});

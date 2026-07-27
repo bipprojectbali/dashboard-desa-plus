@@ -42,7 +42,12 @@ import {
 	JennaKpiBody,
 	JennaTopikBody,
 } from "./widgets/jenna";
-import { KeamananStatusBody } from "./widgets/keamanan";
+import {
+	KeamananCctvBody,
+	KeamananKpiBody,
+	KeamananLaporanBody,
+	KeamananPetaBody,
+} from "./widgets/keamanan";
 import {
 	KeuanganAlokasiBody,
 	KeuanganArusBody,
@@ -285,12 +290,33 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		selectData: (s) => nonEmpty(s?.divisi?.discussions),
 		Body: DivisiDiskusiBody,
 	},
-	"keamanan-status": {
-		id: "keamanan-status",
-		title: "Laporan Keamanan",
+	"keamanan-kpi": {
+		id: "keamanan-kpi",
+		title: "CCTV & Laporan Keamanan",
 		category: "keamanan",
-		selectData: (s) => s?.keamanan ?? null,
-		Body: KeamananStatusBody,
+		selectData: (s) => s?.keamanan?.kpi ?? null,
+		Body: KeamananKpiBody,
+	},
+	"keamanan-cctv": {
+		id: "keamanan-cctv",
+		title: "Daftar CCTV",
+		category: "keamanan",
+		selectData: (s) => nonEmpty(s?.keamanan?.cctv),
+		Body: KeamananCctvBody,
+	},
+	"keamanan-laporan": {
+		id: "keamanan-laporan",
+		title: "Laporan Publik",
+		category: "keamanan",
+		selectData: (s) => nonEmpty(s?.keamanan?.laporanPublik),
+		Body: KeamananLaporanBody,
+	},
+	"keamanan-peta": {
+		id: "keamanan-peta",
+		title: "Peta CCTV",
+		category: "keamanan",
+		selectData: (s) => nonEmpty(s?.keamanan?.cctv),
+		Body: KeamananPetaBody,
 	},
 	"jenna-kpi": {
 		id: "jenna-kpi",
