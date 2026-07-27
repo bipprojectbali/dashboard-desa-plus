@@ -51,8 +51,11 @@ export const ALL_WIDGET_IDS = [
 	"keuangan-alokasi",
 	"keuangan-laporan",
 	"keuangan-bantuan",
-	// Keamanan
-	"keamanan-status",
+	// Keamanan — mirror halaman /keamanan (live Desa API)
+	"keamanan-kpi",
+	"keamanan-cctv",
+	"keamanan-laporan",
+	"keamanan-peta",
 	// Jenna Analytic — mirror halaman /jenna-analytic
 	"jenna-kpi",
 	"jenna-interaksi",
@@ -111,7 +114,10 @@ export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
 	"divisi-documents": "wide",
 	"divisi-kegiatan": "tall",
 	"divisi-diskusi": "tall",
-	"keamanan-status": "sm",
+	"keamanan-kpi": "wide",
+	"keamanan-cctv": "tall",
+	"keamanan-laporan": "tall",
+	"keamanan-peta": "lg",
 	"jenna-kpi": "wide",
 	"jenna-interaksi": "wide",
 	"jenna-topik": "tall",

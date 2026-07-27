@@ -107,10 +107,23 @@ export interface WallDivisi {
 }
 
 export interface WallKeamanan {
-	total: number;
-	baru: number;
-	diproses: number;
-	selesai: number;
+	kpi: { cctvOnline: number; laporanMingguIni: number };
+	cctv: Array<{
+		id: string;
+		kode: string;
+		nama: string;
+		lokasi: string;
+		latitude: number;
+		longitude: number;
+		status: string; // "Online" | "Offline"
+	}>;
+	laporanPublik: Array<{
+		id: string;
+		judul: string;
+		lokasi: string;
+		tanggalWaktu: string;
+		status: string; // "Selesai" | "Proses" | "Gagal" | "Baru"
+	}>;
 }
 
 /**
