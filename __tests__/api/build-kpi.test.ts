@@ -74,6 +74,17 @@ describe("buildKpi", () => {
 		expect(kpi.securityReports).toBe(1);
 	});
 
+	// Regresi: CCTV API balikin object {cctvOnline, laporanMingguIni}. buildKpi
+	// WAJIB ekstrak angka laporanMingguIni — bukan teruskan object. Kalau object
+	// bocor ke KPI, frontend render "[object Object]" (bug 2026-07-27).
+	it("securityReports selalu number, bukan object dari API", async () => {
+		const kpi = await buildKpi();
+		expect(typeof kpi.securityReports).toBe("number");
+		expect(kpi.securityReports).not.toBe(
+			CCTV_FIXTURE as unknown as number,
+		);
+	});
+
 	it("tidak ada field documents", async () => {
 		const kpi = await buildKpi();
 		expect(Object.keys(kpi)).not.toContain("documents");

@@ -58,6 +58,15 @@ const KPI_ITEMS: Array<{
 ];
 
 /**
+ * Guard render: KPI harus number. Jika slice mengirim non-number (mis. object
+ * karena cache collision di server), jangan render "[object Object]" — jatuh
+ * ke 0. Pertahanan lapis-2; root cause diperbaiki di build-kpi.ts.
+ */
+function toKpiNumber(value: unknown): number {
+	return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+/**
  * Strip 6 KPI lintas domain. Tiap kartu: pita aksen kiri + ikon + angka besar,
  * warna berbeda per metrik agar cepat dipindai dari jarak jauh (TV). Fallback 0
  * saat slice null (no mock).
@@ -100,7 +109,7 @@ export function KpiStrip({ kpi }: KpiStripProps) {
 							fw={800}
 							style={{ fontSize: 28, color: WALL_THEME.TEXT, lineHeight: 1.1 }}
 						>
-							{(kpi?.[key] ?? 0).toLocaleString("id-ID")}
+							{toKpiNumber(kpi?.[key]).toLocaleString("id-ID")}
 						</Text>
 						<Text
 							size="xs"
