@@ -367,6 +367,9 @@ export type TranslationKeys = {
 		penerima: string;
 		danaTersalurkan: string;
 		tahunAjaran: string;
+		lakiLaki: string;
+		perempuan: string;
+		periode: string;
 		kalenderEventBudaya: string;
 		eventBudaya1Nama: string;
 		eventBudaya1Tanggal: string;
@@ -836,6 +839,9 @@ const id: TranslationKeys = {
 		penerima: "Penerima",
 		danaTersalurkan: "Dana Tersalurkan",
 		tahunAjaran: "Tahun Ajaran",
+		lakiLaki: "Laki-laki",
+		perempuan: "Perempuan",
+		periode: "Periode",
 		kalenderEventBudaya: "Kalender Event Budaya",
 		eventBudaya1Nama: "Hari Kesaktian Pancasila",
 		eventBudaya1Tanggal: "1 Oktober 2025",

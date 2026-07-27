@@ -80,9 +80,7 @@ describe("buildKpi", () => {
 	it("securityReports selalu number, bukan object dari API", async () => {
 		const kpi = await buildKpi();
 		expect(typeof kpi.securityReports).toBe("number");
-		expect(kpi.securityReports).not.toBe(
-			CCTV_FIXTURE as unknown as number,
-		);
+		expect(kpi.securityReports).not.toBe(CCTV_FIXTURE as unknown as number);
 	});
 
 	it("tidak ada field documents", async () => {

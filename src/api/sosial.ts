@@ -293,6 +293,77 @@ export const sosial = new Elysia({ prefix: "/sosial" })
 			},
 		},
 	)
+	.get(
+		"/beasiswa/stats",
+		async ({ set }) => {
+			try {
+				const data = await withCache(
+					"sosial:beasiswa:stats",
+					TTL.SOSIAL,
+					async () => {
+						const r = await fetch(
+							`${DESA_API_URL}/api/pendidikan/beasiswa/beasiswapendaftar/findMany?limit=500`,
+						);
+						if (!r.ok) throw new Error(`Desa API HTTP ${r.status}`);
+						const json = await r.json();
+						if (!json.success) {
+							throw new Error(
+								json.message ?? "Desa API returned success=false",
+							);
+						}
+
+						const rows: Array<{ jenisKelamin?: string; createdAt?: string }> =
+							Array.isArray(json.data) ? json.data : [];
+
+						const lakiLaki = rows.filter(
+							(row) => row.jenisKelamin === "LAKI_LAKI",
+						).length;
+						const perempuan = rows.filter(
+							(row) => row.jenisKelamin === "PEREMPUAN",
+						).length;
+
+						// Periode dari tahun createdAt terbesar di halaman ini.
+						// ?limit=500 aman selama pendaftar < 500 (saat ini: 45).
+						// Jika suatu saat melebihi, breakdown L/P bisa undercount,
+						// tapi total (penerima) tetap akurat dari field pagination.
+						const years = rows
+							.map((row) =>
+								row.createdAt ? new Date(row.createdAt).getFullYear() : null,
+							)
+							.filter((y): y is number => y !== null);
+						const periode =
+							years.length > 0 ? String(Math.max(...years)) : null;
+
+						return {
+							total: json.total ?? rows.length,
+							lakiLaki,
+							perempuan,
+							periode,
+						};
+					},
+				);
+				return { success: true, data };
+			} catch (error) {
+				logger.error({ error }, "Failed to proxy sosial beasiswa stats");
+				set.status = 500;
+				return { success: false, error: "Internal Server Error", data: null };
+			}
+		},
+		{
+			response: {
+				200: t.Object({
+					success: t.Boolean(),
+					data: t.Any(),
+					error: t.Optional(t.String()),
+				}),
+				500: t.Object({
+					success: t.Boolean(),
+					error: t.String(),
+					data: t.Null(),
+				}),
+			},
+		},
+	)
 	.post(
 		"/cache-invalidate",
 		() => {
