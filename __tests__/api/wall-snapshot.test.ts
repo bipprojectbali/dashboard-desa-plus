@@ -62,6 +62,9 @@ const ALLOWED_KEYS: Record<string, string[]> = {
 	],
 	// jenna: hanya angka agregat interaksi chatbot, tanpa PII-orang.
 	jenna: ["kpi", "mingguan", "topik", "jamSibuk"],
+	// sosial: angka agregat + data operasional publik. Riwayat warga (PII) tidak ada.
+	// event[]: hanya id/title/startDate/location — dijaga oleh test nested di bawah.
+	sosial: ["kpi", "kesehatan", "posyandu", "pendidikan", "beasiswa", "event"],
 };
 
 describe("GET /api/noc/wall-snapshot", () => {
@@ -191,6 +194,43 @@ describe("GET /api/noc/wall-snapshot", () => {
 				"deaths",
 				"moveIn",
 				"moveOut",
+			]);
+		}
+	});
+
+	it("sosial nested — event[] hanya data budaya publik, bukan PII-orang", async () => {
+		delete process.env.WALL_ACCESS_TOKEN;
+		const res = await api.handle(
+			new Request("http://localhost/api/noc/wall-snapshot"),
+		);
+		const { data } = await res.json();
+		const sosial = data.sosial;
+		if (sosial === null || sosial === undefined) return; // builder gagal = skip
+
+		// event[] hanya boleh punya field operasional publik (setara website desa)
+		const EVENT_ALLOWED = ["id", "title", "startDate", "location"];
+		const EVENT_PII_BANNED = [
+			"nik",
+			"nama",
+			"email",
+			"phone",
+			"userId",
+			"createdBy",
+		];
+		for (const item of sosial.event ?? []) {
+			for (const key of Object.keys(item)) {
+				expect(EVENT_ALLOWED).toContain(key);
+				expect(EVENT_PII_BANNED).not.toContain(key);
+			}
+		}
+
+		// kpi hanya 4 field agregat angka
+		if (sosial.kpi !== null && sosial.kpi !== undefined) {
+			expect(Object.keys(sosial.kpi).sort()).toEqual([
+				"alertStunting",
+				"balitaTerdaftar",
+				"ibuHamilAktif",
+				"posyanduAktif",
 			]);
 		}
 	});

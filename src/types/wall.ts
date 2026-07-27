@@ -206,6 +206,40 @@ export interface WallBumdes {
 	}>;
 }
 
+/**
+ * Slice "Sosial" — mirror halaman `/sosial`. Hanya angka agregat + data
+ * operasional publik. Riwayat kesehatan warga (PII nama+medis) TIDAK disertakan.
+ * event[]: nama+lokasi setara website desa, bukan PII-orang.
+ */
+export interface WallSosial {
+	kpi: {
+		ibuHamilAktif: number;
+		balitaTerdaftar: number;
+		alertStunting: number;
+		posyanduAktif: number;
+	};
+	kesehatan: Array<{ label: string; value: number; color: string }>;
+	posyandu: Array<{ id: string; name: string; jadwal: string; time: string }>;
+	pendidikan: {
+		perJenjang: Array<{ nama: string; jumlahSiswa: number }>;
+		jumlahLembaga: number;
+		jumlahPengajar: number;
+	};
+	beasiswa: {
+		total: number;
+		lakiLaki: number;
+		perempuan: number;
+		periode: string | null;
+	};
+	/** event: nama+lokasi = data budaya publik (setara website desa), bukan PII-orang. */
+	event: Array<{
+		id: string;
+		title: string;
+		startDate: string;
+		location: string;
+	}>;
+}
+
 export interface WallSnapshot {
 	generatedAt: string;
 	kpi: WallKpi | null;
@@ -217,5 +251,6 @@ export interface WallSnapshot {
 	beranda: WallBeranda | null;
 	jenna: WallJenna | null;
 	bumdes: WallBumdes | null;
+	sosial: WallSosial | null;
 	system: SystemHealth | null;
 }

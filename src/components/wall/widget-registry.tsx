@@ -58,6 +58,14 @@ import {
 	PengaduanTerbaruBody,
 	PengaduanTrendBody,
 } from "./widgets/pengaduan";
+import {
+	SosialBeasiswaBody,
+	SosialEventBody,
+	SosialKesehatanBody,
+	SosialKpiBody,
+	SosialPendidikanBody,
+	SosialPosyanduBody,
+} from "./widgets/sosial";
 
 /**
  * Definisi satu widget. `selectData` mengambil slice dari snapshot; balikin
@@ -340,6 +348,49 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		category: "bumdes",
 		selectData: (s) => nonEmpty(s?.bumdes?.detail),
 		Body: BumdesDetailBody,
+	},
+	// ── Sosial ───────────────────────────────────────────────────────────────
+	"sosial-kpi": {
+		id: "sosial-kpi",
+		title: "KPI Kesehatan",
+		category: "sosial",
+		selectData: (s) => s?.sosial?.kpi ?? null,
+		Body: SosialKpiBody,
+	},
+	"sosial-kesehatan": {
+		id: "sosial-kesehatan",
+		title: "Statistik Kesehatan",
+		category: "sosial",
+		selectData: (s) => nonEmpty(s?.sosial?.kesehatan),
+		Body: SosialKesehatanBody,
+	},
+	"sosial-posyandu": {
+		id: "sosial-posyandu",
+		title: "Jadwal Posyandu",
+		category: "sosial",
+		selectData: (s) => nonEmpty(s?.sosial?.posyandu),
+		Body: SosialPosyanduBody,
+	},
+	"sosial-pendidikan": {
+		id: "sosial-pendidikan",
+		title: "Pendidikan",
+		category: "sosial",
+		selectData: (s) => s?.sosial?.pendidikan ?? null,
+		Body: SosialPendidikanBody,
+	},
+	"sosial-beasiswa": {
+		id: "sosial-beasiswa",
+		title: "Beasiswa Desa",
+		category: "sosial",
+		selectData: (s) => s?.sosial?.beasiswa ?? null,
+		Body: SosialBeasiswaBody,
+	},
+	"sosial-event": {
+		id: "sosial-event",
+		title: "Kalender Event Budaya",
+		category: "sosial",
+		selectData: (s) => nonEmpty(s?.sosial?.event),
+		Body: SosialEventBody,
 	},
 	"ops-panel": {
 		id: "ops-panel",
