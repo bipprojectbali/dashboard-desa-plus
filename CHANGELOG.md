@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - **Widget "Sektor Unggulan" & "Data per Banjar" di NOC Video Wall dibatasi 5 teratas.** Sebelumnya kedua panel menampilkan seluruh baris tanpa urutan: pada Sektor Unggulan, banyaknya bar melampaui tinggi kartu membuat Recharts men-skip sebagian label sumbu-Y (bar tampil, teksnya hilang); pada Data per Banjar, tabel memanjang melebihi kartu. Kini keduanya diurutkan menurun (sektor by nilai, banjar by populasi) lalu diambil 5 teratas — semua label terbaca dan tabel ringkas.
 
+## [0.1.58] - 2026-07-27
+
+### Fixed
+- **KPI "Laporan Keamanan" di NOC Video Wall (`/wall`) tidak lagi menampilkan `[object Object]`.** Penyebabnya bentrok kunci cache: endpoint `/cctv/stats` (halaman Keamanan) dan builder KPI wall sama-sama memakai kunci `keamanan:cctv:stats`, tetapi menyimpan bentuk berbeda — `/cctv/stats` menyimpan objek penuh `{cctvOnline, laporanMingguIni}`, sedangkan KPI hanya butuh angka `laporanMingguIni`. Yang mengisi cache lebih dulu menang; di staging objek bocor ke KPI sehingga angka dirender sebagai `[object Object]`. Kini builder KPI memakai kunci unik `wall:kpi:cctv-laporan`, plus guard di komponen KPI yang memaksa nilai non-angka jatuh ke 0 sebagai pertahanan lapis kedua.
+
 ## [0.1.56] - 2026-07-24
 
 ### Fixed
