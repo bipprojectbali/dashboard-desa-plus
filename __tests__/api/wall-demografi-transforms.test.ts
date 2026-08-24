@@ -43,8 +43,8 @@ describe("mapReligion", () => {
 			{ agama: "LAINNYA", jumlah: 290 },
 		];
 		expect(mapReligion(raw)).toEqual([
-			{ label: "HINDU", count: 3850 },
-			{ label: "LAINNYA", count: 290 },
+			{ label: "Hindu", count: 3850 },
+			{ label: "Lainnya", count: 290 },
 		]);
 	});
 

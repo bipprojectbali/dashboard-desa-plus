@@ -5,6 +5,7 @@ import {
 	Card,
 	Grid,
 	Group,
+	Select,
 	Skeleton,
 	Stack,
 	Text,
@@ -21,7 +22,7 @@ import {
 	TrendingDown,
 	Users,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
 	Bar,
 	BarChart,
@@ -35,6 +36,11 @@ import {
 	YAxis,
 } from "recharts";
 import { useSnapshot } from "valtio";
+import {
+	groupReligion,
+	type RawReligionRow,
+	religionYears,
+} from "@/api/transforms/religion";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
@@ -59,6 +65,17 @@ interface ReligionData {
 	color: string;
 }
 
+// Warna per key agama ternormalisasi (lihat transforms/religion.ts).
+const RELIGION_COLORS: Record<string, string> = {
+	HINDU: CHART.red,
+	ISLAM: CHART.blue,
+	KRISTEN_PROTESTAN: CHART.green,
+	KRISTEN_KATOLIK: CHART.grape,
+	BUDDHA: CHART.amber,
+	KONGHUCU: CHART.orange,
+	LAINNYA: CHART.gray,
+};
+
 interface BanjarData {
 	id: string;
 	name: string;
@@ -82,7 +99,7 @@ interface DemografiAll {
 	stats: DashboardSummary;
 	ageData: AgeData[];
 	jobData: JobData[];
-	religionData: ReligionData[];
+	religionRows: RawReligionRow[];
 	banjarData: BanjarData[];
 	sektorData: SectorData[];
 	births: number;
@@ -95,7 +112,7 @@ const EMPTY_DEMOGRAFI: DemografiAll = {
 	stats: { total: 0, heads: 0, poor: 0 },
 	ageData: [],
 	jobData: [],
-	religionData: [],
+	religionRows: [],
 	banjarData: [],
 	sektorData: [],
 	births: 0,
@@ -111,7 +128,7 @@ async function fetchDemografiAll(): Promise<DemografiAll> {
 		stats: { total: 0, heads: 0, poor: 0 },
 		ageData: [],
 		jobData: [],
-		religionData: [],
+		religionRows: [],
 		banjarData: [],
 		sektorData: [],
 		births: 0,
@@ -225,23 +242,12 @@ async function fetchDemografiAll(): Promise<DemografiAll> {
 		}));
 	}
 
-	// Parse Religion Distribution
+	// Parse Religion Distribution — simpan baris mentah (semua tahun); grouping,
+	// filter tahun, & normalisasi label dilakukan di komponen agar dropdown tahun
+	// bisa ganti tanpa refetch.
 	const religionList = parseRes(religionRes, "Religion Distribution");
 	if (religionList && Array.isArray(religionList)) {
-		const religionColors: Record<string, string> = {
-			HINDU: CHART.red,
-			ISLAM: CHART.blue,
-			KRISTEN: CHART.green,
-			KATOLIK: CHART.grape,
-			BUDDHA: CHART.amber,
-			KONGHUCU: CHART.orange,
-			LAINNYA: CHART.gray,
-		};
-		result.religionData = religionList.map((r: any) => ({
-			name: r.agama || r.religion || r.name || "Unknown",
-			value: Number(r.jumlah || r.value || r.count || 0),
-			color: religionColors[r.agama || r.religion || r.name] || CHART.gray,
-		}));
+		result.religionRows = religionList as RawReligionRow[];
 	}
 
 	// Parse Births
@@ -323,7 +329,7 @@ const DemografiPekerjaan = () => {
 		stats,
 		ageData,
 		jobData,
-		religionData,
+		religionRows,
 		banjarData,
 		sektorData,
 		births,
@@ -334,6 +340,29 @@ const DemografiPekerjaan = () => {
 	const error = isError
 		? "Gagal memuat data demografi. Periksa koneksi dan coba lagi."
 		: null;
+
+	// Dropdown tahun distribusi agama — default tahun terbaru, ganti tanpa refetch.
+	const [selectedReligionYear, setSelectedReligionYear] = useState<
+		string | null
+	>(null);
+	const religionYearOptions = useMemo(
+		() => religionYears(religionRows).map((y) => String(y)),
+		[religionRows],
+	);
+	const activeReligionYear =
+		selectedReligionYear ?? religionYearOptions[0] ?? null;
+	const religionData: ReligionData[] = useMemo(
+		() =>
+			groupReligion(
+				religionRows,
+				activeReligionYear ? Number(activeReligionYear) : null,
+			).map((slice) => ({
+				name: slice.label,
+				value: slice.count,
+				color: RELIGION_COLORS[slice.key] ?? CHART.gray,
+			})),
+		[religionRows, activeReligionYear],
+	);
 
 	// Listen for sync complete event to refresh data
 	useEffect(() => {
@@ -768,18 +797,32 @@ const DemografiPekerjaan = () => {
 						}}
 						h="100%"
 					>
-						<Group gap="xs" mb="md">
-							<ThemeIcon
-								color="darmasaba-navy.7"
-								variant="filled"
-								size="sm"
-								radius="sm"
-							>
-								<PieChartIcon size={14} />
-							</ThemeIcon>
-							<Title order={4} c={dark ? "white" : "gray.9"}>
-								{t.demografiPekerjaan.distribusiAgama}
-							</Title>
+						<Group gap="xs" mb="md" justify="space-between" wrap="nowrap">
+							<Group gap="xs" wrap="nowrap">
+								<ThemeIcon
+									color="darmasaba-navy.7"
+									variant="filled"
+									size="sm"
+									radius="sm"
+								>
+									<PieChartIcon size={14} />
+								</ThemeIcon>
+								<Title order={4} c={dark ? "white" : "gray.9"}>
+									{t.demografiPekerjaan.distribusiAgama}
+								</Title>
+							</Group>
+							{religionYearOptions.length > 1 && (
+								<Select
+									size="xs"
+									w={100}
+									aria-label="Pilih tahun distribusi agama"
+									data={religionYearOptions}
+									value={activeReligionYear}
+									onChange={setSelectedReligionYear}
+									allowDeselect={false}
+									comboboxProps={{ withinPortal: true }}
+								/>
+							)}
 						</Group>
 						{loading ? (
 							<Skeleton height={250} radius="md" />
