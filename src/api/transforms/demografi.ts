@@ -8,6 +8,7 @@
  * Tidak melempar — input non-array → hasil kosong/0.
  */
 import type { WallDemografi } from "@/types/wall";
+import { groupReligion, religionYears } from "./religion";
 
 /** Ambil angka pertama yang terdefinisi dari daftar kandidat, else 0. */
 function num(...cands: unknown[]): number {
@@ -47,11 +48,17 @@ export function extractStats(summaryPayload: unknown): WallDemografi["stats"] {
 	};
 }
 
-/** Distribusi agama → { label, count }. */
+/**
+ * Distribusi agama → { label, count }, ternormalisasi & digroup per agama.
+ * Default menampilkan tahun terbaru saja supaya baris tahun lama tidak
+ * bercampur (mis. beberapa "Lainnya" dari tahun berbeda). Tahun tak ada
+ * → semua baris dijumlahkan per agama.
+ */
 export function mapReligion(raw: unknown): WallDemografi["religion"] {
-	return asArray(raw).map((r) => ({
-		label: str("Tidak diketahui", r.agama, r.religion, r.name),
-		count: num(r.jumlah, r.value, r.count),
+	const latest = religionYears(raw)[0] ?? null;
+	return groupReligion(raw, latest).map((s) => ({
+		label: s.label,
+		count: s.count,
 	}));
 }
 

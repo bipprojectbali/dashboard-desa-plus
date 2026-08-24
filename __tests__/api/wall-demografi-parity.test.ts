@@ -112,7 +112,7 @@ describe("wall demografi parity", () => {
 			0,
 		);
 		expect(wallTotal).toBe(dashTotal);
-		expect(demografi.religion).toContainEqual({ label: "LAINNYA", count: 290 });
+		expect(demografi.religion).toContainEqual({ label: "Lainnya", count: 290 });
 	});
 
 	it("banjar & age wall identik dgn loader dashboard", async () => {
