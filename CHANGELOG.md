@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.60] - 2026-08-24
+
+### Added
+- **Filter tahun pada chart "Distribusi Agama" (Demografi).** Dropdown pemilih tahun (default tahun terbaru) memungkinkan operator melihat komposisi agama per tahun. Sebelumnya endpoint `distribusiagama` mengembalikan baris lintas tahun tanpa agregasi dan frontend me-render 1:1, sehingga muncul beberapa slice "LAINNYA" yang membingungkan.
+
+### Changed
+- **Normalisasi & agregasi distribusi agama.** Transform terpusat baru (`transforms/religion.ts`) meng-group dan menjumlahkan per agama menjadi satu slice "Lainnya" di urutan bawah, serta menormalkan label enum ke 6 agama resmi (mis. `KRISTEN_PROTESTAN` → Kristen, `KRISTEN_KATOLIK` → Katolik). Widget agama di NOC Video Wall memakai helper yang sama agar angka konsisten dengan dashboard.
 ## [0.1.55] - 2026-07-23
 
 ### Changed
