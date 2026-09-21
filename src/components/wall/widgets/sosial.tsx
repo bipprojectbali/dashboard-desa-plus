@@ -5,6 +5,7 @@ import {
 	IconBuildingCommunity,
 	IconCalendarEvent,
 	IconHeartbeat,
+	IconHeartHandshake,
 	IconMoodSmile,
 	IconSchool,
 } from "@tabler/icons-react";
@@ -300,6 +301,69 @@ export function SosialEventBody({ data }: { data: WallSosial["event"] }) {
 						<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }}>
 							{item.location}
 							{item.startDate ? ` · ${item.startDate}` : ""}
+						</Text>
+					</div>
+				</div>
+			))}
+		</Stack>
+	);
+}
+
+// ── Kesejahteraan Masyarakat ─────────────────────────────────────────────────
+
+/** Daftar program kesejahteraan masyarakat aktif. */
+export function SosialKesejahteraanBody({
+	data,
+}: {
+	data: WallSosial["kesejahteraan"];
+}) {
+	return (
+		<Stack gap={6} style={{ height: "100%", overflow: "hidden" }}>
+			{data.map((item, i) => (
+				<div
+					key={item.id || i}
+					style={{
+						display: "flex",
+						alignItems: "flex-start",
+						gap: 10,
+						padding: "8px 12px",
+						background: WALL_THEME.CARD,
+						borderLeft: `3px solid ${WALL_CATEGORICAL[i % WALL_CATEGORICAL.length]}`,
+						borderRadius: 8,
+					}}
+				>
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							width: 28,
+							height: 28,
+							borderRadius: 6,
+							background: `${WALL_CATEGORICAL[i % WALL_CATEGORICAL.length]}22`,
+							flexShrink: 0,
+						}}
+					>
+						<IconHeartHandshake
+							size={14}
+							color={WALL_CATEGORICAL[i % WALL_CATEGORICAL.length]}
+						/>
+					</div>
+					<div style={{ flex: 1, minWidth: 0 }}>
+						<Text
+							size="sm"
+							fw={600}
+							style={{ color: WALL_THEME.TEXT }}
+							lineClamp={1}
+						>
+							{item.judul}
+						</Text>
+						<Text
+							size="xs"
+							style={{ color: WALL_THEME.TEXT_DIM }}
+							lineClamp={1}
+						>
+							{item.deskripsi}
 						</Text>
 					</div>
 				</div>

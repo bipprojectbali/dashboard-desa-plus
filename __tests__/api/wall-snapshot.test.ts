@@ -63,8 +63,16 @@ const ALLOWED_KEYS: Record<string, string[]> = {
 	// jenna: hanya angka agregat interaksi chatbot, tanpa PII-orang.
 	jenna: ["kpi", "mingguan", "topik", "jamSibuk"],
 	// sosial: angka agregat + data operasional publik. Riwayat warga (PII) tidak ada.
-	// event[]: hanya id/title/startDate/location — dijaga oleh test nested di bawah.
-	sosial: ["kpi", "kesehatan", "posyandu", "pendidikan", "beasiswa", "event"],
+	// event[]/kesejahteraan[]: hanya field operasional publik — dijaga oleh test nested di bawah.
+	sosial: [
+		"kpi",
+		"kesehatan",
+		"posyandu",
+		"pendidikan",
+		"beasiswa",
+		"event",
+		"kesejahteraan",
+	],
 };
 
 describe("GET /api/noc/wall-snapshot", () => {
@@ -272,6 +280,23 @@ describe("GET /api/noc/wall-snapshot", () => {
 			for (const key of Object.keys(item)) {
 				expect(EVENT_ALLOWED).toContain(key);
 				expect(EVENT_PII_BANNED).not.toContain(key);
+			}
+		}
+
+		// kesejahteraan[] hanya boleh punya field program publik (setara website desa)
+		const KESEJAHTERAAN_ALLOWED = ["id", "judul", "deskripsi"];
+		const KESEJAHTERAAN_PII_BANNED = [
+			"nik",
+			"nama",
+			"email",
+			"phone",
+			"userId",
+			"createdBy",
+		];
+		for (const item of sosial.kesejahteraan ?? []) {
+			for (const key of Object.keys(item)) {
+				expect(KESEJAHTERAAN_ALLOWED).toContain(key);
+				expect(KESEJAHTERAAN_PII_BANNED).not.toContain(key);
 			}
 		}
 

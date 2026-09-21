@@ -64,6 +64,18 @@ const FIXTURE_SOSIAL = {
 			location: "Setra Desa",
 		},
 	],
+	kesejahteraan: [
+		{
+			id: "k1",
+			judul: "Bantuan Lansia Produktif",
+			deskripsi: "Pelatihan keterampilan untuk lansia di Banjar Kaja.",
+		},
+		{
+			id: "k2",
+			judul: "Program Pangan Sehat",
+			deskripsi: "Distribusi paket gizi bagi keluarga kurang mampu.",
+		},
+	],
 };
 
 describe("WallSosial — shape validator", () => {
@@ -168,6 +180,31 @@ describe("WallSosial — guard PII event[]", () => {
 			for (const key of Object.keys(item)) {
 				expect(MEDICAL_BANNED).not.toContain(key);
 			}
+		}
+	});
+});
+
+describe("WallSosial — kesejahteraan[] shape & guard PII", () => {
+	it("kesejahteraan[] hanya boleh punya id/judul/deskripsi", () => {
+		const KESEJAHTERAAN_ALLOWED = new Set(["id", "judul", "deskripsi"]);
+		const KESEJAHTERAAN_PII_BANNED = [
+			"nik",
+			"nama",
+			"email",
+			"phone",
+			"userId",
+			"createdBy",
+			"namaWarga",
+		];
+
+		for (const item of FIXTURE_SOSIAL.kesejahteraan) {
+			for (const key of Object.keys(item)) {
+				expect(KESEJAHTERAAN_ALLOWED.has(key)).toBe(true);
+				expect(KESEJAHTERAAN_PII_BANNED).not.toContain(key);
+			}
+			expect(typeof item.id).toBe("string");
+			expect(typeof item.judul).toBe("string");
+			expect(typeof item.deskripsi).toBe("string");
 		}
 	});
 });

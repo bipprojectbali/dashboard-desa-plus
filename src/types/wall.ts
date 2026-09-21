@@ -251,6 +251,12 @@ export interface WallSosial {
 		startDate: string;
 		location: string;
 	}>;
+	/** kesejahteraan: judul+deskripsi program publik (setara website desa), bukan PII-orang. */
+	kesejahteraan: Array<{
+		id: string;
+		judul: string;
+		deskripsi: string;
+	}>;
 }
 
 export interface WallSnapshot {

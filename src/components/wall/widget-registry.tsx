@@ -67,6 +67,7 @@ import {
 	SosialBeasiswaBody,
 	SosialEventBody,
 	SosialKesehatanBody,
+	SosialKesejahteraanBody,
 	SosialKpiBody,
 	SosialPendidikanBody,
 	SosialPosyanduBody,
@@ -417,6 +418,13 @@ const WIDGETS: Record<WidgetId, WidgetDefinition> = {
 		category: "sosial",
 		selectData: (s) => nonEmpty(s?.sosial?.event),
 		Body: SosialEventBody,
+	},
+	"sosial-kesejahteraan": {
+		id: "sosial-kesejahteraan",
+		title: "Kesejahteraan Masyarakat",
+		category: "sosial",
+		selectData: (s) => nonEmpty(s?.sosial?.kesejahteraan),
+		Body: SosialKesejahteraanBody,
 	},
 	"ops-panel": {
 		id: "ops-panel",

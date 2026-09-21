@@ -16,6 +16,15 @@ function extractTime(jadwal: string | undefined | null): string {
 	return match?.[0] ?? "";
 }
 
+/** Buang tag HTML dari deskripsi Desa API — sama seperti src/api/sosial-kesejahteraan.ts. */
+function stripHtml(html: string | null | undefined): string {
+	if (!html) return "";
+	return html
+		.replace(/<[^>]*>/g, " ")
+		.replace(/\s+/g, " ")
+		.trim();
+}
+
 async function fetchKesehatanStats(): Promise<{
 	kpi: WallSosial["kpi"];
 	kesehatan: WallSosial["kesehatan"];
@@ -178,20 +187,59 @@ async function fetchEvent(): Promise<WallSosial["event"]> {
 	}));
 }
 
+async function fetchKesejahteraan(): Promise<WallSosial["kesejahteraan"]> {
+	// Cache key sama persis dengan src/api/sosial-kesejahteraan.ts supaya kedua
+	// jalur (kartu halaman /sosial & widget wall) berbagi cache, tidak double-fetch.
+	return withCache("sosial:kesejahteraan:list", TTL.SOSIAL, async () => {
+		const r = await fetch(
+			`${DESA_API_URL}/api/ekonomi/kesejahteraanmasyarakat/find-many?limit=50`,
+		);
+		if (!r.ok) throw new Error(`Desa API HTTP ${r.status}`);
+		const json = await r.json();
+		if (!json.success) {
+			throw new Error(json.message ?? "Desa API returned success=false");
+		}
+
+		const rows: Array<{
+			id: string;
+			judul: string;
+			deskripsi: string | null;
+			isActive: boolean;
+		}> = Array.isArray(json.data) ? json.data : [];
+
+		return rows
+			.filter((row) => row.isActive)
+			.slice(0, 8)
+			.map((row) => ({
+				id: row.id,
+				judul: row.judul,
+				deskripsi: stripHtml(row.deskripsi),
+			}));
+	});
+}
+
 /**
- * Builder slice Sosial. Parallel-fetch 5 sumber dari Desa API server-side
- * (shared cache key sosial:* agar tidak double-fetch bersama src/api/sosial.ts).
+ * Builder slice Sosial. Parallel-fetch 6 sumber dari Desa API server-side
+ * (shared cache key sosial:* agar tidak double-fetch bersama src/api/sosial.ts
+ * dan src/api/sosial-kesejahteraan.ts).
  * Tanpa PII: riwayat kesehatan warga tidak diambil.
  */
 export async function buildSosial(): Promise<WallSosial> {
-	const [kesehatanResult, posyandu, pendidikan, beasiswa, event] =
-		await Promise.all([
-			fetchKesehatanStats(),
-			fetchPosyandu(),
-			fetchPendidikan(),
-			fetchBeasiswa(),
-			fetchEvent(),
-		]);
+	const [
+		kesehatanResult,
+		posyandu,
+		pendidikan,
+		beasiswa,
+		event,
+		kesejahteraan,
+	] = await Promise.all([
+		fetchKesehatanStats(),
+		fetchPosyandu(),
+		fetchPendidikan(),
+		fetchBeasiswa(),
+		fetchEvent(),
+		fetchKesejahteraan(),
+	]);
 
 	return {
 		kpi: kesehatanResult.kpi,
@@ -200,5 +248,6 @@ export async function buildSosial(): Promise<WallSosial> {
 		pendidikan,
 		beasiswa,
 		event,
+		kesejahteraan,
 	};
 }

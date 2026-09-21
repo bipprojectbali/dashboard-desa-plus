@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - **Kartu "Kesejahteraan Masyarakat" di menu Sosial.** Menampilkan daftar program kesejahteraan desa (mis. BLT Dana Desa, PKH, BPNT, RTLH, JKN-KIS PBI, PIP) dari Desa API (`/api/ekonomi/kesejahteraanmasyarakat/find-many`), diletakkan di atas kartu "Riwayat Kesehatan Warga". Diambil lewat proxy server (`/api/sosial/kesejahteraan/find-many`) untuk menghindari CORS dan hanya menampilkan program yang `isActive`.
+- **Widget "Kesejahteraan Masyarakat" di NOC Video Wall (`/wall`).** Widget baru pada kategori "SOSIAL" di galeri Tambah Widget, mirror kartu yang sama di menu Sosial — menampilkan daftar program kesejahteraan desa. Slice `sosial.kesejahteraan[]` pada `WallSnapshot` berbagi cache key (`sosial:kesejahteraan:list`) dengan proxy `/api/sosial/kesejahteraan/find-many` agar tidak double-fetch ke Desa API.
 
 ## [0.1.60] - 2026-08-24
 

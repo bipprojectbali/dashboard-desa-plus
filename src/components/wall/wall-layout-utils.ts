@@ -73,6 +73,7 @@ export const ALL_WIDGET_IDS = [
 	"sosial-pendidikan",
 	"sosial-beasiswa",
 	"sosial-event",
+	"sosial-kesejahteraan",
 	// Ops / sistem
 	"ops-panel",
 ] as const;
@@ -133,6 +134,7 @@ export const DEFAULT_WIDGET_SIZE: Record<WidgetId, WallSize> = {
 	"sosial-pendidikan": "lg",
 	"sosial-beasiswa": "sm",
 	"sosial-event": "tall",
+	"sosial-kesejahteraan": "tall",
 	"ops-panel": "tall",
 };
 
