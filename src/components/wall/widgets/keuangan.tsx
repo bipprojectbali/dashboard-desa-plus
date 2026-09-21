@@ -1,7 +1,8 @@
-import { BarChart, LineChart } from "@mantine/charts";
+import { LineChart } from "@mantine/charts";
 import { Badge, Grid, Group, Stack, Text } from "@mantine/core";
 import { formatM } from "@/components/keuangan/format";
 import type { WallKeuangan } from "@/types/wall";
+import { HorizontalBar } from "../horizontal-bar";
 import { MoreIndicator } from "../more-indicator";
 import { StatRow } from "../stat-row";
 import type { WidgetGeom } from "../wall-bento";
@@ -97,24 +98,29 @@ export function KeuanganArusBody({ data }: { data: WallKeuangan["monthly"] }) {
 	);
 }
 
-/** Alokasi anggaran per bidang (bar horizontal). */
+/**
+ * Alokasi anggaran per bidang (bar horizontal). Memakai `HorizontalBar`
+ * bersama (bukan `BarChart` mentah) supaya lebar sumbu-Y label sektor
+ * dibatasi (`Y_AXIS_WIDTH`) dan dipotong dengan ellipsis (`truncateTick`) —
+ * tanpa itu, nama sektor panjang ("Bidang Penyelenggaraan Pemerintahan
+ * Desa" dst.) melipat jadi beberapa baris dan tumpang tindih antar bar saat
+ * widget dipendekkan.
+ */
 export function KeuanganAlokasiBody({
 	data,
 }: {
 	data: WallKeuangan["allocation"];
 }) {
 	const rows = data.map((a) => ({
-		sektor: a.sector.length > 30 ? `${a.sector.slice(0, 28)}…` : a.sector,
+		sektor: a.sector,
 		Anggaran: Math.round(a.amount / 1_000_000),
 	}));
 	return (
-		<BarChart
-			h="100%"
+		<HorizontalBar
 			data={rows}
 			dataKey="sektor"
-			series={[{ name: "Anggaran", color: WALL_THEME.ACCENT }]}
-			orientation="vertical"
-			withLegend={false}
+			valueKey="Anggaran"
+			color={WALL_THEME.ACCENT}
 		/>
 	);
 }
