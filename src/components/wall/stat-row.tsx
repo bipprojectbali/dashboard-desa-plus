@@ -15,6 +15,14 @@ interface StatRowProps {
 	fraction?: number;
 	/** Format nilai dgn pemisah ribuan id-ID. */
 	numeric?: boolean;
+	/**
+	 * True → sembunyikan bar proporsi & rapatkan gap. Dipakai widget dengan
+	 * jumlah baris tetap (mis. 4 status pengaduan) saat widget diperkecil ke
+	 * tinggi minimum — jumlah baris tidak boleh berkurang (bukan daftar yang
+	 * bisa dipotong), jadi yang dikorbankan adalah bar (pelengkap visual),
+	 * bukan baris itu sendiri.
+	 */
+	compact?: boolean;
 }
 
 /**
@@ -29,6 +37,7 @@ export function StatRow({
 	color,
 	fraction,
 	numeric = false,
+	compact = false,
 }: StatRowProps) {
 	const pct =
 		fraction == null ? null : Math.max(0, Math.min(1, fraction)) * 100;
@@ -38,7 +47,9 @@ export function StatRow({
 			: value;
 
 	return (
-		<div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+		<div
+			style={{ display: "flex", flexDirection: "column", gap: compact ? 2 : 6 }}
+		>
 			<div
 				style={{
 					display: "flex",
@@ -75,7 +86,7 @@ export function StatRow({
 					{display}
 				</Text>
 			</div>
-			{pct != null ? (
+			{!compact && pct != null ? (
 				<div
 					style={{
 						height: 6,

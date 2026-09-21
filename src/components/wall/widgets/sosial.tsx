@@ -117,14 +117,17 @@ export function SosialKpiBody({ data }: { data: WallSosial["kpi"] }) {
 
 // ── Statistik Kesehatan ───────────────────────────────────────────────────────
 
-/** Progress bar proporsi per kategori kesehatan (ibu hamil, balita, stunting). */
+/** Progress bar proporsi per kategori kesehatan (ibu hamil, balita, stunting). Baris tetap (tak bisa dipotong) — memakai mode compact StatRow saat widget diperkecil ke tinggi minimum agar tetap muat. */
 export function SosialKesehatanBody({
 	data,
+	geom,
 }: {
 	data: WallSosial["kesehatan"];
+	geom?: WidgetGeom;
 }) {
+	const compact = (geom?.h ?? 1) <= 1;
 	return (
-		<Stack gap="md" justify="center" style={{ height: "100%" }}>
+		<Stack gap={compact ? 4 : "md"} justify="center" style={{ height: "100%" }}>
 			{data.map((item) => (
 				<StatRow
 					key={item.label}
@@ -132,6 +135,7 @@ export function SosialKesehatanBody({
 					value={`${item.value}%`}
 					color={item.color}
 					fraction={item.value / 100}
+					compact={compact}
 				/>
 			))}
 		</Stack>
@@ -199,16 +203,23 @@ export function SosialPosyanduBody({
 
 // ── Pendidikan ────────────────────────────────────────────────────────────────
 
-/** Jumlah siswa per jenjang + footer lembaga/pengajar. */
+/** Jumlah siswa per jenjang + footer lembaga/pengajar. Baris tetap (tak bisa dipotong) — memakai mode compact StatRow saat widget diperkecil ke tinggi minimum agar tetap muat. */
 export function SosialPendidikanBody({
 	data,
+	geom,
 }: {
 	data: WallSosial["pendidikan"];
+	geom?: WidgetGeom;
 }) {
 	const total = data.perJenjang.reduce((s, j) => s + j.jumlahSiswa, 0);
+	const compact = (geom?.h ?? 1) <= 1;
 	return (
-		<Stack gap="sm" justify="space-between" style={{ height: "100%" }}>
-			<Stack gap="sm">
+		<Stack
+			gap={compact ? "xs" : "sm"}
+			justify="space-between"
+			style={{ height: "100%" }}
+		>
+			<Stack gap={compact ? 4 : "sm"}>
 				{data.perJenjang.map((j, i) => (
 					<StatRow
 						key={j.nama}
@@ -216,6 +227,7 @@ export function SosialPendidikanBody({
 						value={j.jumlahSiswa}
 						color={WALL_CATEGORICAL[i % WALL_CATEGORICAL.length] as string}
 						fraction={total > 0 ? j.jumlahSiswa / total : 0}
+						compact={compact}
 					/>
 				))}
 			</Stack>
@@ -237,19 +249,34 @@ export function SosialPendidikanBody({
 
 // ── Beasiswa ──────────────────────────────────────────────────────────────────
 
-/** Total penerima beasiswa + breakdown L/P + periode. */
-export function SosialBeasiswaBody({ data }: { data: WallSosial["beasiswa"] }) {
+/** Total penerima beasiswa + breakdown L/P + periode. Baris tetap (tak bisa dipotong) — memakai mode compact StatRow saat widget diperkecil ke tinggi minimum agar tetap muat. */
+export function SosialBeasiswaBody({
+	data,
+	geom,
+}: {
+	data: WallSosial["beasiswa"];
+	geom?: WidgetGeom;
+}) {
 	const total = data.total || data.lakiLaki + data.perempuan;
 	const items = [
 		{ label: "Laki-laki", value: data.lakiLaki, color: WALL_THEME.ACCENT },
 		{ label: "Perempuan", value: data.perempuan, color: WALL_THEME.VIOLET },
 	];
+	const compact = (geom?.h ?? 1) <= 1;
 	return (
-		<Stack gap="sm" justify="space-between" style={{ height: "100%" }}>
+		<Stack
+			gap={compact ? "xs" : "sm"}
+			justify="space-between"
+			style={{ height: "100%" }}
+		>
 			<Stack gap={4} align="center">
 				<Text
 					fw={800}
-					style={{ fontSize: 40, color: WALL_THEME.TEXT, lineHeight: 1 }}
+					style={{
+						fontSize: compact ? 28 : 40,
+						color: WALL_THEME.TEXT,
+						lineHeight: 1,
+					}}
 				>
 					{total.toLocaleString("id-ID")}
 				</Text>
@@ -257,7 +284,7 @@ export function SosialBeasiswaBody({ data }: { data: WallSosial["beasiswa"] }) {
 					Penerima Beasiswa{data.periode ? ` ${data.periode}` : ""}
 				</Text>
 			</Stack>
-			<Stack gap="xs">
+			<Stack gap={compact ? 4 : "xs"}>
 				{items.map((item) => (
 					<StatRow
 						key={item.label}
@@ -265,6 +292,7 @@ export function SosialBeasiswaBody({ data }: { data: WallSosial["beasiswa"] }) {
 						value={item.value}
 						color={item.color}
 						fraction={total > 0 ? item.value / total : 0}
+						compact={compact}
 					/>
 				))}
 			</Stack>

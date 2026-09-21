@@ -19,17 +19,24 @@ const STATUS_ITEMS: Array<{
 	{ key: "ditolak", label: "Ditolak", color: WALL_THEME.DANGER },
 ];
 
-/** Status pengaduan: total + bar proporsi per status (bukan angka telanjang). */
+/** Status pengaduan: total + bar proporsi per status (bukan angka telanjang). 4 baris tetap (tak bisa dipotong) — memakai mode compact StatRow saat widget diperkecil ke tinggi minimum agar tetap muat. */
 export function PengaduanStatusBody({
 	data,
+	geom,
 }: {
 	data: WallPengaduan["stats"];
+	geom?: WidgetGeom;
 }) {
 	const total = data.total || 0;
 	const rate = total > 0 ? Math.round((data.selesai / total) * 100) : 0;
+	const compact = (geom?.h ?? 1) <= 1;
 	return (
-		<Stack gap="md" justify="space-between" style={{ height: "100%" }}>
-			<Stack gap="md">
+		<Stack
+			gap={compact ? 6 : "md"}
+			justify="space-between"
+			style={{ height: "100%" }}
+		>
+			<Stack gap={compact ? 4 : "md"}>
 				{STATUS_ITEMS.map((item) => (
 					<StatRow
 						key={item.key}
@@ -37,6 +44,7 @@ export function PengaduanStatusBody({
 						value={data[item.key]}
 						color={item.color}
 						fraction={total > 0 ? data[item.key] / total : 0}
+						compact={compact}
 					/>
 				))}
 			</Stack>
@@ -44,7 +52,10 @@ export function PengaduanStatusBody({
 				<Text size="sm" style={{ color: WALL_THEME.TEXT_DIM }}>
 					Total {total} · Tingkat penyelesaian
 				</Text>
-				<Text fw={800} style={{ fontSize: 20, color: WALL_THEME.OK }}>
+				<Text
+					fw={800}
+					style={{ fontSize: compact ? 16 : 20, color: WALL_THEME.OK }}
+				>
 					{rate}%
 				</Text>
 			</Group>

@@ -103,15 +103,18 @@ const DINAMIKA_ITEMS: Array<{
 	{ key: "moveOut", label: "Pindah Keluar", color: WALL_THEME.WARN },
 ];
 
-/** Dinamika penduduk: kelahiran/kematian/pindah masuk/keluar tahun berjalan. */
+/** Dinamika penduduk: kelahiran/kematian/pindah masuk/keluar tahun berjalan. 4 baris tetap (tak bisa dipotong) — memakai mode compact StatRow saat widget diperkecil ke tinggi minimum agar tetap muat. */
 export function DemografiDinamikaBody({
 	data,
+	geom,
 }: {
 	data: WallDemografi["dinamika"];
+	geom?: WidgetGeom;
 }) {
 	const max = Math.max(...DINAMIKA_ITEMS.map((i) => data[i.key]), 1);
+	const compact = (geom?.h ?? 1) <= 1;
 	return (
-		<Stack gap="md" style={{ height: "100%" }} justify="center">
+		<Stack gap={compact ? 4 : "md"} style={{ height: "100%" }} justify="center">
 			{DINAMIKA_ITEMS.map((item) => (
 				<StatRow
 					key={item.key}
@@ -119,6 +122,7 @@ export function DemografiDinamikaBody({
 					value={data[item.key]}
 					color={item.color}
 					fraction={data[item.key] / max}
+					compact={compact}
 				/>
 			))}
 		</Stack>
