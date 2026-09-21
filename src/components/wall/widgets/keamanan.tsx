@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 import type { WallKeamanan } from "@/types/wall";
 import { MoreIndicator } from "../more-indicator";
 import type { WidgetGeom } from "../wall-bento";
-import { LIST_ITEM_REGULAR_PX, maxVisibleItems } from "../wall-item-cap";
+import { LIST_ITEM_TALL_PX, maxVisibleItems } from "../wall-item-cap";
 import { WALL_THEME } from "../wall-theme";
 
 // ── KPI ────────────────────────────────────────────────────────────────────────
@@ -121,7 +121,7 @@ export function KeamananCctvBody({
 	data: WallKeamanan["cctv"];
 	geom?: WidgetGeom;
 }) {
-	const cap = maxVisibleItems(geom, LIST_ITEM_REGULAR_PX);
+	const cap = maxVisibleItems(geom, LIST_ITEM_TALL_PX);
 	const visible = data.slice(0, cap);
 	return (
 		<Stack gap={8} style={{ height: "100%", overflow: "hidden" }}>
@@ -190,7 +190,7 @@ export function KeamananLaporanBody({
 	data: WallKeamanan["laporanPublik"];
 	geom?: WidgetGeom;
 }) {
-	const cap = maxVisibleItems(geom, LIST_ITEM_REGULAR_PX);
+	const cap = maxVisibleItems(geom, LIST_ITEM_TALL_PX);
 	const visible = data.slice(0, cap);
 	return (
 		<Stack gap={8} style={{ height: "100%", overflow: "hidden" }}>
