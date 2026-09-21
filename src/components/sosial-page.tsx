@@ -6,6 +6,7 @@ import { Beasiswa } from "./sosial/beasiswa";
 import { EventCalendar } from "./sosial/event-calendar";
 import { HealthRecords } from "./sosial/health-records";
 import { HealthStats } from "./sosial/health-stats";
+import { Kesejahteraan } from "./sosial/kesejahteraan";
 import { Pendidikan } from "./sosial/pendidikan";
 import { PosyanduSchedule } from "./sosial/posyandu-schedule";
 import { SummaryCards } from "./sosial/summary-cards";
@@ -182,6 +183,8 @@ const SosialPage = () => {
 			) : (
 				<EventCalendar data={events ?? undefined} />
 			)}
+
+			<Kesejahteraan />
 
 			<HealthRecords />
 		</Stack>

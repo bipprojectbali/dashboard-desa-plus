@@ -363,6 +363,8 @@ export type TranslationKeys = {
 		pendidikan: string;
 		jumlahLembagaPendidikan: string;
 		jumlahTenagaPengajar: string;
+		kesejahteraanMasyarakat: string;
+		kesejahteraanKosong: string;
 		beasiswaDesa: string;
 		penerima: string;
 		danaTersalurkan: string;
@@ -835,6 +837,8 @@ const id: TranslationKeys = {
 		pendidikan: "Pendidikan",
 		jumlahLembagaPendidikan: "Jumlah Lembaga Pendidikan",
 		jumlahTenagaPengajar: "Jumlah Tenaga Pengajar",
+		kesejahteraanMasyarakat: "Kesejahteraan Masyarakat",
+		kesejahteraanKosong: "Belum ada program kesejahteraan",
 		beasiswaDesa: "Beasiswa Desa",
 		penerima: "Penerima",
 		danaTersalurkan: "Dana Tersalurkan",

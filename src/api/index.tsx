@@ -28,6 +28,7 @@ import { profile } from "./profile";
 import { resident } from "./resident";
 import { searchRoutes } from "./search";
 import { sosial } from "./sosial";
+import { sosialKesejahteraan } from "./sosial-kesejahteraan";
 import { syncLog } from "./sync-log";
 import { systemStatsRoutes } from "./system-stats";
 import { umkm } from "./umkm";
@@ -105,6 +106,7 @@ const api = new Elysia({
 	.use(ipWhitelist)
 	.use(searchRoutes)
 	.use(sosial)
+	.use(sosialKesejahteraan)
 	.use(syncLog)
 	.use(bantuanApi)
 	.use(adminFaqApi)

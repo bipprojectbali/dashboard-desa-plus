@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- **Kartu "Kesejahteraan Masyarakat" di menu Sosial.** Menampilkan daftar program kesejahteraan desa (mis. BLT Dana Desa, PKH, BPNT, RTLH, JKN-KIS PBI, PIP) dari Desa API (`/api/ekonomi/kesejahteraanmasyarakat/find-many`), diletakkan di atas kartu "Riwayat Kesehatan Warga". Diambil lewat proxy server (`/api/sosial/kesejahteraan/find-many`) untuk menghindari CORS dan hanya menampilkan program yang `isActive`.
+
 ## [0.1.60] - 2026-08-24
 
 ### Added

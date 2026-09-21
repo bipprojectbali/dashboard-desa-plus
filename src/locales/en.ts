@@ -368,6 +368,8 @@ const en: TranslationKeys = {
 		pendidikan: "Education",
 		jumlahLembagaPendidikan: "Educational Institutions",
 		jumlahTenagaPengajar: "Teaching Staff",
+		kesejahteraanMasyarakat: "Community Welfare",
+		kesejahteraanKosong: "No welfare programs yet",
 		beasiswaDesa: "Village Scholarship",
 		penerima: "Recipients",
 		danaTersalurkan: "Disbursed Funds",
