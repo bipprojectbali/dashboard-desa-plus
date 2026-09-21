@@ -137,15 +137,17 @@ export function BerandaSuratTrendBody({
 /** Tingkat kepuasan (donut + legenda). */
 export function BerandaKepuasanBody({
 	data,
+	geom,
 }: {
 	data: WallBeranda["kepuasan"];
+	geom?: WidgetGeom;
 }) {
 	const rows = data.map((s) => ({
 		name: s.category,
 		value: s.value,
 		color: s.color,
 	}));
-	return <DonutBody data={rows} unit="responden" />;
+	return <DonutBody data={rows} unit="responden" geom={geom} />;
 }
 
 // ── DIVISI ───────────────────────────────────────────────────────────────────

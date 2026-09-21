@@ -14,10 +14,12 @@ import { WALL_THEME } from "../wall-theme";
 /** Kinerja divisi: donut progres kegiatan per status (% live dari NOC). */
 export function DivisiKinerjaBody({
 	data,
+	geom,
 }: {
 	data: WallDivisi["activities"];
+	geom?: WidgetGeom;
 }) {
-	return <DonutBody data={data} unit="kegiatan" />;
+	return <DonutBody data={data} unit="kegiatan" geom={geom} />;
 }
 
 /** Dokumen per jenis (bar horizontal). */

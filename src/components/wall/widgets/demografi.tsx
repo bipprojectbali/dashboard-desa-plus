@@ -38,10 +38,12 @@ export function DemografiAgeBody({
 /** Sebaran agama (donut besar + legenda). Slice yang sebelumnya nganggur. */
 export function DemografiReligionBody({
 	data,
+	geom,
 }: {
 	data: WallDemografi["religion"];
+	geom?: WidgetGeom;
 }) {
-	return <DonutBody data={toDonut(data)} unit="jiwa" />;
+	return <DonutBody data={toDonut(data)} unit="jiwa" geom={geom} />;
 }
 
 /** Pekerjaan teratas (bar horizontal). Slice yang sebelumnya nganggur. */
