@@ -255,8 +255,25 @@ const markerIcon = L.icon({
 	shadowSize: [41, 41],
 });
 
-/** Peta Leaflet titik CCTV — reuse pola CctvMap dari halaman /keamanan. */
-export function KeamananPetaBody({ data }: { data: WallKeamanan["cctv"] }) {
+/**
+ * Peta Leaflet titik CCTV — reuse pola CctvMap dari halaman /keamanan.
+ *
+ * Berbeda dari halaman `/keamanan` (layout tetap, tinggi kontainer
+ * hardcode 400px), widget wall ini bisa di-resize pengguna. Kontainer
+ * memakai `minHeight: 300` bawaan dari pola halaman itu, yang memaksa peta
+ * tetap 300px meski slot widget diperkecil di bawah itu (geom `h=1` hanya
+ * ~170px tinggi body) — peta pun meluber dan terpotong `overflow: hidden`
+ * milik `WidgetCard`. Sekarang tinggi murni ikut kontainer (tanpa
+ * `minHeight`), dan `ResizeObserver` memanggil `invalidateSize()` tiap kali
+ * kontainer berubah ukuran — Leaflet meng-cache ukuran canvas saat
+ * inisialisasi dan tak otomatis menyesuaikan saat CSS-nya berubah.
+ */
+export function KeamananPetaBody({
+	data,
+}: {
+	data: WallKeamanan["cctv"];
+	geom?: WidgetGeom;
+}) {
 	const mapRef = useRef<HTMLDivElement>(null);
 	const leafletMap = useRef<L.Map | null>(null);
 
@@ -291,7 +308,13 @@ export function KeamananPetaBody({ data }: { data: WallKeamanan["cctv"] }) {
 			map.fitBounds(bounds, { padding: [40, 40] });
 		}
 
+		const resizeObserver = new ResizeObserver(() => {
+			map.invalidateSize();
+		});
+		resizeObserver.observe(mapRef.current);
+
 		return () => {
+			resizeObserver.disconnect();
 			map.remove();
 			leafletMap.current = null;
 		};
@@ -302,7 +325,6 @@ export function KeamananPetaBody({ data }: { data: WallKeamanan["cctv"] }) {
 			ref={mapRef}
 			style={{
 				height: "100%",
-				minHeight: 300,
 				borderRadius: 10,
 				border: `1px solid ${WALL_THEME.BORDER}`,
 				zIndex: 0,
