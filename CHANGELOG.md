@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - **Semua widget list di NOC Video Wall (`/wall`) kini menyesuaikan jumlah item yang tampil dengan ukuran widget, alih-alih memotong/scroll.** Wall adalah tampilan kiosk/TV 24/7 tanpa interaksi mouse/touch di layar fisik, sehingga scroll di dalam widget (dipakai sebelumnya oleh CCTV & Laporan Publik) atau cap tetap yang tidak sesuai ukuran (menyebabkan item terpotong saat widget dikecilkan, atau daftar meluber tanpa batas saat data bertambah) bukan pola yang tepat. Kini tiap widget list — Kesejahteraan Masyarakat, Posyandu, Event Sosial, Divisi & Kalender, APBDes Ringkas, Top Produk & Detail BUMDes, Kegiatan & Diskusi Divisi, Pengaduan Terbaru, Musrenbang, Data per Banjar, Topik & Jam Sibuk Jenna, Daftar CCTV, Laporan Publik, Laporan & Bantuan APBDes, Skor SDGs — menghitung kapasitas dari tinggi slotnya dan menampilkan indikator non-interaktif "+N lainnya" saat data terpotong.
 
+### Fixed
+- **Tile KPI di NOC Video Wall (`/wall`) tampilan berantakan saat widget dikecilkan.** Widget KPI Beranda, KPI Kesehatan (Sosial), KPI Keamanan, dan KPI Jenna memakai tile grid 2 kolom yang tile-nya tidak bisa menyusut di bawah lebar konten (bug `min-width: auto` bawaan CSS grid) dan teks label/sublabel tanpa truncation — saat widget dipersempit, tile meluber ke samping/bawah dan merusak sudut membulat kartu. Sekarang tiap tile diberi `min-width: 0` + `overflow: hidden` agar bisa menyusut, dan teks label/sublabel dipotong dengan ellipsis alih-alih meluber atau turun baris. `WidgetCard` (pembungkus semua widget wall) juga diberi `overflow: hidden` sebagai pengaman tambahan agar konten yang meluber tidak lagi bocor keluar dari sudut membulat kartu.
+
 ## [0.1.60] - 2026-08-24
 
 ### Added

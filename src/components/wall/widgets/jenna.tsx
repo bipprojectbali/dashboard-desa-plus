@@ -49,14 +49,31 @@ export function JennaKpiBody({ data }: { data: WallJenna["kpi"] }) {
 							padding: "10px 14px",
 							borderRadius: 12,
 							background: WALL_THEME.TRACK,
+							minWidth: 0,
+							overflow: "hidden",
 						}}
 					>
-						<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }}>
+						<Text
+							size="xs"
+							style={{
+								color: WALL_THEME.TEXT_DIM,
+								whiteSpace: "nowrap",
+								overflow: "hidden",
+								textOverflow: "ellipsis",
+							}}
+						>
 							{tile.label}
 						</Text>
 						<Text
 							fw={800}
-							style={{ fontSize: 28, color: tile.color, lineHeight: 1.1 }}
+							style={{
+								fontSize: 28,
+								color: tile.color,
+								lineHeight: 1.1,
+								whiteSpace: "nowrap",
+								overflow: "hidden",
+								textOverflow: "ellipsis",
+							}}
 						>
 							{value}
 						</Text>

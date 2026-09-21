@@ -41,6 +41,8 @@ function KpiTile({ tile, icon }: { tile: WallBerandaKpiTile; icon: TileIcon }) {
 				display: "flex",
 				alignItems: "center",
 				gap: 14,
+				minWidth: 0,
+				overflow: "hidden",
 				background: WALL_THEME.CARD,
 				border: `1px solid ${WALL_THEME.BORDER}`,
 				borderLeft: `3px solid ${icon.color}`,
@@ -62,7 +64,7 @@ function KpiTile({ tile, icon }: { tile: WallBerandaKpiTile; icon: TileIcon }) {
 			>
 				<icon.Icon size={20} color={icon.color} />
 			</div>
-			<div style={{ minWidth: 0 }}>
+			<div style={{ minWidth: 0, overflow: "hidden" }}>
 				<Text
 					fw={800}
 					style={{ fontSize: 26, color: WALL_THEME.TEXT, lineHeight: 1.1 }}
@@ -71,11 +73,24 @@ function KpiTile({ tile, icon }: { tile: WallBerandaKpiTile; icon: TileIcon }) {
 				</Text>
 				<Text
 					size="xs"
-					style={{ color: WALL_THEME.TEXT_DIM, whiteSpace: "nowrap" }}
+					style={{
+						color: WALL_THEME.TEXT_DIM,
+						whiteSpace: "nowrap",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+					}}
 				>
 					{tile.label}
 				</Text>
-				<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }}>
+				<Text
+					size="xs"
+					style={{
+						color: WALL_THEME.TEXT_DIM,
+						whiteSpace: "nowrap",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+					}}
+				>
 					{tile.sublabel}
 				</Text>
 			</div>

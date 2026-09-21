@@ -38,6 +38,7 @@ export function WidgetCard({
 				height: "100%",
 				minHeight: 0,
 				boxSizing: "border-box",
+				overflow: "hidden",
 			}}
 		>
 			<div
