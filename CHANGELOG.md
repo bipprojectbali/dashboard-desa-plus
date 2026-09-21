@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 - **Kartu "Kesejahteraan Masyarakat" di menu Sosial.** Menampilkan daftar program kesejahteraan desa (mis. BLT Dana Desa, PKH, BPNT, RTLH, JKN-KIS PBI, PIP) dari Desa API (`/api/ekonomi/kesejahteraanmasyarakat/find-many`), diletakkan di atas kartu "Riwayat Kesehatan Warga". Diambil lewat proxy server (`/api/sosial/kesejahteraan/find-many`) untuk menghindari CORS dan hanya menampilkan program yang `isActive`.
 - **Widget "Kesejahteraan Masyarakat" di NOC Video Wall (`/wall`).** Widget baru pada kategori "SOSIAL" di galeri Tambah Widget, mirror kartu yang sama di menu Sosial — menampilkan daftar program kesejahteraan desa. Slice `sosial.kesejahteraan[]` pada `WallSnapshot` berbagi cache key (`sosial:kesejahteraan:list`) dengan proxy `/api/sosial/kesejahteraan/find-many` agar tidak double-fetch ke Desa API.
 
+### Changed
+- **Semua widget list di NOC Video Wall (`/wall`) kini menyesuaikan jumlah item yang tampil dengan ukuran widget, alih-alih memotong/scroll.** Wall adalah tampilan kiosk/TV 24/7 tanpa interaksi mouse/touch di layar fisik, sehingga scroll di dalam widget (dipakai sebelumnya oleh CCTV & Laporan Publik) atau cap tetap yang tidak sesuai ukuran (menyebabkan item terpotong saat widget dikecilkan, atau daftar meluber tanpa batas saat data bertambah) bukan pola yang tepat. Kini tiap widget list — Kesejahteraan Masyarakat, Posyandu, Event Sosial, Divisi & Kalender, APBDes Ringkas, Top Produk & Detail BUMDes, Kegiatan & Diskusi Divisi, Pengaduan Terbaru, Musrenbang, Data per Banjar, Topik & Jam Sibuk Jenna, Daftar CCTV, Laporan Publik, Laporan & Bantuan APBDes, Skor SDGs — menghitung kapasitas dari tinggi slotnya dan menampilkan indikator non-interaktif "+N lainnya" saat data terpotong.
+
 ## [0.1.60] - 2026-08-24
 
 ### Added

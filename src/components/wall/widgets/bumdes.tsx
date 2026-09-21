@@ -1,7 +1,14 @@
 import { Badge, Grid, Group, Stack, Text } from "@mantine/core";
 import { formatM } from "@/components/keuangan/format";
 import type { WallBumdes } from "@/types/wall";
+import { MoreIndicator } from "../more-indicator";
 import { StatRow } from "../stat-row";
+import type { WidgetGeom } from "../wall-bento";
+import {
+	LIST_ITEM_COMPACT_PX,
+	LIST_ITEM_TALL_PX,
+	maxVisibleItems,
+} from "../wall-item-cap";
 import { WALL_THEME } from "../wall-theme";
 
 /** 4 KPI ringkas: UMKM aktif, terdaftar, omzet, kategori terbanyak. */
@@ -103,11 +110,13 @@ export function BumdesRingkasanBody({
 	);
 }
 
-/** Top produk terlaris: rank + nama + revenue. */
+/** Top produk terlaris: rank + nama + revenue. Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
 export function BumdesTopProdukBody({
 	data,
+	geom,
 }: {
 	data: WallBumdes["topProduk"];
+	geom?: WidgetGeom;
 }) {
 	if (data.length === 0) {
 		return (
@@ -118,10 +127,12 @@ export function BumdesTopProdukBody({
 			</Stack>
 		);
 	}
+	const cap = maxVisibleItems(geom, LIST_ITEM_TALL_PX);
+	const visible = data.slice(0, cap);
 	const maxPenjualan = Math.max(...data.map((p) => p.totalPenjualan), 1);
 	return (
-		<Stack gap="xs" style={{ height: "100%", overflowY: "auto" }}>
-			{data.map((p, i) => (
+		<Stack gap="xs" style={{ height: "100%", overflow: "hidden" }}>
+			{visible.map((p, i) => (
 				<StatRow
 					key={p.namaProduk}
 					label={`${i + 1}. ${p.namaProduk}`}
@@ -130,12 +141,19 @@ export function BumdesTopProdukBody({
 					fraction={p.totalPenjualan / maxPenjualan}
 				/>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }
 
-/** Detail penjualan produk: tabel bulan ini/lalu + trend + stok. */
-export function BumdesDetailBody({ data }: { data: WallBumdes["detail"] }) {
+/** Detail penjualan produk: tabel bulan ini/lalu + trend + stok. Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
+export function BumdesDetailBody({
+	data,
+	geom,
+}: {
+	data: WallBumdes["detail"];
+	geom?: WidgetGeom;
+}) {
 	if (data.length === 0) {
 		return (
 			<Stack justify="center" align="center" style={{ height: "100%" }}>
@@ -145,9 +163,11 @@ export function BumdesDetailBody({ data }: { data: WallBumdes["detail"] }) {
 			</Stack>
 		);
 	}
+	const cap = maxVisibleItems(geom, LIST_ITEM_COMPACT_PX);
+	const visible = data.slice(0, cap);
 	return (
-		<Stack gap="xs" style={{ height: "100%", overflowY: "auto" }}>
-			{data.slice(0, 8).map((item) => (
+		<Stack gap="xs" style={{ height: "100%", overflow: "hidden" }}>
+			{visible.map((item) => (
 				<Group
 					key={item.namaProduk}
 					justify="space-between"
@@ -186,6 +206,7 @@ export function BumdesDetailBody({ data }: { data: WallBumdes["detail"] }) {
 					</Group>
 				</Group>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }

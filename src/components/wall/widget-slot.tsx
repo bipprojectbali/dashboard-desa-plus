@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { WallSnapshot } from "@/types/wall";
+import type { WidgetGeom } from "./wall-bento";
 import { WidgetCard } from "./widget-card";
 import { getWidget } from "./widget-registry";
 
@@ -8,6 +9,8 @@ interface WidgetSlotProps {
 	snapshot: WallSnapshot | null | undefined;
 	/** Aksi header opsional (mis. tombol ✕ saat mode edit). */
 	actions?: ReactNode;
+	/** Geometri span widget saat ini — dipakai Body list-type untuk cap jumlah item. */
+	geom?: WidgetGeom;
 }
 
 /**
@@ -15,7 +18,7 @@ interface WidgetSlotProps {
  * ambil slice data (`selectData`), tampilkan empty state bila null.
  * Dipakai oleh grid display maupun edit — satu jalur render.
  */
-export function WidgetSlot({ id, snapshot, actions }: WidgetSlotProps) {
+export function WidgetSlot({ id, snapshot, actions, geom }: WidgetSlotProps) {
 	const def = getWidget(id);
 	if (!def) {
 		// Id tak dikenal (mis. layout lama pasca-rename widget) — jangan crash.
@@ -33,7 +36,7 @@ export function WidgetSlot({ id, snapshot, actions }: WidgetSlotProps) {
 	const Body = def.Body;
 	return (
 		<WidgetCard title={def.title} actions={actions} empty={data == null}>
-			{data != null ? <Body data={data} /> : null}
+			{data != null ? <Body data={data} geom={geom} /> : null}
 		</WidgetCard>
 	);
 }

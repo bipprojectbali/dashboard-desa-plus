@@ -57,6 +57,7 @@ export function SortableWidgetCard({
 			<WidgetSlot
 				id={id}
 				snapshot={snapshot}
+				geom={geom}
 				actions={
 					<ActionIcon
 						variant="subtle"

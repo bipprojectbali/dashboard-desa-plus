@@ -1,10 +1,13 @@
-import { Badge, ScrollArea, SimpleGrid, Stack, Text } from "@mantine/core";
+import { Badge, SimpleGrid, Stack, Text } from "@mantine/core";
 import { IconAlertTriangle, IconCamera, IconMapPin } from "@tabler/icons-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { ComponentType } from "react";
 import { useEffect, useRef } from "react";
 import type { WallKeamanan } from "@/types/wall";
+import { MoreIndicator } from "../more-indicator";
+import type { WidgetGeom } from "../wall-bento";
+import { LIST_ITEM_REGULAR_PX, maxVisibleItems } from "../wall-item-cap";
 import { WALL_THEME } from "../wall-theme";
 
 // ── KPI ────────────────────────────────────────────────────────────────────────
@@ -100,56 +103,63 @@ export function KeamananKpiBody({ data }: { data: WallKeamanan["kpi"] }) {
 
 // ── Daftar CCTV ────────────────────────────────────────────────────────────────
 
-/** Daftar CCTV dengan badge Online/Offline dan lokasi. */
-export function KeamananCctvBody({ data }: { data: WallKeamanan["cctv"] }) {
+/** Daftar CCTV dengan badge Online/Offline dan lokasi. Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
+export function KeamananCctvBody({
+	data,
+	geom,
+}: {
+	data: WallKeamanan["cctv"];
+	geom?: WidgetGeom;
+}) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_REGULAR_PX);
+	const visible = data.slice(0, cap);
 	return (
-		<ScrollArea style={{ height: "100%" }} scrollbarSize={4}>
-			<Stack gap={8}>
-				{data.map((c) => (
-					<div
-						key={c.id}
-						style={{
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "space-between",
-							gap: 12,
-							padding: "10px 14px",
-							background: WALL_THEME.CARD,
-							border: `1px solid ${WALL_THEME.BORDER}`,
-							borderRadius: 10,
-						}}
-					>
-						<div style={{ minWidth: 0 }}>
-							<Text
-								size="sm"
-								fw={600}
-								style={{ color: WALL_THEME.TEXT }}
-								truncate
-							>
-								{c.kode} — {c.nama}
-							</Text>
-							<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }} truncate>
-								<IconMapPin size={10} style={{ marginRight: 4 }} />
-								{c.lokasi}
-							</Text>
-						</div>
-						<Badge
+		<Stack gap={8} style={{ height: "100%", overflow: "hidden" }}>
+			{visible.map((c) => (
+				<div
+					key={c.id}
+					style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "space-between",
+						gap: 12,
+						padding: "10px 14px",
+						background: WALL_THEME.CARD,
+						border: `1px solid ${WALL_THEME.BORDER}`,
+						borderRadius: 10,
+					}}
+				>
+					<div style={{ minWidth: 0 }}>
+						<Text
 							size="sm"
-							variant="filled"
-							color={c.status === "Online" ? "green" : "gray"}
-							style={{ flexShrink: 0 }}
+							fw={600}
+							style={{ color: WALL_THEME.TEXT }}
+							truncate
 						>
-							{c.status}
-						</Badge>
+							{c.kode} — {c.nama}
+						</Text>
+						<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }} truncate>
+							<IconMapPin size={10} style={{ marginRight: 4 }} />
+							{c.lokasi}
+						</Text>
 					</div>
-				))}
-				{data.length === 0 && (
-					<Text size="sm" style={{ color: WALL_THEME.TEXT_DIM }}>
-						Tidak ada data CCTV.
-					</Text>
-				)}
-			</Stack>
-		</ScrollArea>
+					<Badge
+						size="sm"
+						variant="filled"
+						color={c.status === "Online" ? "green" : "gray"}
+						style={{ flexShrink: 0 }}
+					>
+						{c.status}
+					</Badge>
+				</div>
+			))}
+			{data.length === 0 && (
+				<Text size="sm" style={{ color: WALL_THEME.TEXT_DIM }}>
+					Tidak ada data CCTV.
+				</Text>
+			)}
+			<MoreIndicator count={data.length - visible.length} />
+		</Stack>
 	);
 }
 
@@ -162,61 +172,64 @@ const LAPORAN_STATUS_COLOR: Record<string, string> = {
 	Baru: "blue",
 };
 
-/** Daftar laporan publik dengan badge status berwarna. */
+/** Daftar laporan publik dengan badge status berwarna. Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
 export function KeamananLaporanBody({
 	data,
+	geom,
 }: {
 	data: WallKeamanan["laporanPublik"];
+	geom?: WidgetGeom;
 }) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_REGULAR_PX);
+	const visible = data.slice(0, cap);
 	return (
-		<ScrollArea style={{ height: "100%" }} scrollbarSize={4}>
-			<Stack gap={8}>
-				{data.map((l) => (
-					<div
-						key={l.id}
-						style={{
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "space-between",
-							gap: 12,
-							padding: "10px 14px",
-							background: WALL_THEME.CARD,
-							border: `1px solid ${WALL_THEME.BORDER}`,
-							borderRadius: 10,
-						}}
-					>
-						<div style={{ minWidth: 0 }}>
-							<Text
-								size="sm"
-								fw={600}
-								style={{ color: WALL_THEME.TEXT }}
-								truncate
-							>
-								{l.judul}
-							</Text>
-							<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }} truncate>
-								<IconMapPin size={10} style={{ marginRight: 4 }} />
-								{l.lokasi}
-								{l.tanggalWaktu ? ` · ${l.tanggalWaktu}` : ""}
-							</Text>
-						</div>
-						<Badge
+		<Stack gap={8} style={{ height: "100%", overflow: "hidden" }}>
+			{visible.map((l) => (
+				<div
+					key={l.id}
+					style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "space-between",
+						gap: 12,
+						padding: "10px 14px",
+						background: WALL_THEME.CARD,
+						border: `1px solid ${WALL_THEME.BORDER}`,
+						borderRadius: 10,
+					}}
+				>
+					<div style={{ minWidth: 0 }}>
+						<Text
 							size="sm"
-							variant="filled"
-							color={LAPORAN_STATUS_COLOR[l.status] ?? "gray"}
-							style={{ flexShrink: 0 }}
+							fw={600}
+							style={{ color: WALL_THEME.TEXT }}
+							truncate
 						>
-							{l.status}
-						</Badge>
+							{l.judul}
+						</Text>
+						<Text size="xs" style={{ color: WALL_THEME.TEXT_DIM }} truncate>
+							<IconMapPin size={10} style={{ marginRight: 4 }} />
+							{l.lokasi}
+							{l.tanggalWaktu ? ` · ${l.tanggalWaktu}` : ""}
+						</Text>
 					</div>
-				))}
-				{data.length === 0 && (
-					<Text size="sm" style={{ color: WALL_THEME.TEXT_DIM }}>
-						Tidak ada laporan publik.
-					</Text>
-				)}
-			</Stack>
-		</ScrollArea>
+					<Badge
+						size="sm"
+						variant="filled"
+						color={LAPORAN_STATUS_COLOR[l.status] ?? "gray"}
+						style={{ flexShrink: 0 }}
+					>
+						{l.status}
+					</Badge>
+				</div>
+			))}
+			{data.length === 0 && (
+				<Text size="sm" style={{ color: WALL_THEME.TEXT_DIM }}>
+					Tidak ada laporan publik.
+				</Text>
+			)}
+			<MoreIndicator count={data.length - visible.length} />
+		</Stack>
 	);
 }
 

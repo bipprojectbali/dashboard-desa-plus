@@ -1,7 +1,10 @@
 import { BarChart } from "@mantine/charts";
 import { Group, SimpleGrid, Stack, Text } from "@mantine/core";
 import type { WallJenna } from "@/types/wall";
+import { MoreIndicator } from "../more-indicator";
 import { StatRow } from "../stat-row";
+import type { WidgetGeom } from "../wall-bento";
+import { LIST_ITEM_TALL_PX, maxVisibleItems } from "../wall-item-cap";
 import { WALL_THEME } from "../wall-theme";
 
 // ── KPI ──────────────────────────────────────────────────────────────────────
@@ -81,12 +84,20 @@ export function JennaInteraksiBody({ data }: { data: WallJenna["mingguan"] }) {
 
 // ── TOPIK TERBANYAK ───────────────────────────────────────────────────────────
 
-/** Topik pertanyaan terbanyak (list + bar proporsi). */
-export function JennaTopikBody({ data }: { data: WallJenna["topik"] }) {
+/** Topik pertanyaan terbanyak (list + bar proporsi). Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
+export function JennaTopikBody({
+	data,
+	geom,
+}: {
+	data: WallJenna["topik"];
+	geom?: WidgetGeom;
+}) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_TALL_PX);
+	const visible = data.slice(0, cap);
 	const max = Math.max(...data.map((t) => t.count), 1);
 	return (
 		<Stack gap="sm" justify="center" style={{ height: "100%" }}>
-			{data.slice(0, 7).map((t) => (
+			{visible.map((t) => (
 				<StatRow
 					key={t.topic}
 					label={t.topic}
@@ -95,17 +106,30 @@ export function JennaTopikBody({ data }: { data: WallJenna["topik"] }) {
 					fraction={t.count / max}
 				/>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }
 
 // ── JAM TERSIBUK ──────────────────────────────────────────────────────────────
 
-/** Jam tersibuk: distribusi persentase per slot waktu (progress bar). */
-export function JennaJamSibukBody({ data }: { data: WallJenna["jamSibuk"] }) {
+/** Jam tersibuk: distribusi persentase per slot waktu (progress bar). Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
+export function JennaJamSibukBody({
+	data,
+	geom,
+}: {
+	data: WallJenna["jamSibuk"];
+	geom?: WidgetGeom;
+}) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_TALL_PX);
+	const visible = data.slice(0, cap);
 	return (
-		<Stack gap="md" justify="center" style={{ height: "100%" }}>
-			{data.map((s) => (
+		<Stack
+			gap="md"
+			justify="center"
+			style={{ height: "100%", overflow: "hidden" }}
+		>
+			{visible.map((s) => (
 				<div key={s.slot}>
 					<Group justify="space-between" mb={4}>
 						<Text size="sm" style={{ color: WALL_THEME.TEXT }}>
@@ -135,6 +159,7 @@ export function JennaJamSibukBody({ data }: { data: WallJenna["jamSibuk"] }) {
 					</div>
 				</div>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }

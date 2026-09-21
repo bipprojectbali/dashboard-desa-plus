@@ -9,7 +9,14 @@ import {
 import type { ComponentType } from "react";
 import type { WallBeranda, WallBerandaKpiTile } from "@/types/wall";
 import { DonutBody } from "../donut-body";
+import { MoreIndicator } from "../more-indicator";
 import { StatRow } from "../stat-row";
+import type { WidgetGeom } from "../wall-bento";
+import {
+	LIST_ITEM_REGULAR_PX,
+	LIST_ITEM_TALL_PX,
+	maxVisibleItems,
+} from "../wall-item-cap";
 import { WALL_CATEGORICAL, WALL_THEME } from "../wall-theme";
 import { KeuanganSdgsBody } from "./keuangan";
 
@@ -128,12 +135,20 @@ export function BerandaKepuasanBody({
 
 // ── DIVISI ───────────────────────────────────────────────────────────────────
 
-/** Divisi teraktif (list bar kegiatan). */
-export function BerandaDivisiBody({ data }: { data: WallBeranda["divisi"] }) {
+/** Divisi teraktif (list bar kegiatan). Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
+export function BerandaDivisiBody({
+	data,
+	geom,
+}: {
+	data: WallBeranda["divisi"];
+	geom?: WidgetGeom;
+}) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_TALL_PX);
+	const visible = data.slice(0, cap);
 	const max = Math.max(...data.map((d) => d.activityCount), 1);
 	return (
 		<Stack gap="sm" justify="center" style={{ height: "100%" }}>
-			{data.slice(0, 7).map((d) => (
+			{visible.map((d) => (
 				<StatRow
 					key={d.id}
 					label={d.name}
@@ -143,6 +158,7 @@ export function BerandaDivisiBody({ data }: { data: WallBeranda["divisi"] }) {
 					numeric
 				/>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }
@@ -159,15 +175,19 @@ function formatDate(iso: string): string {
 	});
 }
 
-/** Kalender kegiatan mendatang (daftar event). */
+/** Kalender kegiatan mendatang (daftar event). Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
 export function BerandaKalenderBody({
 	data,
+	geom,
 }: {
 	data: WallBeranda["kalender"];
+	geom?: WidgetGeom;
 }) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_REGULAR_PX);
+	const visible = data.slice(0, cap);
 	return (
-		<Stack gap="sm" style={{ height: "100%", overflowY: "auto" }}>
-			{data.slice(0, 8).map((ev, i) => (
+		<Stack gap="sm" style={{ height: "100%", overflow: "hidden" }}>
+			{visible.map((ev, i) => (
 				<div
 					key={ev.id}
 					style={{
@@ -188,17 +208,26 @@ export function BerandaKalenderBody({
 					</Text>
 				</div>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }
 
 // ── APBDES ───────────────────────────────────────────────────────────────────
 
-/** Realisasi APBDes per kategori (StatRow dengan fraksi realisasi/anggaran). */
-export function BerandaApbdesBody({ data }: { data: WallBeranda["apbdes"] }) {
+/** Realisasi APBDes per kategori (StatRow dengan fraksi realisasi/anggaran). Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
+export function BerandaApbdesBody({
+	data,
+	geom,
+}: {
+	data: WallBeranda["apbdes"];
+	geom?: WidgetGeom;
+}) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_TALL_PX);
+	const visible = data.slice(0, cap);
 	return (
 		<Stack gap="md" justify="center" style={{ height: "100%" }}>
-			{data.map((item) => (
+			{visible.map((item) => (
 				<div key={item.category}>
 					<StatRow
 						label={item.category}
@@ -219,6 +248,7 @@ export function BerandaApbdesBody({ data }: { data: WallBeranda["apbdes"] }) {
 					</Text>
 				</div>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }
@@ -229,6 +259,12 @@ export function BerandaApbdesBody({ data }: { data: WallBeranda["apbdes"] }) {
  * Skor SDGs dari halaman beranda — reuse KeuanganSdgsBody karena shape identik:
  * `{ title, score, image }[]`. Tipe berbeda tapi struktural compatible.
  */
-export function BerandaSdgsBody({ data }: { data: WallBeranda["sdgs"] }) {
-	return <KeuanganSdgsBody data={data} />;
+export function BerandaSdgsBody({
+	data,
+	geom,
+}: {
+	data: WallBeranda["sdgs"];
+	geom?: WidgetGeom;
+}) {
+	return <KeuanganSdgsBody data={data} geom={geom} />;
 }

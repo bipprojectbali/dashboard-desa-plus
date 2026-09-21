@@ -11,7 +11,10 @@ import {
 } from "@tabler/icons-react";
 import type { ComponentType } from "react";
 import type { WallSosial } from "@/types/wall";
+import { MoreIndicator } from "../more-indicator";
 import { StatRow } from "../stat-row";
+import type { WidgetGeom } from "../wall-bento";
+import { LIST_ITEM_REGULAR_PX, maxVisibleItems } from "../wall-item-cap";
 import { WALL_CATEGORICAL, WALL_THEME } from "../wall-theme";
 
 // ── KPI Kesehatan ─────────────────────────────────────────────────────────────
@@ -130,11 +133,19 @@ export function SosialKesehatanBody({
 
 // ── Jadwal Posyandu ────────────────────────────────────────────────────────────
 
-/** Daftar posyandu aktif + jadwal. */
-export function SosialPosyanduBody({ data }: { data: WallSosial["posyandu"] }) {
+/** Daftar posyandu aktif + jadwal. Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
+export function SosialPosyanduBody({
+	data,
+	geom,
+}: {
+	data: WallSosial["posyandu"];
+	geom?: WidgetGeom;
+}) {
+	const max = maxVisibleItems(geom, LIST_ITEM_REGULAR_PX);
+	const visible = data.slice(0, max);
 	return (
 		<Stack gap={6} style={{ height: "100%", overflow: "hidden" }}>
-			{data.map((item, i) => (
+			{visible.map((item, i) => (
 				<div
 					key={item.id || i}
 					style={{
@@ -174,6 +185,7 @@ export function SosialPosyanduBody({ data }: { data: WallSosial["posyandu"] }) {
 					)}
 				</div>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }
@@ -255,11 +267,19 @@ export function SosialBeasiswaBody({ data }: { data: WallSosial["beasiswa"] }) {
 
 // ── Event Budaya ──────────────────────────────────────────────────────────────
 
-/** Daftar event budaya mendatang. */
-export function SosialEventBody({ data }: { data: WallSosial["event"] }) {
+/** Daftar event budaya mendatang. Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
+export function SosialEventBody({
+	data,
+	geom,
+}: {
+	data: WallSosial["event"];
+	geom?: WidgetGeom;
+}) {
+	const max = maxVisibleItems(geom, LIST_ITEM_REGULAR_PX);
+	const visible = data.slice(0, max);
 	return (
 		<Stack gap={6} style={{ height: "100%", overflow: "hidden" }}>
-			{data.map((item, i) => (
+			{visible.map((item, i) => (
 				<div
 					key={item.id || i}
 					style={{
@@ -305,21 +325,26 @@ export function SosialEventBody({ data }: { data: WallSosial["event"] }) {
 					</div>
 				</div>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }
 
 // ── Kesejahteraan Masyarakat ─────────────────────────────────────────────────
 
-/** Daftar program kesejahteraan masyarakat aktif. */
+/** Daftar program kesejahteraan masyarakat aktif. Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
 export function SosialKesejahteraanBody({
 	data,
+	geom,
 }: {
 	data: WallSosial["kesejahteraan"];
+	geom?: WidgetGeom;
 }) {
+	const max = maxVisibleItems(geom, LIST_ITEM_REGULAR_PX);
+	const visible = data.slice(0, max);
 	return (
 		<Stack gap={6} style={{ height: "100%", overflow: "hidden" }}>
-			{data.map((item, i) => (
+			{visible.map((item, i) => (
 				<div
 					key={item.id || i}
 					style={{
@@ -368,6 +393,7 @@ export function SosialKesejahteraanBody({
 					</div>
 				</div>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }

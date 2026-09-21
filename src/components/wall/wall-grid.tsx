@@ -87,7 +87,11 @@ export function WallGrid({
 						key={id}
 						style={{ ...spanStyle(geoms[id] ?? { w: 1, h: 1 }), minHeight: 0 }}
 					>
-						<WidgetSlot id={id} snapshot={snapshot} />
+						<WidgetSlot
+							id={id}
+							snapshot={snapshot}
+							geom={geoms[id] ?? { w: 1, h: 1 }}
+						/>
 					</div>
 				))}
 			</div>

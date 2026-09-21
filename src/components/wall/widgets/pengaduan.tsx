@@ -2,7 +2,10 @@ import { LineChart } from "@mantine/charts";
 import { Badge, Box, Group, Stack, Text } from "@mantine/core";
 import type { WallPengaduan } from "@/types/wall";
 import { HorizontalBar } from "../horizontal-bar";
+import { MoreIndicator } from "../more-indicator";
 import { StatRow } from "../stat-row";
+import type { WidgetGeom } from "../wall-bento";
+import { LIST_ITEM_REGULAR_PX, maxVisibleItems } from "../wall-item-cap";
 import { WALL_THEME } from "../wall-theme";
 
 const STATUS_ITEMS: Array<{
@@ -98,15 +101,19 @@ function statusColor(status: string): string {
 	}
 }
 
-/** Pengajuan terbaru: daftar item dengan kategori + badge status. */
+/** Pengajuan terbaru: daftar item dengan kategori + badge status. Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
 export function PengaduanTerbaruBody({
 	data,
+	geom,
 }: {
 	data: WallPengaduan["pengajuanTerbaru"];
+	geom?: WidgetGeom;
 }) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_REGULAR_PX);
+	const visible = data.slice(0, cap);
 	return (
 		<Stack gap="xs" style={{ height: "100%", overflow: "hidden" }}>
-			{data.map((item) => (
+			{visible.map((item) => (
 				<Box
 					key={item.id}
 					style={{
@@ -155,19 +162,24 @@ export function PengaduanTerbaruBody({
 					</Group>
 				</Box>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }
 
-/** Musrenbang: daftar ajuan ide warga. */
+/** Musrenbang: daftar ajuan ide warga. Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
 export function MusrenbangBody({
 	data,
+	geom,
 }: {
 	data: WallPengaduan["musrenbang"];
+	geom?: WidgetGeom;
 }) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_REGULAR_PX);
+	const visible = data.slice(0, cap);
 	return (
 		<Stack gap="xs" style={{ height: "100%", overflow: "hidden" }}>
-			{data.map((item) => (
+			{visible.map((item) => (
 				<Box
 					key={item.id}
 					style={{
@@ -192,6 +204,7 @@ export function MusrenbangBody({
 					</Text>
 				</Box>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }

@@ -2,7 +2,14 @@ import { BarChart, LineChart } from "@mantine/charts";
 import { Badge, Grid, Group, Stack, Text } from "@mantine/core";
 import { formatM } from "@/components/keuangan/format";
 import type { WallKeuangan } from "@/types/wall";
+import { MoreIndicator } from "../more-indicator";
 import { StatRow } from "../stat-row";
+import type { WidgetGeom } from "../wall-bento";
+import {
+	LIST_ITEM_COMPACT_PX,
+	LIST_ITEM_TALL_PX,
+	maxVisibleItems,
+} from "../wall-item-cap";
 import { WALL_THEME } from "../wall-theme";
 
 const BULAN = [
@@ -112,17 +119,22 @@ export function KeuanganAlokasiBody({
 	);
 }
 
-/** Laporan APBDes: 2 kolom (pendapatan/belanja) + baris total. */
+/** Laporan APBDes: 2 kolom (pendapatan/belanja) + baris total. Item per kolom ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
 export function KeuanganLaporanBody({
 	data,
+	geom,
 }: {
 	data: WallKeuangan["report"];
+	geom?: WidgetGeom;
 }) {
 	const maxIncome = Math.max(...data.income.map((i) => i.amount), 1);
 	const maxExpense = Math.max(...data.expenses.map((e) => e.amount), 1);
+	const cap = maxVisibleItems(geom, LIST_ITEM_TALL_PX);
+	const visibleIncome = data.income.slice(0, cap);
+	const visibleExpenses = data.expenses.slice(0, cap);
 
 	return (
-		<Stack gap="md" style={{ height: "100%", overflowY: "auto" }}>
+		<Stack gap="md" style={{ height: "100%", overflow: "hidden" }}>
 			<Grid gutter="md">
 				<Grid.Col span={6}>
 					<Text
@@ -133,7 +145,7 @@ export function KeuanganLaporanBody({
 						PENDAPATAN
 					</Text>
 					<Stack gap="xs">
-						{data.income.map((item) => (
+						{visibleIncome.map((item) => (
 							<StatRow
 								key={item.category}
 								label={item.category}
@@ -142,6 +154,7 @@ export function KeuanganLaporanBody({
 								fraction={item.amount / maxIncome}
 							/>
 						))}
+						<MoreIndicator count={data.income.length - visibleIncome.length} />
 					</Stack>
 				</Grid.Col>
 				<Grid.Col span={6}>
@@ -153,7 +166,7 @@ export function KeuanganLaporanBody({
 						BELANJA
 					</Text>
 					<Stack gap="xs">
-						{data.expenses.map((item) => (
+						{visibleExpenses.map((item) => (
 							<StatRow
 								key={item.category}
 								label={item.category}
@@ -162,6 +175,9 @@ export function KeuanganLaporanBody({
 								fraction={item.amount / maxExpense}
 							/>
 						))}
+						<MoreIndicator
+							count={data.expenses.length - visibleExpenses.length}
+						/>
 					</Stack>
 				</Grid.Col>
 			</Grid>
@@ -189,11 +205,23 @@ export function KeuanganLaporanBody({
 	);
 }
 
-/** Dana bantuan & hibah: source + nominal + badge status. */
-export function KeuanganBantuanBody({ data }: { data: WallKeuangan["aid"] }) {
+/** Dana bantuan & hibah: source + nominal + badge status. Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
+export function KeuanganBantuanBody({
+	data,
+	geom,
+}: {
+	data: WallKeuangan["aid"];
+	geom?: WidgetGeom;
+}) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_COMPACT_PX);
+	const visible = data.slice(0, cap);
 	return (
-		<Stack gap="sm" justify="center" style={{ height: "100%" }}>
-			{data.map((a) => (
+		<Stack
+			gap="sm"
+			justify="center"
+			style={{ height: "100%", overflow: "hidden" }}
+		>
+			{visible.map((a) => (
 				<Group key={a.source} justify="space-between" wrap="nowrap">
 					<Text
 						size="sm"
@@ -221,24 +249,33 @@ export function KeuanganBantuanBody({ data }: { data: WallKeuangan["aid"] }) {
 					</Group>
 				</Group>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }
 
-/** Skor SDGs — dipakai ulang oleh widgets/beranda.tsx (shape identik). */
+/** Skor SDGs — dipakai ulang oleh widgets/beranda.tsx (shape identik). Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
 export function KeuanganSdgsBody({
 	data,
+	geom,
 }: {
 	data: Array<{ title: string; score: number; image: string | null }>;
+	geom?: WidgetGeom;
 }) {
 	function scoreColor(score: number): string {
 		if (score >= 80) return WALL_THEME.OK;
 		if (score >= 60) return WALL_THEME.ACCENT;
 		return WALL_THEME.WARN;
 	}
+	const cap = maxVisibleItems(geom, LIST_ITEM_TALL_PX);
+	const visible = data.slice(0, cap);
 	return (
-		<Stack gap="sm" justify="center" style={{ height: "100%" }}>
-			{data.slice(0, 6).map((s) => (
+		<Stack
+			gap="sm"
+			justify="center"
+			style={{ height: "100%", overflow: "hidden" }}
+		>
+			{visible.map((s) => (
 				<StatRow
 					key={s.title}
 					label={s.title}
@@ -247,6 +284,7 @@ export function KeuanganSdgsBody({
 					fraction={s.score / 100}
 				/>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }

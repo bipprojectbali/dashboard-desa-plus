@@ -2,6 +2,13 @@ import { Badge, Box, Group, Progress, Stack, Text } from "@mantine/core";
 import type { WallDivisi } from "@/types/wall";
 import { DonutBody } from "../donut-body";
 import { HorizontalBar } from "../horizontal-bar";
+import { MoreIndicator } from "../more-indicator";
+import type { WidgetGeom } from "../wall-bento";
+import {
+	LIST_ITEM_REGULAR_PX,
+	LIST_ITEM_TALL_PX,
+	maxVisibleItems,
+} from "../wall-item-cap";
 import { WALL_THEME } from "../wall-theme";
 
 /** Kinerja divisi: donut progres kegiatan per status (% live dari NOC). */
@@ -36,11 +43,19 @@ function statusColor(status: string): string {
 	return WALL_THEME.WARN;
 }
 
-/** Kegiatan terbaru: list title + progress bar + status badge. */
-export function DivisiKegiatanBody({ data }: { data: WallDivisi["projects"] }) {
+/** Kegiatan terbaru: list title + progress bar + status badge. Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
+export function DivisiKegiatanBody({
+	data,
+	geom,
+}: {
+	data: WallDivisi["projects"];
+	geom?: WidgetGeom;
+}) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_TALL_PX);
+	const visible = data.slice(0, cap);
 	return (
 		<Stack gap="sm" style={{ height: "100%", overflow: "hidden" }}>
-			{data.map((p) => (
+			{visible.map((p) => (
 				<Box key={p.id}>
 					<Group justify="space-between" mb={4}>
 						<Text
@@ -80,19 +95,24 @@ export function DivisiKegiatanBody({ data }: { data: WallDivisi["projects"] }) {
 					</Text>
 				</Box>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }
 
-/** Diskusi terbaru: list pesan + divisi + tanggal (tanpa nama pengirim). */
+/** Diskusi terbaru: list pesan + divisi + tanggal (tanpa nama pengirim). Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
 export function DivisiDiskusiBody({
 	data,
+	geom,
 }: {
 	data: WallDivisi["discussions"];
+	geom?: WidgetGeom;
 }) {
+	const cap = maxVisibleItems(geom, LIST_ITEM_REGULAR_PX);
+	const visible = data.slice(0, cap);
 	return (
 		<Stack gap="sm" style={{ height: "100%", overflow: "hidden" }}>
-			{data.map((d) => (
+			{visible.map((d) => (
 				<Box
 					key={d.id}
 					style={{
@@ -125,6 +145,7 @@ export function DivisiDiskusiBody({
 					</Group>
 				</Box>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }

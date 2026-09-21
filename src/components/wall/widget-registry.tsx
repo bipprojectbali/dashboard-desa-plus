@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import type { WallSnapshot } from "@/types/wall";
+import type { WidgetGeom } from "./wall-bento";
 import {
 	ALL_WIDGET_IDS,
 	isKnownWidgetId,
@@ -84,7 +85,8 @@ export interface WidgetDefinition<T = any> {
 	title: string;
 	category: WallCategory;
 	selectData: (snap: WallSnapshot | null | undefined) => T | null;
-	Body: FC<{ data: T }>;
+	/** `geom` opsional — hanya widget list-type yang memakainya untuk cap item. */
+	Body: FC<{ data: T; geom?: WidgetGeom }>;
 }
 
 /** Balikin array bila ada isi, selain itu null (empty state). */

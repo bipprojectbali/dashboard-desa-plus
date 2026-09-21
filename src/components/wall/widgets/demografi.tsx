@@ -3,7 +3,10 @@ import { Group, Stack, Text } from "@mantine/core";
 import type { WallDemografi } from "@/types/wall";
 import { DonutBody } from "../donut-body";
 import { HorizontalBar } from "../horizontal-bar";
+import { MoreIndicator } from "../more-indicator";
 import { StatRow } from "../stat-row";
+import type { WidgetGeom } from "../wall-bento";
+import { LIST_ITEM_COMPACT_PX, maxVisibleItems } from "../wall-item-cap";
 import { WALL_CATEGORICAL, WALL_THEME } from "../wall-theme";
 
 function toDonut(rows: Array<{ label: string; count: number }>) {
@@ -122,12 +125,18 @@ export function DemografiDinamikaBody({
 	);
 }
 
-/** Data per banjar: tabel penduduk/KK/miskin, 5 terpadat (sort di mapBanjar). */
+/** Data per banjar: tabel penduduk/KK/miskin, 5 terpadat (sort di mapBanjar). Item ditampilkan sesuai tinggi widget (tanpa scroll — wall kiosk/TV). */
 export function DemografiBanjarBody({
 	data,
+	geom,
 }: {
 	data: WallDemografi["banjar"];
+	geom?: WidgetGeom;
 }) {
+	// -1 mengkompensasi baris header (Banjar/Penduduk/KK/Miskin) yang tak
+	// dihitung formula maxVisibleItems (formula hanya tahu tinggi card & item).
+	const cap = Math.max(2, maxVisibleItems(geom, LIST_ITEM_COMPACT_PX) - 1);
+	const visible = data.slice(0, cap);
 	return (
 		<Stack gap={4} style={{ height: "100%", overflow: "hidden" }}>
 			<Group
@@ -167,7 +176,7 @@ export function DemografiBanjarBody({
 					Miskin
 				</Text>
 			</Group>
-			{data.map((b) => (
+			{visible.map((b) => (
 				<Group key={b.name} gap="xs" wrap="nowrap">
 					<Text
 						size="sm"
@@ -207,6 +216,7 @@ export function DemografiBanjarBody({
 					</Text>
 				</Group>
 			))}
+			<MoreIndicator count={data.length - visible.length} />
 		</Stack>
 	);
 }
