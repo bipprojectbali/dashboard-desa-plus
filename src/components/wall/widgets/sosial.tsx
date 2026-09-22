@@ -6,7 +6,6 @@ import {
 	IconCalendarEvent,
 	IconHeartbeat,
 	IconHeartHandshake,
-	IconMoodSmile,
 	IconSchool,
 } from "@tabler/icons-react";
 import type { ComponentType } from "react";
