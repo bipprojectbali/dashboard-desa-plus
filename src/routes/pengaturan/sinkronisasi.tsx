@@ -1,7 +1,12 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import SinkronisasiSettings from "@/components/pengaturan/sinkronisasi";
+import { protectedRouteMiddleware } from "@/middleware/authMiddleware";
 
 export const Route = createFileRoute("/pengaturan/sinkronisasi")({
-	beforeLoad: () => {
-		throw redirect({ to: "/admin/preferences" });
-	},
+	beforeLoad: protectedRouteMiddleware,
+	component: RouteComponent,
 });
+
+function RouteComponent() {
+	return <SinkronisasiSettings />;
+}

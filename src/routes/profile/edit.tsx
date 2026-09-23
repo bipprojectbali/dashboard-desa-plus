@@ -1,4 +1,5 @@
 import {
+	Alert,
 	Box,
 	Button,
 	Card,
@@ -10,9 +11,14 @@ import {
 	Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconChevronLeft, IconEdit } from "@tabler/icons-react";
+import {
+	IconCheck,
+	IconChevronLeft,
+	IconEdit,
+	IconX,
+} from "@tabler/icons-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
 import { protectedRouteMiddleware } from "@/middleware/authMiddleware";
 import { apiClient } from "@/utils/api-client";
@@ -27,6 +33,16 @@ function EditProfile() {
 	const snap = useSnapshot(authStore);
 	const navigate = useNavigate();
 	const [isUpdating, setIsUpdating] = useState(false);
+	const [toast, setToast] = useState<{
+		type: "success" | "error";
+		message: string;
+	} | null>(null);
+
+	useEffect(() => {
+		if (!toast) return;
+		const t = setTimeout(() => setToast(null), 3000);
+		return () => clearTimeout(t);
+	}, [toast]);
 
 	const form = useForm({
 		initialValues: {
@@ -35,7 +51,7 @@ function EditProfile() {
 		},
 		validate: {
 			name: (value) =>
-				value.length < 2 ? "Name must have at least 2 letters" : null,
+				value.length < 2 ? "Nama harus minimal 2 karakter" : null,
 		},
 	});
 
@@ -51,12 +67,13 @@ function EditProfile() {
 					...authStore.user,
 					...data.user,
 				} as NonNullable<typeof authStore.user>;
-				navigate({ to: "/profile" });
+				setToast({ type: "success", message: "Profil berhasil diperbarui" });
+				setTimeout(() => navigate({ to: "/profile" }), 1200);
 			} else if (error) {
-				console.error("Update error:", error);
+				setToast({ type: "error", message: "Gagal memperbarui profil" });
 			}
-		} catch (err) {
-			console.error("Failed to update profile:", err);
+		} catch {
+			setToast({ type: "error", message: "Gagal memperbarui profil" });
 		} finally {
 			setIsUpdating(false);
 		}
@@ -84,6 +101,24 @@ function EditProfile() {
 			</Group>
 
 			<Divider style={{ opacity: 0.1 }} />
+
+			{toast && (
+				<Alert
+					color={toast.type === "success" ? "green" : "red"}
+					icon={
+						toast.type === "success" ? (
+							<IconCheck size={16} />
+						) : (
+							<IconX size={16} />
+						)
+					}
+					withCloseButton
+					onClose={() => setToast(null)}
+					radius="md"
+				>
+					{toast.message}
+				</Alert>
+			)}
 
 			<Card
 				withBorder

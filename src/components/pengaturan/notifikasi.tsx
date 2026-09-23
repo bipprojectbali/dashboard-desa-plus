@@ -194,12 +194,17 @@ const NotifikasiSettings = () => {
 				disabled={!disabledTooltip || !forceDisabled}
 				position="left"
 			>
-				<Switch
-					checked={prefs[field]}
-					onChange={() => toggle(field)}
-					disabled={loading || !!forceDisabled}
-					size="md"
-				/>
+				<Box component="span" style={{ display: "inline-block" }}>
+					<Switch
+						checked={prefs[field]}
+						onChange={() => toggle(field)}
+						disabled={loading || !!forceDisabled}
+						size="md"
+						style={
+							loading || forceDisabled ? { pointerEvents: "none" } : undefined
+						}
+					/>
+				</Box>
 			</Tooltip>
 		</Group>
 	);

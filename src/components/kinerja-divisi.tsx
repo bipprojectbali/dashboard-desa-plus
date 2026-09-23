@@ -1,5 +1,17 @@
-import { Alert, Button, Card, Grid, Skeleton, Stack } from "@mantine/core";
-import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
+import {
+	Alert,
+	Button,
+	Card,
+	Grid,
+	Group,
+	Skeleton,
+	Stack,
+} from "@mantine/core";
+import {
+	IconAlertCircle,
+	IconFileDownload,
+	IconRefresh,
+} from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { useIsDark } from "@/hooks/useIsDark";
@@ -52,6 +64,18 @@ const KinerjaDivisi = () => {
 
 	return (
 		<Stack gap="lg">
+			<Group justify="flex-end">
+				<Button
+					variant="light"
+					color="blue"
+					leftSection={<IconFileDownload size={16} />}
+					onClick={() => window.open("/api/noc/export-activities", "_blank")}
+					size="sm"
+				>
+					Export PDF
+				</Button>
+			</Group>
+
 			{error && (
 				<Alert
 					icon={<IconAlertCircle size={16} />}
