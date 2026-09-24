@@ -138,7 +138,8 @@ export function SatisfactionChart() {
 						/>
 						<Text size="sm" c={dark ? "white" : "gray.7"}>
 							{t.dashboard[RATING_NAME_MAP[item.apiName]?.key ?? "puas"] ??
-								item.apiName}
+								item.apiName}{" "}
+							({item.value})
 						</Text>
 					</Group>
 				))}

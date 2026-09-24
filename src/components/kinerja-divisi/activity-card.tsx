@@ -65,6 +65,14 @@ export function ActivityCard({
 			{/* CONTENT */}
 			<Box p="md">
 				{/* PROGRESS */}
+				<Group justify="space-between" mb={4}>
+					<Text size="xs" c="dimmed">
+						{t.kinerjaDivisi.progres}
+					</Text>
+					<Text size="xs" fw={600}>
+						{progress}%
+					</Text>
+				</Group>
 				<Progress
 					value={progress}
 					radius="xl"

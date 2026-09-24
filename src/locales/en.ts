@@ -195,6 +195,7 @@ const en: TranslationKeys = {
 		progresKegiatan: "Activity Progress",
 		divisiTeraktif: "Most Active Divisions",
 		tidakAdaDataDivisi: "No division data available",
+		progres: "Progress",
 	},
 	pengaduanLayanan: {
 		totalPengaduan: "Total Complaints",

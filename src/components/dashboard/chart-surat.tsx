@@ -11,6 +11,7 @@ import {
 	Bar,
 	BarChart,
 	CartesianGrid,
+	LabelList,
 	ResponsiveContainer,
 	Tooltip,
 	XAxis,
@@ -130,7 +131,13 @@ export function ChartSurat() {
 								itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 								labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 							/>
-							<Bar dataKey="value" fill={CHART.blue} radius={[4, 4, 0, 0]} />
+							<Bar dataKey="value" fill={CHART.blue} radius={[4, 4, 0, 0]}>
+								<LabelList
+									dataKey="value"
+									position="top"
+									style={{ fill: dark ? "#E2E8F0" : "#374151", fontSize: 11 }}
+								/>
+							</Bar>
 						</BarChart>
 					</ResponsiveContainer>
 				) : (

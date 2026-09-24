@@ -12,6 +12,7 @@ import {
 	Bar,
 	BarChart,
 	CartesianGrid,
+	LabelList,
 	ResponsiveContainer,
 	Tooltip,
 	XAxis,
@@ -43,7 +44,7 @@ export function AllocationChart({
 	const tooltipBorder = dark ? theme.colors.dark[4] : theme.colors.gray[3];
 
 	const chartData = allocation.map((a) => ({
-		sector: a.sector.length > 20 ? `${a.sector.substring(0, 17)}...` : a.sector,
+		sector: a.sector,
 		amount: a.amount / 1_000_000,
 	}));
 
@@ -102,7 +103,10 @@ export function AllocationChart({
 							axisLine={false}
 							tickLine={false}
 							tick={{ fill: axisTick, fontSize: 11 }}
-							width={120}
+							width={140}
+							tickFormatter={(v: string) =>
+								v.length > 18 ? `${v.slice(0, 17)}…` : v
+							}
 						/>
 						<Tooltip
 							contentStyle={{
@@ -112,6 +116,9 @@ export function AllocationChart({
 							}}
 							itemStyle={{ color: axisTick }}
 							labelStyle={{ color: axisTick }}
+							labelFormatter={(label) =>
+								allocation.find((a) => a.sector === label)?.sector ?? label
+							}
 							formatter={(value: number | undefined) => [
 								`Rp ${value}jt`,
 								t.keuanganAnggaran.jumlah,
@@ -122,7 +129,14 @@ export function AllocationChart({
 							fill={barColor}
 							radius={[0, 8, 8, 0]}
 							maxBarSize={30}
-						/>
+						>
+							<LabelList
+								dataKey="amount"
+								position="right"
+								style={{ fill: axisTick, fontSize: 11 }}
+								formatter={(v) => `Rp ${v}jt`}
+							/>
+						</Bar>
 					</BarChart>
 				</ResponsiveContainer>
 			)}

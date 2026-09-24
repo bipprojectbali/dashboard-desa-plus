@@ -9,7 +9,11 @@ import {
 	Text,
 	Title,
 } from "@mantine/core";
-import { IconArrowDownRight, IconArrowUpRight } from "@tabler/icons-react";
+import {
+	IconAlertTriangle,
+	IconArrowDownRight,
+	IconArrowUpRight,
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { useIsDark } from "@/hooks/useIsDark";
@@ -52,6 +56,15 @@ function getProgressColor(persen: number): string {
 	if (persen >= 60) return "yellow";
 	return "red";
 }
+
+// Background dark mode per warna status — sebelumnya hardcode hijau,
+// menyebabkan badge status "rendah" (merah) tetap tampil hijau di dark mode.
+const DARK_BG_MAP: Record<string, string> = {
+	teal: "rgba(45, 212, 191, 0.12)",
+	blue: "rgba(59, 130, 246, 0.12)",
+	yellow: "rgba(234, 179, 8, 0.12)",
+	red: "rgba(239, 68, 68, 0.12)",
+};
 
 function getStatusMessage(
 	persen: number,
@@ -155,14 +168,17 @@ function ApbdesSummary({ title, data, icon }: ApbdesSummaryProps) {
 				fw={600}
 				style={{
 					backgroundColor: dark
-						? "rgba(72, 187, 120, 0.1)"
+						? (DARK_BG_MAP[statusMessage.color] ?? DARK_BG_MAP.red)
 						: `var(--mantine-color-${statusMessage.color}-0)`,
 					padding: "6px 10px",
 					borderRadius: 6,
-					display: "inline-block",
+					display: "inline-flex",
+					alignItems: "center",
+					gap: 4,
 				}}
 			>
 				{data.percentage >= 100 && "✓ "}
+				{statusMessage.color === "red" && <IconAlertTriangle size={14} />}
 				{statusMessage.text}
 			</Text>
 		</Box>

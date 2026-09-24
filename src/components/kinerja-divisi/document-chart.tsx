@@ -4,6 +4,7 @@ import {
 	BarChart,
 	CartesianGrid,
 	Cell,
+	LabelList,
 	ResponsiveContainer,
 	Tooltip,
 	XAxis,
@@ -92,6 +93,11 @@ export function DocumentChart() {
 							{data.map((entry) => (
 								<Cell key={`cell-${entry.label}`} fill={entry.color} />
 							))}
+							<LabelList
+								dataKey="value"
+								position="top"
+								style={{ fill: dark ? "#E2E8F0" : "#374151", fontSize: 11 }}
+							/>
 						</Bar>
 					</BarChart>
 				</ResponsiveContainer>

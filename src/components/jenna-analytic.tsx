@@ -26,6 +26,7 @@ import {
 	Bar,
 	BarChart,
 	CartesianGrid,
+	LabelList,
 	ResponsiveContainer,
 	Tooltip,
 	XAxis,
@@ -269,7 +270,13 @@ const JennaAnalytic = () => {
 							fill="#396aaaff"
 							radius={[8, 8, 0, 0]}
 							maxBarSize={60}
-						/>
+						>
+							<LabelList
+								dataKey="total"
+								position="top"
+								style={{ fill: "var(--app-text)", fontSize: 11 }}
+							/>
+						</Bar>
 					</BarChart>
 				</ResponsiveContainer>
 			</Card>

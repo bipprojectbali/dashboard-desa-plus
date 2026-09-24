@@ -27,6 +27,7 @@ import {
 	Bar,
 	BarChart,
 	CartesianGrid,
+	LabelList,
 	Line,
 	LineChart,
 	ResponsiveContainer,
@@ -325,7 +326,16 @@ const PengaduanLayananPublik = () => {
 									r: 4,
 								}}
 								activeDot={{ r: 6 }}
-							/>
+							>
+								<LabelList
+									dataKey="jumlah"
+									position="top"
+									style={{
+										fill: dark ? "#E2E8F0" : "#374151",
+										fontSize: 11,
+									}}
+								/>
+							</Line>
 						</LineChart>
 					</ResponsiveContainer>
 				) : (
@@ -394,11 +404,16 @@ const PengaduanLayananPublik = () => {
 										itemStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 										labelStyle={{ color: dark ? "#E2E8F0" : "#374151" }}
 									/>
-									<Bar
-										dataKey="jumlah"
-										fill="#396aaaff"
-										radius={[0, 4, 4, 0]}
-									/>
+									<Bar dataKey="jumlah" fill="#396aaaff" radius={[0, 4, 4, 0]}>
+										<LabelList
+											dataKey="jumlah"
+											position="right"
+											style={{
+												fill: dark ? "#E2E8F0" : "#374151",
+												fontSize: 11,
+											}}
+										/>
+									</Bar>
 								</BarChart>
 							</ResponsiveContainer>
 						) : (

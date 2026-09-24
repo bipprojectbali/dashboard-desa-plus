@@ -190,6 +190,7 @@ export type TranslationKeys = {
 		progresKegiatan: string;
 		divisiTeraktif: string;
 		tidakAdaDataDivisi: string;
+		progres: string;
 	};
 	pengaduanLayanan: {
 		totalPengaduan: string;
@@ -664,6 +665,7 @@ const id: TranslationKeys = {
 		progresKegiatan: "Progres Kegiatan",
 		divisiTeraktif: "Divisi Teraktif",
 		tidakAdaDataDivisi: "Tidak ada data divisi",
+		progres: "Progres",
 	},
 	pengaduanLayanan: {
 		totalPengaduan: "Total Pengaduan",

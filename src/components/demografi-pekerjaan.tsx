@@ -28,6 +28,7 @@ import {
 	BarChart,
 	CartesianGrid,
 	Cell,
+	LabelList,
 	Pie,
 	PieChart,
 	ResponsiveContainer,
@@ -619,7 +620,16 @@ const DemografiPekerjaan = () => {
 										fill="#396aaaff"
 										radius={[8, 8, 0, 0]}
 										maxBarSize={40}
-									/>
+									>
+										<LabelList
+											dataKey="total"
+											position="top"
+											style={{
+												fill: dark ? "#E2E8F0" : "#374151",
+												fontSize: 11,
+											}}
+										/>
+									</Bar>
 								</BarChart>
 							</ResponsiveContainer>
 						)}
@@ -688,7 +698,10 @@ const DemografiPekerjaan = () => {
 											fill: dark ? "#E2E8F0" : "#374151",
 											fontSize: 12,
 										}}
-										width={90}
+										width={110}
+										tickFormatter={(v: string) =>
+											v.length > 14 ? `${v.slice(0, 13)}…` : v
+										}
 									/>
 									<Tooltip
 										contentStyle={{
@@ -704,7 +717,16 @@ const DemografiPekerjaan = () => {
 										fill="#396aaaff"
 										radius={[0, 8, 8, 0]}
 										maxBarSize={30}
-									/>
+									>
+										<LabelList
+											dataKey="total"
+											position="right"
+											style={{
+												fill: dark ? "#E2E8F0" : "#374151",
+												fontSize: 11,
+											}}
+										/>
+									</Bar>
 								</BarChart>
 							</ResponsiveContainer>
 						)}
@@ -1104,6 +1126,9 @@ const DemografiPekerjaan = () => {
 											fontSize: 11,
 										}}
 										width={120}
+										tickFormatter={(v: string) =>
+											v.length > 16 ? `${v.slice(0, 15)}…` : v
+										}
 									/>
 									<Tooltip
 										contentStyle={{
@@ -1123,6 +1148,14 @@ const DemografiPekerjaan = () => {
 										{sektorData.map((entry) => (
 											<Cell key={`cell-${entry.sektor}`} fill="#396aaaff" />
 										))}
+										<LabelList
+											dataKey="value"
+											position="right"
+											style={{
+												fill: dark ? "#E2E8F0" : "#374151",
+												fontSize: 11,
+											}}
+										/>
 									</Bar>
 								</BarChart>
 							</ResponsiveContainer>
