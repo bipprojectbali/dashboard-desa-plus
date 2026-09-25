@@ -93,6 +93,9 @@ const AksesDanTimSettings = () => {
 		}
 	};
 
+	// fetchUserStats didefinisikan ulang tiap render (bukan useCallback) —
+	// memasukkannya ke deps akan bikin efek ini jalan tiap render. Mount-once by design.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: see above
 	useEffect(() => {
 		const fetchPrefs = async () => {
 			try {

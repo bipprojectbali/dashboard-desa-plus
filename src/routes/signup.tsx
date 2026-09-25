@@ -776,6 +776,8 @@ function PasswordStrength({ value }: { value: string }) {
 			<Group gap={4} mb={4}>
 				{checks.map((ok, i) => (
 					<Box
+						// Urutan checks statis (aturan password tetap) — index sebagai key aman di sini.
+						// biome-ignore lint/suspicious/noArrayIndexKey: fixed list of password rules, no reorder
 						key={i}
 						style={{
 							flex: 1,

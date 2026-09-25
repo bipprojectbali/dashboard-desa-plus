@@ -12,7 +12,7 @@
 - **UI Framework**: Mantine UI (Component library)
 - **Authentication**: Better Auth (Complete auth solution)
 - **Database**: Prisma ORM (Database toolkit)
-- **Testing**: Bun Test & Playwright
+- **Testing**: Bun Test (native runner) + Biome (lint/format gate)
 
 ### Architecture Highlights
 - **Single Port Architecture**: Backend (Elysia) and Frontend (Vite Middleware) run on the same port (3000)
@@ -23,7 +23,7 @@
 ## Project Structure
 
 ```
-├── __tests__/           # Consolidated test suite (API & E2E)
+├── tests/               # Consolidated test suite (api/config/hooks/theme)
 ├── generated/           # Auto-generated API types and Prisma client
 ├── prisma/              # Database schema and migrations
 ├── scripts/             # Internal automation scripts
@@ -69,9 +69,11 @@ bun run dev
 
 ## Testing Commands
 
-- **Unit/Integration (API)**: `bun run test`
-- **End-to-End (Browser)**: `bun run test:e2e`
+- **All tests** (api/config/hooks/theme): `bun run test`
+- **API only**: `bun run test:api`
+- **Watch mode**: `bun run test:watch`
 - **Visual Dashboard**: `bun run test:ui`
+- **Lint + test gate**: `bun run verify` — jalankan setelah selesai fitur baru
 
 ## Development Guidelines
 
@@ -88,7 +90,6 @@ bun run dev
 - **tailwind.config.js**: Tailwind CSS configuration with custom Darmasaba color palette
 - **tsconfig.json**: TypeScript configuration with path aliases (`@/*` maps to `./src/*`)
 - **package.json**: Contains all scripts and dependencies
-- **playwright.config.ts**: End-to-end testing configuration
 
 ## Notable Features
 
@@ -106,9 +107,11 @@ bun run dev
 - `check`: Runs Biome checker with auto-fix
 - `format`: Formats code using Biome
 - `gen:api`: Generates API types from schema
-- `test`: Runs unit/integration tests
+- `test`: Runs all unit/integration tests (tests/)
+- `test:api`: Runs API tests only (tests/api/)
+- `test:watch`: Runs tests in watch mode
 - `test:ui`: Runs tests with UI
-- `test:e2e`: Runs end-to-end tests
+- `verify`: Lint (error-only) + all tests — the gate to run after finishing a feature
 - `build`: Builds the application for production
 - `start`: Starts the production server
 - `seed`: Seeds the database with admin and demo users

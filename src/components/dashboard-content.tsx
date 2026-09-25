@@ -141,6 +141,8 @@ export function DashboardContent() {
 			{sdgsLoading ? (
 				<Grid gutter="md">
 					{Array.from({ length: 4 }).map((_, i) => (
+						// Skeleton placeholder statis (bukan data asli) — index sebagai key aman di sini.
+						// biome-ignore lint/suspicious/noArrayIndexKey: static skeleton count, no reorder
 						<Grid.Col key={i} span={{ base: 6, md: 3 }}>
 							<Skeleton height={160} radius="xl" />
 						</Grid.Col>

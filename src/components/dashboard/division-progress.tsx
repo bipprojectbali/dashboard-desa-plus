@@ -72,6 +72,8 @@ export function DivisionProgress() {
 				{loading ? (
 					<Stack gap="sm">
 						{Array.from({ length: 5 }).map((_, i) => (
+							// Skeleton placeholder statis (bukan data asli) — index sebagai key aman di sini.
+							// biome-ignore lint/suspicious/noArrayIndexKey: static skeleton count, no reorder
 							<Skeleton key={i} height={36} radius="sm" />
 						))}
 					</Stack>

@@ -47,6 +47,10 @@ function PageTransition({
 		null,
 	);
 
+	// displayKey and children intentionally excluded: adding displayKey would
+	// cancel enterTimer on every setDisplayKey call; children changes on the
+	// same route don't need to trigger the transition animation.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: see above
 	useEffect(() => {
 		if (routeKey === displayKey) return;
 
@@ -76,10 +80,6 @@ function PageTransition({
 			clearTimeout(exitTimer);
 			if (enterTimer !== null) clearTimeout(enterTimer);
 		};
-		// displayKey and children intentionally excluded: adding displayKey would
-		// cancel enterTimer on every setDisplayKey call; children changes on the
-		// same route don't need to trigger the transition animation.
-		// biome-ignore lint/correctness/useExhaustiveDependencies: see above
 	}, [routeKey, enabled]);
 
 	const glitchClass = enabled
@@ -107,7 +107,10 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 	const t = useTranslate();
 	useSystemMonitor();
 
-	// Non-admin users inherit display preferences from admin's global settings
+	// Non-admin users inherit display preferences from admin's global settings.
+	// user?.role sengaja dipakai (bukan `user`) — efek hanya perlu re-run saat
+	// role berubah, bukan tiap kali objek user berubah referensi.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: see above
 	useEffect(() => {
 		if (!user || user.role === "admin") return;
 		fetch("/api/umum-preferences")
@@ -136,6 +139,9 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 			.catch(() => {});
 	}, []);
 
+	// user?.id/user?.role sengaja dipakai (bukan `user`) — efek hanya perlu
+	// re-run saat identitas/role berubah, bukan tiap kali objek user berubah referensi.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: see above
 	useEffect(() => {
 		if (!user) {
 			resetPermissions();

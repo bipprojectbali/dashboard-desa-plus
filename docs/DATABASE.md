@@ -1,7 +1,7 @@
 # Database
 
-**Engine:** PostgreSQL  
-**ORM:** Prisma v6 dengan adapter `@prisma/adapter-pg`  
+**Engine:** PostgreSQL
+**ORM:** Prisma v6 dengan adapter `@prisma/adapter-pg`
 **Schema:** `prisma/schema.prisma`
 
 ---
@@ -33,9 +33,16 @@ id, userId, token, expiresAt, ipAddress, userAgent, createdAt, updatedAt
 ```
 
 #### `Account`
-OAuth provider accounts (GitHub, dll).
+OAuth provider accounts (GitHub, Google).
 ```
-id, userId, accountId, providerId, accessToken, refreshToken, password, ...
+id, userId, accountId, providerId, accessToken, refreshToken, password, idToken,
+accessTokenExpiresAt, refreshTokenExpiresAt, scope, createdAt, updatedAt
+```
+
+#### `Verification`
+Token verifikasi Better Auth (email verification, reset password, dll).
+```
+id, identifier, value, expiresAt, createdAt, updatedAt
 ```
 
 #### `ApiKey`
@@ -43,6 +50,69 @@ API keys untuk integrasi eksternal.
 ```
 id, name, key, userId, isActive, expiresAt, createdAt, updatedAt
 ```
+
+#### `Invitation`
+Undangan user baru (admin mengundang via email + role, token dipakai saat signup).
+```
+id, token, email, role, invitedById, expiresAt, usedAt, createdAt
+```
+
+---
+
+### Preferences & Settings
+
+Empat model 1-ke-1 dengan `User` (`@unique userId`) — backing store untuk halaman `/pengaturan/*`.
+
+#### `NotificationPreference`
+Preferensi notifikasi (`/pengaturan/notifikasi`).
+```
+id, userId, laporanHarian, alertSistem, updateKeamanan, newsletterBulan,
+alertKritis, aktivitasTim, komentarMention, bunyiNotifikasi,
+tresholdMemori, tresholdCpu, tresholdDisk, createdAt, updatedAt
+```
+
+#### `UmumPreference`
+Preferensi umum (`/pengaturan/umum`) — bahasa, zona waktu, format tanggal, refresh dashboard.
+```
+id, userId, bahasa, zonaWaktu, formatTanggal, refreshOtomatis,
+intervalRefresh, tampilkanGrid, animasiTransisi, createdAt, updatedAt
+```
+
+#### `KeamananPreference`
+Preferensi keamanan akun (`/pengaturan/keamanan`) — 2FA, biometrik, IP whitelist toggle, log aktivitas.
+```
+id, userId, twoFactorAuth, biometrikLogin, ipWhitelist, logAktivitas,
+createdAt, updatedAt
+```
+
+#### `AksesPreference`
+Preferensi akses & tim (`/pengaturan/akses-dan-tim`).
+```
+id, userId, izinExportData, requireApprovalPerubahan, createdAt, updatedAt
+```
+
+---
+
+### Keamanan & Audit
+
+#### `IpWhitelistEntry`
+Daftar IP yang diizinkan per user (dipakai jika `KeamananPreference.ipWhitelist = true`).
+```
+id, userId, ip, label, createdAt
+```
+
+#### `ActivityLog`
+Log aktivitas user (login, aksi CRUD, dll) — dicatat via Better Auth `databaseHooks` dan middleware.
+```
+id, userId, action, detail, ipAddress, userAgent, createdAt
+```
+
+#### `RolePermission`
+Matrix permission per role x feature (dipakai halaman admin Role & Permission).
+```
+id, role, feature, allowed, createdAt, updatedAt
+```
+`@@unique([role, feature])`
 
 ---
 
@@ -122,6 +192,15 @@ id, letterNumber, letterType, applicantName, applicantNik, applicantAddress,
 purpose, status, processedBy, completedAt, createdAt, updatedAt
 ```
 
+> **Catatan Fase 2:** Data pengaduan & surat "live" (dari sistem eksternal) diambil via `platformExternalClient` (`PLATFORM_API_URL`) — lihat `src/api/complaint-platform.ts` untuk helper transform, bukan tabel database terpisah.
+
+#### `InnovationIdea`
+Ide inovasi yang disubmit warga. Status: `DRAFT | SUBMITTED | APPROVED | REJECTED`.
+```
+id, title, description, category, submitterName, submitterContact,
+status, reviewedBy, reviewedAt, notes, createdAt, updatedAt
+```
+
 ---
 
 ### Demografi
@@ -193,6 +272,18 @@ id, banjarId, name, owner, productType, description, createdAt, updatedAt
 
 ---
 
+### Video Wall
+
+#### `WallLayout`
+Konfigurasi layout kiosk `/wall` — **singleton** (id fixed `"singleton"`, bukan cuid, karena satu baris untuk seluruh instance). Di-set admin lewat drag-resize UI (`@dnd-kit`), dibaca publik oleh TV kiosk. Tidak ada relasi `User` karena bukan per-user.
+```
+id ("singleton"), order (String[] — urutan widget id),
+sizes (Json? — override ukuran per widget: { [widgetId]: { w, h } }, nullable & partial),
+updatedAt, updatedBy (userId editor terakhir, nullable)
+```
+
+---
+
 ### Lain-lain
 
 #### `SdgsScore`
@@ -207,18 +298,25 @@ Hasil survei kepuasan layanan.
 id, category, value, color, createdAt, updatedAt
 ```
 
-#### `InnovationIdea`
-Ide inovasi yang disubmit warga. Status: `DRAFT | SUBMITTED | APPROVED | REJECTED`.
-```
-id, title, description, category, submitterName, submitterContact,
-status, reviewedBy, reviewedAt, notes, createdAt, updatedAt
-```
-
 #### `SecurityReport`
 Laporan keamanan/insiden.
 ```
 id, reportNumber, title, description, location, reportedBy, assignedTo,
 status, createdAt, updatedAt
+```
+
+#### `SyncLog`
+Riwayat sinkronisasi dari NOC system (halaman `/pengaturan/sinkronisasi`).
+```
+id, type, status, triggeredBy (default "scheduled"), durationMs,
+recordsAffected, errorMessage, startedAt
+```
+
+#### `Faq`
+Manajemen FAQ dengan drag-and-drop reorder (admin panel).
+```
+id, question, answer, category (default "Umum"), order, isPublished,
+createdAt, updatedAt
 ```
 
 ---

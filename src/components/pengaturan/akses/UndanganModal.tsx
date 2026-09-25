@@ -81,6 +81,9 @@ export function UndanganModal({ opened, onClose }: Props) {
 		}
 	}, []);
 
+	// `form` (Mantine useForm) berubah identitas tiap render — memasukkannya ke
+	// deps akan bikin efek ini jalan tiap render, bukan hanya saat modal dibuka.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: see above
 	useEffect(() => {
 		if (opened) {
 			setResult(null);

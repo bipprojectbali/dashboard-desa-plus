@@ -48,23 +48,19 @@ dashboard-desa-plus-fix/
 ├── 📄 bunfig.toml                     # Bun configuration
 ├── 📄 Dockerfile                      # Docker multi-stage build config
 ├── 📄 package.json                    # Project dependencies & scripts
-├── 📄 playwright.config.ts            # E2E testing configuration
 ├── 📄 postcss.config.cjs              # PostCSS configuration
 ├── 📄 prisma.config.ts                # Prisma configuration
 ├── 📄 tailwind.config.js              # Tailwind CSS configuration
 ├── 📄 tsconfig.json                   # TypeScript configuration
 │
-├── 📁 __tests__/                      # Test suite
-│   ├── 📁 api/                        # API & integration tests
-│   │   ├── api.test.ts                # API endpoint tests
-│   │   ├── database.test.ts           # Database tests
-│   │   ├── features.test.ts           # Feature tests
-│   │   └── noc.test.ts                # NOC sync tests
-│   └── 📁 e2e/                        # End-to-end tests (Playwright)
-│       ├── apikey.spec.ts             # API key E2E tests
-│       ├── login.spec.ts              # Login flow tests
-│       ├── noc-sync.spec.ts           # NOC sync E2E tests
-│       └── signup.spec.ts             # Signup flow tests
+├── 📁 tests/                          # Test suite (Bun native test runner)
+│   ├── 📁 api/                        # API & integration tests — 1 file per modul src/api/*.ts
+│   │   ├── api.test.ts, database.test.ts, features.test.ts, noc.test.ts, ...
+│   │   └── wall-*.test.ts             # NOC Video Wall builder/route/transform tests
+│   ├── 📁 config/                     # Config util tests (mis. timezone.test.ts)
+│   ├── 📁 hooks/                      # React hook tests (mis. useApiQuery.test.ts)
+│   ├── 📁 theme/                      # Tema/warna chart tests
+│   └── 📁 setup/                      # dom.ts — preload happy-dom (bunfig.toml)
 │
 ├── 📁 generated/                      # Auto-generated files (jangan edit manual)
 │   ├── 📁 prisma/                     # Prisma Client (auto-generated)
@@ -399,35 +395,34 @@ File-file konfigurasi utama project.
 | `bunfig.toml` | Konfigurasi Bun runtime |
 | `Dockerfile` | Konfigurasi Docker multi-stage build |
 | `package.json` | Dependencies, scripts, dan metadata project |
-| `playwright.config.ts` | Konfigurasi E2E testing dengan Playwright |
 | `prisma.config.ts` | Konfigurasi Prisma ORM |
 | `tailwind.config.js` | Konfigurasi Tailwind CSS (warna custom, dll) |
 | `tsconfig.json` | Konfigurasi TypeScript (path aliases, strict mode, dll) |
 
 ---
 
-### **`__tests__/` - Test Suite**
-Semua test files untuk API dan E2E.
+### **`tests/` - Test Suite**
+Semua test files (Bun native test runner). Setiap modul `src/api/*.ts` punya file test 1:1 di `tests/api/`.
 
 ```
-__tests__/
-├── api/              # Unit & integration tests untuk API
-│   ├── api.test.ts           # Test semua endpoint API
-│   ├── database.test.ts      # Test database operations
-│   ├── features.test.ts      # Test fitur-fitur utama
-│   └── noc.test.ts           # Test NOC sync functionality
-└── e2e/              # End-to-end tests dengan Playwright
-    ├── apikey.spec.ts        # Test flow API key management
-    ├── login.spec.ts         # Test login flow
-    ├── noc-sync.spec.ts      # Test NOC sync E2E
-    └── signup.spec.ts        # Test signup flow
+tests/
+├── api/              # Unit & integration test API — 1 file per modul src/api/*.ts,
+│                     # plus wall-*.test.ts untuk NOC Video Wall builder/route/transform
+├── config/           # Test util config (mis. timezone.test.ts)
+├── hooks/            # Test React hook (mis. useApiQuery.test.ts)
+├── theme/            # Test tema/warna chart
+└── setup/            # dom.ts — preload happy-dom, di-load otomatis via bunfig.toml
 ```
+
+Pola auth-guard: route yang dilindungi `apiMiddleware` selalu 401 tanpa sesi — dites TANPA perlu koneksi DB nyata (request direject di `onBeforeHandle`, sebelum handler sempat query Prisma).
 
 **Run tests:**
 ```bash
-bun run test          # API tests
-bun run test:e2e      # E2E tests
+bun run test          # Semua test (api/config/hooks/theme)
+bun run test:api      # API tests saja
+bun run test:watch    # Mode watch
 bun run test:ui       # Tests dengan UI dashboard
+bun run verify         # Gate lengkap: lint (error-only) + semua test — jalankan setelah selesai fitur baru
 ```
 
 ---
@@ -886,7 +881,6 @@ MIND/
 | `tailwind.config.js` | Tailwind CSS config | Add custom colors/utilities |
 | `biome.json` | Linting & formatting | Change code style rules |
 | `prisma.config.ts` | Prisma config | Change DB connection |
-| `playwright.config.ts` | E2E test config | Change test settings |
 
 ### **Environment Variables**
 
@@ -1008,7 +1002,6 @@ bun run dev          # Start dev server (port 3000)
 ### **3. Test**
 ```bash
 bun run test          # API tests
-bun run test:e2e      # E2E tests
 bun run check         # Lint & format
 ```
 

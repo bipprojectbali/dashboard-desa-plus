@@ -29,18 +29,20 @@ This project is **darmasaba-dashboard-noc**, a high-performance, full-stack Reac
 *   **Start Production Server**: `bun run start` (Serves pre-built assets from `dist/` via Elysia)
 
 ### Quality Control (Testing & Linting)
-*   **Backend Tests**: `bun run test` (Runs Bun's native test runner for `__tests__/api`)
-*   **E2E Tests**: `bun run test:e2e` (Runs Playwright browser tests for `__tests__/e2e`)
+*   **All Tests**: `bun run test` (Runs Bun's native test runner for `tests/` — api/config/hooks/theme)
+*   **API Tests Only**: `bun run test:api` (`tests/api/`)
+*   **Watch Mode**: `bun run test:watch`
 *   **Lint**: `bun run lint` (Biome check)
 *   **Format**: `bun run format` (Biome write)
 *   **Type Check**: `bun x tsc --noEmit`
+*   **Full Gate**: `bun run verify` (lint + all tests — run this after finishing a feature)
 
 ## Testing Architecture
 
-The project uses two main categories for testing, consolidated in the `__tests__/` directory:
+The project consolidates testing in the `tests/` directory (Bun's native test runner, `bunfig.toml` preloads `tests/setup/dom.ts` for a happy-dom shim so libs touching `window` at import time don't crash):
 
-1.  **API Testing (`__tests__/api/`)**: Uses **Bun's native test runner**. Covers unit tests for utilities, database integration, and Elysia API endpoint verification using `api.handle()`.
-2.  **E2E Testing (`__tests__/e2e/`)**: Uses **Playwright**. Covers end-to-end browser workflows like Login, Signup, and Dashboard interactions. Configured to run against the production build for maximum speed and accuracy.
+1.  **API Testing (`tests/api/`)**: Covers unit tests for utilities, database integration, and Elysia API endpoint verification using `api.handle()`. Routes behind `apiMiddleware` are deterministically testable without a live DB — an unauthenticated request is rejected in `onBeforeHandle` before the handler touches Prisma.
+2.  **Other (`tests/config/`, `tests/hooks/`, `tests/theme/`)**: Unit tests for config, hooks, and theme utilities.
 
 ## Development Conventions
 
@@ -84,7 +86,7 @@ The project uses two main categories for testing, consolidated in the `__tests__
 *   `src/.well-known/`: TWA verification assets.
 *   `scripts/`: Automation scripts (e.g., `generate-schema.ts`).
 *   `generated/`: Auto-generated artifacts (OpenAPI schema and types).
-*   `__tests__/`: Centralized testing directory (`api/` and `e2e/`).
+*   `tests/`: Centralized testing directory (`api/`, `config/`, `hooks/`, `theme/`, `setup/`).
 *   `prisma/`: Database schema and migrations.
 *   `dist/`: Production build output.
 

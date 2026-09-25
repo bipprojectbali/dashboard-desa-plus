@@ -15,6 +15,9 @@ logs
 _.log
 report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
+# QC agent output (ephemeral per-run screenshots/reports, not committed by default)
+qc-reports/
+
 # dotenv environment variable files
 # Only .env.example and .env.staging templates are allowed
 .env
@@ -45,10 +48,5 @@ Dashboard-MD/
 !TROUBLESHOOTING.md
 !PROJECT-STRUCTURE.md
 
-# Playwright artifacts
-test-results/
-playwright-report/
-blob-report/
-playwright/.cache/
-
 /generated/prisma
+qc-reports

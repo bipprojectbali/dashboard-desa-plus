@@ -257,6 +257,8 @@ export function ChartAPBDes() {
 				{loading ? (
 					<Stack gap="xl">
 						{Array.from({ length: 3 }).map((_, i) => (
+							// Skeleton placeholder statis (bukan data asli) — index sebagai key aman di sini.
+							// biome-ignore lint/suspicious/noArrayIndexKey: static skeleton count, no reorder
 							<Skeleton key={i} height={80} radius="sm" />
 						))}
 					</Stack>

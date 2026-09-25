@@ -15,7 +15,7 @@
 - **🎨 Mantine UI**: A comprehensive library of 100+ components and hooks, pre-configured with a modern dark theme.
 - **📱 PWA & TWA Support**: Ready for mobile with Service Workers, Web Manifest, and Android Trusted Web Activity verification.
 - **🔍 React Dev Inspector**: `Alt/Option + Click` any element in your browser to jump directly to its source code in VS Code.
-- **🧪 Modern Testing**: Fast unit/integration tests with Bun's native runner and E2E testing with Playwright.
+- **🧪 Modern Testing**: Fast unit/integration tests with Bun's native runner.
 
 ## 🛠 Tech Stack
 
@@ -28,12 +28,12 @@
 | **UI Framework** | [Mantine UI](https://mantine.dev/) (Component library) |
 | **Auth** | [Better Auth](https://www.better-auth.com/) (Complete auth solution) |
 | **Database** | [Prisma ORM](https://www.prisma.io/) (Database toolkit) |
-| **Testing** | [Bun Test](https://bun.sh/docs/cli/test) & [Playwright](https://playwright.dev/) |
+| **Testing** | [Bun Test](https://bun.sh/docs/cli/test) |
 
 ## 📁 Project Structure
 
 ```text
-├── __tests__/           # Consolidated test suite (API & E2E)
+├── tests/               # Consolidated test suite (api/config/hooks/theme)
 ├── generated/           # Auto-generated API types and Prisma client
 ├── prisma/              # Database schema and migrations
 ├── scripts/             # Internal automation scripts
@@ -77,9 +77,11 @@ bun run dev
 
 ## 🧪 Testing Commands
 
-- **Unit/Integration (API)**: `bun run test`
-- **End-to-End (Browser)**: `bun run test:e2e`
+- **All tests** (api/config/hooks/theme): `bun run test`
+- **API only**: `bun run test:api`
+- **Watch mode**: `bun run test:watch`
 - **Visual Dashboard**: `bun run test:ui`
+- **Lint + test gate**: `bun run verify`
 
 ## 📝 Development Guidelines
 

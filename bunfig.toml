@@ -1,2 +1,7 @@
 [serve.static]
 env = "BUN_PUBLIC_*"
+
+[test]
+# Shim DOM (happy-dom) sebelum modul lain di-import — beberapa lib (leaflet)
+# menyentuh `window` di top-level import dan crash tanpa ini.
+preload = ["./tests/setup/dom.ts"]

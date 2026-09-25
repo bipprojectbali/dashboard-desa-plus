@@ -65,6 +65,8 @@ export function EventCard({ agendas: propAgendas }: EventCardProps) {
 			{loading ? (
 				<Stack gap="sm">
 					{Array.from({ length: 3 }).map((_, i) => (
+						// Skeleton placeholder statis (bukan data asli) — index sebagai key aman di sini.
+						// biome-ignore lint/suspicious/noArrayIndexKey: static skeleton count, no reorder
 						<Skeleton key={i} height={32} radius="sm" />
 					))}
 				</Stack>

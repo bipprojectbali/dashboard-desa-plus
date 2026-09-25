@@ -62,6 +62,8 @@ export const EventCalendar = ({ data }: EventCalendarProps) => {
 			<Stack gap="sm">
 				{!paginatedData ? (
 					Array.from({ length: PAGE_SIZE }).map((_, i) => (
+						// Skeleton placeholder statis (bukan data asli) — index sebagai key aman di sini.
+						// biome-ignore lint/suspicious/noArrayIndexKey: static skeleton count, no reorder
 						<Skeleton key={i} height={72} radius="md" />
 					))
 				) : paginatedData.length === 0 ? (
