@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { Coins } from "lucide-react";
 import type { KeuanganAid } from "@/api/transforms/keuangan-apbdes";
+import { formatM } from "@/components/keuangan";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 
@@ -70,7 +71,7 @@ export function DanaBantuanCard({ aid, loading }: DanaBantuanCardProps) {
 											{fund.source}
 										</Text>
 										<Text size="xs" c="dimmed">
-											Rp {(fund.amount / 1_000_000).toLocaleString()}jt
+											Rp {formatM(fund.amount)}
 										</Text>
 									</Box>
 									<Badge

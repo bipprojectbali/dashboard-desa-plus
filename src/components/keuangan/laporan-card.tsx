@@ -12,6 +12,7 @@ import { Receipt } from "lucide-react";
 import type { KeuanganReport } from "@/api/transforms/keuangan-apbdes";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
+import { formatM } from "./format";
 
 interface LaporanCardProps {
 	report: KeuanganReport | null;
@@ -25,19 +26,9 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 	const empty =
 		!report || (report.income.length === 0 && report.expenses.length === 0);
 
-	// Nilai untuk baris laporan (anggaran per kategori) dalam juta
-	const incomeRows = (report?.income ?? []).map((i) => ({
-		...i,
-		amountM: i.amount / 1_000_000,
-	}));
-	const expenseRows = (report?.expenses ?? []).map((e) => ({
-		...e,
-		amountM: e.amount / 1_000_000,
-	}));
-	// Total = realisasi real dalam juta
-	const totalIncomeM = (report?.totalIncome ?? 0) / 1_000_000;
-	const totalExpenseM = (report?.totalExpense ?? 0) / 1_000_000;
-	const saldoM = totalIncomeM - totalExpenseM;
+	const incomeRows = report?.income ?? [];
+	const expenseRows = report?.expenses ?? [];
+	const saldoRaw = (report?.totalIncome ?? 0) - (report?.totalExpense ?? 0);
 
 	return (
 		<Card
@@ -104,7 +95,7 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 												fw={600}
 												style={{ color: "var(--app-success)" }}
 											>
-												Rp {item.amountM.toLocaleString()}jt
+												Rp {formatM(item.amount)}
 											</Text>
 										</Group>
 									))}
@@ -120,7 +111,7 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 											{t.keuanganAnggaran.total}
 										</Text>
 										<Text fw={700} style={{ color: "var(--app-success)" }}>
-											Rp {totalIncomeM.toLocaleString()}jt
+											Rp {formatM(report?.totalIncome ?? 0)}
 										</Text>
 									</Group>
 								</Stack>
@@ -151,7 +142,7 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 												fw={600}
 												style={{ color: "var(--app-danger)" }}
 											>
-												Rp {item.amountM.toLocaleString()}jt
+												Rp {formatM(item.amount)}
 											</Text>
 										</Group>
 									))}
@@ -167,7 +158,7 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 											{t.keuanganAnggaran.total}
 										</Text>
 										<Text fw={700} style={{ color: "var(--app-danger)" }}>
-											Rp {totalExpenseM.toLocaleString()}jt
+											Rp {formatM(report?.totalExpense ?? 0)}
 										</Text>
 									</Group>
 								</Stack>
@@ -190,10 +181,11 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 							fw={700}
 							size="lg"
 							style={{
-								color: saldoM >= 0 ? "var(--app-success)" : "var(--app-danger)",
+								color:
+									saldoRaw >= 0 ? "var(--app-success)" : "var(--app-danger)",
 							}}
 						>
-							Rp {saldoM.toLocaleString()}jt
+							{saldoRaw < 0 ? "-" : ""}Rp {formatM(Math.abs(saldoRaw))}
 						</Text>
 					</Group>
 				</>

@@ -25,8 +25,10 @@ import {
 	IconTrendingDown,
 	IconTrendingUp,
 } from "@tabler/icons-react";
+import { useSnapshot } from "valtio";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
+import { i18nStore } from "@/store/i18n";
 import type { SalesData } from "./sales-table";
 
 interface SalesDetailModalProps {
@@ -42,20 +44,25 @@ export const SalesDetailModal = ({
 }: SalesDetailModalProps) => {
 	const t = useTranslate();
 	const dark = useIsDark();
+	const { lang } = useSnapshot(i18nStore);
+	const isId = lang === "id";
 
 	if (!product) return null;
 
 	const formatCurrency = (value: number) => {
-		if (value >= 1_000_000_000) {
-			return `Rp ${(value / 1_000_000_000).toFixed(2)}B`;
-		}
-		if (value >= 1_000_000) {
-			return `Rp ${(value / 1_000_000).toFixed(2)}M`;
-		}
-		if (value >= 1_000) {
-			return `Rp ${(value / 1_000).toFixed(0)}K`;
-		}
-		return `Rp ${value.toLocaleString()}`;
+		if (value >= 1_000_000_000)
+			return isId
+				? `Rp ${(value / 1_000_000_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })}M`
+				: `Rp ${(value / 1_000_000_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })}B`;
+		if (value >= 1_000_000)
+			return isId
+				? `Rp ${(value / 1_000_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })}Jt`
+				: `Rp ${(value / 1_000_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })}M`;
+		if (value >= 1_000)
+			return isId
+				? `Rp ${(value / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}rb`
+				: `Rp ${(value / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}K`;
+		return `Rp ${value.toLocaleString("id-ID")}`;
 	};
 
 	const isUp = product.trend > 0;

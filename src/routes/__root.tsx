@@ -6,6 +6,7 @@ import "@mantine/dates/styles.css";
 import { Button, Center, Stack, Text, Title } from "@mantine/core";
 import {
 	createRootRoute,
+	Link,
 	Outlet,
 	useRouterState,
 } from "@tanstack/react-router";
@@ -99,8 +100,28 @@ function getPageTitle(pathname: string): string {
 	return "";
 }
 
+function NotFoundPage() {
+	return (
+		<Center h="60vh">
+			<Stack align="center" gap="md" maw={480} px="md">
+				<Title order={1} c="dimmed" style={{ fontSize: 80, lineHeight: 1 }}>
+					404
+				</Title>
+				<Title order={3}>Halaman Tidak Ditemukan</Title>
+				<Text c="dimmed" ta="center" size="sm">
+					Halaman yang kamu cari tidak ada atau telah dipindahkan.
+				</Text>
+				<Button component={Link} to="/" variant="light">
+					Kembali ke Beranda
+				</Button>
+			</Stack>
+		</Center>
+	);
+}
+
 export const Route = createRootRoute({
 	component: RootComponent,
+	notFoundComponent: NotFoundPage,
 	beforeLoad: async ({ location }) => {
 		// Apply protected route middleware for all routes
 		// The middleware will determine which routes are public vs protected

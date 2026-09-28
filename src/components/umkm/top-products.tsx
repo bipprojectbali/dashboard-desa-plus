@@ -17,20 +17,17 @@ interface TopProductsProps {
 }
 
 const formatCurrency = (value: number) => {
-	if (value >= 1000000) {
-		return `${(value / 1000000).toFixed(1)}M`;
-	}
-	if (value >= 1000) {
-		return `${(value / 1000).toFixed(0)}K`;
-	}
-	return value.toString();
+	if (value >= 1_000_000)
+		return `${(value / 1_000_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })}M`;
+	if (value >= 1_000)
+		return `${(value / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}K`;
+	return value.toLocaleString("id-ID");
 };
 
 const formatNumber = (value: number) => {
-	if (value >= 1000) {
-		return `${(value / 1000).toFixed(1)}K`;
-	}
-	return value.toString();
+	if (value >= 1_000)
+		return `${(value / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })}K`;
+	return value.toLocaleString("id-ID");
 };
 
 export const TopProducts = ({ products }: TopProductsProps) => {

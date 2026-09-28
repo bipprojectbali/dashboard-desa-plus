@@ -63,21 +63,22 @@ export const ProdukUnggulan = ({ data }: ProdukUnggulanProps) => {
 	const isId = lang === "id";
 
 	const formatCurrency = (value: number) => {
+		const loc = { maximumFractionDigits: 1 } as const;
 		if (value >= 1_000_000_000_000)
-			return `Rp ${(value / 1_000_000_000_000).toFixed(1)}T`;
+			return `Rp ${(value / 1_000_000_000_000).toLocaleString("id-ID", loc)}T`;
 		if (value >= 1_000_000_000)
 			return isId
-				? `Rp ${(value / 1_000_000_000).toFixed(1)}M`
-				: `Rp ${(value / 1_000_000_000).toFixed(1)}B`;
+				? `Rp ${(value / 1_000_000_000).toLocaleString("id-ID", loc)}M`
+				: `Rp ${(value / 1_000_000_000).toLocaleString("id-ID", loc)}B`;
 		if (value >= 1_000_000)
 			return isId
-				? `Rp ${(value / 1_000_000).toFixed(1)}Jt`
-				: `Rp ${(value / 1_000_000).toFixed(1)}M`;
+				? `Rp ${(value / 1_000_000).toLocaleString("id-ID", loc)}Jt`
+				: `Rp ${(value / 1_000_000).toLocaleString("id-ID", loc)}M`;
 		if (value >= 1_000)
 			return isId
-				? `Rp ${(value / 1_000).toFixed(1)}rb`
-				: `Rp ${(value / 1_000).toFixed(1)}K`;
-		return `Rp ${value.toLocaleString()}`;
+				? `Rp ${(value / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}rb`
+				: `Rp ${(value / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}K`;
+		return `Rp ${value.toLocaleString("id-ID")}`;
 	};
 
 	return (

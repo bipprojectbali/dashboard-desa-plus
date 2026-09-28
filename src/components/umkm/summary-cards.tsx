@@ -32,25 +32,22 @@ const KpiCard = ({
 	const formatValue = (val: string | number) => {
 		if (typeof val !== "number") return val;
 		const isId = lang === "id";
-		if (val >= 1_000_000_000_000) {
-			return `${(val / 1_000_000_000_000).toFixed(1)}T`;
-		}
-		if (val >= 1_000_000_000) {
+		const loc = { maximumFractionDigits: 1 } as const;
+		if (val >= 1_000_000_000_000)
+			return `${(val / 1_000_000_000_000).toLocaleString("id-ID", loc)}T`;
+		if (val >= 1_000_000_000)
 			return isId
-				? `${(val / 1_000_000_000).toFixed(1)}M`
-				: `${(val / 1_000_000_000).toFixed(1)}B`;
-		}
-		if (val >= 1_000_000) {
+				? `${(val / 1_000_000_000).toLocaleString("id-ID", loc)}M`
+				: `${(val / 1_000_000_000).toLocaleString("id-ID", loc)}B`;
+		if (val >= 1_000_000)
 			return isId
-				? `${(val / 1_000_000).toFixed(1)}Jt`
-				: `${(val / 1_000_000).toFixed(1)}M`;
-		}
-		if (val >= 1_000) {
+				? `${(val / 1_000_000).toLocaleString("id-ID", loc)}Jt`
+				: `${(val / 1_000_000).toLocaleString("id-ID", loc)}M`;
+		if (val >= 1_000)
 			return isId
-				? `${(val / 1_000).toFixed(1)}rb`
-				: `${(val / 1_000).toFixed(1)}K`;
-		}
-		return val.toLocaleString();
+				? `${(val / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}rb`
+				: `${(val / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}K`;
+		return val.toLocaleString("id-ID");
 	};
 
 	return (

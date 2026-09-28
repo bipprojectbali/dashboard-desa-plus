@@ -18,6 +18,7 @@ import {
 	YAxis,
 } from "recharts";
 import type { KeuanganMonthly } from "@/api/transforms/keuangan-apbdes";
+import { formatM } from "@/components/keuangan";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
 
@@ -115,7 +116,10 @@ export function IncomeExpenseChart({
 							}}
 							itemStyle={{ color: axisTick }}
 							labelStyle={{ color: axisTick }}
-							formatter={(value: number | undefined) => [`Rp ${value}jt`, ""]}
+							formatter={(value: number | undefined) => [
+								`Rp ${formatM((value ?? 0) * 1_000_000)}`,
+								"",
+							]}
 						/>
 						<Line
 							type="monotone"

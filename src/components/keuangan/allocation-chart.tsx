@@ -21,6 +21,7 @@ import {
 import type { KeuanganAllocation } from "@/api/transforms/keuangan-apbdes";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
+import { formatM } from "./format";
 
 interface AllocationChartProps {
 	allocation: KeuanganAllocation[];
@@ -120,7 +121,7 @@ export function AllocationChart({
 								allocation.find((a) => a.sector === label)?.sector ?? label
 							}
 							formatter={(value: number | undefined) => [
-								`Rp ${value}jt`,
+								`Rp ${formatM((value ?? 0) * 1_000_000)}`,
 								t.keuanganAnggaran.jumlah,
 							]}
 						/>
@@ -134,7 +135,7 @@ export function AllocationChart({
 								dataKey="amount"
 								position="right"
 								style={{ fill: axisTick, fontSize: 11 }}
-								formatter={(v) => `Rp ${v}jt`}
+								formatter={(v) => `Rp ${formatM((v as number) * 1_000_000)}`}
 							/>
 						</Bar>
 					</BarChart>
