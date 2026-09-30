@@ -1,0 +1,5 @@
+# Config khusus `bun run test:db` (lihat scripts/test-db.ts).
+# Sengaja TANPA preload happy-dom dari bunfig.toml root: GlobalRegistrator
+# mengganti Headers/Response global dengan versi browser yang membuang
+# `set-cookie`, sehingga sesi Better Auth nyata tidak bisa dibuat di test.
+[test]
