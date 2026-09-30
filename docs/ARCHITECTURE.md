@@ -160,6 +160,7 @@ Better Auth (`src/utils/auth.ts`) dengan Prisma adapter (`postgresql`):
 - **Auto-admin**: `databaseHooks.user.create.before` — email yang cocok `ADMIN_EMAIL` otomatis jadi `role: "admin"` + `emailVerified: true`. User lain default `emailVerified: false` (butuh verifikasi admin sebelum bisa akses).
 - **Activity log**: `databaseHooks.session.create.after` — setiap login dicatat ke `ActivityLog` (IP, user-agent) kecuali user menonaktifkan `logAktivitas` di `KeamananPreference`.
 - **Middleware**: `src/middleware/authMiddleware.tsx` (guard server & client), `src/middleware/apiMiddleware.tsx` (dipasang di `src/api/index.tsx` sebelum semua plugin fitur).
+- **Verifikasi admin di API**: `apiMiddleware` menolak user dengan `emailVerified !== true` (`false` atau `null`) dengan **403** `{ message: "Akun menunggu verifikasi admin" }` — berlaku untuk sesi dan API key; nilai `emailVerified` dibaca dari DB (bukan cookie cache sesi). Pengecualian: `/api/profile/update`. Route di luar middleware (`/api/auth/*`, `/api/session`, `/api/health`, `/api/version`) tidak terpengaruh. Logika keputusan: `src/middleware/verified-user.ts`.
 
 ---
 

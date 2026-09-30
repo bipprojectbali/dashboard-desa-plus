@@ -2,6 +2,11 @@ import type Elysia from "elysia";
 import { auth } from "@/utils/auth";
 import { prisma } from "@/utils/db";
 import logger from "@/utils/logger";
+import {
+	isUnverifiedAllowed,
+	isVerified,
+	UNVERIFIED_MESSAGE,
+} from "./verified-user";
 
 function getClientIp(request: Request): string {
 	const forwarded = request.headers.get("x-forwarded-for");
@@ -25,9 +30,12 @@ export function apiMiddleware(app: Elysia) {
 			});
 
 			if (userSession?.user) {
+				// emailVerified dibaca dari DB, bukan dari sesi: cookieCache Better
+				// Auth menyimpan data user hingga 30 hari, jadi pencabutan
+				// verifikasi oleh admin baru terlihat lewat DB.
 				const userExists = await prisma.user.findUnique({
 					where: { id: userSession.user.id },
-					select: { id: true },
+					select: { id: true, emailVerified: true },
 				});
 				if (!userExists) return { user: null };
 
@@ -38,7 +46,7 @@ export function apiMiddleware(app: Elysia) {
 						email: userSession.user.email,
 						name: userSession.user.name,
 						image: userSession.user.image,
-						emailVerified: userSession.user.emailVerified,
+						emailVerified: userExists.emailVerified,
 						role: userSession.user.role || "user",
 					},
 				};
@@ -129,6 +137,17 @@ export function apiMiddleware(app: Elysia) {
 				logger.warn(`[AUTH] Unauthorized: ${request.method} ${request.url}`);
 				set.status = 401;
 				return { message: "Unauthorized" };
+			}
+
+			// Berlaku untuk sesi maupun API key: user yang belum diverifikasi
+			// admin tidak boleh membaca data lewat API.
+			if (!isVerified(user) && !isUnverifiedAllowed(url.pathname)) {
+				logger.warn(
+					{ userId: user.id, method: request.method, path: url.pathname },
+					"[AUTH] Forbidden: user not verified",
+				);
+				set.status = 403;
+				return { message: UNVERIFIED_MESSAGE };
 			}
 
 			// IP whitelist enforcement
