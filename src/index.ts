@@ -405,5 +405,9 @@ console.log(
 // Start background sync scheduler
 const { startSyncScheduler } = await import("./jobs/sync");
 startSyncScheduler();
+const { startAssistantRetentionScheduler } = await import(
+	"./jobs/assistant-retention"
+);
+startAssistantRetentionScheduler();
 
 export type ApiApp = typeof app;
