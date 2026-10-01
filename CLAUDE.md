@@ -108,7 +108,7 @@ Bila menyentuh `tests/db/` atau alur auth/DB, jalankan juga `bun run test:db` (h
 
 > Detail lengkap: [`docs/DATABASE.md`](docs/DATABASE.md)
 
-PostgreSQL via Prisma (39 model). Ringkasan per domain:
+PostgreSQL via Prisma (43 model). Ringkasan per domain:
 - **Auth & User**: `User`, `Session`, `Account`, `Verification`, `ApiKey`, `Invitation`
 - **Preferences**: `NotificationPreference`, `UmumPreference`, `KeamananPreference`, `AksesPreference`
 - **Keamanan & Audit**: `IpWhitelistEntry`, `ActivityLog`, `RolePermission`
@@ -117,6 +117,7 @@ PostgreSQL via Prisma (39 model). Ringkasan per domain:
 - **Demografi**: `Resident`, `Banjar`, `HealthRecord`, `EmploymentRecord`, `PopulationDynamic`, `Posyandu`
 - **Keuangan & ekonomi**: `Budget`, `BudgetTransaction`, `Umkm`
 - **Video Wall**: `WallLayout` (singleton config kiosk `/wall`)
+- **AI Assistant**: `AssistantSettings` (singleton), `AiProviderConfig` (kredensial per slot, API key terenkripsi via `AI_CREDENTIALS_KEY`), `AssistantConversation`, `AssistantMessage`
 - **Lain-lain**: `SdgsScore`, `SatisfactionRating`, `SecurityReport`, `SyncLog`, `Faq`
 
 ---
