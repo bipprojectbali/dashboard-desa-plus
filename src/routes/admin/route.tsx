@@ -25,6 +25,7 @@ import {
 	IconKey,
 	IconLogout,
 	IconMoon,
+	IconRobot,
 	IconSettings,
 	IconShieldCheck,
 	IconShieldLock,
@@ -95,6 +96,12 @@ function DashboardLayout() {
 			label: "System Health",
 			to: "/admin/system-health",
 			description: "Status konektivitas dan latency komponen sistem",
+		},
+		{
+			icon: IconRobot,
+			label: "AI Assistant",
+			to: "/admin/ai-assistant",
+			description: "Nama, batas pemakaian & kredensial AI",
 		},
 		{
 			icon: IconSettings,

@@ -83,6 +83,7 @@ const PAGE_TITLES: Record<string, string> = {
 	"/pengaturan/sinkronisasi": "Sinkronisasi — Pengaturan",
 	"/pengaturan/umum": "Pengaturan Umum",
 	"/admin/audit-log": "Audit Log — Admin",
+	"/admin/ai-assistant": "AI Assistant — Admin",
 	"/admin/apikey": "API Key — Admin",
 	"/admin/help": "Bantuan — Admin",
 	"/admin/preferences": "Preferensi — Admin",
