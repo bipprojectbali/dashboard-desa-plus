@@ -125,7 +125,7 @@
 ### P3 — Admin & status
 - [ ] `GET /api/assistant/status` — **sesi browser saja** (tolak API key), `emailVerified === true`, izin `use-ai-assistant`; hanya boolean + nama
 - [ ] `/api/admin/ai-assistant/*` — settings (validasi rentang), slot per fitur (API key: tidak dikirim = pertahankan, `""` = hapus; GET hanya `apiKeyHint`/`hasApiKey`), test koneksi (`https` saja kecuali localhost dev, tanpa redirect, simpan `lastTestAt`/`lastTestOk`), `ActivityLog` tanpa rahasia; slot yang kuncinya gagal didekripsi → status "API key perlu diisi ulang"
-- [ ] Halaman `/admin/ai-assistant` (file baru, bukan `admin/settings.tsx`) + item nav: Umum (saklar, nama, personaNote), Batas pemakaian (angka-angka + pilihan akun kiosk & kuota 100/hari), Kredensial (Chat/Penunjuk/Suara; temperature & max tokens opsional; badge DB/belum diisi/fallback Chat; ▷ Test), Ringkasan hari ini
+- [~] Halaman `/admin/ai-assistant` (file baru, bukan `admin/settings.tsx`) + item nav — **UI selesai** di branch `feature/ai-assistant-admin-ui` (sesi 0d, 2026-10-01; commit `a9bcaf4`, `c71d606`); tinggal disambungkan ke endpoint P3. Kontrak data: `src/types/ai-assistant-admin.ts`. Isi: Umum (saklar, nama, personaNote), Batas pemakaian (angka-angka + pilihan akun kiosk & kuota 100/hari), Kredensial (Chat/Penunjuk/Suara; temperature & max tokens opsional; badge DB/belum diisi/fallback Chat; ▷ Test), Ringkasan hari ini
 - [ ] Job retensi harian di `src/jobs/` (`retentionDays`, 0 = simpan selamanya)
 - [ ] Test: 401/403 (tanpa sesi, belum terverifikasi, API key, non-admin), validasi rentang batas, respons tidak pernah memuat API key
 - [ ] Docs: `docs/ARCHITECTURE.md` (modul `src/api/assistant/`, route baru), `.env.example` sudah di P1
