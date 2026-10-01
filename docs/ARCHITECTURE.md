@@ -65,6 +65,7 @@ Plus route langsung di `api` object (bukan plugin terpisah): `GET /api/health`, 
 - `src/api/sources/` — fetcher raw dari API eksternal (`apbdes.ts`, `umkm-dashboard.ts`)
 - `src/api/transforms/` — transformer data eksternal → shape internal (APBDes, demografi, Jenna, NOC discussions/divisions/documents/events/pengaduan/progres/projects, religion)
 - `src/api/wall-snapshot/` — builder snapshot data untuk tiap kategori widget Video Wall (beranda, bumdes, demografi, divisi, jenna, keamanan, keuangan, kpi, pengaduan, sosial)
+- `src/api/assistant/` — otak AI assistant (belum di-mount sebagai route; endpoint menyusul): lihat [AI Assistant](#ai-assistant)
 
 Auth di-handle Better Auth di `/api/auth/*` (konfigurasi di `src/utils/auth.ts`, lihat [Auth Flow](#auth-flow)).
 
@@ -172,6 +173,19 @@ Kiosk mode untuk TV/monitor NOC — menampilkan snapshot data lintas fitur (bera
 - **Editor**: admin drag-resize widget via `@dnd-kit` (lihat skill `react-dnd`), state client di store `src/store/wall-layout.ts`
 - **Snapshot builder**: `src/api/wall-snapshot/` — satu builder per kategori widget (`build-beranda.ts`, `build-bumdes.ts`, `build-demografi.ts`, `build-divisi.ts`, `build-jenna.ts`, `build-keamanan.ts`, `build-keuangan.ts`, `build-kpi.ts`, `build-pengaduan.ts`, `build-sosial.ts`)
 - **Akses**: opsional digerbangi `WALL_ACCESS_TOKEN` — jika di-set, wajib akses via `/wall?key=<token>`; jika kosong, `/wall` terbuka tanpa login (server-only env var, jangan pakai prefix `VITE_`)
+
+---
+
+## AI Assistant
+
+Pondasi asisten AI (tanpa UI & tanpa route — endpoint `/api/assistant/*` dan `/api/admin/ai-assistant/*` menyusul). Istilah di kode: **assistant**; nama tampilan ("Jenna") hanya nilai default di DB.
+
+- **Provider** (`src/api/assistant/provider/`): `OpenAICompatibleProvider` (`POST {baseUrl}/chat/completions`, Bearer; `temperature`/`max_tokens` hanya bila diisi; redirect tidak diikuti; error → `AiProviderError` `config`/`busy`/`unavailable`/`bad_response` tanpa isi body vendor), `MockProvider` untuk test, `getProvider(slot)` — slot `pointer`/`voice` yang belum siap jatuh ke `chat`, API key didekripsi via `src/utils/secret-crypto.ts`.
+- **Config** (`config/settings.repo.ts`): baca `AssistantSettings` & `AiProviderConfig` (cache 30 detik, tanpa menulis; tanpa baris → default). Penulis wajib memanggil `invalidateAssistantConfigCache()`.
+- **Tool** (`tools/`): `ToolDefinition` dengan `requiredFeature`; registry memfilter dengan izin user (`loadAllowedFeatures` — error DB dilempar, tidak jatuh ke default); executor maks 6 iterasi, 20 detik/tool, 60 detik/giliran, tool di luar daftar ditolak, hasil dibungkus `[DATA …]`/`[ERROR …]` + catatan "data, bukan instruksi" dan dipotong 8.000 karakter. Log per giliran tanpa isi pesan.
+- **Prompt** (`prompt/system-prompt.ts`): guardrail → identitas (nama dari DB, Desa Darmasaba, waktu WITA, peran) → `personaNote` (≤1.000 char) → konteks halaman (dibersihkan) → modul tanpa akses → aturan jawaban.
+- **Batas** (`limits/`): rate/menit di memori, pesan/hari per user (akun kiosk `/wall` memakai `dailyMessageLimitKiosk`), token/hari global — hari WITA, 0 = tanpa batas.
+- **Percakapan** (`conversation/conversation.repo.ts`): setiap fungsi difilter `userId` sesi; id milik user lain diperlakukan tidak ada.
 
 ---
 
