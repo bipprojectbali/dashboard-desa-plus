@@ -232,6 +232,14 @@ docker restart <container_name>
 - Cek container logs di Portainer atau `gh run view <run_id> --repo bipprojectbali/dashboard-desa-plus --log`
 - `GH_TOKEN` harus punya permission: `contents:write`, `actions:write`
 
+### Jawaban asisten AI tidak mengalir (muncul sekaligus di akhir)
+
+`POST /api/assistant/chat/stream` memakai Server-Sent Events. Aplikasi sudah mengirim `Content-Type: text/event-stream`, `Cache-Control: no-cache, no-transform`, dan `X-Accel-Buffering: no` (dipatuhi nginx), plus komentar `: ping` tiap 15 detik.
+
+- Reverse proxy di depan container (nginx, Traefik, Caddy, Cloudflare, dsb.) **tidak boleh mem-buffer atau mengompres** respons path ini. Untuk nginx yang mengabaikan header aplikasi, tambahkan `proxy_buffering off;` di location `/api/assistant/chat/stream`.
+- Idle/read timeout proxy minimal **60 detik**: satu giliran asisten dibatasi 60 detik, dan ping menjaga koneksi tetap aktif.
+- Bila buffering tidak bisa dimatikan, fitur tetap berfungsi: teks muncul sekaligus saat jawaban selesai. Panel hanya jatuh ke `POST /api/assistant/chat` bila endpoint stream tidak tersedia sebelum ada event.
+
 ---
 
 ## Checklist Deployment

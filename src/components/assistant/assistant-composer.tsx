@@ -6,7 +6,7 @@ import {
 	Text,
 	Textarea,
 } from "@mantine/core";
-import { IconSend } from "@tabler/icons-react";
+import { IconPlayerStopFilled, IconSend } from "@tabler/icons-react";
 import { useState } from "react";
 import { useSnapshot } from "valtio";
 import { assistantStore, setAssistantError } from "@/store/assistant";
@@ -22,6 +22,8 @@ interface ComposerProps {
 	name: string;
 	maxInputChars: number;
 	onSend: (text: string) => Promise<void>;
+	/** Hentikan jawaban yang sedang berjalan. */
+	onCancel: () => void;
 }
 
 /** Kotak input: Enter kirim, Shift+Enter baris baru, sisa karakter, error + kirim ulang, disclaimer. */
@@ -29,6 +31,7 @@ export function AssistantComposer({
 	name,
 	maxInputChars,
 	onSend,
+	onCancel,
 }: ComposerProps) {
 	const { pending, error, retryText } = useSnapshot(assistantStore);
 	const text = useAssistantText();
@@ -98,15 +101,27 @@ export function AssistantComposer({
 					style={{ flex: 1 }}
 					error={remaining !== null && remaining < 0}
 				/>
-				<ActionIcon
-					size="lg"
-					variant="filled"
-					aria-label={text.send}
-					disabled={!sendable}
-					onClick={submit}
-				>
-					<IconSend size={18} />
-				</ActionIcon>
+				{pending ? (
+					<ActionIcon
+						size="lg"
+						variant="light"
+						color="red"
+						aria-label={text.stop}
+						onClick={onCancel}
+					>
+						<IconPlayerStopFilled size={18} />
+					</ActionIcon>
+				) : (
+					<ActionIcon
+						size="lg"
+						variant="filled"
+						aria-label={text.send}
+						disabled={!sendable}
+						onClick={submit}
+					>
+						<IconSend size={18} />
+					</ActionIcon>
+				)}
 			</Group>
 			<Group justify="space-between" mt={4} gap="xs" wrap="nowrap">
 				<Text size="xs" c="dimmed" style={{ flex: 1 }}>

@@ -2,11 +2,11 @@ import { Box } from "@mantine/core";
 import { useSnapshot } from "valtio";
 import { assistantStore } from "@/store/assistant";
 import type { AssistantStatusDto } from "@/types/ai-assistant-chat";
-import { PANEL_BODY_STYLE } from "./assistant.logic";
 import { AssistantComposer } from "./assistant-composer";
 import { AssistantConversationList } from "./assistant-conversation-list";
 import { AssistantHeader } from "./assistant-header";
 import { AssistantMessageList } from "./assistant-message-list";
+import { PANEL_BODY_STYLE } from "./assistant-panel.styles";
 import { useAssistantChat } from "./use-assistant-chat";
 
 export interface AssistantPanelContentProps {
@@ -50,6 +50,7 @@ export function AssistantPanelContent({
 							name={status.assistantName}
 							maxInputChars={status.maxInputChars}
 							onSend={chat.send}
+							onCancel={chat.cancel}
 						/>
 					</>
 				)}

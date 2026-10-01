@@ -2,7 +2,10 @@ import { Drawer } from "@mantine/core";
 import { useSnapshot } from "valtio";
 import { useIsDark } from "@/hooks/useIsDark";
 import { assistantStore } from "@/store/assistant";
-import { ASSISTANT_PANEL_WIDTH, assistantPanelStyles } from "./assistant.logic";
+import {
+	ASSISTANT_PANEL_WIDTH,
+	assistantPanelStyles,
+} from "./assistant-panel.styles";
 import {
 	AssistantPanelContent,
 	type AssistantPanelContentProps,

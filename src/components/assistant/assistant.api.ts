@@ -35,6 +35,8 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 			headers: { "Content-Type": "application/json", ...init.headers },
 		});
 	} catch (err) {
+		// Pembatalan oleh user diteruskan apa adanya (bukan error jaringan).
+		if (init.signal?.aborted) throw err;
 		throw new AssistantApiError(
 			null,
 			`Network error on ${path}: ${(err as Error).message}`,
@@ -72,10 +74,12 @@ export function fetchAssistantStatus(): Promise<AssistantStatusDto> {
 /** Satu giliran tanya-jawab; riwayat dimuat server, bukan dikirim dari sini. */
 export function sendChatMessage(
 	body: AssistantChatRequest,
+	signal?: AbortSignal,
 ): Promise<AssistantChatResponse> {
 	return request<AssistantChatResponse>("/chat", {
 		method: "POST",
 		body: JSON.stringify(body),
+		signal,
 	});
 }
 
