@@ -145,38 +145,82 @@ export async function getRecentMessages(
 	}));
 }
 
-/** Simpan pesan & sentuh updatedAt percakapan; false bila percakapan bukan milik user. */
+export interface SavedMessage {
+	id: string;
+	role: string;
+	content: string;
+	toolsUsed: string[];
+	createdAt: Date;
+}
+
+const savedMessageSelect = {
+	id: true,
+	role: true,
+	content: true,
+	toolsUsed: true,
+	createdAt: true,
+} as const;
+
+// createdAt diisi eksplisit (+1 ms per pesan): now() Postgres konstan dalam
+// satu transaksi, padahal urutan user → assistant harus terjaga.
+function toRows(userId: string, messages: NewMessage[], base: number) {
+	return messages.map((m, i) => ({
+		userId,
+		role: m.role,
+		content: m.content,
+		toolsUsed: m.toolsUsed ?? [],
+		pageRoute: m.pageRoute ?? null,
+		status: m.status ?? "ok",
+		inputTokens: m.inputTokens ?? null,
+		outputTokens: m.outputTokens ?? null,
+		latencyMs: m.latencyMs ?? null,
+		createdAt: new Date(base + i),
+	}));
+}
+
+/** Simpan pesan & sentuh updatedAt percakapan; null bila percakapan bukan milik user. */
 export async function appendMessages(
 	userId: string,
 	conversationId: string,
 	messages: NewMessage[],
-): Promise<boolean> {
-	// createdAt diisi eksplisit (+1 ms per pesan): now() Postgres konstan dalam
-	// satu transaksi, padahal urutan user → assistant harus terjaga.
+): Promise<SavedMessage[] | null> {
 	const base = Date.now();
 	return prisma.$transaction(async (tx) => {
 		const touched = await tx.assistantConversation.updateMany({
 			where: { id: conversationId, userId },
 			data: { updatedAt: new Date(base) },
 		});
-		if (touched.count === 0) return false;
-		await tx.assistantMessage.createMany({
-			data: messages.map((m, i) => ({
+		if (touched.count === 0) return null;
+		const saved = await tx.assistantMessage.createManyAndReturn({
+			data: toRows(userId, messages, base).map((r) => ({
+				...r,
 				conversationId,
-				userId,
-				role: m.role,
-				content: m.content,
-				toolsUsed: m.toolsUsed ?? [],
-				pageRoute: m.pageRoute ?? null,
-				status: m.status ?? "ok",
-				inputTokens: m.inputTokens ?? null,
-				outputTokens: m.outputTokens ?? null,
-				latencyMs: m.latencyMs ?? null,
-				createdAt: new Date(base + i),
 			})),
+			select: savedMessageSelect,
 		});
-		return true;
+		return saved.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 	});
+}
+
+/** Percakapan baru beserta pesan pertamanya dalam satu transaksi; judul dari pesan pertama. */
+export async function startConversation(
+	userId: string,
+	firstMessage: string,
+	messages: NewMessage[],
+): Promise<{ conversationId: string; messages: SavedMessage[] }> {
+	const base = Date.now();
+	const conv = await prisma.assistantConversation.create({
+		data: {
+			userId,
+			title: deriveTitle(firstMessage),
+			messages: { create: toRows(userId, messages, base) },
+		},
+		select: {
+			id: true,
+			messages: { select: savedMessageSelect, orderBy: { createdAt: "asc" } },
+		},
+	});
+	return { conversationId: conv.id, messages: conv.messages };
 }
 
 export async function renameConversation(

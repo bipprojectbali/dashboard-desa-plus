@@ -14,6 +14,7 @@ import {
 	listConversations,
 	listMessages,
 	renameConversation,
+	startConversation,
 } from "@/api/assistant/conversation/conversation.repo";
 import { getUsageToday } from "@/api/assistant/limits/usage.repo";
 import { prisma } from "@/utils/db";
@@ -83,7 +84,7 @@ describe("conversation.repo — kepemilikan", () => {
 		expect(await renameConversation(bob, conv.id, "dibajak")).toBe(false);
 		expect(
 			await appendMessages(bob, conv.id, [{ role: "user", content: "x" }]),
-		).toBe(false);
+		).toBeNull();
 		expect(await deleteConversation(bob, conv.id)).toBe(false);
 		expect((await listConversations(bob)).items).toEqual([]);
 		expect((await listConversations(bob, { cursor: conv.id })).items).toEqual(
@@ -152,6 +153,40 @@ describe("conversation.repo — kepemilikan", () => {
 			cursor: page1?.nextCursor ?? undefined,
 		});
 		expect(page2?.items.map((m) => m.content)).toEqual(["m1"]);
+	});
+
+	it("startConversation & appendMessages mengembalikan pesan tersimpan berurutan", async () => {
+		const started = await startConversation(alice, "  Berapa   APBDes?  ", [
+			{
+				role: "user",
+				content: "Berapa APBDes?",
+				pageRoute: "/keuangan-anggaran",
+			},
+			{
+				role: "assistant",
+				content: "Rp 1",
+				toolsUsed: ["ringkasan_keuangan"],
+				inputTokens: 10,
+				outputTokens: 5,
+			},
+		]);
+		expect(started.messages.map((m) => m.role)).toEqual(["user", "assistant"]);
+		expect(started.messages[1]?.toolsUsed).toEqual(["ringkasan_keuangan"]);
+		expect((await getConversation(alice, started.conversationId))?.title).toBe(
+			"Berapa APBDes?",
+		);
+
+		const more = await appendMessages(alice, started.conversationId, [
+			{ role: "user", content: "lagi" },
+			{ role: "assistant", content: "ok" },
+		]);
+		expect(more?.map((m) => m.content)).toEqual(["lagi", "ok"]);
+		expect(more?.[0]?.id).toEqual(expect.any(String));
+		expect(
+			(await getRecentMessages(alice, started.conversationId)).map(
+				(m) => m.content,
+			),
+		).toEqual(["Berapa APBDes?", "Rp 1", "lagi", "ok"]);
 	});
 
 	it("ganti judul & hapus oleh pemilik; pesan ikut terhapus", async () => {

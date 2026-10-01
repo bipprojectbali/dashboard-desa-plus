@@ -43,7 +43,7 @@ export function checkSessionUser(
  * (cookieCache Better Auth), sehingga izin yang dicabut admin atau role yang
  * diturunkan tidak langsung berlaku. null bila user sudah dihapus.
  */
-async function loadDbRole(userId: string): Promise<string | null | undefined> {
+async function loadDbRole(userId: string): Promise<string | null> {
 	const row = await prisma.user.findUnique({
 		where: { id: userId },
 		select: { role: true },
@@ -51,19 +51,36 @@ async function loadDbRole(userId: string): Promise<string | null | undefined> {
 	return row ? (row.role ?? "user") : null;
 }
 
+/** Pemakai asisten yang lolos: role & izin dari DB, siap dipakai ToolContext. */
+export interface AssistantPrincipal {
+	user: { id: string; role: string };
+	allowedFeatures: string[];
+}
+
 /** Pemakai asisten: aturan dasar + izin `use-ai-assistant` untuk role-nya (dari DB). */
+export async function authorizeAssistantUser(
+	user: AccessUser | null | undefined,
+): Promise<{ denied: AccessDenied } | { principal: AssistantPrincipal }> {
+	const denied = checkSessionUser(user);
+	if (denied || !user)
+		return {
+			denied: denied ?? { status: 401, error: ACCESS_MESSAGES.unauthorized },
+		};
+	const role = await loadDbRole(user.id);
+	if (role === null)
+		return { denied: { status: 401, error: ACCESS_MESSAGES.unauthorized } };
+	const allowedFeatures = await loadAllowedFeatures(role);
+	if (!allowedFeatures.includes("use-ai-assistant"))
+		return { denied: { status: 403, error: ACCESS_MESSAGES.noPermission } };
+	return { principal: { user: { id: user.id, role }, allowedFeatures } };
+}
+
+/** Versi ringkas authorizeAssistantUser: hanya penolakan (null = boleh). */
 export async function checkAssistantUser(
 	user: AccessUser | null | undefined,
 ): Promise<AccessDenied | null> {
-	const denied = checkSessionUser(user);
-	if (denied || !user) return denied;
-	const role = await loadDbRole(user.id);
-	if (role === null)
-		return { status: 401, error: ACCESS_MESSAGES.unauthorized };
-	const allowed = await loadAllowedFeatures(role);
-	return allowed.includes("use-ai-assistant")
-		? null
-		: { status: 403, error: ACCESS_MESSAGES.noPermission };
+	const result = await authorizeAssistantUser(user);
+	return "denied" in result ? result.denied : null;
 }
 
 /** Admin asisten: aturan dasar + role `admin` (dari DB) — endpoint ini mengubah kredensial AI. */

@@ -41,7 +41,7 @@ export function createStatistikPengaduanTool(
 	return {
 		name: "statistik_pengaduan",
 		description:
-			"Statistik pengaduan warga dan layanan publik: jumlah pengaduan per status (baru, proses, selesai, ditolak), tren pengaduan 7 bulan terakhir, jenis surat yang paling banyak diajukan, kategori dan status pengajuan terbaru, serta jumlah usulan musrenbang.",
+			"Statistik pengaduan warga dan layanan publik: jumlah pengaduan per status (baru, proses, selesai, ditolak) termasuk pengaduan aktif yang belum selesai, tren pengaduan 7 bulan terakhir, jenis surat yang paling banyak diajukan, kategori dan status pengajuan terbaru, serta jumlah usulan musrenbang.",
 		parameters: { type: "object", properties: {}, additionalProperties: false },
 		requiredFeature: "view-pengaduan",
 		async handler() {
