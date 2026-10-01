@@ -182,7 +182,7 @@
 - [x] **F1-c** Sapaan & disclaimer memakai nama dari config (bukan "Jenna" hardcode di `locales`); id & en
 - [x] **F1-c** Store Valtio `src/store/assistant.ts`, data via TanStack Query; tema terang/gelap
 - [ ] **F1-c** Uji manual di browser — hanya bila user meminta
-- [ ] **F1-d** `/bantuan` (`help-page.tsx`) & `/admin/help` memakai panel yang sama (mode tertanam); hapus stub `POST /api/jenna/chat` beserta kontraknya
+- [~] **F1-d** (perintah mulai 2026-10-02, sesi `chat-a6`, branch yang sama; `join` = `origin/join` = `35df488`) `/bantuan` (`help-page.tsx`) & `/admin/help` memakai panel yang sama (mode tertanam); hapus stub `POST /api/jenna/chat` beserta kontraknya
 - [ ] **F1-e** SSE `POST /api/assistant/chat/stream`: event `status`, `delta` (iterasi terakhir), `done`
 - [ ] Setiap sub-tahap: `bun run verify` + `bun run test:db` hijau → lapor → merge setelah persetujuan
 - [-] 👍👎 umpan balik — ditunda (butuh kolom DB + tampilan admin)
