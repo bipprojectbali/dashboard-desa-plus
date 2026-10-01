@@ -2,7 +2,7 @@
 
 > **Status: KEPUTUSAN TUNTAS lagi (2026-10-02)** setelah tinjau ulang page-agent (`discus/fitur-2-page-agent-tinjau-ulang.md`).
 > Hasil tinjau ulang: penunjuk **bisa klik tampilan** (Q1/Q1b, baca-saja tetap) dan pendekatan **B diperluas** (Q2) — bukan page-agent.
-> Menunggu persetujuan akhir dokumen ini sebelum implementasi.
+> **DISETUJUI user (2026-10-02).** Implementasi dibagi: **F2-a** (paralel dengan F1-e: registry target, penanda, tool, kursor) dan **F2-b** (integrasi ke chat & panel setelah F1-e di-merge).
 > Ringkasan keputusan: Ringkasan:
 >
 > | # | Keputusan |

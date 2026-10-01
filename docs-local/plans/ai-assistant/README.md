@@ -21,7 +21,7 @@
 | `02-analisa-blueprint.md` | Fase 0–11 blueprint desa-platform: Terapkan / Adaptasi / Tunda / Tidak relevan | Analisa |
 | `03-pondasi.md` | **Setup & persiapan**: model data, kredensial per fitur, izin, provider, tool/executor, prompt, batas, endpoint, halaman admin, test | **Disetujui** (2026-09-30) |
 | `04-fitur-1-chat-panel.md` | FAB + panel "Tanya AI", endpoint percakapan, tool awal | **Disetujui** (2026-10-01) |
-| `05-fitur-2-pointer.md` | AI menunjuk elemen (pendekatan page-agent vs whitelist) | Keputusan tuntas (B diperluas, klik tampilan); menunggu persetujuan akhir |
+| `05-fitur-2-pointer.md` | AI menunjuk elemen (pendekatan page-agent vs whitelist) | **Disetujui** (2026-10-02) |
 | `06-fitur-3-suara.md` | Interaksi suara (3 tingkat) | Draf |
 | `07-roadmap.md` | Tahapan P0–P3 (pondasi) lalu F1–F3 | Draf |
 | `discus/temuan.md` | Diskusi temuan satu per satu: fakta → opsi → rekomendasi → keputusan | Selesai (1–7) |
@@ -33,6 +33,7 @@
 | `discus/fitur-3-suara.md` | Analisa Fitur 3 suara full duplex (OpenAI): alur, opsi a/b/c, fakta kode, rekomendasi, 14 pertanyaan | Menunggu jawaban user |
 | `discus/fitur-2-page-agent-tinjau-ulang.md` | Tinjau ulang page-agent (permintaan user 2026-10-01): fakta baru v1.12.4, opsi O1–O4 | **Tuntas** — B diperluas (2026-10-02) |
 | `checklist-progress.md` | Checklist progres semua tahap | Aktif |
+| `uji-manual-fitur-2.md` | Daftar uji manual Fitur 2 (penunjuk) dengan kolom hasil | Siap dipakai |
 
 ## Keputusan yang sudah diambil user
 
@@ -76,6 +77,7 @@
 | 36 | Fitur 1 lanjutan | F1-c s.d. F1-e di sesi `chat-a6`, worktree & branch yang sama (`feature/ai-assistant-chat`), satu sub-tahap per perintah | checklist §5 |
 | 37 | Fitur 2 — pendekatan setelah tinjau ulang page-agent | **B diperluas**: tool `klik_elemen(target)` / `pilih(target, nilai)` khusus target tampilan terdaftar (daftar izin); page-agent tidak dipakai sekarang | 05, `discus/fitur-2-page-agent-tinjau-ulang.md` Q2 |
 | 38 | Fitur 3 — provider suara | **OpenAI** (bukan Claude); user sudah menyiapkan API key OpenAI, disimpan lewat slot `voice` di halaman admin (terenkripsi). Arsitektur full duplex dianalisa worker `ai_suara` | `discus/fitur-3-suara.md` |
+| 39 | Dokumen 05 & pembagian Fitur 2 | `05` **disetujui**; implementasi F2-a (paralel) + F2-b (setelah F1-e) | 05, checklist §7 |
 
 ## Ringkasan eksekutif
 
