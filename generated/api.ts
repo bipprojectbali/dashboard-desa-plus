@@ -1484,23 +1484,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/jenna/chat": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Chat dengan Jenna Virtual Assistant (stub) */
-        post: operations["postApiJennaChat"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/system/stats": {
         parameters: {
             query?: never;
@@ -6962,60 +6945,6 @@ export interface operations {
                                 status: "cair" | "proses";
                             }[];
                         }[];
-                    };
-                };
-            };
-        };
-    };
-    postApiJennaChat: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    message: string;
-                    history: {
-                        id: number;
-                        text: string;
-                        sender: string;
-                    }[];
-                };
-                "multipart/form-data": {
-                    message: string;
-                    history: {
-                        id: number;
-                        text: string;
-                        sender: string;
-                    }[];
-                };
-                "text/plain": {
-                    message: string;
-                    history: {
-                        id: number;
-                        text: string;
-                        sender: string;
-                    }[];
-                };
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        reply: string;
-                    };
-                    "multipart/form-data": {
-                        reply: string;
-                    };
-                    "text/plain": {
-                        reply: string;
                     };
                 };
             };
