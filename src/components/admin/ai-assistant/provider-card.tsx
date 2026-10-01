@@ -30,6 +30,7 @@ import {
 	FEATURE_LABELS,
 	providerToForm,
 	slotBadge,
+	slotUnusedLabel,
 	validateBaseUrl,
 } from "./ai-assistant.logic";
 
@@ -41,7 +42,8 @@ interface Props {
 }
 
 const FALLBACK_NOTE: Record<string, string> = {
-	pointer: "Kosong → memakai kredensial Chat.",
+	pointer:
+		"Belum dipakai: penunjuk memakai otak Chat, jadi isian di kartu ini belum berpengaruh.",
 	voice:
 		"Kosong → memakai kredensial Chat. Proxy Claude tidak menyediakan suara; slot ini dipakai bila fitur suara memakai provider lain.",
 };
@@ -63,6 +65,7 @@ export function ProviderCard({
 	useEffect(() => setForm(providerToForm(slot)), [slot]);
 
 	const badge = slotBadge(slot);
+	const unusedLabel = slotUnusedLabel(slot.feature);
 	const baseUrlError = validateBaseUrl(form.baseUrl);
 	const changesKey = form.apiKeyInput.trim() !== "" || form.clearApiKey;
 	const blockedByCrypto = changesKey && !cryptoConfigured;
@@ -123,6 +126,11 @@ export function ProviderCard({
 					<Badge color={badge.color} variant="light" size="sm">
 						{badge.label}
 					</Badge>
+					{unusedLabel && (
+						<Badge color="gray" variant="outline" size="sm">
+							{unusedLabel}
+						</Badge>
+					)}
 				</Group>
 				<Switch
 					label="Aktif"

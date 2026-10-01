@@ -231,3 +231,14 @@ export function slotBadge(slot: ProviderSlotDto): SlotBadge {
 	if (slot.feature !== "chat") return { label: "Memakai Chat", color: "blue" };
 	return { label: "Belum diisi", color: "yellow" };
 }
+
+/**
+ * Slot yang belum punya pemakai: penunjuk (fitur 2) memakai otak Chat
+ * (keputusan P1, docs 05), jadi kredensialnya belum dibaca siapa pun.
+ */
+const UNUSED_SLOTS: ReadonlySet<ProviderFeature> = new Set(["pointer"]);
+
+/** Label "belum dipakai" untuk kartu slot; null bila slot sudah dipakai. */
+export function slotUnusedLabel(feature: ProviderFeature): string | null {
+	return UNUSED_SLOTS.has(feature) ? "Belum dipakai · memakai Chat" : null;
+}
