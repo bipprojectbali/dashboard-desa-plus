@@ -49,22 +49,24 @@ const run = (tool: ToolDefinition, args: Record<string, unknown>, c = ctx()) =>
 	tool.handler(args, c);
 
 describe("POINTER_TOOLS", () => {
-	it("empat tool, dan BELUM masuk ASSISTANT_TOOLS (didaftarkan di F2-b)", () => {
+	it("empat tool, semuanya terdaftar di ASSISTANT_TOOLS dengan izin use-ai-assistant", () => {
 		expect(POINTER_TOOLS.map((t) => t.name)).toEqual([
 			"buka_halaman",
 			"tunjukkan_elemen",
 			"klik_elemen",
 			"pilih",
 		]);
-		for (const t of POINTER_TOOLS)
-			expect(ASSISTANT_TOOLS.some((a) => a.name === t.name)).toBe(false);
+		for (const t of POINTER_TOOLS) {
+			expect(ASSISTANT_TOOLS.some((a) => a.name === t.name)).toBe(true);
+			expect(t.requiredFeature).toBe("use-ai-assistant");
+		}
 	});
 
 	it("enum parameter mencerminkan registry: klik hanya view+clickable, pilih hanya view+pilih", () => {
 		const klik = createKlikElemenTool(deps).parameters.properties.target;
-		expect(klik.enum).toEqual(["t.tombol-lihat"]);
+		expect(klik?.enum).toEqual(["t.tombol-lihat"]);
 		const pilih = createPilihTool(deps).parameters.properties.target;
-		expect(pilih.enum).toEqual(["t.pilih-enum", "t.pilih-tahun"]);
+		expect(pilih?.enum).toEqual(["t.pilih-enum", "t.pilih-tahun"]);
 	});
 });
 

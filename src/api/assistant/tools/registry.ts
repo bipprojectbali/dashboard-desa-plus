@@ -6,9 +6,10 @@ import { kinerjaDivisiTool } from "./divisi.tool";
 import { lookupFaqTool } from "./faq.tool";
 import { ringkasanKeuanganTool } from "./keuangan.tool";
 import { statistikPengaduanTool } from "./pengaduan.tool";
+import { POINTER_TOOLS } from "./pointer";
 import type { ToolContext, ToolDefinition } from "./types";
 
-/** Semua tool assistant (baca-saja, rancangan 04 §4). Satu file per tool: `<domain>.tool.ts`. */
+/** Semua tool assistant (baca-saja, rancangan 04 §4; penunjuk 05 §4). Satu file per tool: `<domain>.tool.ts`. */
 export const ASSISTANT_TOOLS: readonly ToolDefinition[] = [
 	ringkasanBerandaTool,
 	ringkasanKeuanganTool,
@@ -16,6 +17,7 @@ export const ASSISTANT_TOOLS: readonly ToolDefinition[] = [
 	statistikDemografiTool,
 	kinerjaDivisiTool,
 	lookupFaqTool,
+	...POINTER_TOOLS,
 ];
 
 /** Tool yang boleh dipakai user: hanya yang `requiredFeature`-nya dimiliki. Hanya daftar ini yang dikirim ke LLM. */

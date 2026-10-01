@@ -20,6 +20,7 @@ import { buildSystemPrompt, sanitizeInline } from "../prompt/system-prompt";
 import { getProvider, type ResolveProviderResult } from "../provider/resolve";
 import { AiProviderError, type ChatMessage } from "../provider/types";
 import { type ExecuteOptions, executeWithTools } from "../tools/executor";
+import { hasPointerTools } from "../tools/pointer";
 import {
 	ASSISTANT_TOOLS,
 	getAvailableTools,
@@ -167,6 +168,7 @@ export async function runChatTurn(
 				page: { route: pageRoute, title: input.pageContext?.title },
 				unavailableModules: getUnavailableModules(ctx.allowedFeatures),
 				hasDataTools: tools.some((t) => t.requiredFeature.startsWith("view-")),
+				hasPointerTools: hasPointerTools(tools),
 			}),
 		},
 		...history,
@@ -203,5 +205,5 @@ export async function runChatTurn(
 
 	const saved = await saveTurn(repo, turnInput, turn);
 	if (!saved) return fail(404, CHAT_MESSAGES.notFound);
-	return { ok: true, value: { ...saved, actions: [] } };
+	return { ok: true, value: { ...saved, actions: turn.actions } };
 }

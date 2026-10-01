@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 import { runChatTurn } from "@/api/assistant/chat/chat.service";
 import { SlidingWindowRateLimiter } from "@/api/assistant/limits/usage";
 import { MockProvider } from "@/api/assistant/provider/mock";
+import { POINTER_TOOLS } from "@/api/assistant/tools/pointer";
 import { ASSISTANT_TOOLS } from "@/api/assistant/tools/registry";
 import type { ToolDefinition } from "@/api/assistant/tools/types";
 import { FEATURES } from "@/utils/permission";
@@ -121,7 +122,9 @@ describe("set evaluasi — izin dihormati", () => {
 			if (!res.ok) throw new Error(`gagal: ${res.error}`);
 		}
 		const offered = new Set(provider.calls.flatMap((c) => c.toolNames));
-		expect([...offered]).toEqual(["lookup_faq"]);
+		expect([...offered].sort()).toEqual(
+			["lookup_faq", ...POINTER_TOOLS.map((t) => t.name)].sort(),
+		);
 		expect(executed.filter((e) => e.name !== "lookup_faq")).toEqual([]);
 	});
 

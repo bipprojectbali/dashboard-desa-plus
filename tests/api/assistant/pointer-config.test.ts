@@ -54,12 +54,12 @@ describe("registry target penunjuk", () => {
 			for (const m of read(f).matchAll(
 				/data-ai-target"?[=:]\s*\{?["']([^"']+)["']/g,
 			))
-				marked.add(m[1]);
+				marked.add(m[1] ?? "");
 		// kpi-cards memakai `target: "keuangan.xxx"` lalu data-ai-target={item.target}
 		for (const m of read("src/components/keuangan/kpi-cards.tsx").matchAll(
 			/target:\s*"(keuangan\.[^"]+)"/g,
 		))
-			marked.add(m[1]);
+			marked.add(m[1] ?? "");
 		const registered = POINTER_TARGETS.filter((t) =>
 			t.id.startsWith("keuangan."),
 		).map((t) => t.id);
@@ -77,7 +77,9 @@ describe("registry target penunjuk", () => {
 
 	it("POINTER_ROUTES sama dengan menu sidebar (tidak melenceng)", () => {
 		const sidebar = read("src/components/sidebar.tsx");
-		const paths = [...sidebar.matchAll(/path:\s*"([^"]+)"/g)].map((m) => m[1]);
+		const paths = [...sidebar.matchAll(/path:\s*"([^"]+)"/g)].map(
+			(m) => m[1] ?? "",
+		);
 		expect(POINTER_ROUTES.map((r) => r.route).sort()).toEqual(
 			[...paths].sort(),
 		);
