@@ -64,9 +64,9 @@ export async function saveTurn(
 }
 
 /**
- * Catat pertanyaan yang gagal dijawab (status "error"): tetap dihitung kuota
- * dan muncul sebagai "error terakhir" di statistik admin, tapi tidak masuk
- * riwayat LLM. Mengembalikan id percakapan, atau null bila tidak tersimpan.
+ * Catat pertanyaan yang gagal dijawab (status "error"): muncul sebagai
+ * "error terakhir" di statistik admin, tapi tidak dihitung kuota dan tidak
+ * masuk riwayat LLM. Mengembalikan id percakapan, atau null bila tidak tersimpan.
  */
 export async function recordFailedTurn(
 	repo: ChatRepo,

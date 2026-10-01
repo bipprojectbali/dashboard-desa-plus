@@ -101,6 +101,7 @@ describe("GET /api/assistant/status", () => {
 		expect(Object.keys(body).sort()).toEqual([
 			"assistantName",
 			"enabled",
+			"maxInputChars",
 			"slots",
 		]);
 		expect(body.slots).toEqual({ chat: false, pointer: false, voice: false });

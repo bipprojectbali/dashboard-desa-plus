@@ -3,6 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useSnapshot } from "valtio";
 import "@mantine/charts/styles.css";
+import { ASSISTANT_PANEL_WIDTH } from "@/components/assistant/assistant.logic";
+import { AssistantFab } from "@/components/assistant/assistant-fab";
+import { assistantStore } from "@/store/assistant";
 import { authStore } from "@/store/auth";
 import { fetchWallLayout } from "./fetch-wall-layout";
 import { fetchWallSnapshot } from "./fetch-wall-snapshot";
@@ -50,6 +53,12 @@ export function WallPage({ accessKey }: WallPageProps) {
 	const { user } = useSnapshot(authStore);
 	const canEdit = user?.role === "admin";
 
+	// Panel AI (hanya kiosk yang login + izin) didorong ke kanan, bukan menimpa:
+	// wall memberi ruang selebar panel agar widget NOC tetap terlihat utuh.
+	const assistant = useSnapshot(assistantStore);
+	const assistantSpace =
+		assistant.open && !assistant.maximized ? ASSISTANT_PANEL_WIDTH : 0;
+
 	const requestFullscreen = () => {
 		document.documentElement
 			.requestFullscreen?.()
@@ -60,7 +69,13 @@ export function WallPage({ accessKey }: WallPageProps) {
 		<MantineProvider forceColorScheme="dark">
 			{/* Denyut indikator LIVE — keyframe scoped ke halaman wall. */}
 			<style>{`@keyframes wallLivePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } } .wall-live-dot { animation: wallLivePulse 1.4s ease-in-out infinite; }`}</style>
-			<div style={{ background: WALL_THEME.PAGE_BG, minHeight: "100vh" }}>
+			<div
+				style={{
+					background: WALL_THEME.PAGE_BG,
+					minHeight: "100vh",
+					paddingRight: assistantSpace,
+				}}
+			>
 				{isError ? (
 					<Center h="100vh">
 						<Stack align="center" gap="sm">
@@ -106,6 +121,7 @@ export function WallPage({ accessKey }: WallPageProps) {
 						Layar penuh
 					</Button>
 				) : null}
+				<AssistantFab variant="wall" />
 			</div>
 		</MantineProvider>
 	);
