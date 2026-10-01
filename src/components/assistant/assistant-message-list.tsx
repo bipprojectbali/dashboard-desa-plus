@@ -121,7 +121,7 @@ export function AssistantMessageList({
 	}, [messages.length, pending]);
 
 	return (
-		<ScrollArea style={{ flex: 1 }} px="md" py="sm">
+		<ScrollArea style={{ flex: 1, minHeight: 0 }} px="md" py="sm">
 			<Stack gap="sm" aria-live="polite" aria-relevant="additions">
 				{olderCursor ? (
 					<Button size="xs" variant="subtle" onClick={onLoadOlder}>

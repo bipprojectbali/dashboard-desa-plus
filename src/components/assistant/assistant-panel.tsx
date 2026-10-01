@@ -3,7 +3,7 @@ import { useSnapshot } from "valtio";
 import { useIsDark } from "@/hooks/useIsDark";
 import { assistantStore } from "@/store/assistant";
 import type { AssistantStatusDto } from "@/types/ai-assistant-chat";
-import { ASSISTANT_PANEL_WIDTH } from "./assistant.logic";
+import { ASSISTANT_PANEL_WIDTH, assistantPanelStyles } from "./assistant.logic";
 import { AssistantComposer } from "./assistant-composer";
 import { AssistantConversationList } from "./assistant-conversation-list";
 import { AssistantHeader } from "./assistant-header";
@@ -42,26 +42,14 @@ export function AssistantPanel({
 			lockScroll={false}
 			trapFocus={false}
 			zIndex={200}
+			// Gaya lewat `styles`, BUKAN prop `style` di Drawer.Content: Mantine 8
+			// meneruskan `style` itu juga ke pembungkus `inner` selayar penuh
+			// (latar gelap menutupi halaman, panel turun ke kiri bawah).
+			styles={assistantPanelStyles(dark)}
 		>
-			<Drawer.Content
-				aria-label={status.assistantName}
-				style={{
-					display: "flex",
-					flexDirection: "column",
-					background: dark ? "#141d34" : "white",
-					borderLeft: `1px solid ${dark ? "#26324f" : "#dbe3ee"}`,
-				}}
-			>
+			<Drawer.Content aria-label={status.assistantName}>
 				<AssistantHeader name={status.assistantName} onClose={onClose} />
-				<Drawer.Body
-					p={0}
-					style={{
-						flex: 1,
-						minHeight: 0,
-						display: "flex",
-						flexDirection: "column",
-					}}
-				>
+				<Drawer.Body>
 					{view === "list" ? (
 						<AssistantConversationList onOpen={chat.openConversation} />
 					) : (

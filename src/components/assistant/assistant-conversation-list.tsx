@@ -79,7 +79,7 @@ export function AssistantConversationList({
 		});
 
 	return (
-		<ScrollArea style={{ flex: 1 }} px="md" py="sm">
+		<ScrollArea style={{ flex: 1, minHeight: 0 }} px="md" py="sm">
 			<Stack gap="xs">
 				<Button size="xs" variant="light" onClick={startNewConversation}>
 					{text.newConversation}

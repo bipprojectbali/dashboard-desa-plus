@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { AssistantText } from "@/locales/assistant";
 import type {
 	AssistantLang,
@@ -8,6 +9,33 @@ import type {
 
 /** Lebar panel mode normal; /wall memberi ruang selebar ini agar panel NOC tidak tertutup. */
 export const ASSISTANT_PANEL_WIDTH = 440;
+
+/**
+ * Gaya Drawer panel per bagian (`styles` Mantine). Hanya `content` (panel)
+ * dan `body`; `inner` (pembungkus fixed selayar penuh) sengaja tidak diberi
+ * gaya. Header di atas, body mengisi sisa tinggi: daftar pesan bergulir,
+ * composer menempel di bawah.
+ */
+export function assistantPanelStyles(
+	dark: boolean,
+): Record<"content" | "body", CSSProperties> {
+	return {
+		content: {
+			display: "flex",
+			flexDirection: "column",
+			overflow: "hidden",
+			background: dark ? "#141d34" : "white",
+			borderLeft: `1px solid ${dark ? "#26324f" : "#dbe3ee"}`,
+		},
+		body: {
+			flex: 1,
+			minHeight: 0,
+			display: "flex",
+			flexDirection: "column",
+			padding: 0,
+		},
+	};
+}
 
 /** Rute tanpa FAB: admin memakai /admin/help (F1-d); signin/signup belum login. */
 const FAB_EXCLUDED_PREFIXES = ["/admin", "/signin", "/signup"] as const;
