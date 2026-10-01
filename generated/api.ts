@@ -1978,6 +1978,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/assistant/chat/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ask the AI assistant, streamed as server-sent events */
+        post: operations["postApiAssistantChatStream"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/assistant/conversations/": {
         parameters: {
             query?: never;
@@ -8324,6 +8341,65 @@ export interface operations {
         };
     };
     postApiAssistantChat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    conversationId?: string;
+                    message: string;
+                    pageContext?: {
+                        route: string;
+                        title?: string;
+                        /**
+                         * @default id
+                         * @enum {string}
+                         */
+                        lang?: "id" | "en";
+                    };
+                };
+                "multipart/form-data": {
+                    conversationId?: string;
+                    message: string;
+                    pageContext?: {
+                        route: string;
+                        title?: string;
+                        /**
+                         * @default id
+                         * @enum {string}
+                         */
+                        lang?: "id" | "en";
+                    };
+                };
+                "text/plain": {
+                    conversationId?: string;
+                    message: string;
+                    pageContext?: {
+                        route: string;
+                        title?: string;
+                        /**
+                         * @default id
+                         * @enum {string}
+                         */
+                        lang?: "id" | "en";
+                    };
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    postApiAssistantChatStream: {
         parameters: {
             query?: never;
             header?: never;
