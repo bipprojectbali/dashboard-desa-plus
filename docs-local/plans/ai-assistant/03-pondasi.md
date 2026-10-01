@@ -271,7 +271,7 @@ nilai default di DB. (Ini juga menghindari tabrakan dengan route `/api/jenna/ana
 | Batas | Default | Cara hitung | Respon |
 |---|---|---|---|
 | Rate per menit per user | 6 | Jendela geser di memori proses (deploy saat ini 1 container) | 429 "Terlalu cepat, coba lagi sebentar" |
-| Pesan per user per hari | 50 | `count(AssistantMessage role=user, userId, sejak 00:00 WITA)` | 429 "Kuota harian habis" |
+| Pesan per user per hari | 50 | `count(AssistantMessage role=user, userId, sejak 00:00 WITA)` — **pesan yang gagal karena provider tidak dihitung** (keputusan user 2026-10-01) | 429 "Kuota harian habis" |
 | Pesan per hari — **akun kiosk `/wall`** | 100 | Sama, berlaku bila `userId === kioskUserId` (menggantikan batas per user) | 429 "Kuota harian habis" |
 | Token global per hari | 1.000.000 | `sum(input+output tokens)` hari ini | 429 "Kuota harian asisten habis" |
 | Panjang input | 2.000 char | validasi di handler | 422 |

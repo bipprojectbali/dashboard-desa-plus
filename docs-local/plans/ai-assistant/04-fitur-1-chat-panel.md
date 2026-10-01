@@ -27,7 +27,7 @@
 | Elemen | Komponen | Catatan |
 |---|---|---|
 | Tombol bulat | `AssistantFab` | `aria-label`, tooltip nama asisten, `z-index` di atas konten tapi di bawah modal Mantine |
-| Panel samping | `AssistantPanel` (Mantine `Drawer` kanan) — *catatan silang Fitur 2 (05 §4, keputusan P6): saat menunjuk dalam mode layar penuh/perbesar, panel ditutup sementara dan muncul tombol "Kembali ke chat"; state percakapan harus tetap utuh (jangan di-unmount/di-reset)* | Mode perbesar = lebar penuh; mobile = layar penuh; `Esc` menutup, fokus kembali ke FAB. Dimuat **lazy** |
+| Panel samping | `AssistantPanel` (Mantine `Drawer` kanan) — *catatan silang Fitur 2 (05 §4, keputusan P6): saat menunjuk dalam mode perbesar, panel ditutup sementara dan muncul tombol "Kembali ke chat"; state percakapan harus tetap utuh (jangan di-unmount/di-reset)* | Mode perbesar = lebar penuh; `Esc` menutup, fokus kembali ke FAB. Dimuat **lazy**. **Tidak ada tampilan HP** — dashboard untuk NOC, tidak dibuka di HP (ralat user 2026-10-01) |
 | Header | `AssistantHeader` | Logo, nama dari config, badge "Beta", tombol ☰ / perbesar / tutup |
 | Daftar percakapan (☰) | `AssistantConversationList` | Dari DB, **berhalaman** (20 per halaman), tombol "Percakapan baru", hapus |
 | Pesan | `AssistantMessageList` (`aria-live="polite"`) | Bubble user/asisten, indikator "memeriksa data…", label kecil "Sumber: Keuangan" dari `toolsUsed` |

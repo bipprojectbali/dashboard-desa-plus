@@ -1,16 +1,18 @@
 # 05 — Fitur 2: AI menggerakkan kursor & menunjuk elemen
 
-> **Status: SEMUA KEPUTUSAN TUNTAS (2026-10-01, sesi 59 → sesi 61)** — menunggu persetujuan akhir dokumen ini
-> sebelum implementasi. Ringkasan:
+> **Status: KEPUTUSAN TUNTAS lagi (2026-10-02)** setelah tinjau ulang page-agent (`discus/fitur-2-page-agent-tinjau-ulang.md`).
+> Hasil tinjau ulang: penunjuk **bisa klik tampilan** (Q1/Q1b, baca-saja tetap) dan pendekatan **B diperluas** (Q2) — bukan page-agent.
+> Menunggu persetujuan akhir dokumen ini sebelum implementasi.
+> Ringkasan keputusan: Ringkasan:
 >
 > | # | Keputusan |
 > |---|---|
-> | P1 | Pendekatan **B**: target terdaftar (`data-ai-target` + registry di kode), tool `buka_halaman`/`tunjukkan_elemen`, satu loop `executeWithTools`, baca-saja |
+> | P1 | Pendekatan **B diperluas** (dikonfirmasi ulang 2026-10-02): target terdaftar (`data-ai-target` + registry di kode), tool `buka_halaman` / `tunjukkan_elemen` / **`klik_elemen` / `pilih`**, satu loop `executeWithTools`, baca-saja |
 > | P2 | Slot `pointer` **belum dipakai** — penunjuk memakai otak chat; slot berlabel "belum dipakai" di admin |
 > | P3 | Menunjuk **hanya bila diminta** + label "Sumber: X" yang bisa diklik (tanpa AI/kuota) |
-> | P4 | Versi pertama: `navigate` + `pointTo` (termasuk `scrollTo`); tur & `setFilter` ditunda; `click` tidak |
+> | P4 | Versi pertama: `navigate` + `pointTo` (termasuk `scrollTo`); tur & `setFilter` ditunda; **klik tampilan** pada target terdaftar ber-daftar-izin (tombol tulis hanya ditunjuk) |
 > | P5 | Percontohan **Keuangan** (`/keuangan-anggaran`), lalu Beranda |
-> | P6 | Panel ditutup sementara saat menunjuk + tombol "Kembali ke chat" (HP & mode perbesar) |
+> | P6 | Panel ditutup sementara saat menunjuk + tombol "Kembali ke chat" — **hanya mode perbesar** (ralat user 2026-10-01: dashboard untuk NOC, tidak dibuka di HP) |
 > | P7 | Hormati `prefers-reduced-motion`: sorotan + gulir tanpa animasi kursor |
 > Referensi: [alibaba/page-agent](https://github.com/alibaba/page-agent) (MIT). Padanan di blueprint:
 > Lampiran A.4 no. 2 (aksi UI) dan no. 3 (konfirmasi aksi berisiko).
@@ -47,7 +49,7 @@ Kendala yang tetap ada:
 5. API hook masih `@experimental`, dengan breaking change di versi 1.8 dan 1.10.
 6. Ada dependency baru.
 
-**Keputusan user (2026-10-01, sesi 59): pendekatan B** — target terdaftar, satu loop `executeWithTools`, baca-saja.
+**Keputusan user (2026-10-01, sesi 59): pendekatan B** — **dikonfirmasi ulang 2026-10-02 setelah tinjau ulang: B diperluas** (tambah klik tampilan; page-agent tidak dipakai sekarang) — target terdaftar, satu loop `executeWithTools`, baca-saja.
 page-agent dicatat sebagai pilihan masa depan bila cakupan dibuka untuk aksi tulis (lewat `customFetch` ke server +
 slot `pointer`, terkait opsi P3 di §3). Ide animasi kursor/sorotan boleh diadaptasi (lisensi MIT, dengan atribusi). A hanya referensi (cara ekstraksi DOM, animasi kursor/sorotan)
 atau eksperimen terpisah mode "tunjukkan saja". A layak dipertimbangkan kelak **jika cakupan dibuka untuk aksi tulis**,
@@ -73,8 +75,9 @@ Jenis aksi (whitelist di klien, tolak yang lain):
 | `pointTo` | Kursor virtual bergerak ke elemen, lalu elemen disorot (termasuk `scrollTo`) | Tidak — **versi pertama** |
 | `highlight` | Sorot beberapa elemen berurutan (tur singkat) | Tidak — **ditunda** |
 | `scrollTo` | Gulir ke elemen | Tidak — **bagian dari `pointTo`** |
-| `setFilter` | Ubah filter/tab/periode di halaman (tampilan saja) | Tidak — **ditunda** |
-| `click` | Menekan tombol | **Tidak dibuat** (baca-saja) |
+| `setFilter` | Ubah filter/tab/periode di halaman (tampilan saja) | Tidak — **ditunda** sebagai aksi terpisah; kebutuhan memilih tab/tahun dipenuhi `click`/`pilih` di bawah |
+| `pilih` | Memilih nilai pada kontrol tampilan terdaftar (mis. tahun di Mantine `Select` Keuangan): browser membuka dropdown & memilih opsi; nilai divalidasi dari data | Tidak — **versi pertama** (B diperluas, 2026-10-02) |
+| `click` | Menekan tombol | ~~Tidak dibuat~~ → **DIUBAH (user, 2026-10-01): klik TAMPILAN saja** (tab, tahun, detail, menu) pada target terdaftar yang ditandai boleh-diklik (**daftar izin**, bukan daftar larangan). Tombol yang mengubah data: AI hanya menunjuk dan bilang "silakan tekan sendiri". Klik tulis dengan konfirmasi = tahap berikutnya. Baca-saja (#3) **tetap** |
 
 Prasyarat & kondisi kode saat ini:
 1. **Anchor elemen**: `data-ai-target="modul.bagian"`. Saat ini **0** `data-testid`/`data-ai-*`/`id`,
@@ -92,8 +95,8 @@ Prasyarat & kondisi kode saat ini:
    memanggil AI dan tanpa memakai kuota. Label diturunkan dari daftar tool yang dijalankan executor
    (`toolsUsed`); pemetaan tool → modul → target registry dibuat saat implementasi.
 4. `AssistantCursor`: posisi dari `getBoundingClientRect`, easing, ring sorotan. Panel chat tetap
-   terbuka di desktop mode normal. **Keputusan P6 (2026-10-01):** bila panel menutupi layar (HP = layar penuh,
-   desktop mode perbesar = lebar penuh), panel **ditutup sementara**, kursor & sorotan berjalan, lalu muncul
+   terbuka di desktop mode normal. **Keputusan P6 (2026-10-01, diralat):** bila panel menutupi layar (desktop mode perbesar = lebar penuh;
+   tidak ada kasus HP karena dashboard untuk NOC), panel **ditutup sementara**, kursor & sorotan berjalan, lalu muncul
    tombol **"Kembali ke chat"** yang membuka panel lagi dengan percakapan utuh. Hormati `prefers-reduced-motion`.
 
 Risiko & mitigasi:

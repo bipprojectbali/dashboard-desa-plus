@@ -100,6 +100,9 @@ Di HP panel chat menutupi layar penuh, jadi kursor tidak akan terlihat.
 
 Jawaban: **a** (user, 2026-10-01). Saat AI menunjuk, panel ditutup sementara, kursor dan sorotan berjalan, lalu muncul tombol "Kembali ke chat" yang membuka panel lagi dengan percakapan utuh. Aturan ini juga berlaku untuk mode **perbesar** di desktop, karena mode itu lebar penuh (rancangan `04-fitur-1-chat-panel.md`: perbesar = lebar penuh, mobile = layar penuh).
 
+> **Ralat user (2026-10-01):** dashboard dipakai untuk NOC dan **tidak pernah dibuka di HP**. Kasus HP dihapus;
+> P6 kini hanya berlaku untuk **mode perbesar di desktop** (panel ditutup sementara + "Kembali ke chat").
+
 ---
 
 ## P7. Aksesibilitas
@@ -120,5 +123,5 @@ Jawaban: **Ya** (user, 2026-10-01). Bila `prefers-reduced-motion` aktif, kursor 
 | P3 | Menunjuk hanya saat diminta + label "Sumber: X" yang bisa diklik (tanpa AI/kuota) |
 | P4 | Versi pertama: `navigate` + `pointTo` (termasuk `scrollTo`); tur & `setFilter` ditunda; `click` tidak |
 | P5 | Percontohan Keuangan (`/keuangan-anggaran`), lalu Beranda |
-| P6 | Panel menyingkir saat menunjuk + tombol "Kembali ke chat" (HP & mode perbesar) |
+| P6 | Panel menyingkir saat menunjuk + tombol "Kembali ke chat" (hanya mode perbesar di desktop; HP tidak dipakai — ralat user) |
 | P7 | Hormati `prefers-reduced-motion`: sorotan tanpa animasi kursor |
