@@ -48,6 +48,8 @@ export function apiMiddleware(app: Elysia) {
 						image: userSession.user.image,
 						emailVerified: userExists.emailVerified,
 						role: userSession.user.role || "user",
+						// Dibedakan dari API key: AI assistant hanya menerima sesi browser.
+						authMethod: "session" as const,
 					},
 				};
 			}
@@ -102,6 +104,7 @@ export function apiMiddleware(app: Elysia) {
 						image: apiKeyRecord.user.image,
 						emailVerified: apiKeyRecord.user.emailVerified,
 						role: apiKeyRecord.user.role || "user",
+						authMethod: "apiKey" as const,
 					},
 				};
 			} catch (err) {

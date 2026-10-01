@@ -14,7 +14,7 @@ Browser
                           └── fetch() → VITE_DESA_API_URL  (external, langsung)
 ```
 
-Entry point: `src/index.ts` — merakit `Elysia().use(api)`, mount 2 route proxy langsung (lihat di bawah), lalu serve Vite middleware (dev) atau static files + SPA fallback (production). Production juga auto-seed database jika `ADMIN_EMAIL` di-set, dan menjalankan `startSyncScheduler()` (`src/jobs/sync.ts`) untuk background sync job dari NOC.
+Entry point: `src/index.ts` — merakit `Elysia().use(api)`, mount 2 route proxy langsung (lihat di bawah), lalu serve Vite middleware (dev) atau static files + SPA fallback (production). Production juga auto-seed database jika `ADMIN_EMAIL` di-set, dan menjalankan `startSyncScheduler()` (`src/jobs/sync.ts`) untuk background sync job dari NOC serta `startAssistantRetentionScheduler()` (`src/jobs/assistant-retention.ts`, harian 04:00 waktu server) yang menghapus percakapan AI assistant yang tidak aktif lebih lama dari `retentionDays` (0 = simpan selamanya).
 
 ---
 
@@ -65,7 +65,7 @@ Plus route langsung di `api` object (bukan plugin terpisah): `GET /api/health`, 
 - `src/api/sources/` — fetcher raw dari API eksternal (`apbdes.ts`, `umkm-dashboard.ts`)
 - `src/api/transforms/` — transformer data eksternal → shape internal (APBDes, demografi, Jenna, NOC discussions/divisions/documents/events/pengaduan/progres/projects, religion)
 - `src/api/wall-snapshot/` — builder snapshot data untuk tiap kategori widget Video Wall (beranda, bumdes, demografi, divisi, jenna, keamanan, keuangan, kpi, pengaduan, sosial)
-- `src/api/assistant/` — otak AI assistant (belum di-mount sebagai route; endpoint menyusul): lihat [AI Assistant](#ai-assistant)
+- `src/api/assistant/` — AI assistant: otak (provider, tool, prompt, batas) + route `GET /api/assistant/status` dan `/api/admin/ai-assistant/*` (di-mount di `src/api/index.tsx`): lihat [AI Assistant](#ai-assistant)
 
 Auth di-handle Better Auth di `/api/auth/*` (konfigurasi di `src/utils/auth.ts`, lihat [Auth Flow](#auth-flow)).
 
@@ -178,7 +178,7 @@ Kiosk mode untuk TV/monitor NOC — menampilkan snapshot data lintas fitur (bera
 
 ## AI Assistant
 
-Pondasi asisten AI (tanpa UI & tanpa route — endpoint `/api/assistant/*` dan `/api/admin/ai-assistant/*` menyusul). Istilah di kode: **assistant**; nama tampilan ("Jenna") hanya nilai default di DB.
+Pondasi asisten AI (panel chat untuk user belum ada; endpoint percakapan `/api/assistant/chat` menyusul di Fitur 1). Istilah di kode: **assistant**; nama tampilan ("Jenna") hanya nilai default di DB.
 
 - **Provider** (`src/api/assistant/provider/`): `OpenAICompatibleProvider` (`POST {baseUrl}/chat/completions`, Bearer; `temperature`/`max_tokens` hanya bila diisi; redirect tidak diikuti; error → `AiProviderError` `config`/`busy`/`unavailable`/`bad_response` tanpa isi body vendor), `MockProvider` untuk test, `getProvider(slot)` — slot `pointer`/`voice` yang belum siap jatuh ke `chat`, API key didekripsi via `src/utils/secret-crypto.ts`.
 - **Config** (`config/settings.repo.ts`): baca `AssistantSettings` & `AiProviderConfig` (cache 30 detik, tanpa menulis; tanpa baris → default). Penulis wajib memanggil `invalidateAssistantConfigCache()`.
@@ -186,6 +186,10 @@ Pondasi asisten AI (tanpa UI & tanpa route — endpoint `/api/assistant/*` dan `
 - **Prompt** (`prompt/system-prompt.ts`): guardrail → identitas (nama dari DB, Desa Darmasaba, waktu WITA, peran) → `personaNote` (≤1.000 char) → konteks halaman (dibersihkan) → modul tanpa akses → aturan jawaban.
 - **Batas** (`limits/`): rate/menit di memori, pesan/hari per user (akun kiosk `/wall` memakai `dailyMessageLimitKiosk`), token/hari global — hari WITA, 0 = tanpa batas.
 - **Percakapan** (`conversation/conversation.repo.ts`): setiap fungsi difilter `userId` sesi; id milik user lain diperlakukan tidak ada.
+- **Akses** (`http/access.ts`): semua endpoint asisten hanya menerima **sesi browser** (`apiMiddleware` menandai `user.authMethod` = `session`/`apiKey`; API key dashboard → 403), user terverifikasi, dan role yang **dibaca dari DB** (role di sesi bisa basi hingga 30 hari karena cookieCache Better Auth).
+- **Route** (`routes/`):
+  - `GET /api/assistant/status` — izin `use-ai-assistant`; balas `{ enabled, assistantName, slots: { chat, pointer, voice } }` (boolean saja, slot pointer/voice ikut `chat` bila kosong). Dipakai tombol FAB.
+  - `/api/admin/ai-assistant/*` — admin saja, kontrak `src/types/ai-assistant-admin.ts`: `GET /` (pengaturan, 3 slot dengan `apiKeyStatus` `set`/`missing`/`needs-reentry` + `apiKeyHint`, statistik hari ini WITA, kandidat akun kiosk, `cryptoConfigured`), `PUT /settings` (rentang sama dengan form UI, `LIMIT_RULES`; akun kiosk harus terverifikasi), `PUT /providers/:feature` (`apiKey` tidak dikirim = pertahankan, `""` = hapus; disimpan terenkripsi + hint; hasil test lama dibuang bila URL/model/kunci berubah), `POST /providers/:feature/test` (kredensial slot sendiri, https saja kecuali localhost di luar produksi, tanpa redirect, batas 30 detik, simpan `lastTestAt`/`lastTestOk`, pesan error tersaring). Setiap simpan membuang cache config dan dicatat ke `ActivityLog` tanpa rahasia (hanya nama field/slot/hasil). Logika di `admin/`.
 
 ---
 

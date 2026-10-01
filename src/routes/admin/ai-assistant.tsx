@@ -63,8 +63,8 @@ function AiAssistantAdminPage() {
 
 				{unavailable && (
 					<Alert color="blue" icon={<IconInfoCircle size={16} />}>
-						Endpoint admin AI Assistant belum tersedia (dibuat di tahap P3).
-						Form menampilkan nilai default dan belum bisa disimpan.
+						Endpoint admin AI Assistant tidak terjangkau dari server ini. Form
+						menampilkan nilai default dan belum bisa disimpan.
 					</Alert>
 				)}
 				{error && (

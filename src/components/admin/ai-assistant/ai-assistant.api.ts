@@ -12,9 +12,9 @@ import { normalizeProviders } from "./ai-assistant.logic";
 const BASE = "/api/admin/ai-assistant";
 
 /**
- * Endpoint admin belum ada — dibuat di tahap P3; UI tampil dengan nilai default.
- * Dikenali dari 404, atau dari respons non-JSON (path /api yang tak dikenal bisa
- * jatuh ke fallback SPA yang membalas HTML 200).
+ * Endpoint admin tidak terjangkau (mis. server versi lama tanpa route P3) — UI
+ * tampil dengan nilai default. Dikenali dari 404, atau dari respons non-JSON
+ * (path /api yang tak dikenal bisa jatuh ke fallback SPA yang membalas HTML 200).
  */
 export class AdminEndpointUnavailableError extends Error {
 	constructor() {

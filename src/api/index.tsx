@@ -9,6 +9,8 @@ import { adminApi } from "./admin";
 import { adminFaqApi } from "./admin-faq";
 import { aksesPreferences } from "./akses-preferences";
 import { apikey } from "./apikey";
+import { assistantAdminApi } from "./assistant/routes/admin.route";
+import { assistantStatusApi } from "./assistant/routes/status.route";
 import { bantuanApi } from "./bantuan";
 import { bumdes } from "./bumdes";
 import { complaint } from "./complaint";
@@ -110,7 +112,9 @@ const api = new Elysia({
 	.use(syncLog)
 	.use(bantuanApi)
 	.use(adminFaqApi)
-	.use(myPermissions);
+	.use(myPermissions)
+	.use(assistantStatusApi)
+	.use(assistantAdminApi);
 
 if (!isProduction) {
 	api.use(
