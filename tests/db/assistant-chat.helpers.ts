@@ -4,8 +4,10 @@ import { invalidateAssistantConfigCache } from "@/api/assistant/config/settings.
 import { SlidingWindowRateLimiter } from "@/api/assistant/limits/usage";
 import { MockProvider, type MockStep } from "@/api/assistant/provider/mock";
 import { createAssistantChatApi } from "@/api/assistant/routes/chat.route";
+import { createAssistantChatStreamApi } from "@/api/assistant/routes/chat-stream.route";
 import type { ToolDefinition } from "@/api/assistant/tools/types";
 import { prisma } from "@/utils/db";
+import { createSseParser } from "@/utils/sse-parser";
 import { SETTINGS_BODY } from "./assistant-admin.helpers";
 
 /** Helper test DB endpoint chat F1-b. Semua nilai test-only. */
@@ -43,19 +45,20 @@ export const FAKE_KEUANGAN_TOOL: ToolDefinition = {
  */
 export function createChatTestApp(o: Partial<ChatServiceDeps> = {}) {
 	let provider = new MockProvider();
-	const app = new Elysia({ prefix: "/api" }).use(
-		createAssistantChatApi({
-			resolveProvider: async () => ({
-				ok: true,
-				provider,
-				slot: "chat",
-				model: "mock",
-			}),
-			rateLimiter: new SlidingWindowRateLimiter(),
-			tools: [FAKE_KEUANGAN_TOOL],
-			...o,
+	const deps: ChatServiceDeps = {
+		resolveProvider: async () => ({
+			ok: true,
+			provider,
+			slot: "chat",
+			model: "mock",
 		}),
-	);
+		rateLimiter: new SlidingWindowRateLimiter(),
+		tools: [FAKE_KEUANGAN_TOOL],
+		...o,
+	};
+	const app = new Elysia({ prefix: "/api" })
+		.use(createAssistantChatApi(deps))
+		.use(createAssistantChatStreamApi(deps));
 	return {
 		script(steps: MockStep[]) {
 			provider = new MockProvider(steps);
@@ -70,5 +73,32 @@ export function createChatTestApp(o: Partial<ChatServiceDeps> = {}) {
 				}),
 			);
 		},
+		chatStream(
+			headers: Record<string, string>,
+			body: unknown,
+			signal?: AbortSignal,
+		) {
+			return app.handle(
+				new Request("http://localhost/api/assistant/chat/stream", {
+					method: "POST",
+					headers: { "content-type": "application/json", ...headers },
+					body: JSON.stringify(body),
+					signal,
+				}),
+			);
+		},
 	};
+}
+
+/** Baca seluruh respons SSE → daftar [event, data JSON]. */
+export async function readSseEvents(
+	res: Response,
+): Promise<Array<{ event: string; data: Record<string, unknown> }>> {
+	const events: Array<{ event: string; data: Record<string, unknown> }> = [];
+	const parser = createSseParser((e) =>
+		events.push({ event: e.event, data: JSON.parse(e.data) }),
+	);
+	parser.push(await new Response(res.body).text());
+	parser.end();
+	return events;
 }

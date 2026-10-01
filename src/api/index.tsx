@@ -11,6 +11,7 @@ import { aksesPreferences } from "./akses-preferences";
 import { apikey } from "./apikey";
 import { assistantAdminApi } from "./assistant/routes/admin.route";
 import { assistantChatApi } from "./assistant/routes/chat.route";
+import { assistantChatStreamApi } from "./assistant/routes/chat-stream.route";
 import { assistantConversationsApi } from "./assistant/routes/conversations.route";
 import { assistantStatusApi } from "./assistant/routes/status.route";
 import { bantuanApi } from "./bantuan";
@@ -115,6 +116,7 @@ const api = new Elysia({
 	.use(myPermissions)
 	.use(assistantStatusApi)
 	.use(assistantChatApi)
+	.use(assistantChatStreamApi)
 	.use(assistantConversationsApi)
 	.use(assistantAdminApi);
 

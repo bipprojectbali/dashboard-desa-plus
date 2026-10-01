@@ -1,4 +1,5 @@
 import { createDeadline } from "../deadline";
+import { readOpenAIStream, StreamFormatError } from "./openai-stream";
 import {
 	type AIProvider,
 	AiProviderError,
@@ -124,43 +125,92 @@ export class OpenAICompatibleProvider implements AIProvider {
 		}
 		if (this.config.maxTokens !== null) body.max_tokens = this.config.maxTokens;
 
+		// Stream hanya bila pemanggil meminta (onDelta); usage ikut di chunk terakhir.
+		if (opts.onDelta) {
+			body.stream = true;
+			body.stream_options = { include_usage: true };
+		}
+
 		const url = `${this.config.baseUrl.replace(/\/+$/, "")}/chat/completions`;
+		// Deadline mencakup pembacaan body juga (stream bisa berjalan lama).
 		const deadline = createDeadline(this.config.timeoutMs, opts.signal);
-		let res: Response;
 		try {
-			res = await this.fetchImpl(url, {
-				method: "POST",
-				headers: {
-					"content-type": "application/json",
-					authorization: `Bearer ${this.config.apiKey}`,
-				},
-				body: JSON.stringify(body),
-				redirect: "manual",
-				signal: deadline.signal,
-			});
-		} catch (err) {
-			// Timeout, abort giliran, atau jaringan — detail tidak diteruskan ke user
-			throw new AiProviderError(
-				"unavailable",
-				`${PROVIDER_ERROR_MESSAGES.unavailable} (${(err as Error)?.name ?? "error"})`,
-			);
+			let res: Response;
+			try {
+				res = await this.fetchImpl(url, {
+					method: "POST",
+					headers: {
+						"content-type": "application/json",
+						authorization: `Bearer ${this.config.apiKey}`,
+					},
+					body: JSON.stringify(body),
+					redirect: "manual",
+					signal: deadline.signal,
+				});
+			} catch (err) {
+				// Timeout, abort giliran, atau jaringan — detail tidak diteruskan ke user
+				throw unavailable(err);
+			}
+
+			if (!res.ok) throw errorForStatus(res.status);
+			const isEventStream = res.headers
+				.get("content-type")
+				?.includes("text/event-stream");
+			if (opts.onDelta && isEventStream) {
+				return await readStream(res, opts.onDelta);
+			}
+
+			let json: OpenAIResponse;
+			try {
+				json = (await res.json()) as OpenAIResponse;
+			} catch {
+				throw new AiProviderError(
+					"bad_response",
+					PROVIDER_ERROR_MESSAGES.bad_response,
+					res.status,
+				);
+			}
+			const result = parseResponse(json);
+			// Proxy yang mengabaikan `stream: true` → jawaban dikirim sebagai satu delta.
+			if (opts.onDelta && result.type === "text" && result.text)
+				opts.onDelta(result.text);
+			return result;
 		} finally {
 			deadline.dispose();
 		}
+	}
+}
 
-		if (!res.ok) throw errorForStatus(res.status);
+function unavailable(err: unknown): AiProviderError {
+	return new AiProviderError(
+		"unavailable",
+		`${PROVIDER_ERROR_MESSAGES.unavailable} (${(err as Error)?.name ?? "error"})`,
+	);
+}
 
-		let json: OpenAIResponse;
-		try {
-			json = (await res.json()) as OpenAIResponse;
-		} catch {
+async function readStream(
+	res: Response,
+	onDelta: (text: string) => void,
+): Promise<ChatResult> {
+	if (!res.body) {
+		throw new AiProviderError(
+			"bad_response",
+			PROVIDER_ERROR_MESSAGES.bad_response,
+			res.status,
+		);
+	}
+	try {
+		return await readOpenAIStream(res.body, onDelta, parseArgs);
+	} catch (err) {
+		if (err instanceof StreamFormatError) {
 			throw new AiProviderError(
 				"bad_response",
 				PROVIDER_ERROR_MESSAGES.bad_response,
 				res.status,
 			);
 		}
-		return parseResponse(json);
+		// Stream putus di tengah (jaringan, timeout, atau giliran dibatalkan)
+		throw unavailable(err);
 	}
 }
 

@@ -17,6 +17,8 @@ export interface AssistantText {
 	send: string;
 	charsLeft: string;
 	thinking: string;
+	checking: string;
+	stop: string;
 	source: string;
 	copy: string;
 	copied: string;
@@ -42,6 +44,7 @@ export interface AssistantText {
 		unavailable: string;
 		network: string;
 		loadFailed: string;
+		cancelled: string;
 	};
 	duration: { seconds: string; minutes: string; hours: string };
 	sources: Record<string, string>;
@@ -63,6 +66,8 @@ const id: AssistantText = {
 	send: "Kirim",
 	charsLeft: "{n} karakter tersisa",
 	thinking: "Memeriksa data…",
+	checking: "Memeriksa data {modul}…",
+	stop: "Hentikan jawaban",
 	source: "Sumber",
 	copy: "Salin jawaban",
 	copied: "Tersalin",
@@ -92,6 +97,7 @@ const id: AssistantText = {
 		unavailable: "Layanan AI sedang tidak tersedia. Coba lagi sebentar.",
 		network: "Gagal terhubung ke server.",
 		loadFailed: "Gagal memuat data percakapan.",
+		cancelled: "Pertanyaan dibatalkan.",
 	},
 	duration: { seconds: "{n} detik", minutes: "{n} menit", hours: "{n} jam" },
 	sources: {
@@ -120,6 +126,8 @@ const en: AssistantText = {
 	send: "Send",
 	charsLeft: "{n} characters left",
 	thinking: "Checking data…",
+	checking: "Checking {modul} data…",
+	stop: "Stop answer",
 	source: "Source",
 	copy: "Copy answer",
 	copied: "Copied",
@@ -150,6 +158,7 @@ const en: AssistantText = {
 		unavailable: "The AI service is unavailable. Please try again shortly.",
 		network: "Could not reach the server.",
 		loadFailed: "Failed to load conversation data.",
+		cancelled: "Question cancelled.",
 	},
 	duration: {
 		seconds: "{n} seconds",

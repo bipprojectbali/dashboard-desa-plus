@@ -10,7 +10,8 @@ import { authorizeAssistantUser } from "../http/access";
  * Kontrak: `src/types/ai-assistant-chat.ts`. Log tanpa isi pesan.
  */
 
-const chatBody = t.Object({
+/** Body chat — sama untuk `/chat` dan `/chat/stream`. */
+export const chatBody = t.Object({
 	conversationId: t.Optional(t.String({ minLength: 1, maxLength: 64 })),
 	// Panjang maksimal dicek service (maxInputChars dari pengaturan admin).
 	message: t.String(),
@@ -27,7 +28,7 @@ const chatBody = t.Object({
 export function createAssistantChatApi(deps: ChatServiceDeps = {}) {
 	return new Elysia({ prefix: "/assistant" }).use(apiMiddleware).post(
 		"/chat",
-		async ({ user, body, set }) => {
+		async ({ user, body, set, request }) => {
 			try {
 				const access = await authorizeAssistantUser(user);
 				if ("denied" in access) {
@@ -35,7 +36,7 @@ export function createAssistantChatApi(deps: ChatServiceDeps = {}) {
 					return { error: access.denied.error };
 				}
 				const outcome = await runChatTurn(
-					{ principal: access.principal, ...body },
+					{ principal: access.principal, ...body, signal: request.signal },
 					deps,
 				);
 				if (outcome.ok) return outcome.value;

@@ -46,13 +46,23 @@ export interface ChatTurnInput {
 	conversationId?: string;
 	message: string;
 	pageContext?: AssistantPageContext;
+	/** Klien memutus/membatalkan → giliran dihentikan dan tidak ada yang disimpan. */
+	signal?: AbortSignal;
+	/** Mode stream (`/chat/stream`): status tool & potongan teks. */
+	stream?: {
+		onStatus: (toolName: string) => void;
+		onDelta: (text: string) => void;
+	};
 }
+
+/** Kode internal: klien membatalkan sebelum jawaban selesai (tidak dikirim ke siapa pun). */
+export const CLIENT_CLOSED = 499;
 
 export type ChatTurnOutcome =
 	| { ok: true; value: AssistantChatResponse }
 	| {
 			ok: false;
-			status: 404 | 409 | 422 | 429 | 503;
+			status: 404 | 409 | 422 | 429 | 503 | typeof CLIENT_CLOSED;
 			error: string;
 			retryAfterSec?: number;
 			/** Diisi bila pesan gagal tetap tersimpan (503) agar klien melanjutkan percakapan yang sama. */
@@ -82,7 +92,7 @@ export interface ChatServiceDeps {
 }
 
 function fail(
-	status: 404 | 409 | 422 | 429 | 503,
+	status: 404 | 409 | 422 | 429 | 503 | typeof CLIENT_CLOSED,
 	error: string,
 	extra: { retryAfterSec?: number; conversationId?: string } = {},
 ): ChatTurnOutcome {
@@ -174,8 +184,14 @@ export async function runChatTurn(
 		turn = await executeWithTools(resolved.provider, messages, tools, ctx, {
 			...deps.executeOptions,
 			conversationId,
+			signal: input.signal,
+			onStatus: input.stream?.onStatus,
+			onDelta: input.stream?.onDelta,
 		});
 	} catch (err) {
+		// Dibatalkan klien: jangan simpan pertanyaan setengah jadi.
+		if (input.signal?.aborted)
+			return fail(CLIENT_CLOSED, "Client closed request");
 		const savedId = await recordFailedTurn(repo, turnInput);
 		if (!(err instanceof AiProviderError)) throw err;
 		return fail(

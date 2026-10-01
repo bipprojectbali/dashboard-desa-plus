@@ -4,24 +4,25 @@ import { useCallback } from "react";
 import { useSnapshot } from "valtio";
 import {
 	addUserBubble,
+	appendStreamDelta,
 	assistantStore,
+	beginTurn,
+	cancelActiveTurn,
 	failQuestion,
 	prependOlderMessages,
 	receiveAnswer,
 	setAssistantError,
+	setStreamStatus,
 	showConversation,
 } from "@/store/assistant";
 import { i18nStore } from "@/store/i18n";
-import {
-	AssistantApiError,
-	fetchMessages,
-	sendChatMessage,
-} from "./assistant.api";
+import { AssistantApiError, fetchMessages } from "./assistant.api";
 import {
 	chatErrorMessage,
 	pageTitleFrom,
 	toAssistantLang,
 } from "./assistant.logic";
+import { askAssistant } from "./assistant-stream.api";
 import { useAssistantText } from "./use-assistant-access";
 
 export const CONVERSATIONS_KEY = ["assistant", "conversations"] as const;
@@ -43,20 +44,33 @@ export function useAssistantChat(maxInputChars: number) {
 		async (raw: string) => {
 			const message = raw.trim();
 			const bubbleId = `local-${Date.now()}`;
+			const controller = beginTurn();
 			addUserBubble(bubbleId, message);
 			try {
-				const res = await sendChatMessage({
-					conversationId: assistantStore.conversationId ?? undefined,
-					message,
-					pageContext: {
-						route: pathname,
-						title: pageTitleFrom(document.title) || undefined,
-						lang: toAssistantLang(lang),
+				const res = await askAssistant(
+					{
+						conversationId: assistantStore.conversationId ?? undefined,
+						message,
+						pageContext: {
+							route: pathname,
+							title: pageTitleFrom(document.title) || undefined,
+							lang: toAssistantLang(lang),
+						},
 					},
-				});
+					{
+						onStatus: (tool) => setStreamStatus(bubbleId, tool),
+						onDelta: (text) => appendStreamDelta(bubbleId, text),
+					},
+					controller.signal,
+				);
 				// res.actions selalu [] di fitur 1 — dipakai Fitur 2 (penunjuk).
-				receiveAnswer(res.conversationId, res.message);
+				receiveAnswer(bubbleId, res.conversationId, res.message);
 			} catch (err) {
+				// Dibatalkan user: server tidak menyimpan apa pun; teks bisa dikirim ulang.
+				if (controller.signal.aborted) {
+					failQuestion(bubbleId, text.errors.cancelled, message);
+					return;
+				}
 				const failure = asFailure(err);
 				failQuestion(
 					bubbleId,
@@ -97,5 +111,5 @@ export function useAssistantChat(maxInputChars: number) {
 		}
 	}, [text]);
 
-	return { send, openConversation, loadOlder };
+	return { send, cancel: cancelActiveTurn, openConversation, loadOlder };
 }
