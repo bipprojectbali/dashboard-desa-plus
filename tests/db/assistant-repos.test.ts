@@ -233,4 +233,25 @@ describe("usage.repo", () => {
 		expect(after.messagesToday).toBe(2);
 		expect(after.tokensToday - before.tokensToday).toBe(120);
 	});
+
+	it("pertanyaan yang gagal (status error) tidak dihitung kuota pesan maupun token", async () => {
+		const dave = await createUser("dave");
+		const before = await getUsageToday(dave);
+		const conv = await createConversation(dave);
+		await appendMessages(dave, conv.id, [
+			{ role: "user", content: "gagal", status: "error", inputTokens: 500 },
+			{ role: "user", content: "berhasil" },
+			{ role: "assistant", content: "a", inputTokens: 7, outputTokens: 3 },
+		]);
+
+		const after = await getUsageToday(dave);
+		expect(after.messagesToday).toBe(1);
+		expect(after.tokensToday - before.tokensToday).toBe(10);
+		// Tetap tersimpan untuk "error terakhir" di statistik admin.
+		expect(
+			await prisma.assistantMessage.count({
+				where: { conversationId: conv.id, status: "error" },
+			}),
+		).toBe(1);
+	});
 });

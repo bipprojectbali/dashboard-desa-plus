@@ -226,6 +226,26 @@ describe("batas", () => {
 		expect((await second.json()).error).toBe("Kuota harian habis.");
 	});
 
+	it("kegagalan provider tidak memakan kuota harian", async () => {
+		const fresh = await signUp(email("fresh"), "fresh");
+		await prisma.user.update({
+			where: { id: fresh.id },
+			data: { emailVerified: true },
+		});
+		await setAssistantSettings({ dailyMessageLimitPerUser: 1 });
+		testApp.script([
+			new AiProviderError("unavailable", "upstream", 502),
+			{ type: "text", text: "ok" },
+		]);
+		const failed = await ask(fresh, { message: "satu" });
+		const retried = await ask(fresh, { message: "satu lagi" });
+		const third = await ask(fresh, { message: "dua" });
+		await setAssistantSettings();
+		expect([failed.status, retried.status, third.status]).toEqual([
+			503, 200, 429,
+		]);
+	});
+
 	it("akun kiosk memakai kuota kiosk", async () => {
 		await setAssistantSettings({
 			dailyMessageLimitPerUser: 1,
