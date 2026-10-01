@@ -405,21 +405,6 @@ const en: TranslationKeys = {
 		waktuResponLabel: "Response Time",
 		tutup: "Close",
 		durasi: "Duration",
-		virtualAssistantOnline: "Virtual Assistant • Online",
-		aiPowered: "AI Powered",
-		pertanyaanCepat: "Quick questions:",
-		ketikPesan: "Type your message...",
-		kirimPesan: "Send message",
-		jennaDisclaimer:
-			"Jenna is a virtual assistant — answers may not always be accurate",
-		jennaGreeting:
-			"Hello! I'm Jenna, your virtual assistant. How can I help you today?",
-		terjadiKesalahan: "An error occurred.",
-		koneksiGagal: "Connection failed. Please try again.",
-		quickLogin: "How to login to the dashboard?",
-		quickSync: "How to sync data?",
-		quickFitur: "What features are available?",
-		quickBahasa: "How to change language settings?",
 		panduanBadge: "Guide",
 		guideCaraLoginTitle: "How to Login",
 		guideCaraLoginDesc: "Steps to log in to the dashboard",
@@ -476,7 +461,6 @@ const en: TranslationKeys = {
 		tiketGagal: "Failed to send ticket. Please try again later.",
 		infoKontak: "Village Contact Info",
 		jamOperasionalLabel: "Operating Hours",
-		bantuanShortcut: "? Help",
 	},
 };
 

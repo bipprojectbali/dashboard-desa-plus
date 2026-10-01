@@ -1,7 +1,5 @@
 import {
 	Accordion,
-	ActionIcon,
-	Avatar,
 	Badge,
 	Box,
 	Container,
@@ -13,7 +11,6 @@ import {
 	SimpleGrid,
 	Stack,
 	Text,
-	TextInput,
 	ThemeIcon,
 	Title,
 } from "@mantine/core";
@@ -23,15 +20,14 @@ import {
 	IconHeadphones,
 	IconHelpCircle,
 	IconKey,
-	IconMessage,
 	IconPlayerPlay,
-	IconSend,
 	IconShieldCheck,
 	IconUsers,
 	IconVideo,
 } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { AssistantEmbedded } from "@/components/assistant/assistant-embedded";
 import { HelpCard } from "@/components/ui/help-card";
 import { supportConfig } from "@/config/support";
 import { useIsDark } from "@/hooks/useIsDark";
@@ -181,13 +177,6 @@ const stats = [
 	{ value: "24/7", label: "Support Aktif" },
 ];
 
-const QUICK_REPLIES = [
-	"Cara tambah pengguna baru?",
-	"Bagaimana cara rotasi API key?",
-	"Status sistem tidak normal, apa yang harus dilakukan?",
-	"Cara menonaktifkan akun pengguna?",
-];
-
 function AdminHelpPage() {
 	const dark = useIsDark();
 
@@ -200,67 +189,6 @@ function AdminHelpPage() {
 	const [selectedDoc, setSelectedDoc] = useState<
 		(typeof documentationItems)[0] | null
 	>(null);
-
-	const [messages, setMessages] = useState([
-		{
-			id: 1,
-			text: "Halo! Saya Jenna, asisten virtual untuk admin sistem. Ada yang bisa saya bantu terkait manajemen pengguna, API key, atau konfigurasi sistem?",
-			sender: "jenna",
-		},
-	]);
-	const [inputValue, setInputValue] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
-	const chatBottomRef = useRef<HTMLDivElement>(null);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: scroll on every message/loading change
-	useEffect(() => {
-		chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
-	}, [messages, isLoading]);
-
-	const handleSendMessage = async () => {
-		if (inputValue.trim() === "" || isLoading) return;
-
-		const currentInput = inputValue;
-		const userMsg = { id: Date.now(), text: currentInput, sender: "user" };
-
-		setMessages((prev) => [...prev, userMsg]);
-		setInputValue("");
-		setIsLoading(true);
-
-		try {
-			const res = await fetch("/api/jenna/chat", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ message: currentInput, history: messages }),
-			});
-
-			const json = await res.json();
-			const reply = res.ok ? json.reply : (json.error ?? "Terjadi kesalahan.");
-
-			setMessages((prev) => [
-				...prev,
-				{ id: Date.now() + 1, text: reply, sender: "jenna" },
-			]);
-		} catch {
-			setMessages((prev) => [
-				...prev,
-				{
-					id: Date.now() + 1,
-					text: "Koneksi gagal. Coba lagi.",
-					sender: "jenna",
-				},
-			]);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const handleKeyPress = (e: React.KeyboardEvent) => {
-		if (e.key === "Enter" && !e.shiftKey) {
-			e.preventDefault();
-			void handleSendMessage();
-		}
-	};
 
 	const amber = {
 		cardBg: "rgba(251, 240, 223, 0.05)",
@@ -400,7 +328,7 @@ function AdminHelpPage() {
 					</Grid>
 				</Box>
 
-				{/* Row 2: Support + Dokumentasi + Jenna */}
+				{/* Row 2: Support + Dokumentasi + Asisten AI */}
 				<Box>
 					<Grid>
 						{/* Hubungi Support */}
@@ -474,6 +402,11 @@ function AdminHelpPage() {
 									))}
 								</Box>
 							</HelpCard>
+						</Grid.Col>
+
+						{/* Asisten AI — panel yang sama dengan FAB, mode tertanam */}
+						<Grid.Col span={{ base: 12, md: 4 }}>
+							<AssistantEmbedded />
 						</Grid.Col>
 					</Grid>
 				</Box>

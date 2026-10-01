@@ -11,14 +11,12 @@ import type {
 export const ASSISTANT_PANEL_WIDTH = 440;
 
 /**
- * Gaya Drawer panel per bagian (`styles` Mantine). Hanya `content` (panel)
- * dan `body`; `inner` (pembungkus fixed selayar penuh) sengaja tidak diberi
- * gaya. Header di atas, body mengisi sisa tinggi: daftar pesan bergulir,
- * composer menempel di bawah.
+ * Gaya Drawer panel (`styles` Mantine). Hanya `content` (panel); `inner`
+ * (pembungkus fixed selayar penuh) sengaja tidak diberi gaya.
  */
 export function assistantPanelStyles(
 	dark: boolean,
-): Record<"content" | "body", CSSProperties> {
+): Record<"content", CSSProperties> {
 	return {
 		content: {
 			display: "flex",
@@ -27,15 +25,16 @@ export function assistantPanelStyles(
 			background: dark ? "#141d34" : "white",
 			borderLeft: `1px solid ${dark ? "#26324f" : "#dbe3ee"}`,
 		},
-		body: {
-			flex: 1,
-			minHeight: 0,
-			display: "flex",
-			flexDirection: "column",
-			padding: 0,
-		},
 	};
 }
+
+/** Isi panel di bawah header: mengisi sisa tinggi; pesan bergulir, composer di bawah. */
+export const PANEL_BODY_STYLE: CSSProperties = {
+	flex: 1,
+	minHeight: 0,
+	display: "flex",
+	flexDirection: "column",
+};
 
 /** Rute tanpa FAB: admin memakai /admin/help (F1-d); signin/signup belum login. */
 const FAB_EXCLUDED_PREFIXES = ["/admin", "/signin", "/signup"] as const;
@@ -50,8 +49,35 @@ export function isFabRoute(pathname: string): boolean {
 export function shouldFetchStatus(input: {
 	pathname: string;
 	user: { emailVerified?: boolean | null } | null;
+	/** Mode tertanam (halaman Bantuan, termasuk /admin/help) tidak terikat aturan rute FAB. */
+	embedded?: boolean;
 }): boolean {
-	return isFabRoute(input.pathname) && input.user?.emailVerified === true;
+	return (
+		(input.embedded || isFabRoute(input.pathname)) &&
+		input.user?.emailVerified === true
+	);
+}
+
+export type EmbeddedState = "loading" | "ready" | "no-access" | "inactive";
+
+/**
+ * Keadaan panel tertanam: tanpa akses (belum terverifikasi, 401/403, tanpa
+ * izin) dan asisten belum aktif ditampilkan sebagai keadaan kosong, bukan error.
+ * `statusError` = kode HTTP status yang gagal; null = jaringan; undefined = tidak gagal.
+ */
+export function embeddedState(input: {
+	user: { emailVerified?: boolean | null } | null;
+	status: AssistantStatusDto | null | undefined;
+	statusError: number | null | undefined;
+	allowed: readonly string[] | null | undefined;
+}): EmbeddedState {
+	if (input.user?.emailVerified !== true) return "no-access";
+	if (input.statusError === 401 || input.statusError === 403)
+		return "no-access";
+	if (input.statusError !== undefined) return "inactive";
+	if (!input.status || !input.allowed) return "loading";
+	if (!input.allowed.includes("use-ai-assistant")) return "no-access";
+	return input.status.enabled && input.status.slots.chat ? "ready" : "inactive";
 }
 
 /** FAB tampil: rute boleh, ada sesi, asisten aktif + slot chat siap, izin use-ai-assistant. */

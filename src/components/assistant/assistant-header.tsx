@@ -16,13 +16,17 @@ import {
 } from "@/store/assistant";
 import { useAssistantText } from "./use-assistant-access";
 
-/** Header panel: nama asisten dari config, badge Beta, ☰ / percakapan baru / perbesar / tutup. */
+/**
+ * Header panel: nama asisten dari config, badge Beta, ☰ / percakapan baru /
+ * perbesar / tutup. Mode tertanam (halaman Bantuan) tanpa perbesar & tutup.
+ */
 export function AssistantHeader({
 	name,
 	onClose,
 }: {
 	name: string;
-	onClose: () => void;
+	/** Tidak diisi = mode tertanam. */
+	onClose?: () => void;
 }) {
 	const { maximized, view } = useSnapshot(assistantStore);
 	const text = useAssistantText();
@@ -75,16 +79,18 @@ export function AssistantHeader({
 					startNewConversation,
 					<IconMessagePlus size={18} />,
 				)}
-				{icon(
-					maximized ? text.restore : text.maximize,
-					toggleMaximized,
-					maximized ? (
-						<IconArrowsMinimize size={18} />
-					) : (
-						<IconArrowsMaximize size={18} />
-					),
-				)}
-				{icon(text.close, onClose, <IconX size={18} />)}
+				{onClose
+					? icon(
+							maximized ? text.restore : text.maximize,
+							toggleMaximized,
+							maximized ? (
+								<IconArrowsMinimize size={18} />
+							) : (
+								<IconArrowsMaximize size={18} />
+							),
+						)
+					: null}
+				{onClose ? icon(text.close, onClose, <IconX size={18} />) : null}
 			</Group>
 		</Group>
 	);

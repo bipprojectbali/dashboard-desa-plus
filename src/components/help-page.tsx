@@ -3,7 +3,6 @@ import {
 	ActionIcon,
 	Alert,
 	AspectRatio,
-	Avatar,
 	Badge,
 	Box,
 	Button,
@@ -40,7 +39,8 @@ import {
 	IconVideo,
 	IconX,
 } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { AssistantEmbedded } from "@/components/assistant/assistant-embedded";
 import { HelpCard } from "@/components/ui/help-card";
 import { supportConfig } from "@/config/support";
 import { useIsDark } from "@/hooks/useIsDark";
@@ -158,17 +158,6 @@ const HelpPage = () => {
 		{ value: "24/7", label: t.help.supportAktif },
 	];
 
-	const [messages, setMessages] = useState([
-		{
-			id: 1,
-			text: t.help.jennaGreeting,
-			sender: "jenna",
-		},
-	]);
-	const [inputValue, setInputValue] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
-	const chatBottomRef = useRef<HTMLDivElement>(null);
-
 	// --- Tiket state ---
 	const [tiketNama, setTiketNama] = useState("");
 	const [tiketEmail, setTiketEmail] = useState("");
@@ -179,11 +168,6 @@ const HelpPage = () => {
 	const [tiketStatus, setTiketStatus] = useState<"idle" | "ok" | "error">(
 		"idle",
 	);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: scroll on every message/loading change
-	useEffect(() => {
-		chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
-	}, [messages, isLoading]);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -214,63 +198,6 @@ const HelpPage = () => {
 		{},
 	);
 	const faqCategories = Object.keys(faqByCategory);
-
-	const QUICK_REPLIES = [
-		t.help.quickLogin,
-		t.help.quickSync,
-		t.help.quickFitur,
-		t.help.quickBahasa,
-	];
-
-	const handleSendMessage = async () => {
-		if (inputValue.trim() === "" || isLoading) return;
-
-		const currentInput = inputValue;
-		const userMsg = { id: Date.now(), text: currentInput, sender: "user" };
-
-		setMessages((prev) => [...prev, userMsg]);
-		setInputValue("");
-		setIsLoading(true);
-
-		try {
-			const res = await fetch("/api/jenna/chat", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					message: currentInput,
-					history: messages,
-				}),
-			});
-
-			const json = await res.json();
-			const reply = res.ok
-				? json.reply
-				: (json.error ?? t.help.terjadiKesalahan);
-
-			setMessages((prev) => [
-				...prev,
-				{ id: Date.now() + 1, text: reply, sender: "jenna" },
-			]);
-		} catch {
-			setMessages((prev) => [
-				...prev,
-				{
-					id: Date.now() + 1,
-					text: t.help.koneksiGagal,
-					sender: "jenna",
-				},
-			]);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const handleKeyPress = (e: React.KeyboardEvent) => {
-		if (e.key === "Enter" && !e.shiftKey) {
-			e.preventDefault();
-			void handleSendMessage();
-		}
-	};
 
 	const handleKirimTiket = async () => {
 		if (!tiketNama || !tiketEmail || !tiketKategori || !tiketDeskripsi) return;
@@ -822,6 +749,11 @@ const HelpPage = () => {
 									</Grid.Col>
 								</Grid>
 							</HelpCard>
+						</Grid.Col>
+
+						{/* Asisten AI — panel yang sama dengan FAB, mode tertanam */}
+						<Grid.Col span={12}>
+							<AssistantEmbedded />
 						</Grid.Col>
 					</Grid>
 				</Box>

@@ -400,19 +400,6 @@ export type TranslationKeys = {
 		waktuResponLabel: string;
 		tutup: string;
 		durasi: string;
-		virtualAssistantOnline: string;
-		aiPowered: string;
-		pertanyaanCepat: string;
-		ketikPesan: string;
-		kirimPesan: string;
-		jennaDisclaimer: string;
-		jennaGreeting: string;
-		terjadiKesalahan: string;
-		koneksiGagal: string;
-		quickLogin: string;
-		quickSync: string;
-		quickFitur: string;
-		quickBahasa: string;
 		panduanBadge: string;
 		guideCaraLoginTitle: string;
 		guideCaraLoginDesc: string;
@@ -464,7 +451,6 @@ export type TranslationKeys = {
 		tiketGagal: string;
 		infoKontak: string;
 		jamOperasionalLabel: string;
-		bantuanShortcut: string;
 	};
 };
 
@@ -876,21 +862,6 @@ const id: TranslationKeys = {
 		waktuResponLabel: "Waktu Respon",
 		tutup: "Tutup",
 		durasi: "Durasi",
-		virtualAssistantOnline: "Virtual Assistant • Online",
-		aiPowered: "AI Powered",
-		pertanyaanCepat: "Pertanyaan cepat:",
-		ketikPesan: "Ketik pesan Anda...",
-		kirimPesan: "Kirim pesan",
-		jennaDisclaimer:
-			"Jenna adalah asisten virtual — jawaban mungkin tidak selalu akurat",
-		jennaGreeting:
-			"Halo! Saya Jenna, asisten virtual Anda. Bagaimana saya bisa membantu hari ini?",
-		terjadiKesalahan: "Terjadi kesalahan.",
-		koneksiGagal: "Koneksi gagal. Coba lagi.",
-		quickLogin: "Cara login ke dashboard?",
-		quickSync: "Bagaimana cara sinkronisasi data?",
-		quickFitur: "Fitur apa saja yang tersedia?",
-		quickBahasa: "Cara ubah pengaturan bahasa?",
 		panduanBadge: "Panduan",
 		guideCaraLoginTitle: "Cara Login",
 		guideCaraLoginDesc: "Langkah-langkah untuk login ke dashboard",
@@ -947,7 +918,6 @@ const id: TranslationKeys = {
 		tiketGagal: "Gagal mengirim tiket. Coba lagi nanti.",
 		infoKontak: "Info Kontak Desa",
 		jamOperasionalLabel: "Jam Operasional",
-		bantuanShortcut: "? Bantuan",
 	},
 };
 

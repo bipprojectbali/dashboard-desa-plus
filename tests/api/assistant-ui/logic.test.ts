@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 import {
 	canSend,
 	chatErrorMessage,
+	embeddedState,
 	fillTemplate,
 	formatRetryAfter,
 	isFabRoute,
@@ -220,6 +221,63 @@ describe("saran pertanyaan per rute & izin", () => {
 			"Ringkas kondisi desa hari ini",
 		]);
 		expect(suggestionsFor("/bantuan", ["use-ai-assistant"], "id")).toEqual([
+			"Bagaimana cara mengekspor data?",
+		]);
+	});
+});
+
+describe("mode tertanam (halaman Bantuan)", () => {
+	const base = {
+		user: VERIFIED,
+		status: READY,
+		statusError: undefined,
+		allowed: ALLOWED,
+	};
+
+	it("status tetap diminta di /admin/help bila tertanam, tidak untuk FAB", () => {
+		expect(shouldFetchStatus({ pathname: "/admin/help", user: VERIFIED })).toBe(
+			false,
+		);
+		expect(
+			shouldFetchStatus({
+				pathname: "/admin/help",
+				user: VERIFIED,
+				embedded: true,
+			}),
+		).toBe(true);
+		expect(
+			shouldFetchStatus({
+				pathname: "/bantuan",
+				user: { emailVerified: false },
+				embedded: true,
+			}),
+		).toBe(false);
+	});
+
+	it("ready / loading / no-access / inactive", () => {
+		expect(embeddedState(base)).toBe("ready");
+		expect(embeddedState({ ...base, status: undefined })).toBe("loading");
+		expect(embeddedState({ ...base, allowed: null })).toBe("loading");
+		expect(embeddedState({ ...base, user: null })).toBe("no-access");
+		expect(embeddedState({ ...base, statusError: 403 })).toBe("no-access");
+		expect(embeddedState({ ...base, allowed: ["view-dashboard"] })).toBe(
+			"no-access",
+		);
+		expect(
+			embeddedState({ ...base, status: { ...READY, enabled: false } }),
+		).toBe("inactive");
+		expect(
+			embeddedState({
+				...base,
+				status: { ...READY, slots: { ...READY.slots, chat: false } },
+			}),
+		).toBe("inactive");
+		expect(embeddedState({ ...base, statusError: 500 })).toBe("inactive");
+		expect(embeddedState({ ...base, statusError: null })).toBe("inactive");
+	});
+
+	it("/admin/help memakai saran /bantuan", () => {
+		expect(suggestionsFor("/admin/help", ["use-ai-assistant"], "id")).toEqual([
 			"Bagaimana cara mengekspor data?",
 		]);
 	});
