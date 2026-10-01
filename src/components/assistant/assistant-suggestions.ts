@@ -76,13 +76,17 @@ const SUGGESTIONS: Record<string, SuggestionSet[]> = {
 	],
 };
 
+/** Halaman Bantuan admin memakai saran yang sama dengan /bantuan. */
+const ROUTE_ALIASES: Record<string, string> = { "/admin/help": "/bantuan" };
+
 /** Saran untuk rute aktif yang modulnya diizinkan untuk user. */
 export function suggestionsFor(
 	pathname: string,
 	allowed: readonly string[],
 	lang: AssistantLang,
 ): string[] {
-	const sets = SUGGESTIONS[pathname] ?? SUGGESTIONS["/"] ?? [];
+	const route = ROUTE_ALIASES[pathname] ?? pathname;
+	const sets = SUGGESTIONS[route] ?? SUGGESTIONS["/"] ?? [];
 	return sets
 		.filter((s) => allowed.includes(s.feature))
 		.flatMap((s) => s[lang]);

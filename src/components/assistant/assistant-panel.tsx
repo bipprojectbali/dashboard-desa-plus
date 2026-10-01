@@ -2,40 +2,27 @@ import { Drawer } from "@mantine/core";
 import { useSnapshot } from "valtio";
 import { useIsDark } from "@/hooks/useIsDark";
 import { assistantStore } from "@/store/assistant";
-import type { AssistantStatusDto } from "@/types/ai-assistant-chat";
 import { ASSISTANT_PANEL_WIDTH, assistantPanelStyles } from "./assistant.logic";
-import { AssistantComposer } from "./assistant-composer";
-import { AssistantConversationList } from "./assistant-conversation-list";
-import { AssistantHeader } from "./assistant-header";
-import { AssistantMessageList } from "./assistant-message-list";
-import { useAssistantChat } from "./use-assistant-chat";
-
-interface AssistantPanelProps {
-	status: AssistantStatusDto;
-	allowed: readonly string[];
-	pathname: string;
-	onClose: () => void;
-}
+import {
+	AssistantPanelContent,
+	type AssistantPanelContentProps,
+} from "./assistant-panel-content";
 
 /**
  * Panel samping "Tanya AI" (Drawer kanan, tanpa overlay agar halaman tetap
  * terlihat). Dua mode desktop: normal & perbesar (lebar penuh). Tetap
  * ter-mount saat ditutup; percakapan ada di assistantStore.
  */
-export function AssistantPanel({
-	status,
-	allowed,
-	pathname,
-	onClose,
-}: AssistantPanelProps) {
-	const { open, maximized, view } = useSnapshot(assistantStore);
+export function AssistantPanel(
+	props: AssistantPanelContentProps & { onClose: () => void },
+) {
+	const { open, maximized } = useSnapshot(assistantStore);
 	const dark = useIsDark();
-	const chat = useAssistantChat(status.maxInputChars);
 
 	return (
 		<Drawer.Root
 			opened={open}
-			onClose={onClose}
+			onClose={props.onClose}
 			position="right"
 			size={maximized ? "100%" : ASSISTANT_PANEL_WIDTH}
 			keepMounted
@@ -47,28 +34,8 @@ export function AssistantPanel({
 			// (latar gelap menutupi halaman, panel turun ke kiri bawah).
 			styles={assistantPanelStyles(dark)}
 		>
-			<Drawer.Content aria-label={status.assistantName}>
-				<AssistantHeader name={status.assistantName} onClose={onClose} />
-				<Drawer.Body>
-					{view === "list" ? (
-						<AssistantConversationList onOpen={chat.openConversation} />
-					) : (
-						<>
-							<AssistantMessageList
-								name={status.assistantName}
-								allowed={allowed}
-								pathname={pathname}
-								onAsk={chat.send}
-								onLoadOlder={chat.loadOlder}
-							/>
-							<AssistantComposer
-								name={status.assistantName}
-								maxInputChars={status.maxInputChars}
-								onSend={chat.send}
-							/>
-						</>
-					)}
-				</Drawer.Body>
+			<Drawer.Content aria-label={props.status.assistantName}>
+				<AssistantPanelContent {...props} />
 			</Drawer.Content>
 		</Drawer.Root>
 	);

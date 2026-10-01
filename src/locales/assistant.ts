@@ -30,6 +30,7 @@ export interface AssistantText {
 	delete: string;
 	confirmDelete: string;
 	failedMessage: string;
+	embedded: { noAccess: string; inactive: string; openSettings: string };
 	errors: {
 		session: string;
 		forbidden: string;
@@ -75,6 +76,11 @@ const id: AssistantText = {
 	delete: "Hapus",
 	confirmDelete: "Hapus percakapan ini?",
 	failedMessage: "Gagal terkirim",
+	embedded: {
+		noAccess: "Asisten AI belum tersedia untuk akun Anda.",
+		inactive: "Asisten AI belum aktif. Hubungi admin untuk mengaktifkannya.",
+		openSettings: "Buka pengaturan AI Assistant",
+	},
 	errors: {
 		session: "Sesi Anda berakhir. Silakan masuk lagi.",
 		forbidden: "Anda tidak punya akses ke asisten AI.",
@@ -127,6 +133,11 @@ const en: AssistantText = {
 	delete: "Delete",
 	confirmDelete: "Delete this conversation?",
 	failedMessage: "Not sent",
+	embedded: {
+		noAccess: "The AI assistant is not available for your account.",
+		inactive: "The AI assistant is not active yet. Ask an admin to enable it.",
+		openSettings: "Open AI Assistant settings",
+	},
 	errors: {
 		session: "Your session has ended. Please sign in again.",
 		forbidden: "You do not have access to the AI assistant.",

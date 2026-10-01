@@ -21,7 +21,6 @@ import { demografi } from "./demografi";
 import { division } from "./division";
 import { invitationRoutes } from "./invitation";
 import { ipWhitelist } from "./ip-whitelist";
-import { jennaChat } from "./jenna";
 import { keamanan } from "./keamanan";
 import { keamananPreferences } from "./keamanan-preferences";
 import { keuangan } from "./keuangan";
@@ -103,7 +102,6 @@ const api = new Elysia({
 	.use(aksesPreferences)
 	.use(wallLayout)
 	.use(keuangan)
-	.use(jennaChat)
 	.use(systemStatsRoutes)
 	.use(activityLog)
 	.use(invitationRoutes)

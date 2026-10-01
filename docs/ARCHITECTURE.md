@@ -42,7 +42,6 @@ Semua Elysia plugin di-mount berantai di `src/api/index.tsx` pada instance `Elys
 | `akses-preferences.ts` | `/akses-preferences` | Preferensi akses & tim |
 | `wall-layout.ts` | `/wall-layout` | Konfigurasi layout Video Wall |
 | `keuangan.ts` | `/keuangan` | Keuangan & anggaran (APBDes) |
-| `jenna.ts` | `/jenna` | Jenna AI chat helper |
 | `system-stats.ts` | (lihat file) | Statistik sistem (admin) |
 | `activity-log.ts` | `/activity-log` | Audit log aktivitas user |
 | `invitation.ts` | `/invitation` | Sistem undangan user |
@@ -184,6 +183,7 @@ Asisten AI baca-saja: tombol melayang + panel chat (Fitur 1). Istilah di kode: *
 
 **Frontend** (`src/components/assistant/`, store `src/store/assistant.ts`, teks id/en `src/locales/assistant.ts`):
 - `AssistantFab` dipasang di `MainLayout`, layout `/profile`, dan `WallPage`; tidak di `/admin/*`, `/signin`, `/signup`. Tampil hanya bila sesi terverifikasi, `GET /api/assistant/status` → `enabled && slots.chat`, dan izin `use-ai-assistant` (dari `permissionStore`, atau `/api/my-permissions` di `/profile` & `/wall`). Status tidak diminta tanpa sesi (TV `/wall` publik tidak memicu 401). Aturan tampil di `assistant.logic.ts` (`shouldShowFab`).
+- Halaman Bantuan `/bantuan` (`help-page.tsx`) & `/admin/help` memakai `AssistantEmbedded` (mode tertanam, tinggi 520 px): isi panel yang sama dengan FAB (`assistant-panel-content.tsx`, tanpa tombol perbesar/tutup) dan state percakapan yang sama. Akses dicek tanpa aturan rute FAB (jadi berlaku juga di `/admin/help`); belum terverifikasi/tanpa izin atau asisten belum aktif → keadaan kosong yang ramah (admin mendapat tautan ke `/admin/ai-assistant`). Stub lama `POST /api/jenna/chat` sudah dihapus.
 - `AssistantPanel` (dirender lazy saat FAB pertama diklik): Drawer kanan tanpa overlay, mode normal (440 px) & perbesar (lebar penuh); tidak ada tampilan HP. Esc menutup dan fokus kembali ke FAB. Di `/wall` halaman memberi ruang selebar panel (bukan menimpa widget NOC).
 - Isi: header (nama dari config, badge Beta, ☰ / percakapan baru / perbesar / tutup), daftar percakapan berhalaman (buka, ganti judul, hapus), bubble pesan (`aria-live`), indikator "memeriksa data…", label "Sumber" dari `toolsUsed`, tombol salin, saran pertanyaan per rute yang difilter izin (`assistant-suggestions.ts`), composer (Enter kirim, Shift+Enter baris baru, sisa karakter dari `maxInputChars`), satu baris disclaimer. Pesan error ramah untuk 401/403/404/409/422/429 (`Retry-After`)/503 + tombol kirim ulang. `pageContext { route, title, lang }` dikirim tiap pertanyaan; `actions` diabaikan (Fitur 2).
 

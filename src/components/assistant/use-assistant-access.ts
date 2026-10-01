@@ -5,8 +5,13 @@ import { assistantTexts } from "@/locales/assistant";
 import { authStore } from "@/store/auth";
 import { i18nStore } from "@/store/i18n";
 import { permissionStore } from "@/store/permission";
-import { fetchAssistantStatus, fetchMyPermissions } from "./assistant.api";
 import {
+	AssistantApiError,
+	fetchAssistantStatus,
+	fetchMyPermissions,
+} from "./assistant.api";
+import {
+	embeddedState,
 	shouldFetchStatus,
 	shouldShowFab,
 	toAssistantLang,
@@ -24,13 +29,14 @@ export function useAssistantText() {
 /**
  * Siapa boleh melihat asisten di rute ini. Status hanya diminta untuk user
  * login terverifikasi; izin dari permissionStore (MainLayout) atau, di
- * /profile & /wall yang tidak memuatnya, dari /api/my-permissions.
+ * /profile, /wall, & /admin yang tidak memuatnya, dari /api/my-permissions.
+ * `embedded` = panel tertanam di halaman Bantuan (tidak terikat aturan rute FAB).
  */
-export function useAssistantAccess() {
+export function useAssistantAccess({ embedded = false } = {}) {
 	const { user } = useSnapshot(authStore);
 	const { allowed: storeAllowed } = useSnapshot(permissionStore);
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
-	const enabled = shouldFetchStatus({ pathname, user });
+	const enabled = shouldFetchStatus({ pathname, user, embedded });
 
 	const status = useApiQuery(
 		["assistant", "status", user?.id],
@@ -48,10 +54,21 @@ export function useAssistantAccess() {
 	);
 
 	const allowed = storeAllowed ?? permissions.data ?? null;
+	const statusError = status.isError
+		? status.error instanceof AssistantApiError
+			? status.error.status
+			: null
+		: undefined;
 	return {
 		pathname,
 		status: status.data,
 		allowed: allowed ?? [],
 		visible: shouldShowFab({ pathname, user, status: status.data, allowed }),
+		embeddedState: embeddedState({
+			user,
+			status: status.data,
+			statusError,
+			allowed,
+		}),
 	};
 }
