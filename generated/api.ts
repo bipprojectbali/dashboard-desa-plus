@@ -1961,6 +1961,160 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/assistant/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** AI assistant availability for the current user */
+        get: operations["getApiAssistantStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/assistant/chat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ask the AI assistant (one turn) */
+        post: operations["postApiAssistantChat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/assistant/conversations/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List own assistant conversations */
+        get: operations["getApiAssistantConversations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/assistant/conversations/{id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Messages of one own conversation, newest first */
+        get: operations["getApiAssistantConversationsByIdMessages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/assistant/conversations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete own conversation */
+        delete: operations["deleteApiAssistantConversationsById"];
+        options?: never;
+        head?: never;
+        /** Rename own conversation */
+        patch: operations["patchApiAssistantConversationsById"];
+        trace?: never;
+    };
+    "/api/admin/ai-assistant/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** AI assistant settings, slots and today stats (admin) */
+        get: operations["getApiAdminAi-assistant"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/ai-assistant/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update AI assistant settings */
+        put: operations["putApiAdminAi-assistantSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/ai-assistant/providers/{feature}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update one AI provider slot (chat/pointer/voice) */
+        put: operations["putApiAdminAi-assistantProvidersByFeature"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/ai-assistant/providers/{feature}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Test the stored credentials of one slot */
+        post: operations["postApiAdminAi-assistantProvidersByFeatureTest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -8211,6 +8365,321 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getApiAssistantStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    postApiAssistantChat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    conversationId?: string;
+                    message: string;
+                    pageContext?: {
+                        route: string;
+                        title?: string;
+                        /**
+                         * @default id
+                         * @enum {string}
+                         */
+                        lang?: "id" | "en";
+                    };
+                };
+                "multipart/form-data": {
+                    conversationId?: string;
+                    message: string;
+                    pageContext?: {
+                        route: string;
+                        title?: string;
+                        /**
+                         * @default id
+                         * @enum {string}
+                         */
+                        lang?: "id" | "en";
+                    };
+                };
+                "text/plain": {
+                    conversationId?: string;
+                    message: string;
+                    pageContext?: {
+                        route: string;
+                        title?: string;
+                        /**
+                         * @default id
+                         * @enum {string}
+                         */
+                        lang?: "id" | "en";
+                    };
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getApiAssistantConversations: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: string | number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getApiAssistantConversationsByIdMessages: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: string | number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    deleteApiAssistantConversationsById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    patchApiAssistantConversationsById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title: string;
+                };
+                "multipart/form-data": {
+                    title: string;
+                };
+                "text/plain": {
+                    title: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "getApiAdminAi-assistant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "putApiAdminAi-assistantSettings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    enabled: boolean;
+                    assistantName: string;
+                    personaNote: string | null;
+                    dailyMessageLimitPerUser: number;
+                    dailyTokenLimitGlobal: number;
+                    ratePerMinutePerUser: number;
+                    maxInputChars: number;
+                    historyWindow: number;
+                    retentionDays: number;
+                    kioskUserId: string | null;
+                    dailyMessageLimitKiosk: number;
+                };
+                "multipart/form-data": {
+                    enabled: boolean;
+                    assistantName: string;
+                    personaNote: string | null;
+                    dailyMessageLimitPerUser: number;
+                    dailyTokenLimitGlobal: number;
+                    ratePerMinutePerUser: number;
+                    maxInputChars: number;
+                    historyWindow: number;
+                    retentionDays: number;
+                    kioskUserId: string | null;
+                    dailyMessageLimitKiosk: number;
+                };
+                "text/plain": {
+                    enabled: boolean;
+                    assistantName: string;
+                    personaNote: string | null;
+                    dailyMessageLimitPerUser: number;
+                    dailyTokenLimitGlobal: number;
+                    ratePerMinutePerUser: number;
+                    maxInputChars: number;
+                    historyWindow: number;
+                    retentionDays: number;
+                    kioskUserId: string | null;
+                    dailyMessageLimitKiosk: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "putApiAdminAi-assistantProvidersByFeature": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feature: "chat" | "pointer" | "voice";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    enabled: boolean;
+                    label: string | null;
+                    baseUrl: string | null;
+                    model: string | null;
+                    temperature: number | null;
+                    maxTokens: number | null;
+                    timeoutMs: number;
+                    apiKey?: string;
+                };
+                "multipart/form-data": {
+                    enabled: boolean;
+                    label: string | null;
+                    baseUrl: string | null;
+                    model: string | null;
+                    temperature: number | null;
+                    maxTokens: number | null;
+                    timeoutMs: number;
+                    apiKey?: string;
+                };
+                "text/plain": {
+                    enabled: boolean;
+                    label: string | null;
+                    baseUrl: string | null;
+                    model: string | null;
+                    temperature: number | null;
+                    maxTokens: number | null;
+                    timeoutMs: number;
+                    apiKey?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "postApiAdminAi-assistantProvidersByFeatureTest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feature: "chat" | "pointer" | "voice";
+            };
             cookie?: never;
         };
         requestBody?: never;

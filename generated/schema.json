@@ -16227,6 +16227,836 @@
           "200": {}
         }
       }
+    },
+    "/api/assistant/status": {
+      "get": {
+        "operationId": "getApiAssistantStatus",
+        "summary": "AI assistant availability for the current user",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/assistant/chat": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAssistantChat",
+        "summary": "Ask the AI assistant (one turn)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "conversationId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "pageContext": {
+                    "type": "object",
+                    "required": [
+                      "route"
+                    ],
+                    "properties": {
+                      "route": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "title": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "lang": {
+                        "default": "id",
+                        "type": "string",
+                        "enum": [
+                          "id",
+                          "en"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "conversationId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "pageContext": {
+                    "type": "object",
+                    "required": [
+                      "route"
+                    ],
+                    "properties": {
+                      "route": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "title": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "lang": {
+                        "default": "id",
+                        "type": "string",
+                        "enum": [
+                          "id",
+                          "en"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "conversationId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "pageContext": {
+                    "type": "object",
+                    "required": [
+                      "route"
+                    ],
+                    "properties": {
+                      "route": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "title": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "lang": {
+                        "default": "id",
+                        "type": "string",
+                        "enum": [
+                          "id",
+                          "en"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/assistant/conversations/": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "in": "query",
+            "name": "cursor",
+            "required": false
+          },
+          {
+            "schema": {
+              "minimum": 1,
+              "anyOf": [
+                {
+                  "format": "numeric",
+                  "default": 0,
+                  "type": "string"
+                },
+                {
+                  "minimum": 1,
+                  "type": "number"
+                }
+              ]
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "operationId": "getApiAssistantConversations",
+        "summary": "List own assistant conversations",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/assistant/conversations/{id}/messages": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "in": "query",
+            "name": "cursor",
+            "required": false
+          },
+          {
+            "schema": {
+              "minimum": 1,
+              "anyOf": [
+                {
+                  "format": "numeric",
+                  "default": 0,
+                  "type": "string"
+                },
+                {
+                  "minimum": 1,
+                  "type": "number"
+                }
+              ]
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "operationId": "getApiAssistantConversationsByIdMessages",
+        "summary": "Messages of one own conversation, newest first",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/assistant/conversations/{id}": {
+      "patch": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "operationId": "patchApiAssistantConversationsById",
+        "summary": "Rename own conversation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title"
+                ],
+                "properties": {
+                  "title": {
+                    "maxLength": 500,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title"
+                ],
+                "properties": {
+                  "title": {
+                    "maxLength": 500,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title"
+                ],
+                "properties": {
+                  "title": {
+                    "maxLength": 500,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "operationId": "deleteApiAssistantConversationsById",
+        "summary": "Delete own conversation",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/ai-assistant/": {
+      "get": {
+        "operationId": "getApiAdminAi-assistant",
+        "summary": "AI assistant settings, slots and today stats (admin)",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/ai-assistant/settings": {
+      "put": {
+        "parameters": [],
+        "operationId": "putApiAdminAi-assistantSettings",
+        "summary": "Update AI assistant settings",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "enabled",
+                  "assistantName",
+                  "personaNote",
+                  "dailyMessageLimitPerUser",
+                  "dailyTokenLimitGlobal",
+                  "ratePerMinutePerUser",
+                  "maxInputChars",
+                  "historyWindow",
+                  "retentionDays",
+                  "kioskUserId",
+                  "dailyMessageLimitKiosk"
+                ],
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "assistantName": {
+                    "type": "string"
+                  },
+                  "personaNote": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "dailyMessageLimitPerUser": {
+                    "type": "number"
+                  },
+                  "dailyTokenLimitGlobal": {
+                    "type": "number"
+                  },
+                  "ratePerMinutePerUser": {
+                    "type": "number"
+                  },
+                  "maxInputChars": {
+                    "type": "number"
+                  },
+                  "historyWindow": {
+                    "type": "number"
+                  },
+                  "retentionDays": {
+                    "type": "number"
+                  },
+                  "kioskUserId": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "dailyMessageLimitKiosk": {
+                    "type": "number"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "enabled",
+                  "assistantName",
+                  "personaNote",
+                  "dailyMessageLimitPerUser",
+                  "dailyTokenLimitGlobal",
+                  "ratePerMinutePerUser",
+                  "maxInputChars",
+                  "historyWindow",
+                  "retentionDays",
+                  "kioskUserId",
+                  "dailyMessageLimitKiosk"
+                ],
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "assistantName": {
+                    "type": "string"
+                  },
+                  "personaNote": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "dailyMessageLimitPerUser": {
+                    "type": "number"
+                  },
+                  "dailyTokenLimitGlobal": {
+                    "type": "number"
+                  },
+                  "ratePerMinutePerUser": {
+                    "type": "number"
+                  },
+                  "maxInputChars": {
+                    "type": "number"
+                  },
+                  "historyWindow": {
+                    "type": "number"
+                  },
+                  "retentionDays": {
+                    "type": "number"
+                  },
+                  "kioskUserId": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "dailyMessageLimitKiosk": {
+                    "type": "number"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "enabled",
+                  "assistantName",
+                  "personaNote",
+                  "dailyMessageLimitPerUser",
+                  "dailyTokenLimitGlobal",
+                  "ratePerMinutePerUser",
+                  "maxInputChars",
+                  "historyWindow",
+                  "retentionDays",
+                  "kioskUserId",
+                  "dailyMessageLimitKiosk"
+                ],
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "assistantName": {
+                    "type": "string"
+                  },
+                  "personaNote": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "dailyMessageLimitPerUser": {
+                    "type": "number"
+                  },
+                  "dailyTokenLimitGlobal": {
+                    "type": "number"
+                  },
+                  "ratePerMinutePerUser": {
+                    "type": "number"
+                  },
+                  "maxInputChars": {
+                    "type": "number"
+                  },
+                  "historyWindow": {
+                    "type": "number"
+                  },
+                  "retentionDays": {
+                    "type": "number"
+                  },
+                  "kioskUserId": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "dailyMessageLimitKiosk": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/ai-assistant/providers/{feature}": {
+      "put": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "default": "chat",
+              "enum": [
+                "chat",
+                "pointer",
+                "voice"
+              ]
+            },
+            "in": "path",
+            "name": "feature",
+            "required": true
+          }
+        ],
+        "operationId": "putApiAdminAi-assistantProvidersByFeature",
+        "summary": "Update one AI provider slot (chat/pointer/voice)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "enabled",
+                  "label",
+                  "baseUrl",
+                  "model",
+                  "temperature",
+                  "maxTokens",
+                  "timeoutMs"
+                ],
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "label": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "baseUrl": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "model": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "temperature": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "maxTokens": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "timeoutMs": {
+                    "type": "number"
+                  },
+                  "apiKey": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "enabled",
+                  "label",
+                  "baseUrl",
+                  "model",
+                  "temperature",
+                  "maxTokens",
+                  "timeoutMs"
+                ],
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "label": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "baseUrl": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "model": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "temperature": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "maxTokens": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "timeoutMs": {
+                    "type": "number"
+                  },
+                  "apiKey": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "enabled",
+                  "label",
+                  "baseUrl",
+                  "model",
+                  "temperature",
+                  "maxTokens",
+                  "timeoutMs"
+                ],
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "label": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "baseUrl": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "model": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "temperature": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "maxTokens": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "timeoutMs": {
+                    "type": "number"
+                  },
+                  "apiKey": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/ai-assistant/providers/{feature}/test": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "default": "chat",
+              "enum": [
+                "chat",
+                "pointer",
+                "voice"
+              ]
+            },
+            "in": "path",
+            "name": "feature",
+            "required": true
+          }
+        ],
+        "operationId": "postApiAdminAi-assistantProvidersByFeatureTest",
+        "summary": "Test the stored credentials of one slot",
+        "responses": {
+          "200": {}
+        }
+      }
     }
   },
   "components": {

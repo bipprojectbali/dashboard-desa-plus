@@ -79,7 +79,7 @@ Keadaan layar yang perlu didesain:
 | Sedang menjawab | Indikator "memeriksa data keuangan…" |
 | Jawaban + label "Sumber" + tombol salin | 👍👎 **ditunda** |
 | Daftar percakapan (☰) | Berhalaman 20/halaman, "Percakapan baru", hapus |
-| Mode perbesar & mobile | Perbesar = lebar penuh; mobile = layar penuh; `Esc` menutup, fokus kembali ke FAB |
+| Mode perbesar | Perbesar = lebar penuh; `Esc` menutup, fokus kembali ke FAB. **Tidak ada mode HP** — dashboard dipakai untuk NOC, tidak dibuka di HP (ralat user 2026-10-01) |
 | Error | 429 kuota/rate, 503 layanan AI mati, "tidak punya akses modul X" (bukan "sistem error") |
 
 FAB dipasang di `MainLayout`, layout `/profile`, dan `WallPage`; **tidak** ada di `/admin/*`, `/signin`, `/signup`.
@@ -112,7 +112,7 @@ API key tidak pernah ditampilkan penuh (hanya hint `sk-c****dc07`). Rincian: [`0
 Kursor virtual bergerak ke elemen bertanda `data-ai-target`, elemen disorot dengan ring, panel chat tetap
 terbuka. Menghormati `prefers-reduced-motion`. Halaman percontohan usulan: Keuangan.
 Semua keputusan P1–P7 tuntas: menunjuk hanya bila diminta (+ label "Sumber" bisa diklik), aksi `navigate` + `pointTo`,
-percontohan Keuangan lalu Beranda, panel ditutup sementara di HP/mode perbesar, hormati reduced motion. Alasan pendekatan B untuk tim: [`discus/fitur-2-alasan-pendekatan-b.md`](discus/fitur-2-alasan-pendekatan-b.md).
+percontohan Keuangan lalu Beranda, panel ditutup sementara di mode perbesar, hormati reduced motion. Alasan pendekatan B untuk tim: [`discus/fitur-2-alasan-pendekatan-b.md`](discus/fitur-2-alasan-pendekatan-b.md).
 
 ### 3.4 Fitur 3 (draf): suara
 Tombol mikrofon (tekan-untuk-bicara) di composer; jawaban bisa dibacakan. Tingkat 1 memakai Web Speech API
@@ -154,7 +154,7 @@ POST /api/assistant/chat ──────▶ 1. sesi login valid & emailVerifi
 | Izin | `use-ai-assistant` baru + fungsi `resolveAllowedFeatures` agar fitur baru langsung muncul untuk role `user` |
 | Riwayat | Disimpan di DB, hanya pemilik yang bisa membaca (id milik orang lain → 404) |
 | Nama | Konfigurasi, default "Jenna"; di kode memakai istilah *assistant* |
-| Fitur 2 | **Diputuskan: pendekatan B** — AI hanya menunjuk target yang terdaftar di kode, satu otak dengan chat, baca-saja. page-agent tidak dipakai sekarang: ia membaca seluruh teks layar (termasuk nama warga), menjalankan otak AI kedua di browser, dan bisa memakai hingga 40 panggilan AI per pertanyaan. Disimpan sebagai opsi bila kelak AI boleh melakukan aksi tulis. Rincian: [`discus/fitur-2-alasan-pendekatan-b.md`](discus/fitur-2-alasan-pendekatan-b.md) |
+| Fitur 2 | **Diputuskan: pendekatan B diperluas** (dikonfirmasi ulang 2026-10-02 setelah tinjau ulang page-agent; AI bisa klik elemen tampilan terdaftar, baca-saja tetap) — AI hanya menunjuk target yang terdaftar di kode, satu otak dengan chat, baca-saja. page-agent tidak dipakai sekarang: ia membaca seluruh teks layar (termasuk nama warga), menjalankan otak AI kedua di browser, dan bisa memakai hingga 40 panggilan AI per pertanyaan. Disimpan sebagai opsi bila kelak AI boleh melakukan aksi tulis. Rincian: [`discus/fitur-2-alasan-pendekatan-b.md`](discus/fitur-2-alasan-pendekatan-b.md) |
 | Fitur 3 | Rekomendasi tingkat 1: Web Speech API dulu |
 
 Rincian & alasan: [`03-pondasi.md`](03-pondasi.md), [`discus/temuan.md`](discus/temuan.md), README (28 keputusan).

@@ -21,7 +21,7 @@
 | `02-analisa-blueprint.md` | Fase 0–11 blueprint desa-platform: Terapkan / Adaptasi / Tunda / Tidak relevan | Analisa |
 | `03-pondasi.md` | **Setup & persiapan**: model data, kredensial per fitur, izin, provider, tool/executor, prompt, batas, endpoint, halaman admin, test | **Disetujui** (2026-09-30) |
 | `04-fitur-1-chat-panel.md` | FAB + panel "Tanya AI", endpoint percakapan, tool awal | **Disetujui** (2026-10-01) |
-| `05-fitur-2-pointer.md` | AI menunjuk elemen (pendekatan page-agent vs whitelist) | Keputusan P1–P7 tuntas; menunggu persetujuan akhir |
+| `05-fitur-2-pointer.md` | AI menunjuk elemen (pendekatan page-agent vs whitelist) | Keputusan tuntas (B diperluas, klik tampilan); menunggu persetujuan akhir |
 | `06-fitur-3-suara.md` | Interaksi suara (3 tingkat) | Draf |
 | `07-roadmap.md` | Tahapan P0–P3 (pondasi) lalu F1–F3 | Draf |
 | `discus/temuan.md` | Diskusi temuan satu per satu: fakta → opsi → rekomendasi → keputusan | Selesai (1–7) |
@@ -30,6 +30,7 @@
 | `discus/p-1-precheck.sql` | Query read-only sebelum deploy P-1 (user & API key terdampak) | Siap pakai |
 | `discus/fitur-2-pointer.md` | Diskusi Fitur 2 (P1–P7) — sesi 59 → 61 | **Tuntas** (2026-10-01) |
 | `discus/fitur-2-alasan-pendekatan-b.md` | **Pegangan untuk tim**: kenapa pendekatan B, bukan page-agent; cara kerja B; kapan page-agent layak dipakai | Final (keputusan #28) |
+| `discus/fitur-2-page-agent-tinjau-ulang.md` | Tinjau ulang page-agent (permintaan user 2026-10-01): fakta baru v1.12.4, opsi O1–O4 | **Tuntas** — B diperluas (2026-10-02) |
 | `checklist-progress.md` | Checklist progres semua tahap | Aktif |
 
 ## Keputusan yang sudah diambil user
@@ -66,10 +67,13 @@
 | 28 | Fitur 2 — pendekatan | **B**: target terdaftar, satu loop, baca-saja; page-agent untuk masa depan (aksi tulis) | 05 §2 |
 | 29 | Fitur 2 — slot Penunjuk | **Belum dipakai**: penunjuk memakai otak chat (satu loop); slot tetap ada, berlabel "belum dipakai" | 05 §3 |
 | 30 | Fitur 2 — kapan menunjuk | Hanya bila diminta; label "Sumber" bisa diklik untuk menunjuk tanpa memanggil AI/kuota | 05 §4 |
-| 31 | Fitur 2 — aksi versi pertama | `navigate` + `pointTo` (termasuk gulir, kursor, sorotan); tur & ganti filter ditunda; klik tidak dibuat | 05 §4 |
+| 31 | Fitur 2 — aksi versi pertama | `navigate` + `pointTo` (termasuk gulir, kursor, sorotan); tur & ganti filter ditunda. **DIUBAH 2026-10-01: + klik TAMPILAN** (tab, tahun, detail, menu) pada target terdaftar ber-daftar-izin; tombol tulis hanya ditunjuk ("silakan tekan sendiri"); klik tulis dengan konfirmasi = tahap berikutnya. Baca-saja (#3) tetap | 05 §4, `discus/fitur-2-page-agent-tinjau-ulang.md` |
 | 32 | Fitur 2 — halaman percontohan | Keuangan (`/keuangan-anggaran`) dulu, lalu Beranda | 05 §4 |
-| 33 | Fitur 2 — HP & mode perbesar | Panel ditutup sementara saat menunjuk, lalu tombol "Kembali ke chat" (percakapan utuh) | 05 §4, 04 §2 |
+| 33 | Fitur 2 — mode perbesar | Panel ditutup sementara saat menunjuk, lalu tombol "Kembali ke chat" (percakapan utuh). **Ralat 2026-10-01: tidak ada tampilan HP** — dashboard dipakai untuk NOC | 05 §4, 04 §2 |
 | 34 | Fitur 2 — aksesibilitas | `prefers-reduced-motion` aktif → sorotan + gulir tanpa animasi kursor | 05 §4 |
+| 35 | Kuota & kegagalan AI | Pertanyaan yang gagal karena provider **tidak dihitung kuota** (tetap disimpan berstatus "error" untuk admin) | 03 §8 |
+| 36 | Fitur 1 lanjutan | F1-c s.d. F1-e di sesi `chat-a6`, worktree & branch yang sama (`feature/ai-assistant-chat`), satu sub-tahap per perintah | checklist §5 |
+| 37 | Fitur 2 — pendekatan setelah tinjau ulang page-agent | **B diperluas**: tool `klik_elemen(target)` / `pilih(target, nilai)` khusus target tampilan terdaftar (daftar izin); page-agent tidak dipakai sekarang | 05, `discus/fitur-2-page-agent-tinjau-ulang.md` Q2 |
 
 ## Ringkasan eksekutif
 

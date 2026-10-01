@@ -20,8 +20,8 @@
 | P2 otak AI (tanpa UI) | ✅ selesai (8 commit `f3e1649`…`3fcceaa`), dicek ulang 0d: test 461/0, test:db 26/0, lint error 0, tsc tidak ada error baru; **di-merge ke `join` (`325d4a1`)** atas perintah user; `join` (`74f1791`) belum di-push (21 commit di depan `origin/join`) | `feature/ai-assistant-pondasi` (sesi 61) |
 | P3 endpoint admin & status | ✅ selesai (3 commit), dicek ulang 0d: test 508/0, test:db 47/0, lint error 0, tsc tanpa error baru; **di-merge ke `join` (`1febae3`)**, belum di-push; sisa: uji koneksi ke proxy nyata bersama user | worktree `../dashboard-desa-plus-p3`, branch `feature/ai-assistant-admin-api` dari `join` `74f1791` |
 | UI `/admin/ai-assistant` | ✅ di `join`; tersambung ke endpoint P3 | `feature/ai-assistant-admin-ui` (worktree `../dashboard-desa-plus-admin-ui`, ada sesi `-91` idle) |
-| Fitur 1 | 📄 dokumen `04` disetujui; implementasi belum dimulai | — |
-| Fitur 2 | ✅ Diskusi P1–P7 **tuntas**; menunggu persetujuan akhir dokumen `05` | sesi 61 (diskusi) | sesi **61** (dialihkan dari 59, keputusan user) |
+| Fitur 1 | ✅ F1-c selesai & di `join` (`730563b`), generated di-commit (`44a464c`); `join` belum di-push · ✅ F1-b selesai (2 commit `e74198f`, `6fa6eac`), dicek ulang 0d: test 580/0, test:db 73/0, lint 0 error, tsc tanpa error baru; di-push ke `origin/feature/ai-assistant-chat` dan **di-merge ke `join` (`b5c72ec`)** atas perintah user; `join` belum di-push. Berikutnya F1-c (tunggu perintah) | worktree `../dashboard-desa-plus-chat`, sesi `chat-a6` |
+| Fitur 2 | ✅ Keputusan tuntas lagi (2026-10-02): **B diperluas** + klik tampilan; menunggu persetujuan akhir `05`; belum ada kode | sesi **59** (diskusi page-agent) | sesi **61** (dialihkan dari 59, keputusan user) |
 | Fitur 3 | 📄 belum dibahas | — |
 | `PROJECT-STRUCTURE.md` | ⏳ menunggu perintah | sesi 59 |
 
@@ -151,27 +151,38 @@
 
 ## 5. Fitur 1 — FAB + panel "Tanya AI" · branch `feature/ai-assistant-chat` (setelah pondasi di-merge)
 
+> Lokasi (perintah user 2026-10-01): worktree **`../dashboard-desa-plus-chat`**, branch `feature/ai-assistant-chat` dari `join` `1ac2b72`.
+> Dikerjakan **berurutan** F1-b → F1-c → F1-d → F1-e oleh sesi **`dashboard-desa-plus-chat-a6`** (instruksi F1-b dikirim 2026-10-01; **perintah mulai F1-b diberikan user** 2026-10-01).
+
 - [x] **F1-a** Dokumen `04` disetujui (2026-10-01)
-- [ ] **F1-b** Tool MVP (kebijakan data temuan 3 — tanpa nama orang, koordinat, teks tulisan warga):
-  - [ ] `ringkasan_beranda` (`buildKpi` + `buildBeranda`, `view-dashboard`)
-  - [ ] `ringkasan_keuangan({ tahun? })` (`fetchApbdesEntriesRaw` + `mapKeuanganList`, `view-keuangan`; tanpa tahun = terbaru; sertakan daftar tahun tersedia)
-  - [ ] `statistik_pengaduan` (`buildPengaduan`, `view-pengaduan`; buang `namaPengusul`)
-  - [ ] `statistik_demografi` (`buildDemografi`, `view-demografi`)
-  - [ ] `kinerja_divisi` (`buildDivisi`, `view-kinerja-divisi`)
-  - [ ] `lookup_faq` (`Faq` terpublikasi, full-text, `use-ai-assistant`)
-- [ ] **F1-b** Endpoint (sesi browser saja + terverifikasi + izin): `POST /api/assistant/chat` (401/403/409/422/429/503, `actions: []`), `GET` daftar percakapan & pesan (berhalaman, cursor), `DELETE`, `PATCH` judul; id milik user lain → 404
-- [ ] **F1-b** Set evaluasi 10–20 pertanyaan dengan `MockProvider` (tool yang benar terpilih, izin dihormati)
-- [ ] **F1-b** Test: izin per tool, penyaringan field sensitif, kepemilikan percakapan, kontrak endpoint, batas → 429, alur end-to-end `MockProvider`
-- [ ] **F1-c** `AssistantFab` di `main-layout.tsx` (hapus blok komentar tombol Bantuan lama) + layout `/profile` + `WallPage`; tampil hanya bila ada sesi, status `enabled && slots.chat`, dan izin `use-ai-assistant`; tidak ada di `/admin`, `/signin`, `/signup`
-- [ ] **F1-c** `/wall`: tetap publik; FAB hanya untuk kiosk yang login akun khusus; status dipanggil hanya bila ada sesi; bentuk panel tidak menutupi panel NOC
+- [x] **F1-b** Tool MVP (kebijakan data temuan 3 — tanpa nama orang, koordinat, teks tulisan warga):
+  - [x] `ringkasan_beranda` (`buildKpi` + `buildBeranda`, `view-dashboard`)
+  - [x] `ringkasan_keuangan({ tahun? })` (`fetchApbdesEntriesRaw` + `mapKeuanganList`, `view-keuangan`; tanpa tahun = terbaru; sertakan daftar tahun tersedia)
+  - [x] `statistik_pengaduan` (`buildPengaduan`, `view-pengaduan`; buang `namaPengusul`)
+  - [x] `statistik_demografi` (`buildDemografi`, `view-demografi`)
+  - [x] `kinerja_divisi` (`buildDivisi`, `view-kinerja-divisi`)
+  - [x] `lookup_faq` (`Faq` terpublikasi, full-text, `use-ai-assistant`)
+- [x] **F1-b** Endpoint (sesi browser saja + terverifikasi + izin): `POST /api/assistant/chat` (401/403/409/422/429/503, `actions: []`), `GET` daftar percakapan & pesan (berhalaman, cursor), `DELETE`, `PATCH` judul; id milik user lain → 404
+- [x] **F1-b** Set evaluasi 18 pertanyaan dengan `MockProvider` (tool yang benar terpilih, izin dihormati)
+> Catatan F1-b (sesi chat-a6, branch `feature/ai-assistant-chat`): kontrak DTO untuk F1-c di `src/types/ai-assistant-chat.ts`;
+> isi pesan diskusi divisi juga dibuang (teks bebas); kegagalan provider → pertanyaan disimpan berstatus "error" dan **ikut dihitung kuota** (perlu konfirmasi user);
+> → **Diputuskan user: kegagalan provider TIDAK dihitung kuota** (dikerjakan di awal F1-c).
+> `conversation.repo.ts` 247 baris (≥80% batas repo 250) → pecah sebelum ditambah; `generated/api.ts` belum diregenerasi untuk route asisten.
+- [x] **F1-b** Test: izin per tool, penyaringan field sensitif, kepemilikan percakapan, kontrak endpoint, batas → 429, alur end-to-end `MockProvider`
+- [x] **F1-c** selesai 2026-10-02 (sesi `chat-a6`, branch `feature/ai-assistant-chat`, commit `aa1a6a9` kuota tidak menghitung pesan gagal + `eba5e09` FAB & panel) — **di-merge ke `join` (`730563b`)** atas perintah user 2026-10-02; `generated/api.ts` & `schema.json` diregenerasi & di-commit (`44a464c`); belum di-push
+> Catatan F1-c: `maxInputChars` ditambahkan ke `GET /api/assistant/status` (DTO pindah ke `src/types/ai-assistant-chat.ts`); teks panel di `src/locales/assistant.ts` (id.ts sudah over-limit);
+> Drawer kanan **tanpa overlay & tanpa kunci fokus** (halaman tetap bisa dipakai), normal 440px / perbesar 100%; `/wall` memberi ruang (padding kanan 440px) saat panel terbuka;
+> izin di `/profile` & `/wall` dari `/api/my-permissions`; state percakapan di `src/store/assistant.ts` tidak di-reset saat panel ditutup; build tanpa `--splitting` → "lazy" hanya menunda render. — di awal: kuota tidak menghitung pesan gagal + test
+- [x] **F1-c** `AssistantFab` di `main-layout.tsx` (hapus blok komentar tombol Bantuan lama) + layout `/profile` + `WallPage`; tampil hanya bila ada sesi, status `enabled && slots.chat`, dan izin `use-ai-assistant`; tidak ada di `/admin`, `/signin`, `/signup`
+- [x] **F1-c** `/wall`: tetap publik; FAB hanya untuk kiosk yang login akun khusus; status dipanggil hanya bila ada sesi; bentuk panel tidak menutupi panel NOC
 - [ ] (User) Buat akun kiosk khusus (mis. "NOC"), verifikasi di `/admin/users`, pastikan izin `use-ai-assistant` & `view-*` yang dibutuhkan — sebelum uji FAB di wall
-- [ ] **F1-c** `AssistantPanel` (Drawer kanan, lazy; perbesar; layar penuh di mobile; `Esc` menutup + fokus kembali ke FAB; `aria-live`), header (nama dari config, badge Beta), daftar percakapan ☰, pesan + label "Sumber", indikator "memeriksa data…", composer (Enter/Shift+Enter, sisa karakter)
-- [ ] **F1-c** Saran pertanyaan per rute, hanya untuk modul yang diizinkan; `pageContext` (`route`, `title`, `lang`)
-- [ ] **F1-c** Tombol salin per jawaban + satu baris disclaimer di bawah input
-- [ ] **F1-c** Sapaan & disclaimer memakai nama dari config (bukan "Jenna" hardcode di `locales`); id & en
-- [ ] **F1-c** Store Valtio `src/store/assistant.ts`, data via TanStack Query; tema terang/gelap
+- [x] **F1-c** `AssistantPanel` (Drawer kanan, lazy; perbesar; **tanpa tampilan HP** — ralat user: dashboard untuk NOC; `Esc` menutup + fokus kembali ke FAB; `aria-live`), header (nama dari config, badge Beta), daftar percakapan ☰, pesan + label "Sumber", indikator "memeriksa data…", composer (Enter/Shift+Enter, sisa karakter)
+- [x] **F1-c** Saran pertanyaan per rute, hanya untuk modul yang diizinkan; `pageContext` (`route`, `title`, `lang`)
+- [x] **F1-c** Tombol salin per jawaban + satu baris disclaimer di bawah input
+- [x] **F1-c** Sapaan & disclaimer memakai nama dari config (bukan "Jenna" hardcode di `locales`); id & en
+- [x] **F1-c** Store Valtio `src/store/assistant.ts`, data via TanStack Query; tema terang/gelap
 - [ ] **F1-c** Uji manual di browser — hanya bila user meminta
-- [ ] **F1-d** `/bantuan` (`help-page.tsx`) & `/admin/help` memakai panel yang sama (mode tertanam); hapus stub `POST /api/jenna/chat` beserta kontraknya
+- [~] **F1-d** (perintah mulai 2026-10-02, sesi `chat-a6`, branch yang sama; `join` = `origin/join` = `35df488`) `/bantuan` (`help-page.tsx`) & `/admin/help` memakai panel yang sama (mode tertanam); hapus stub `POST /api/jenna/chat` beserta kontraknya
 - [ ] **F1-e** SSE `POST /api/assistant/chat/stream`: event `status`, `delta` (iterasi terakhir), `done`
 - [ ] Setiap sub-tahap: `bun run verify` + `bun run test:db` hijau → lapor → merge setelah persetujuan
 - [-] 👍👎 umpan balik — ditunda (butuh kolom DB + tampilan admin)
@@ -190,15 +201,21 @@
 - [x] P3 kapan menunjuk: **hanya bila diminta** + label "Sumber" bisa diklik (frontend, tanpa AI/kuota) — 2026-10-01, sesi 61
 - [x] P4 aksi versi pertama: **`navigate` + `pointTo`** (termasuk gulir/kursor/sorotan); `highlight` & `setFilter` ditunda; `click` tidak dibuat — 2026-10-01, sesi 61
 - [x] P5 halaman percontohan: **Keuangan** (`/keuangan-anggaran`, 5 kartu di `src/components/keuangan/`), lalu **Beranda** — 2026-10-01, sesi 61
-- [x] P6 HP & mode perbesar: panel **ditutup sementara** saat menunjuk + tombol **"Kembali ke chat"** (percakapan utuh) — 2026-10-01, sesi 61; catatan silang di `04` §2
+- [x] P6 mode perbesar (ralat: **tidak ada HP**, dashboard untuk NOC): panel **ditutup sementara** saat menunjuk + tombol **"Kembali ke chat"** (percakapan utuh) — 2026-10-01, sesi 61; catatan silang di `04` §2
 - [x] P7 aksesibilitas: `prefers-reduced-motion` → sorotan + gulir tanpa animasi kursor — 2026-10-01, sesi 61
+- [ ] Tinjau ulang page-agent (sesi 59, `discus/fitur-2-page-agent-tinjau-ulang.md`): opsi O1 tetap B · O2 B + kursor page-controller · O3 B + "mode Panduan" page-agent lewat spike · O4 page-agent penuh — rekomendasi sesi 59: **O1**, O3 hanya bila butuh panduan memakai aplikasi
+- [x] Q1 tinjau ulang: penunjuk **bisa klik** (user 2026-10-01) — mengubah keputusan #31 & P4
+- [x] Q1b jenis klik: **(a) tampilan saja** (tab/tahun/detail/menu), daftar izin; tombol tulis hanya ditunjuk; baca-saja tetap — 2026-10-01
+- [ ] (Tahap berikutnya, belum dijadwalkan) klik tulis dengan konfirmasi user
+- [x] Q2 pendekatan: **B diperluas** (`klik_elemen(target)` / `pilih(target, nilai)` pada target tampilan terdaftar) — user, 2026-10-02; page-agent tidak dipakai, tanpa spike
 - [ ] Persetujuan akhir dokumen `05` (user)
 - Draf rincian implementasi (berlaku setelah `05` disetujui; tunggu perintah & lokasi):
   - [ ] Registry target di kode `{ id, route, label, deskripsi, requiredFeature }` + anchor `data-ai-target` di 5 kartu Keuangan
-  - [ ] Tool server `buka_halaman` / `tunjukkan_elemen` (validasi target & izin, mengembalikan `actions`)
-  - [ ] Frontend: whitelist aksi `navigate`/`pointTo`, `AssistantCursor` (kursor + sorotan + gulir), tunggu anchor dengan batas waktu
+  - [ ] Tool server `buka_halaman` / `tunjukkan_elemen` / `klik_elemen` / `pilih` (validasi target, jenis target tampilan, izin; mengembalikan `actions`)
+  - [ ] Penanda boleh-diklik (daftar izin, mis. `data-ai-click`) hanya pada elemen tampilan; tombol tulis tidak pernah ditandai
+  - [ ] Frontend: whitelist aksi `navigate`/`pointTo`/`click`/`pilih`, `AssistantCursor` (kursor + sorotan + gulir), tunggu anchor dengan batas waktu
   - [ ] Label "Sumber: X" bisa diklik → `pointTo` tanpa AI (pemetaan tool → modul → target)
-  - [ ] Panel ditutup sementara + "Kembali ke chat" di HP & mode perbesar; `prefers-reduced-motion`
+  - [ ] Panel ditutup sementara + "Kembali ke chat" di mode perbesar; `prefers-reduced-motion`
   - [ ] Label kartu Penunjuk di admin: "Belum dipakai · memakai Chat"
   - [ ] Tahap 2: anchor Beranda
   - [ ] Test: registry/izin, tool menolak target tak terdaftar, whitelist aksi di klien
