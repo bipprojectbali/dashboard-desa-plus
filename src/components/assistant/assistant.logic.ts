@@ -1,3 +1,7 @@
+import {
+	POINTER_TOOL_NAMES,
+	sourceTargetFor,
+} from "@/config/assistant-pointer";
 import type { AssistantText } from "@/locales/assistant";
 import type {
 	AssistantLang,
@@ -107,7 +111,27 @@ export function sourceLabels(
 	toolsUsed: readonly string[],
 	text: AssistantText,
 ): string[] {
-	return toolsUsed.map((name) => text.sources[name] ?? name);
+	return sourceItems(toolsUsed, text, []).map((s) => s.label);
+}
+
+export interface SourceItem {
+	label: string;
+	/** Target penunjuk modul; ada = label bisa diklik (tanpa AI, tanpa kuota). */
+	target?: string;
+}
+
+/** Sumber per tool data (tool penunjuk dilewati); `target` hanya bila user berizin. */
+export function sourceItems(
+	toolsUsed: readonly string[],
+	text: AssistantText,
+	allowed: readonly string[],
+): SourceItem[] {
+	return toolsUsed
+		.filter((name) => !POINTER_TOOL_NAMES.has(name))
+		.map((name) => ({
+			label: text.sources[name] ?? name,
+			target: sourceTargetFor(name, allowed),
+		}));
 }
 
 /** Status stream "Memeriksa data <modul>…" dari nama tool. */

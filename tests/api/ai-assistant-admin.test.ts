@@ -11,6 +11,7 @@ import {
 	normalizeProviders,
 	providerToForm,
 	slotBadge,
+	slotUnusedLabel,
 	validateBaseUrl,
 	validateSettings,
 } from "@/components/admin/ai-assistant/ai-assistant.logic";
@@ -169,6 +170,12 @@ describe("slotBadge & normalizeProviders", () => {
 		expect(slotBadge({ ...full, apiKeyStatus: "needs-reentry" }).label).toBe(
 			"API key perlu diisi ulang",
 		);
+	});
+
+	it("slot Penunjuk berlabel 'Belum dipakai · memakai Chat'; slot lain tidak", () => {
+		expect(slotUnusedLabel("pointer")).toBe("Belum dipakai · memakai Chat");
+		expect(slotUnusedLabel("chat")).toBeNull();
+		expect(slotUnusedLabel("voice")).toBeNull();
 	});
 
 	it("mengurutkan chat → pointer → voice dan melengkapi slot yang hilang", () => {

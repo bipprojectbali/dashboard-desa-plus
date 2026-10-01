@@ -1,3 +1,4 @@
+import type { UiAction } from "@/types/ai-assistant-pointer";
 import logger from "@/utils/logger";
 import {
 	createDeadline,
@@ -13,6 +14,7 @@ import {
 } from "../provider/types";
 import { toToolSpecs } from "./registry";
 import type { ToolContext, ToolDefinition, ToolResult } from "./types";
+import { appendUiActions, extractUiActions } from "./ui-actions";
 
 /** Batas satu giliran (rancangan 03 §6). */
 export const EXECUTOR_LIMITS = {
@@ -51,6 +53,8 @@ export interface TurnResult {
 	text: string;
 	/** Nama tool (unik) yang benar-benar dijalankan — untuk label sumber & audit. */
 	toolsUsed: string[];
+	/** Aksi UI dari tool penunjuk yang berhasil (sudah divalidasi bentuknya). */
+	actions: UiAction[];
 	iterations: number;
 	usage: TokenUsage;
 	stopReason: "answer" | "max_iterations";
@@ -132,6 +136,7 @@ export async function executeWithTools(
 	const conversation = [...messages];
 	const usage: TokenUsage = { inputTokens: 0, outputTokens: 0 };
 	const toolsUsed = new Set<string>();
+	const actions: UiAction[] = [];
 	const turn = createDeadline(limits.turnTimeoutMs, opts.signal);
 	let iterations = 0;
 
@@ -139,6 +144,7 @@ export async function executeWithTools(
 		const result: TurnResult = {
 			text,
 			toolsUsed: [...toolsUsed],
+			actions,
 			iterations,
 			usage,
 			stopReason,
@@ -193,6 +199,7 @@ export async function executeWithTools(
 						limits.toolTimeoutMs,
 						turn.signal,
 					);
+					appendUiActions(actions, extractUiActions(result));
 				} else {
 					result = {
 						ok: false,

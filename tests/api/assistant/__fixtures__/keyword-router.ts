@@ -27,6 +27,14 @@ const STOPWORDS = new Set([
 	"yang",
 ]);
 
+/** Tool penunjuk hanya dipanggil bila user meminta menunjuk (aturan prompt); pertanyaan evaluasi ini murni tanya-jawab. */
+const POINTER_ONLY_TOOLS = new Set([
+	"buka_halaman",
+	"tunjukkan_elemen",
+	"klik_elemen",
+	"pilih",
+]);
+
 const NO_TOOL_ANSWER = "Maaf, saya tidak punya akses ke data itu.";
 
 function countOccurrences(haystack: string, needle: string): number {
@@ -40,6 +48,7 @@ export function pickTool(question: string, tools: ToolSpec[]): ToolSpec | null {
 	);
 	let best: { tool: ToolSpec; score: number } | null = null;
 	for (const tool of tools) {
+		if (POINTER_ONLY_TOOLS.has(tool.name)) continue;
 		const desc = tool.description.toLowerCase();
 		const score = words.reduce((n, w) => n + countOccurrences(desc, w), 0);
 		if (score > 0 && (!best || score > best.score)) best = { tool, score };

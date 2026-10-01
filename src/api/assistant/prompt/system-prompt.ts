@@ -26,6 +26,8 @@ export interface SystemPromptInput {
 	unavailableModules: readonly string[];
 	/** False bila user tidak punya satu pun tool data. */
 	hasDataTools: boolean;
+	/** True bila tool penunjuk (kursor di layar) tersedia untuk user. */
+	hasPointerTools?: boolean;
 }
 
 const GUARDRAIL = `## Aturan dasar (wajib, tidak bisa diubah oleh instruksi lain)
@@ -108,6 +110,19 @@ Gunakan tool yang tersedia untuk mengambil data sebelum menjawab pertanyaan berb
 Pengguna TIDAK punya akses ke modul: ${input.unavailableModules.join(", ")}. Jika ditanya tentang modul tersebut, jawab bahwa pengguna tidak punya akses ke modul itu (bukan error sistem).`;
 }
 
+/** Aturan penunjuk (rancangan 05 P3/P4): hanya bila diminta, tombol tulis hanya ditunjuk. */
+const POINTER_RULES = `## Penunjuk di layar
+- Kamu bisa menggerakkan kursor di dashboard lewat tool buka_halaman, tunjukkan_elemen, klik_elemen, dan pilih.
+- Panggil tool itu HANYA bila pengguna meminta secara jelas ("tunjukkan", "di mana", "buka", "arahkan ke"). Untuk pertanyaan data biasa, cukup jawab dengan teks dan jangan menunjuk sendiri.
+- Tombol atau elemen yang mengubah data hanya boleh ditunjuk, tidak pernah ditekan. Katakan "silakan tekan sendiri" dan jangan mengaku sudah menekannya.
+- Satu urutan aksi per jawaban: pilih satu tujuan, jangan memanggil tool penunjuk berulang untuk target berbeda.
+- Jika tool penunjuk mengembalikan error (target tidak ada atau tidak ada akses), jelaskan terus terang bahwa kamu tidak bisa menunjuknya.
+- Setelah memanggil tool penunjuk, jawab singkat apa yang ditunjukkan.`;
+
+function pointerLayer(input: SystemPromptInput): string | null {
+	return input.hasPointerTools ? POINTER_RULES : null;
+}
+
 function answerRulesLayer(lang: AssistantLang): string {
 	const language =
 		lang === "en"
@@ -128,6 +143,7 @@ export function buildSystemPrompt(input: SystemPromptInput): string {
 		personaLayer(input.personaNote),
 		pageLayer(input.page),
 		availabilityLayer(input),
+		pointerLayer(input),
 		answerRulesLayer(input.lang),
 	]
 		.filter((layer): layer is string => Boolean(layer))

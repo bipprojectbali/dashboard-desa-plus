@@ -4,6 +4,8 @@
  * dan panel chat (F1-c). Riwayat tidak pernah dikirim klien — server memuatnya.
  */
 
+import type { UiAction } from "./ai-assistant-pointer";
+
 export type AssistantLang = "id" | "en";
 
 /**
@@ -30,8 +32,8 @@ export interface AssistantChatRequest {
 	pageContext?: AssistantPageContext;
 }
 
-/** Aksi UI untuk fitur 2 (penunjuk); selalu kosong di MVP fitur 1. */
-export type AssistantUiAction = never;
+/** Aksi UI fitur 2 (penunjuk); kosong bila jawaban tidak menunjuk apa pun. */
+export type AssistantUiAction = UiAction;
 
 export interface AssistantMessageDto {
 	id: string;

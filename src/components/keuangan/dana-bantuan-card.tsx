@@ -26,6 +26,7 @@ export function DanaBantuanCard({ aid, loading }: DanaBantuanCardProps) {
 
 	return (
 		<Card
+			data-ai-target="keuangan.dana-bantuan"
 			p="md"
 			radius="xl"
 			withBorder

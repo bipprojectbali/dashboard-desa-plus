@@ -45,6 +45,7 @@ export function AssistantPanelContent({
 							pathname={pathname}
 							onAsk={chat.send}
 							onLoadOlder={chat.loadOlder}
+							onPointSource={chat.pointToSource}
 						/>
 						<AssistantComposer
 							name={status.assistantName}

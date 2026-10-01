@@ -56,6 +56,7 @@ export function IncomeExpenseChart({
 
 	return (
 		<Card
+			data-ai-target="keuangan.pendapatan-belanja"
 			p="md"
 			radius="xl"
 			withBorder

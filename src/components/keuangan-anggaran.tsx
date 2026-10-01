@@ -88,6 +88,8 @@ const KeuanganAnggaran = () => {
 						color="red"
 						leftSection={<IconRefresh size={14} />}
 						onClick={() => refetch()}
+						data-ai-target="keuangan.coba-lagi"
+						data-ai-clickable="true"
 						mt="xs"
 					>
 						Coba lagi
@@ -104,6 +106,7 @@ const KeuanganAnggaran = () => {
 						w={160}
 						size="sm"
 						radius="md"
+						wrapperProps={{ "data-ai-target": "keuangan.tahun" }}
 					/>
 				</Group>
 			)}

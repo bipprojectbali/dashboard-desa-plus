@@ -56,6 +56,7 @@ export function KpiCards({ year, loading }: KpiCardsProps) {
 	const kpis = [
 		{
 			id: 1,
+			target: "keuangan.kpi-total",
 			title: t.keuanganAnggaran.totalApbdes,
 			value: `Rp ${formatM(year.totalBudget)}`,
 			subtitle: `${t.keuanganAnggaran.tahun} ${year.tahun}`,
@@ -64,6 +65,7 @@ export function KpiCards({ year, loading }: KpiCardsProps) {
 		},
 		{
 			id: 2,
+			target: "keuangan.kpi-realisasi",
 			title: t.keuanganAnggaran.realisasi,
 			value: `${year.realisasiPercent}%`,
 			subtitle: `Rp ${formatM(year.totalExpenseReal)} ${t.keuanganAnggaran.dari} ${formatM(year.totalBudget)}`,
@@ -72,6 +74,7 @@ export function KpiCards({ year, loading }: KpiCardsProps) {
 		},
 		{
 			id: 3,
+			target: "keuangan.kpi-pemasukan",
 			title: t.keuanganAnggaran.pemasukan,
 			value: `Rp ${formatM(year.totalIncomeReal)}`,
 			subtitle: t.keuanganAnggaran.totalRealisasi,
@@ -80,6 +83,7 @@ export function KpiCards({ year, loading }: KpiCardsProps) {
 		},
 		{
 			id: 4,
+			target: "keuangan.kpi-pengeluaran",
 			title: t.keuanganAnggaran.pengeluaran,
 			value: `Rp ${formatM(year.totalExpenseReal)}`,
 			subtitle: t.keuanganAnggaran.totalRealisasi,
@@ -93,6 +97,7 @@ export function KpiCards({ year, loading }: KpiCardsProps) {
 			{kpis.map((item) => (
 				<Grid.Col key={item.id} span={{ base: 12, sm: 6, lg: 3 }}>
 					<Card
+						data-ai-target={item.target}
 						p="md"
 						radius="xl"
 						withBorder

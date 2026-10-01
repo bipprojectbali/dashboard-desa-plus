@@ -51,6 +51,7 @@ export function AllocationChart({
 
 	return (
 		<Card
+			data-ai-target="keuangan.alokasi"
 			p="md"
 			radius="xl"
 			withBorder

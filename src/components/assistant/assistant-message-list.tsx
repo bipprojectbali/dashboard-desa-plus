@@ -19,10 +19,10 @@ import { assistantStore, type ChatBubble } from "@/store/assistant";
 import { i18nStore } from "@/store/i18n";
 import {
 	fillTemplate,
-	sourceLabels,
 	streamStatusLabel,
 	toAssistantLang,
 } from "./assistant.logic";
+import { AssistantSources } from "./assistant-sources";
 import { suggestionsFor } from "./assistant-suggestions";
 import { useAssistantText } from "./use-assistant-access";
 
@@ -32,17 +32,26 @@ interface MessageListProps {
 	pathname: string;
 	onAsk: (text: string) => void;
 	onLoadOlder: () => void;
+	/** Label "Sumber" diklik: tunjuk kartu modul (tanpa AI). */
+	onPointSource: (targetId: string) => void;
 }
 
 const GREETING_ID = "greeting";
 /** Bubble teks yang sedang mengalir — belum final, jadi tanpa tombol salin. */
 const STREAMING_ID = "streaming";
 
-function Bubble({ bubble }: { bubble: ChatBubble }) {
+function Bubble({
+	bubble,
+	allowed,
+	onPointSource,
+}: {
+	bubble: ChatBubble;
+	allowed: readonly string[];
+	onPointSource: (targetId: string) => void;
+}) {
 	const dark = useIsDark();
 	const text = useAssistantText();
 	const mine = bubble.role === "user";
-	const sources = sourceLabels(bubble.toolsUsed, text);
 	const bg = mine
 		? dark
 			? "#1d4ed8"
@@ -78,11 +87,11 @@ function Bubble({ bubble }: { bubble: ChatBubble }) {
 						{text.failedMessage}
 					</Text>
 				) : null}
-				{sources.length > 0 ? (
-					<Text size="xs" c="dimmed">
-						{text.source}: {sources.join(", ")}
-					</Text>
-				) : null}
+				<AssistantSources
+					toolsUsed={bubble.toolsUsed}
+					allowed={allowed}
+					onPoint={onPointSource}
+				/>
 				{!mine && bubble.id !== GREETING_ID && bubble.id !== STREAMING_ID ? (
 					<CopyButton value={bubble.content}>
 						{({ copied, copy }) => (
@@ -112,6 +121,7 @@ export function AssistantMessageList({
 	pathname,
 	onAsk,
 	onLoadOlder,
+	onPointSource,
 }: MessageListProps) {
 	const { messages, pending, olderCursor, streamStatus, streamingText } =
 		useSnapshot(assistantStore);
@@ -138,6 +148,8 @@ export function AssistantMessageList({
 				) : null}
 				{messages.length === 0 ? (
 					<Bubble
+						allowed={allowed}
+						onPointSource={onPointSource}
 						bubble={{
 							id: GREETING_ID,
 							role: "assistant",
@@ -147,10 +159,17 @@ export function AssistantMessageList({
 					/>
 				) : null}
 				{messages.map((m) => (
-					<Bubble key={m.id} bubble={m} />
+					<Bubble
+						key={m.id}
+						bubble={m}
+						allowed={allowed}
+						onPointSource={onPointSource}
+					/>
 				))}
 				{pending && streamingText ? (
 					<Bubble
+						allowed={allowed}
+						onPointSource={onPointSource}
 						bubble={{
 							id: STREAMING_ID,
 							role: "assistant",

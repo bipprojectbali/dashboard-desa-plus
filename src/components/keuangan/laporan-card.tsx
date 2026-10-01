@@ -32,6 +32,7 @@ export function LaporanCard({ report, loading }: LaporanCardProps) {
 
 	return (
 		<Card
+			data-ai-target="keuangan.laporan"
 			p="md"
 			radius="xl"
 			withBorder
