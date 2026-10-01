@@ -20,7 +20,7 @@
 | P2 otak AI (tanpa UI) | ✅ selesai (8 commit `f3e1649`…`3fcceaa`), dicek ulang 0d: test 461/0, test:db 26/0, lint error 0, tsc tidak ada error baru; **di-merge ke `join` (`325d4a1`)** atas perintah user; `join` (`74f1791`) belum di-push (21 commit di depan `origin/join`) | `feature/ai-assistant-pondasi` (sesi 61) |
 | P3 endpoint admin & status | ✅ selesai (3 commit), dicek ulang 0d: test 508/0, test:db 47/0, lint error 0, tsc tanpa error baru; **di-merge ke `join` (`1febae3`)**, belum di-push; sisa: uji koneksi ke proxy nyata bersama user | worktree `../dashboard-desa-plus-p3`, branch `feature/ai-assistant-admin-api` dari `join` `74f1791` |
 | UI `/admin/ai-assistant` | ✅ di `join`; tersambung ke endpoint P3 | `feature/ai-assistant-admin-ui` (worktree `../dashboard-desa-plus-admin-ui`, ada sesi `-91` idle) |
-| Fitur 1 | 🔧 F1-c dimulai (2026-10-02, sesi `chat-a6`) · ✅ F1-b selesai (2 commit `e74198f`, `6fa6eac`), dicek ulang 0d: test 580/0, test:db 73/0, lint 0 error, tsc tanpa error baru; di-push ke `origin/feature/ai-assistant-chat` dan **di-merge ke `join` (`b5c72ec`)** atas perintah user; `join` belum di-push. Berikutnya F1-c (tunggu perintah) | worktree `../dashboard-desa-plus-chat`, sesi `chat-a6` |
+| Fitur 1 | ✅ F1-c selesai & di `join` (`730563b`), generated di-commit (`44a464c`); `join` belum di-push · ✅ F1-b selesai (2 commit `e74198f`, `6fa6eac`), dicek ulang 0d: test 580/0, test:db 73/0, lint 0 error, tsc tanpa error baru; di-push ke `origin/feature/ai-assistant-chat` dan **di-merge ke `join` (`b5c72ec`)** atas perintah user; `join` belum di-push. Berikutnya F1-c (tunggu perintah) | worktree `../dashboard-desa-plus-chat`, sesi `chat-a6` |
 | Fitur 2 | ✅ Keputusan tuntas lagi (2026-10-02): **B diperluas** + klik tampilan; menunggu persetujuan akhir `05`; belum ada kode | sesi **59** (diskusi page-agent) | sesi **61** (dialihkan dari 59, keputusan user) |
 | Fitur 3 | 📄 belum dibahas | — |
 | `PROJECT-STRUCTURE.md` | ⏳ menunggu perintah | sesi 59 |
@@ -169,15 +169,18 @@
 > → **Diputuskan user: kegagalan provider TIDAK dihitung kuota** (dikerjakan di awal F1-c).
 > `conversation.repo.ts` 247 baris (≥80% batas repo 250) → pecah sebelum ditambah; `generated/api.ts` belum diregenerasi untuk route asisten.
 - [x] **F1-b** Test: izin per tool, penyaringan field sensitif, kepemilikan percakapan, kontrak endpoint, batas → 429, alur end-to-end `MockProvider`
-- [~] **F1-c** (instruksi dikirim ke sesi `chat-a6` 2026-10-01; **perintah mulai diteruskan 2026-10-02**, branch yang sama) — di awal: kuota tidak menghitung pesan gagal + test
-- [ ] **F1-c** `AssistantFab` di `main-layout.tsx` (hapus blok komentar tombol Bantuan lama) + layout `/profile` + `WallPage`; tampil hanya bila ada sesi, status `enabled && slots.chat`, dan izin `use-ai-assistant`; tidak ada di `/admin`, `/signin`, `/signup`
-- [ ] **F1-c** `/wall`: tetap publik; FAB hanya untuk kiosk yang login akun khusus; status dipanggil hanya bila ada sesi; bentuk panel tidak menutupi panel NOC
+- [x] **F1-c** selesai 2026-10-02 (sesi `chat-a6`, branch `feature/ai-assistant-chat`, commit `aa1a6a9` kuota tidak menghitung pesan gagal + `eba5e09` FAB & panel) — **di-merge ke `join` (`730563b`)** atas perintah user 2026-10-02; `generated/api.ts` & `schema.json` diregenerasi & di-commit (`44a464c`); belum di-push
+> Catatan F1-c: `maxInputChars` ditambahkan ke `GET /api/assistant/status` (DTO pindah ke `src/types/ai-assistant-chat.ts`); teks panel di `src/locales/assistant.ts` (id.ts sudah over-limit);
+> Drawer kanan **tanpa overlay & tanpa kunci fokus** (halaman tetap bisa dipakai), normal 440px / perbesar 100%; `/wall` memberi ruang (padding kanan 440px) saat panel terbuka;
+> izin di `/profile` & `/wall` dari `/api/my-permissions`; state percakapan di `src/store/assistant.ts` tidak di-reset saat panel ditutup; build tanpa `--splitting` → "lazy" hanya menunda render. — di awal: kuota tidak menghitung pesan gagal + test
+- [x] **F1-c** `AssistantFab` di `main-layout.tsx` (hapus blok komentar tombol Bantuan lama) + layout `/profile` + `WallPage`; tampil hanya bila ada sesi, status `enabled && slots.chat`, dan izin `use-ai-assistant`; tidak ada di `/admin`, `/signin`, `/signup`
+- [x] **F1-c** `/wall`: tetap publik; FAB hanya untuk kiosk yang login akun khusus; status dipanggil hanya bila ada sesi; bentuk panel tidak menutupi panel NOC
 - [ ] (User) Buat akun kiosk khusus (mis. "NOC"), verifikasi di `/admin/users`, pastikan izin `use-ai-assistant` & `view-*` yang dibutuhkan — sebelum uji FAB di wall
-- [ ] **F1-c** `AssistantPanel` (Drawer kanan, lazy; perbesar; **tanpa tampilan HP** — ralat user: dashboard untuk NOC; `Esc` menutup + fokus kembali ke FAB; `aria-live`), header (nama dari config, badge Beta), daftar percakapan ☰, pesan + label "Sumber", indikator "memeriksa data…", composer (Enter/Shift+Enter, sisa karakter)
-- [ ] **F1-c** Saran pertanyaan per rute, hanya untuk modul yang diizinkan; `pageContext` (`route`, `title`, `lang`)
-- [ ] **F1-c** Tombol salin per jawaban + satu baris disclaimer di bawah input
-- [ ] **F1-c** Sapaan & disclaimer memakai nama dari config (bukan "Jenna" hardcode di `locales`); id & en
-- [ ] **F1-c** Store Valtio `src/store/assistant.ts`, data via TanStack Query; tema terang/gelap
+- [x] **F1-c** `AssistantPanel` (Drawer kanan, lazy; perbesar; **tanpa tampilan HP** — ralat user: dashboard untuk NOC; `Esc` menutup + fokus kembali ke FAB; `aria-live`), header (nama dari config, badge Beta), daftar percakapan ☰, pesan + label "Sumber", indikator "memeriksa data…", composer (Enter/Shift+Enter, sisa karakter)
+- [x] **F1-c** Saran pertanyaan per rute, hanya untuk modul yang diizinkan; `pageContext` (`route`, `title`, `lang`)
+- [x] **F1-c** Tombol salin per jawaban + satu baris disclaimer di bawah input
+- [x] **F1-c** Sapaan & disclaimer memakai nama dari config (bukan "Jenna" hardcode di `locales`); id & en
+- [x] **F1-c** Store Valtio `src/store/assistant.ts`, data via TanStack Query; tema terang/gelap
 - [ ] **F1-c** Uji manual di browser — hanya bila user meminta
 - [ ] **F1-d** `/bantuan` (`help-page.tsx`) & `/admin/help` memakai panel yang sama (mode tertanam); hapus stub `POST /api/jenna/chat` beserta kontraknya
 - [ ] **F1-e** SSE `POST /api/assistant/chat/stream`: event `status`, `delta` (iterasi terakhir), `done`
