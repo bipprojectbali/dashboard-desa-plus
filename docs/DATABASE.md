@@ -113,6 +113,7 @@ Matrix permission per role x feature (dipakai halaman admin Role & Permission).
 id, role, feature, allowed, createdAt, updatedAt
 ```
 `@@unique([role, feature])`
+Fitur tanpa baris jatuh ke `DEFAULT_PERMISSIONS` per fitur (`resolveAllowedFeatures()` di `src/utils/permission.ts`); role `admin` selalu semua fitur. Migrasi `add_ai_assistant` menyisipkan `use-ai-assistant` untuk `admin` & `user`.
 
 ---
 
@@ -281,6 +282,45 @@ id ("singleton"), order (String[] — urutan widget id),
 sizes (Json? — override ukuran per widget: { [widgetId]: { w, h } }, nullable & partial),
 updatedAt, updatedBy (userId editor terakhir, nullable)
 ```
+
+---
+
+### AI Assistant
+
+Pondasi asisten AI (migrasi `add_ai_assistant`). Akses butuh izin `use-ai-assistant` + user terverifikasi admin.
+
+#### `AssistantSettings`
+Pengaturan global — **singleton** (id `"singleton"`, pola sama dengan `WallLayout`). Batas pemakaian disimpan di DB supaya admin bisa mengubahnya tanpa deploy. `enabled` default `false`: asisten mati sampai admin mengisi kredensial & menyalakan.
+```
+id ("singleton"), enabled, assistantName (default "Jenna"), personaNote?,
+dailyMessageLimitPerUser (50), dailyTokenLimitGlobal (1000000), ratePerMinutePerUser (6),
+maxInputChars (2000), historyWindow (20), retentionDays (90) — 0 = tanpa batas / simpan selamanya,
+kioskUserId? (akun kiosk /wall, relasi User onDelete SetNull), dailyMessageLimitKiosk (100),
+updatedAt, updatedBy?
+```
+Akun kiosk dipakai bersama di layar `/wall`; bila `userId === kioskUserId`, `dailyMessageLimitKiosk` menggantikan `dailyMessageLimitPerUser` (0 = tanpa batas). Akun kiosk dihapus → `kioskUserId` jadi `null`, pengaturan tetap ada.
+
+#### `AiProviderConfig`
+Kredensial & model per slot fitur (`feature` = PK: `"chat"` | `"pointer"` | `"voice"`). Slot `pointer`/`voice` yang kosong memakai slot `chat`. API key disimpan terenkripsi AES-256-GCM (`apiKeyEnc`, format `v1:`, kunci env `AI_CREDENTIALS_KEY` — lihat `src/utils/secret-crypto.ts`) dan tidak pernah dikirim ke browser; `apiKeyHint` untuk tampilan.
+```
+feature, enabled, label?, providerType (default "openai-compatible"), baseUrl?,
+apiKeyEnc?, apiKeyHint?, model?, temperature? (null = tidak dikirim), maxTokens?,
+timeoutMs (60000), lastTestAt?, lastTestOk?, updatedAt, updatedBy?
+```
+
+#### `AssistantConversation`
+Satu percakapan milik satu user. Relasi `User` (cascade delete). `@@index([userId, updatedAt])`
+```
+id, userId, title (default "Percakapan baru"), createdAt, updatedAt
+```
+
+#### `AssistantMessage`
+Satu pesan dalam percakapan (cascade dari `AssistantConversation`). Hasil mentah tool **tidak** disimpan — hanya nama tool di `toolsUsed`. `userId` didenormalisasi untuk kuota harian tanpa join; kuota & statistik dihitung dari tabel ini (tidak ada tabel usage terpisah).
+```
+id, conversationId, userId, role ("user" | "assistant"), content, toolsUsed (String[]),
+pageRoute?, status ("ok" | "error" | "limited"), inputTokens?, outputTokens?, latencyMs?, createdAt
+```
+Index: `[conversationId, createdAt]`, `[userId, createdAt]`, `[createdAt]` (job retensi).
 
 ---
 
