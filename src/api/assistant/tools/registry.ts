@@ -1,12 +1,22 @@
 import { FEATURES, loadAllowedFeatures } from "@/utils/permission";
 import type { ToolSpec } from "../provider/types";
+import { ringkasanBerandaTool } from "./beranda.tool";
+import { statistikDemografiTool } from "./demografi.tool";
+import { kinerjaDivisiTool } from "./divisi.tool";
+import { lookupFaqTool } from "./faq.tool";
+import { ringkasanKeuanganTool } from "./keuangan.tool";
+import { statistikPengaduanTool } from "./pengaduan.tool";
 import type { ToolContext, ToolDefinition } from "./types";
 
-/**
- * Semua tool assistant. Masih kosong di pondasi — tool domain
- * (`<domain>.tool.ts`) ditambahkan di Fitur 1.
- */
-export const ASSISTANT_TOOLS: readonly ToolDefinition[] = [];
+/** Semua tool assistant (baca-saja, rancangan 04 §4). Satu file per tool: `<domain>.tool.ts`. */
+export const ASSISTANT_TOOLS: readonly ToolDefinition[] = [
+	ringkasanBerandaTool,
+	ringkasanKeuanganTool,
+	statistikPengaduanTool,
+	statistikDemografiTool,
+	kinerjaDivisiTool,
+	lookupFaqTool,
+];
 
 /** Tool yang boleh dipakai user: hanya yang `requiredFeature`-nya dimiliki. Hanya daftar ini yang dikirim ke LLM. */
 export function getAvailableTools(
