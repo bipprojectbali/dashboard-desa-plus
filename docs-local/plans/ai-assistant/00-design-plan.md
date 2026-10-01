@@ -108,10 +108,11 @@ Rincian: [`04-fitur-1-chat-panel.md`](04-fitur-1-chat-panel.md).
 
 API key tidak pernah ditampilkan penuh (hanya hint `sk-c****dc07`). Rincian: [`03-pondasi.md`](03-pondasi.md) §3, §10.
 
-### 3.3 Fitur 2 (dibahas): kursor penunjuk
+### 3.3 Fitur 2 (keputusan tuntas): kursor penunjuk
 Kursor virtual bergerak ke elemen bertanda `data-ai-target`, elemen disorot dengan ring, panel chat tetap
 terbuka. Menghormati `prefers-reduced-motion`. Halaman percontohan usulan: Keuangan.
-Pendekatan **B** sudah diputuskan; alasan untuk tim: [`discus/fitur-2-alasan-pendekatan-b.md`](discus/fitur-2-alasan-pendekatan-b.md).
+Semua keputusan P1–P7 tuntas: menunjuk hanya bila diminta (+ label "Sumber" bisa diklik), aksi `navigate` + `pointTo`,
+percontohan Keuangan lalu Beranda, panel ditutup sementara di HP/mode perbesar, hormati reduced motion. Alasan pendekatan B untuk tim: [`discus/fitur-2-alasan-pendekatan-b.md`](discus/fitur-2-alasan-pendekatan-b.md).
 
 ### 3.4 Fitur 3 (draf): suara
 Tombol mikrofon (tekan-untuk-bicara) di composer; jawaban bisa dibacakan. Tingkat 1 memakai Web Speech API
@@ -228,7 +229,7 @@ Detail: [`07-roadmap.md`](07-roadmap.md), [`checklist-progress.md`](checklist-pr
 - ✅ Keputusan pondasi, temuan 1–7, dokumen `04` (Fitur 1) disetujui — termasuk FAB di `/wall` via akun kiosk dan tool versi pertama tetap 6. README memuat 28 keputusan.
 - ✅ P-1 selesai, di-merge ke branch integrasi **`join`** dan di-push ke `origin/join`. **`main` tidak pernah di-merge.** Deploy ditunda (uji lokal dulu); sebelum deploy jalankan `discus/p-1-precheck.sql`.
 - 🔧 P1 (pondasi data, izin, enkripsi) sedang dikerjakan di branch `feature/ai-assistant-pondasi`.
-- ⏳ Fitur 2: pendekatan B diputuskan; P2–P7 dibahas. Fitur 3 belum dibahas.
+- ✅ Fitur 2: keputusan P1–P7 tuntas (menunggu persetujuan akhir `05`). Fitur 3 belum dibahas.
 
 ## 10. Yang dibutuhkan dari tim / pemilik
 

@@ -21,14 +21,14 @@
 | `02-analisa-blueprint.md` | Fase 0–11 blueprint desa-platform: Terapkan / Adaptasi / Tunda / Tidak relevan | Analisa |
 | `03-pondasi.md` | **Setup & persiapan**: model data, kredensial per fitur, izin, provider, tool/executor, prompt, batas, endpoint, halaman admin, test | **Disetujui** (2026-09-30) |
 | `04-fitur-1-chat-panel.md` | FAB + panel "Tanya AI", endpoint percakapan, tool awal | **Disetujui** (2026-10-01) |
-| `05-fitur-2-pointer.md` | AI menunjuk elemen (pendekatan page-agent vs whitelist) | Draf |
+| `05-fitur-2-pointer.md` | AI menunjuk elemen (pendekatan page-agent vs whitelist) | Keputusan P1–P7 tuntas; menunggu persetujuan akhir |
 | `06-fitur-3-suara.md` | Interaksi suara (3 tingkat) | Draf |
 | `07-roadmap.md` | Tahapan P0–P3 (pondasi) lalu F1–F3 | Draf |
 | `discus/temuan.md` | Diskusi temuan satu per satu: fakta → opsi → rekomendasi → keputusan | Selesai (1–7) |
 | `discus/jawab.md` | Jawaban user + tanggapan agent (A–D) | Berjalan |
 | `discus/p-1-verifikasi-api.md` | Rancangan P-1: API menolak user belum terverifikasi | **Disetujui** (2026-10-01) |
 | `discus/p-1-precheck.sql` | Query read-only sebelum deploy P-1 (user & API key terdampak) | Siap pakai |
-| `discus/fitur-2-pointer.md` | Diskusi Fitur 2 (P1–P7) — sesi 59 | Berjalan (P1 diputuskan) |
+| `discus/fitur-2-pointer.md` | Diskusi Fitur 2 (P1–P7) — sesi 59 → 61 | **Tuntas** (2026-10-01) |
 | `discus/fitur-2-alasan-pendekatan-b.md` | **Pegangan untuk tim**: kenapa pendekatan B, bukan page-agent; cara kerja B; kapan page-agent layak dipakai | Final (keputusan #28) |
 | `checklist-progress.md` | Checklist progres semua tahap | Aktif |
 
@@ -64,6 +64,12 @@
 | 26 | Tool versi pertama | Tetap 6; Sosial/Keamanan/BUMDes/Jenna Analytic di tahap 2 | 04 §4, §9 no. 8 |
 | 27 | Kuota akun kiosk `/wall` | Default **100 pesan/hari**, akun kiosk dipilih admin, bisa diubah | 03 §2, §8, §10 |
 | 28 | Fitur 2 — pendekatan | **B**: target terdaftar, satu loop, baca-saja; page-agent untuk masa depan (aksi tulis) | 05 §2 |
+| 29 | Fitur 2 — slot Penunjuk | **Belum dipakai**: penunjuk memakai otak chat (satu loop); slot tetap ada, berlabel "belum dipakai" | 05 §3 |
+| 30 | Fitur 2 — kapan menunjuk | Hanya bila diminta; label "Sumber" bisa diklik untuk menunjuk tanpa memanggil AI/kuota | 05 §4 |
+| 31 | Fitur 2 — aksi versi pertama | `navigate` + `pointTo` (termasuk gulir, kursor, sorotan); tur & ganti filter ditunda; klik tidak dibuat | 05 §4 |
+| 32 | Fitur 2 — halaman percontohan | Keuangan (`/keuangan-anggaran`) dulu, lalu Beranda | 05 §4 |
+| 33 | Fitur 2 — HP & mode perbesar | Panel ditutup sementara saat menunjuk, lalu tombol "Kembali ke chat" (percakapan utuh) | 05 §4, 04 §2 |
+| 34 | Fitur 2 — aksesibilitas | `prefers-reduced-motion` aktif → sorotan + gulir tanpa animasi kursor | 05 §4 |
 
 ## Ringkasan eksekutif
 
