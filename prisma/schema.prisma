@@ -42,6 +42,7 @@ model User {
   invitations            Invitation[]  @relation("InvitedByUser")
   ipWhitelistEntries     IpWhitelistEntry[]
   assistantConversations AssistantConversation[]
+  assistantKioskSettings AssistantSettings[]     @relation("AssistantKioskUser")
   @@map("user")
 }
 
@@ -827,8 +828,11 @@ model AssistantSettings {
   maxInputChars            Int      @default(2000)
   historyWindow            Int      @default(20) // jumlah pesan terakhir yang dikirim ke LLM
   retentionDays            Int      @default(90) // riwayat lebih tua dari ini dihapus job harian; 0 = simpan selamanya
+  kioskUserId              String? // akun kiosk /wall yang dipakai bersama (dipilih admin)
+  dailyMessageLimitKiosk   Int      @default(100) // kuota harian akun kiosk, menggantikan dailyMessageLimitPerUser; 0 = tanpa batas
   updatedAt                DateTime @updatedAt
   updatedBy                String?
+  kioskUser                User?    @relation("AssistantKioskUser", fields: [kioskUserId], references: [id], onDelete: SetNull)
 
   @@map("assistant_settings")
 }

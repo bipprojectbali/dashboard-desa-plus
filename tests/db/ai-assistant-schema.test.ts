@@ -5,7 +5,8 @@ import { assertTestDatabase } from "./test-database";
 /**
  * P1 pondasi AI Assistant: migrasi `add_ai_assistant` menyisipkan izin
  * `use-ai-assistant`, default tabel sesuai rancangan, dan relasi cascade
- * User → AssistantConversation → AssistantMessage.
+ * User → AssistantConversation → AssistantMessage. Migrasi
+ * `add_assistant_kiosk_limit` menambah akun kiosk (SET NULL) + kuotanya.
  */
 assertTestDatabase();
 
@@ -58,6 +59,8 @@ describe("migrasi add_ai_assistant", () => {
 			maxInputChars: 2000,
 			historyWindow: 20,
 			retentionDays: 90,
+			kioskUserId: null,
+			dailyMessageLimitKiosk: 100,
 		});
 		expect(slot).toMatchObject({
 			feature: "chat",
@@ -69,6 +72,45 @@ describe("migrasi add_ai_assistant", () => {
 			timeoutMs: 60000,
 		});
 		expect(await prisma.assistantSettings.count()).toBe(before);
+	});
+
+	it("hapus akun kiosk → pengaturan tetap ada, kioskUserId jadi null (SET NULL)", async () => {
+		// Dalam transaksi yang di-rollback: singleton & user test tidak tertinggal.
+		const rollback = new Error("rollback");
+		// Objek (bukan `let`) supaya TS tidak menyempitkan tipe ke `null`
+		// karena nilainya diisi di dalam callback transaksi.
+		const seen: {
+			kioskUserId?: string | null;
+			after?: {
+				kioskUserId: string | null;
+				dailyMessageLimitKiosk: number;
+			} | null;
+		} = {};
+		await prisma
+			.$transaction(async (tx) => {
+				const kiosk = await tx.user.create({
+					data: { email: `kiosk-${RUN_ID}@ai-assistant-schema.test.local` }, // test-only
+				});
+				const settings = await tx.assistantSettings.create({
+					data: { kioskUserId: kiosk.id, dailyMessageLimitKiosk: 150 },
+				});
+				seen.kioskUserId = settings.kioskUserId;
+				await tx.user.delete({ where: { id: kiosk.id } });
+				seen.after = await tx.assistantSettings.findUnique({
+					where: { id: settings.id },
+					select: { kioskUserId: true, dailyMessageLimitKiosk: true },
+				});
+				throw rollback;
+			})
+			.catch((err) => {
+				if (err !== rollback) throw err;
+			});
+
+		expect(seen.kioskUserId).toEqual(expect.any(String));
+		expect(seen.after).toEqual({
+			kioskUserId: null,
+			dailyMessageLimitKiosk: 150,
+		});
 	});
 
 	it("hapus user ikut menghapus percakapan & pesannya (cascade)", async () => {
