@@ -8,6 +8,10 @@
 				"BASE_URL": "${BASE_URL}",
 				"STACK_NAME": "${STACK_NAME}"
 			}
+		},
+		"penpot": {
+			"type": "http",
+			"url": "https://penpot.wibudev.com/mcp/stream?userToken=${PENPOT_TOKEN}"
 		}
 	}
 }
