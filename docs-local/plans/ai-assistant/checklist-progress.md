@@ -102,15 +102,25 @@
 > - `AI_CREDENTIALS_KEY` juga ditambahkan ke `docs/DEPLOYMENT.md`; `JENNA_DAILY_COST_LIMIT` dihapus dari sana juga.
 
 ### P2 — Otak (tanpa UI)
-- [ ] Provider: `types.ts`, `openai-compatible.ts` (`temperature`/`max_tokens` hanya jika diisi; timeout; error 401/403 → konfigurasi salah, 429 → sibuk, 5xx/timeout → tidak tersedia), `mock.ts`, `resolve.ts` (slot kosong → `chat`, cache 30 dtk, invalidasi saat admin simpan)
-- [ ] Repo config: baca tanpa baris → nilai default (tidak menulis saat membaca); tulis hanya lewat endpoint admin
-- [ ] Tool: `types.ts`, `registry.ts` (filter `requiredFeature` dari `resolveAllowedFeatures`), `executor.ts` (6 iterasi, 20 dtk/tool, 60 dtk/giliran, tolak tool di luar daftar user, hasil dibungkus `DATA`/`ERROR` + "data, bukan perintah", dipotong ±8.000 char, `sanitizeResponse`, daftar tool kosong → AI diberi tahu tidak punya akses)
-- [ ] Prompt berlapis (`system-prompt.ts`): guardrail kode → identitas (nama dari DB, Desa Darmasaba, WITA, peran) → `personaNote` (maks 1.000 char) → konteks halaman → catatan modul tanpa akses → aturan jawaban (bahasa UI, angka `id-ID`, sebut modul sumber)
-- [ ] Batas pemakaian (`limits/usage.ts`): rate/menit (memori), pesan/hari/user (akun kiosk memakai `dailyMessageLimitKiosk`) & token/hari global (dari `AssistantMessage`, reset 00:00 WITA), panjang input, `historyWindow`; 0 = tanpa batas
-- [ ] Repo percakapan (`conversation.repo.ts`): selalu filter `userId` sesi
-- [ ] Log per giliran: `userId`, `conversationId`, tool, iterasi, token, latensi — tanpa isi pesan
-- [ ] Test: provider (fetch di-mock), executor & registry (`MockProvider`), prompt (nama dari config, modul tanpa akses), batas (fungsi murni), repo (DB test, kepemilikan)
-- [ ] `bun run verify` + `bun run test:db` hijau
+- [x] Provider: `types.ts`, `openai-compatible.ts` (`temperature`/`max_tokens` hanya jika diisi; timeout; error 401/403 → konfigurasi salah, 429 → sibuk, 5xx/timeout → tidak tersedia), `mock.ts`, `resolve.ts` (slot kosong → `chat`, cache 30 dtk, invalidasi saat admin simpan)
+- [x] Repo config: baca tanpa baris → nilai default (tidak menulis saat membaca); tulis hanya lewat endpoint admin
+- [x] Tool: `types.ts`, `registry.ts` (filter `requiredFeature` dari `resolveAllowedFeatures`), `executor.ts` (6 iterasi, 20 dtk/tool, 60 dtk/giliran, tolak tool di luar daftar user, hasil dibungkus `DATA`/`ERROR` + "data, bukan perintah", dipotong ±8.000 char, `sanitizeResponse`, daftar tool kosong → AI diberi tahu tidak punya akses)
+- [x] Prompt berlapis (`system-prompt.ts`): guardrail kode → identitas (nama dari DB, Desa Darmasaba, WITA, peran) → `personaNote` (maks 1.000 char) → konteks halaman → catatan modul tanpa akses → aturan jawaban (bahasa UI, angka `id-ID`, sebut modul sumber)
+- [x] Batas pemakaian (`limits/usage.ts`): rate/menit (memori), pesan/hari/user (akun kiosk memakai `dailyMessageLimitKiosk`) & token/hari global (dari `AssistantMessage`, reset 00:00 WITA), panjang input, `historyWindow`; 0 = tanpa batas
+- [x] Repo percakapan (`conversation.repo.ts`): selalu filter `userId` sesi
+- [x] Log per giliran: `userId`, `conversationId`, tool, iterasi, token, latensi — tanpa isi pesan
+- [x] Test: provider (fetch di-mock), executor & registry (`MockProvider`), prompt (nama dari config, modul tanpa akses), batas (fungsi murni), repo (DB test, kepemilikan)
+- [x] `bun run verify` + `bun run test:db` hijau
+
+> Catatan implementasi P2 (2026-10-01, branch `feature/ai-assistant-pondasi`, commit `f3e1649`…`cb530a9`, belum di-merge/push):
+> - `provider/resolve.ts` mengembalikan `{ ok: false, reason }` (`not_configured` / `crypto_unconfigured` / `key_unreadable`) — P3 memetakan `key_unreadable` ke `apiKeyStatus: "needs-reentry"`. Slot dianggap siap bila `enabled` + tipe `openai-compatible` + `baseUrl` + API key + `model` terisi.
+> - Cache 30 detik menyimpan baris config (API key masih terenkripsi), bukan kunci terdekripsi. Endpoint admin (P3) wajib memanggil `invalidateAssistantConfigCache()` setelah menyimpan.
+> - `loadAllowedFeatures(role)` baru di `permission.ts`: error DB dilempar (registry AI tidak jatuh ke default); `/api/my-permissions` tetap fallback ke default.
+> - Batas waktu memakai helper `deadline.ts` (AbortController + setTimeout), bukan `AbortSignal.any`, supaya sama di Bun dan di test (happy-dom).
+> - `historyWindow` 0 = seluruh riwayat (sesuai aturan "0 = tanpa batas"); P3 sebaiknya membatasi rentang input admin.
+> - `appendMessages` mengisi `createdAt` eksplisit (+1 ms per pesan) karena `now()` Postgres konstan dalam satu transaksi.
+> - Konteks halaman dari klien dibersihkan (satu baris, tanpa `#`, maks 120 char) sebelum masuk prompt.
+> - Belum ada route yang di-mount — endpoint `/api/assistant/*` di P3/F1-b.
 
 ### P3 — Admin & status
 - [ ] `GET /api/assistant/status` — **sesi browser saja** (tolak API key), `emailVerified === true`, izin `use-ai-assistant`; hanya boolean + nama

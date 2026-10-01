@@ -60,6 +60,29 @@ export function resolveAllowedFeatures(
 	);
 }
 
+/**
+ * Baca baris RolePermission role dari DB lalu resolve. Error DB dilempar
+ * (dengan konteks) — pemanggil yang memutuskan fallback; AI assistant
+ * sengaja tidak jatuh ke default supaya fitur yang dimatikan admin tetap mati.
+ */
+export async function loadAllowedFeatures(
+	role: string | null | undefined,
+): Promise<FeatureKey[]> {
+	if (role === "admin" || !role) return resolveAllowedFeatures(role, []);
+	try {
+		const records = await prisma.rolePermission.findMany({
+			where: { role },
+			select: { feature: true, allowed: true },
+		});
+		return resolveAllowedFeatures(role, records);
+	} catch (err) {
+		throw new Error(
+			`Failed to load permissions for role "${role}": ${(err as Error).message}`,
+			{ cause: err },
+		);
+	}
+}
+
 export async function checkPermission(
 	role: string | null | undefined,
 	feature: FeatureKey,
