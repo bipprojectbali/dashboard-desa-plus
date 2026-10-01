@@ -146,7 +146,7 @@
 - [x] Docs: `docs/ARCHITECTURE.md` (modul `src/api/assistant/`, route baru), `.env.example` sudah di P1
 - [x] `bun run verify` + `bun run test:db` hijau (508/0, 47/0)
 > Catatan P3 (sesi 59, branch `feature/ai-assistant-admin-api`, worktree `../dashboard-desa-plus-p3`): `apiMiddleware` kini menandai `user.authMethod` ("session"/"apiKey", +3 baris); endpoint admin juga menolak API key (403); role untuk asisten dibaca dari DB (`http/access.ts`); hasil test koneksi lama dibuang bila URL/model/kunci berubah; uji koneksi tanpa redirect, batas 30 detik. Temuan baru → `discus/temuan.md` temuan 8.
-- [ ] Uji koneksi ke proxy nyata dari halaman admin (bersama user)
+- [x] Uji koneksi ke proxy nyata dari halaman admin (bersama user) — berhasil, uji manual user 2026-10-02
 - [x] Lapor → merge ke `join` (`1febae3`) atas perintah user — 2026-10-01
 
 ## 5. Fitur 1 — FAB + panel "Tanya AI" · branch `feature/ai-assistant-chat` (setelah pondasi di-merge)
@@ -182,13 +182,17 @@
 - [x] **F1-c** Sapaan & disclaimer memakai nama dari config (bukan "Jenna" hardcode di `locales`); id & en
 - [x] **F1-c** Store Valtio `src/store/assistant.ts`, data via TanStack Query; tema terang/gelap
 - [ ] **F1-c** Uji manual di browser — hanya bila user meminta
-- [~] **F1-d** (perintah mulai 2026-10-02, sesi `chat-a6`, branch yang sama; `join` = `origin/join` = `35df488`) `/bantuan` (`help-page.tsx`) & `/admin/help` memakai panel yang sama (mode tertanam); hapus stub `POST /api/jenna/chat` beserta kontraknya
-- [ ] **F1-e** SSE `POST /api/assistant/chat/stream`: event `status`, `delta` (iterasi terakhir), `done`
+- [x] **BUG F1-c** — **diperbaiki & lolos cek manual user (2026-10-02)**, di `join` (`3794029`) — commit `7644965` (sesi `chat-a6`; verify 612/0, build OK, test regresi `panel-layout.test.ts`); di-merge ke `join` sebagai `3794029` (uji manual user 2026-10-02): klik FAB → layar tertutup gelap, panel di kiri bawah. Penyebab: prop `style` di `Drawer.Content` ikut terpasang ke pembungkus `inner` selayar penuh (Mantine 8). Perbaikan: pindah ke `styles.content`. Dikerjakan sesi `chat-a6` **sebelum lanjut F1-d**; verifikasi manual oleh user
+- [x] Uji koneksi ke proxy nyata (user, manual 2026-10-02): AI tersambung & menjawab
+- [x] **F1-d** selesai 2026-10-02 (sesi `chat-a6`, commit `d275ddd` + `1a0371e`; dicek 0d: test 622/0, test:db 75/0, lint 0, tsc tanpa error baru, merge ke `join` bersih) — `/bantuan` & `/admin/help` memakai panel tertanam (520px, state sama); stub `/api/jenna/chat` dihapus (route analytics Jenna tetap); kode chat lama ternyata kode mati → dihapus; `help-page.tsx` 1081→1013, `admin/help.tsx` 726→659 (masih over-limit). **Di-merge ke `join` (`f9e01b6`) atas perintah user 2026-10-02** (test 622/0); cek manual `/bantuan` & `/admin/help` oleh user. Rincian awal: (perintah mulai 2026-10-02, sesi `chat-a6`, branch yang sama; `join` = `origin/join` = `35df488`) `/bantuan` (`help-page.tsx`) & `/admin/help` memakai panel yang sama (mode tertanam); hapus stub `POST /api/jenna/chat` beserta kontraknya
+- [~] **F1-e** (perintah mulai 2026-10-02, sesi `chat-a6`, branch yang sama) SSE `POST /api/assistant/chat/stream`: event `status`, `delta` (iterasi terakhir), `done`
 - [ ] Setiap sub-tahap: `bun run verify` + `bun run test:db` hijau → lapor → merge setelah persetujuan
 - [-] 👍👎 umpan balik — ditunda (butuh kolom DB + tampilan admin)
 - [-] "Add file" — ditunda (butuh penyimpanan & parser file)
 
 ## 6. Lanjutan Fitur 1 (setelah MVP dipakai)
+
+- [ ] (Usulan sesi `chat-a6`, tugas terpisah, tunggu perintah) Pecah modal Panduan/Video/Dokumentasi yang hampir identik di `help-page.tsx` & `admin/help.tsx` menjadi komponen bersama → keduanya turun di bawah batas 500 baris
 
 - [ ] Tool tahap 2: `ringkasan_sosial`, `ringkasan_keamanan` (tanpa koordinat/kode CCTV & teks laporan warga), `ringkasan_bumdes`, `analitik_chatbot`, `cari_data` (export fungsi di `search.ts`; tanpa cuplikan deskripsi pengaduan)
 - [ ] Cek per modul apakah sumbernya punya data multi-tahun → parameter tahun bila ada (temuan 1)
@@ -222,6 +226,7 @@
 
 ## 8. Fitur 3 — Suara · menunggu pembahasan `06`
 
+- [x] Analisa awal Fitur 3 oleh worker Orca `ai_suara` **selesai** (worker_done succeeded, 2026-10-02; terminal di-*retain*) — rekomendasi: OpenAI Realtime (WebRTC, token efemeral dari server, tool lewat endpoint server yang sama), otak O1, kuota menit suara terpisah; 14 pertanyaan menunggu user. Sebelumnya: (Run `run_72c2dada8768`, Task `task_5651c7d8228d`, perintah user 2026-10-02): mode suara ala ChatGPT, **full duplex**, transkrip input suara tampil langsung, pointer bergerak sesuai perintah bila perlu → hasil di `discus/fitur-3-suara.md` (diskusi saja, tanpa kode)
 - [ ] Pembahasan & keputusan (browser target, bacakan otomatis, gabungan dengan fitur 2, privasi)
 - [ ] Rincian checklist ditambahkan setelah dokumen `06` disetujui
 

@@ -30,6 +30,7 @@
 | `discus/p-1-precheck.sql` | Query read-only sebelum deploy P-1 (user & API key terdampak) | Siap pakai |
 | `discus/fitur-2-pointer.md` | Diskusi Fitur 2 (P1–P7) — sesi 59 → 61 | **Tuntas** (2026-10-01) |
 | `discus/fitur-2-alasan-pendekatan-b.md` | **Pegangan untuk tim**: kenapa pendekatan B, bukan page-agent; cara kerja B; kapan page-agent layak dipakai | Final (keputusan #28) |
+| `discus/fitur-3-suara.md` | Analisa Fitur 3 suara full duplex (OpenAI): alur, opsi a/b/c, fakta kode, rekomendasi, 14 pertanyaan | Menunggu jawaban user |
 | `discus/fitur-2-page-agent-tinjau-ulang.md` | Tinjau ulang page-agent (permintaan user 2026-10-01): fakta baru v1.12.4, opsi O1–O4 | **Tuntas** — B diperluas (2026-10-02) |
 | `checklist-progress.md` | Checklist progres semua tahap | Aktif |
 
@@ -74,6 +75,7 @@
 | 35 | Kuota & kegagalan AI | Pertanyaan yang gagal karena provider **tidak dihitung kuota** (tetap disimpan berstatus "error" untuk admin) | 03 §8 |
 | 36 | Fitur 1 lanjutan | F1-c s.d. F1-e di sesi `chat-a6`, worktree & branch yang sama (`feature/ai-assistant-chat`), satu sub-tahap per perintah | checklist §5 |
 | 37 | Fitur 2 — pendekatan setelah tinjau ulang page-agent | **B diperluas**: tool `klik_elemen(target)` / `pilih(target, nilai)` khusus target tampilan terdaftar (daftar izin); page-agent tidak dipakai sekarang | 05, `discus/fitur-2-page-agent-tinjau-ulang.md` Q2 |
+| 38 | Fitur 3 — provider suara | **OpenAI** (bukan Claude); user sudah menyiapkan API key OpenAI, disimpan lewat slot `voice` di halaman admin (terenkripsi). Arsitektur full duplex dianalisa worker `ai_suara` | `discus/fitur-3-suara.md` |
 
 ## Ringkasan eksekutif
 

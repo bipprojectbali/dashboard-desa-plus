@@ -1,5 +1,7 @@
 # 06 — Fitur 3: interaksi suara
 
+> **Pembaruan 2026-10-02:** user ingin mode suara ala ChatGPT **full duplex** dengan transkrip langsung dan pointer sesuai perintah, memakai **OpenAI** (bukan Claude). Analisa baru dibuat worker `ai_suara` di `discus/fitur-3-suara.md`; draf di bawah adalah analisa lama.
+
 > **Status: DRAF — dibahas setelah fitur 2.** User baru pertama kali menyentuh konteks mode suara;
 > dokumen ini menjelaskan pilihan dulu, keputusan diambil saat sesi pembahasan.
 
