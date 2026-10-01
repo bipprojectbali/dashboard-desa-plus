@@ -81,7 +81,7 @@ function SigninComponent() {
 						const json = await res.json();
 						const user = json?.data?.user;
 
-						if (user && user.emailVerified === false) {
+						if (user && user.emailVerified !== true) {
 							await authClient.signOut();
 							setPendingModal(true);
 							return;

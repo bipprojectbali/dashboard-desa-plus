@@ -37,6 +37,7 @@ bun run sync:noc     # Manual sync dari NOC system
 bun run seed         # Seed semua data (ada juga seed:auth/:demographics/:divisions/:services/:documents/:dashboard/:phase2)
 bun run test         # Semua unit test (tests/api, tests/config, tests/hooks, tests/theme)
 bun run test:api     # Unit test API saja (tests/api/)
+bun run test:db      # Test dengan PostgreSQL nyata (tests/db/) — DATABASE_URL diganti TEST_DATABASE_URL; gagal bila belum diset
 bun run test:watch   # Unit test mode watch
 bun run test:ui      # Unit test dengan UI dashboard
 bun run verify       # Gate lengkap: lint (error-only) + semua test — jalankan setelah selesai fitur baru
@@ -90,6 +91,7 @@ Semua test ada di `tests/` (root), pakai Bun native test runner (`bun:test`). St
 - `tests/api/` — Elysia API test via `api.handle(new Request(...))`, tanpa server HTTP asli
 - `tests/config/`, `tests/hooks/`, `tests/theme/` — unit test util/hook/tema
 - `tests/setup/dom.ts` — preload happy-dom (auto-load lewat `bunfig.toml`) supaya lib yang sentuh `window` di top-level import (mis. `leaflet`) tidak crash di lingkungan test
+- `tests/db/` — test yang butuh PostgreSQL nyata (mis. sesi Better Auth sungguhan, API key). **Tidak** ikut `bun run test`; jalankan lewat `bun run test:db`, yang memakai `TEST_DATABASE_URL` (database test terpisah yang sudah dimigrasi: `DATABASE_URL=<test-url> bun x prisma migrate deploy`) dan config `tests/db/bunfig.toml` tanpa preload happy-dom (happy-dom membuang header `set-cookie`). Setiap file wajib memanggil `assertTestDatabase()` dan menghapus data yang dibuatnya.
 
 **Konvensi test API**: route yang dilindungi `apiMiddleware` selalu 401 tanpa auth — manfaatkan ini untuk test auth-guard yang deterministik TANPA perlu koneksi DB nyata (request direject di `onBeforeHandle`, sebelum handler sempat query Prisma). Lihat `tests/api/sosial.test.ts` sebagai contoh pola.
 
@@ -98,6 +100,7 @@ Semua test ada di `tests/` (root), pakai Bun native test runner (`bun:test`). St
 bun run verify   # lint (error-only, non-blocking di warning) + semua test
 ```
 Atau granular: `bun run lint` (biome, harus exit 0 di level error) dan `bun run test` (harus 0 fail).
+Bila menyentuh `tests/db/` atau alur auth/DB, jalankan juga `bun run test:db` (harus 0 fail).
 
 ---
 

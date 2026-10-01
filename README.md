@@ -79,6 +79,7 @@ bun run dev
 
 - **All tests** (api/config/hooks/theme): `bun run test`
 - **API only**: `bun run test:api`
+- **Database tests** (`tests/db/`, needs `TEST_DATABASE_URL` pointing to a separate, migrated test DB): `bun run test:db`
 - **Watch mode**: `bun run test:watch`
 - **Visual Dashboard**: `bun run test:ui`
 - **Lint + test gate**: `bun run verify`

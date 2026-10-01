@@ -137,7 +137,7 @@ export function createProtectedRoute(options: ProtectedRouteOptions = {}) {
 		// If user has not been verified by admin yet, block access (except /profile)
 		if (
 			user &&
-			user.emailVerified === false &&
+			user.emailVerified !== true &&
 			!location.pathname.startsWith("/profile")
 		) {
 			redirectToLogin("/signin", location.href);
