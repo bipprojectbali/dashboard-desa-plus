@@ -11,9 +11,23 @@
 > Rujukan: `03-pondasi.md` (disetujui), `04`–`06` (fitur), `07-roadmap.md`, `discus/*`.
 > Revisi 2 (2026-10-01): diselaraskan ulang dengan seluruh keputusan; ditambah §9 pembagian kerja lintas sesi.
 
+## Ringkasan progres (diperbarui sesi induk 0d, 2026-10-01)
+
+| Tahap | Status | Lokasi |
+|---|---|---|
+| P-1 verifikasi API | ✅ selesai, di `join` & `origin/join` | — |
+| P1 data, izin, enkripsi | ✅ selesai, di `join` (lokal, belum di-push) | `feature/ai-assistant-pondasi` |
+| P2 otak AI (tanpa UI) | ✅ selesai (8 commit `f3e1649`…`3fcceaa`), dicek ulang 0d: test 461/0, test:db 26/0, lint error 0, tsc tidak ada error baru; **di-merge ke `join` (`325d4a1`)** atas perintah user; `join` (`74f1791`) belum di-push (21 commit di depan `origin/join`) | `feature/ai-assistant-pondasi` (sesi 61) |
+| P3 endpoint admin & status | ✅ selesai (3 commit `1825ce8`, `8c2f95a`, `05fcffd`), dicek ulang 0d: test 508/0, test:db 47/0, lint error 0, tsc tanpa error baru; **belum di-merge/push**; sisa: uji koneksi ke proxy nyata bersama user | worktree `../dashboard-desa-plus-p3`, branch `feature/ai-assistant-admin-api` dari `join` `74f1791` |
+| UI `/admin/ai-assistant` | ✅ UI di-merge ke `join` (`74f1791`, keputusan user, oleh sesi 59); berfungsi setelah endpoint P3 ada | `feature/ai-assistant-admin-ui` (worktree `../dashboard-desa-plus-admin-ui`, ada sesi `-91` idle) |
+| Fitur 1 | 📄 dokumen `04` disetujui; implementasi belum dimulai | — |
+| Fitur 2 | ✅ Diskusi P1–P7 **tuntas**; menunggu persetujuan akhir dokumen `05` | sesi 61 (diskusi) | sesi **61** (dialihkan dari 59, keputusan user) |
+| Fitur 3 | 📄 belum dibahas | — |
+| `PROJECT-STRUCTURE.md` | ⏳ menunggu perintah | sesi 59 |
+
 ## 0. Keputusan
 
-> Pembahasan fitur dilanjutkan di sesi **dashboard-desa-plus-59** (perintah user 2026-10-01). Sesi ini
+> Pembahasan fitur dilanjutkan di sesi **dashboard-desa-plus-59** (sejak 2026-10-01 sore: **Fitur 2 dialihkan ke sesi 61**, sesi 59 mengerjakan P3) (perintah user 2026-10-01). Sesi ini
 > (**dashboard-desa-plus-0d**) menjadi **sesi induk**: menerima ringkasan keputusan dari sesi lain dan
 > memperbarui README, checklist, serta dokumen 04–07. Sesi 59 hanya mengedit file diskusinya di `discus/`.
 
@@ -34,6 +48,7 @@
 
 ## 2. Aturan yang berlaku di SEMUA tahap
 
+- **Selalu tunggu perintah & konfirmasi user, dan tanyakan DI MANA (sesi/worktree/branch) sebelum membuat atau mengubah kode.** Worktree/sesi paralel dibuat oleh user
 - Branch: `fix/…` / `feature/…` dari **`join`** (bukan `main`); merge hanya ke `join`; commit `<type>(<scope>): <deskripsi>` bahasa Inggris
 - File baru mengikuti batas ukuran (route ≤150, service ≤300, repo ≤250, util ≤200, test ≤400 baris); tidak menambah kode ke file yang sudah over-limit
 - Kode memakai istilah `assistant`; "Jenna" hanya nilai default nama di DB (temuan 6c)
@@ -123,13 +138,15 @@
 > - Belum ada route yang di-mount — endpoint `/api/assistant/*` di P3/F1-b.
 
 ### P3 — Admin & status
-- [ ] `GET /api/assistant/status` — **sesi browser saja** (tolak API key), `emailVerified === true`, izin `use-ai-assistant`; hanya boolean + nama
-- [ ] `/api/admin/ai-assistant/*` — settings (validasi rentang), slot per fitur (API key: tidak dikirim = pertahankan, `""` = hapus; GET hanya `apiKeyHint`/`hasApiKey`), test koneksi (`https` saja kecuali localhost dev, tanpa redirect, simpan `lastTestAt`/`lastTestOk`), `ActivityLog` tanpa rahasia; slot yang kuncinya gagal didekripsi → status "API key perlu diisi ulang"
-- [ ] Halaman `/admin/ai-assistant` (file baru, bukan `admin/settings.tsx`) + item nav: Umum (saklar, nama, personaNote), Batas pemakaian (angka-angka + pilihan akun kiosk & kuota 100/hari), Kredensial (Chat/Penunjuk/Suara; temperature & max tokens opsional; badge DB/belum diisi/fallback Chat; ▷ Test), Ringkasan hari ini
-- [ ] Job retensi harian di `src/jobs/` (`retentionDays`, 0 = simpan selamanya)
-- [ ] Test: 401/403 (tanpa sesi, belum terverifikasi, API key, non-admin), validasi rentang batas, respons tidak pernah memuat API key
-- [ ] Docs: `docs/ARCHITECTURE.md` (modul `src/api/assistant/`, route baru), `.env.example` sudah di P1
+- [x] `GET /api/assistant/status` — **sesi browser saja** (tolak API key), `emailVerified === true`, izin `use-ai-assistant`; hanya boolean + nama
+- [x] `/api/admin/ai-assistant/*` (admin, **sesi browser saja**) — settings (validasi rentang), slot per fitur (API key: tidak dikirim = pertahankan, `""` = hapus; GET hanya `apiKeyHint`/`hasApiKey`), test koneksi (`https` saja kecuali localhost dev, tanpa redirect, simpan `lastTestAt`/`lastTestOk`), `ActivityLog` tanpa rahasia; slot yang kuncinya gagal didekripsi → status "API key perlu diisi ulang"
+- [~] Halaman `/admin/ai-assistant` — UI dibuat di branch `feature/ai-assistant-admin-ui` (`a9bcaf4`, `c71d606`, `302b3b7`) **tanpa konfirmasi lokasi** (diakui sesi 0d); kontrak `src/types/ai-assistant-admin.ts`; menunggu keputusan user (serahkan/biarkan/hapus) dan endpoint P3. Rincian awal: Umum (saklar, nama, personaNote), Batas pemakaian (angka-angka + pilihan akun kiosk & kuota 100/hari), Kredensial (Chat/Penunjuk/Suara; temperature & max tokens opsional; badge DB/belum diisi/fallback Chat; ▷ Test), Ringkasan hari ini
+- [x] Job retensi harian di `src/jobs/assistant-retention.ts` (04:00) (`retentionDays`, 0 = simpan selamanya)
+- [x] Test: 401/403 (tanpa sesi, belum terverifikasi, API key, non-admin), validasi rentang batas, respons tidak pernah memuat API key
+- [x] Docs: `docs/ARCHITECTURE.md` (modul `src/api/assistant/`, route baru), `.env.example` sudah di P1
 - [ ] `bun run verify` + `bun run test:db` hijau
+- [x] `bun run verify` + `bun run test:db` hijau (508/0, 47/0)
+> Catatan P3 (sesi 59, branch `feature/ai-assistant-admin-api`, worktree `../dashboard-desa-plus-p3`): `apiMiddleware` kini menandai `user.authMethod` ("session"/"apiKey", +3 baris); endpoint admin juga menolak API key (403); role untuk asisten dibaca dari DB (`http/access.ts`); hasil test koneksi lama dibuang bila URL/model/kunci berubah; uji koneksi tanpa redirect, batas 30 detik. Temuan baru → `discus/temuan.md` temuan 8.
 - [ ] Uji koneksi ke proxy nyata dari halaman admin (bersama user)
 - [ ] Lapor → merge setelah persetujuan
 
@@ -169,8 +186,23 @@
 ## 7. Fitur 2 — Penunjuk · menunggu pembahasan `05`
 
 - [x] P1 pendekatan: **B** (target terdaftar, baca-saja); page-agent = opsi masa depan untuk aksi tulis — 2026-10-01
-- [ ] P2–P7: arti slot `pointer`, kapan menunjuk, jenis aksi, halaman percontohan, HP, aksesibilitas (sesi 59)
-- [ ] Rincian checklist ditambahkan setelah dokumen `05` disetujui
+- [x] P2 slot `pointer`: **belum dipakai** — penunjuk memakai otak chat; slot tetap ada (2026-10-01, sesi 61)
+- [ ] (Kode, tunggu perintah & lokasi) Label kartu Penunjuk di halaman admin → "Belum dipakai · memakai Chat" — usulan sesi 61
+- [x] P3 kapan menunjuk: **hanya bila diminta** + label "Sumber" bisa diklik (frontend, tanpa AI/kuota) — 2026-10-01, sesi 61
+- [x] P4 aksi versi pertama: **`navigate` + `pointTo`** (termasuk gulir/kursor/sorotan); `highlight` & `setFilter` ditunda; `click` tidak dibuat — 2026-10-01, sesi 61
+- [x] P5 halaman percontohan: **Keuangan** (`/keuangan-anggaran`, 5 kartu di `src/components/keuangan/`), lalu **Beranda** — 2026-10-01, sesi 61
+- [x] P6 HP & mode perbesar: panel **ditutup sementara** saat menunjuk + tombol **"Kembali ke chat"** (percakapan utuh) — 2026-10-01, sesi 61; catatan silang di `04` §2
+- [x] P7 aksesibilitas: `prefers-reduced-motion` → sorotan + gulir tanpa animasi kursor — 2026-10-01, sesi 61
+- [ ] Persetujuan akhir dokumen `05` (user)
+- Draf rincian implementasi (berlaku setelah `05` disetujui; tunggu perintah & lokasi):
+  - [ ] Registry target di kode `{ id, route, label, deskripsi, requiredFeature }` + anchor `data-ai-target` di 5 kartu Keuangan
+  - [ ] Tool server `buka_halaman` / `tunjukkan_elemen` (validasi target & izin, mengembalikan `actions`)
+  - [ ] Frontend: whitelist aksi `navigate`/`pointTo`, `AssistantCursor` (kursor + sorotan + gulir), tunggu anchor dengan batas waktu
+  - [ ] Label "Sumber: X" bisa diklik → `pointTo` tanpa AI (pemetaan tool → modul → target)
+  - [ ] Panel ditutup sementara + "Kembali ke chat" di HP & mode perbesar; `prefers-reduced-motion`
+  - [ ] Label kartu Penunjuk di admin: "Belum dipakai · memakai Chat"
+  - [ ] Tahap 2: anchor Beranda
+  - [ ] Test: registry/izin, tool menolak target tak terdaftar, whitelist aksi di klien
 
 ## 8. Fitur 3 — Suara · menunggu pembahasan `06`
 

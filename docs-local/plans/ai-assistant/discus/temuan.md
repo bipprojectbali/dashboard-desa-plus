@@ -14,6 +14,7 @@
 | 5   | `.env.staging` ter-commit                                               | Tidak (di luar scope) | ✅                      |
 | 6   | Temuan kecil lainnya                                                    | Sebagian              | ✅ |
 | 7   | **Verifikasi admin (`emailVerified`) tidak dicek di API** — temuan baru | Ya                    | ✅ |
+| 8   | **Role dibaca dari cookie cache sesi (basi ≤30 hari)** — temuan P3 | Tidak (di luar scope AI) | ⏳ |
 
 
 ---
@@ -294,3 +295,20 @@ diverifikasi sama sekali vs. user terverifikasi yang melihat modul di luar izinn
 `true`. Pengaman wajib sebelum fix di-merge/deploy: jalankan query hitung (read-only) di staging/produksi;
 bila ada user `null`, admin memverifikasi mereka dulu di `/admin/users` agar tidak ada yang tiba-tiba terkunci.
 
+---
+
+## Temuan 8 — Role (dan izin) user dibaca dari cookie cache sesi, bisa basi hingga 30 hari ⏳ (baru, ditemukan sesi 59 saat P3)
+
+**Fakta (dicek sesi 59 dengan test, dikonfirmasi sesi induk di kode).**
+- `src/utils/auth.ts:101-104`: Better Auth `cookieCache` aktif dengan `maxAge` **30 hari**.
+- `apiMiddleware` mengambil `role` dari `session.user.role` (isi cookie cache), bukan dari DB. Test sesi 59
+  membuktikan role yang diubah di DB tidak terlihat lewat sesi lama.
+- Akibatnya, di luar AI assistant (`admin.ts`, `my-permissions`, guard `role === "admin"` lain), **penurunan role
+  oleh admin baru berlaku setelah cookie cache kedaluwarsa** (maks 30 hari) atau user login ulang.
+- P-1 sudah membaca `emailVerified` dari DB (pencabutan verifikasi langsung berlaku). P3 membaca role dari DB
+  khusus untuk endpoint asisten (`src/api/assistant/http/access.ts`).
+
+**Usulan:** `apiMiddleware` memakai `role` dari query `findUnique` yang sudah ada (±1 baris, tanpa query tambahan),
+digabung ke branch `fix/api-permission-guard` (temuan 4) karena sama-sama soal penegakan izin.
+
+**Perlu diputuskan:** digabung ke `fix/api-permission-guard`, dikerjakan terpisah lebih cepat, atau dibiarkan?
