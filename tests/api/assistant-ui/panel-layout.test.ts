@@ -4,7 +4,7 @@ import { join } from "node:path";
 import {
 	assistantPanelStyles,
 	PANEL_BODY_STYLE,
-} from "@/components/assistant/assistant.logic";
+} from "@/components/assistant/assistant-panel.styles";
 
 /**
  * Regresi bug F1-c: gaya di prop `style` <Drawer.Content> ikut diteruskan

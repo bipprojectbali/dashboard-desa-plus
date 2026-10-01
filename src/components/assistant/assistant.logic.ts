@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import type { AssistantText } from "@/locales/assistant";
 import type {
 	AssistantLang,
@@ -6,35 +5,6 @@ import type {
 } from "@/types/ai-assistant-chat";
 
 /** Logika murni panel AI assistant — tanpa React, diuji langsung. */
-
-/** Lebar panel mode normal; /wall memberi ruang selebar ini agar panel NOC tidak tertutup. */
-export const ASSISTANT_PANEL_WIDTH = 440;
-
-/**
- * Gaya Drawer panel (`styles` Mantine). Hanya `content` (panel); `inner`
- * (pembungkus fixed selayar penuh) sengaja tidak diberi gaya.
- */
-export function assistantPanelStyles(
-	dark: boolean,
-): Record<"content", CSSProperties> {
-	return {
-		content: {
-			display: "flex",
-			flexDirection: "column",
-			overflow: "hidden",
-			background: dark ? "#141d34" : "white",
-			borderLeft: `1px solid ${dark ? "#26324f" : "#dbe3ee"}`,
-		},
-	};
-}
-
-/** Isi panel di bawah header: mengisi sisa tinggi; pesan bergulir, composer di bawah. */
-export const PANEL_BODY_STYLE: CSSProperties = {
-	flex: 1,
-	minHeight: 0,
-	display: "flex",
-	flexDirection: "column",
-};
 
 /** Rute tanpa FAB: admin memakai /admin/help (F1-d); signin/signup belum login. */
 const FAB_EXCLUDED_PREFIXES = ["/admin", "/signin", "/signup"] as const;
@@ -138,6 +108,11 @@ export function sourceLabels(
 	text: AssistantText,
 ): string[] {
 	return toolsUsed.map((name) => text.sources[name] ?? name);
+}
+
+/** Status stream "Memeriksa data <modul>…" dari nama tool. */
+export function streamStatusLabel(tool: string, text: AssistantText): string {
+	return fillTemplate(text.checking, { modul: text.sources[tool] ?? tool });
 }
 
 /** Durasi Retry-After yang mudah dibaca (detik → detik/menit/jam, dibulatkan ke atas). */

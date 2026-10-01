@@ -37,6 +37,14 @@ export interface ExecuteOptions {
 	/** Hanya untuk log. */
 	conversationId?: string;
 	signal?: AbortSignal;
+	/** Mode stream: dipanggil sebelum tool (yang terdaftar) dijalankan. */
+	onStatus?: (toolName: string) => void;
+	/**
+	 * Mode stream: potongan teks dari provider. Teks pengantar sebelum
+	 * panggilan tool juga bisa lewat sini; `onStatus` berikutnya menandai
+	 * bahwa teks itu bukan jawaban akhir.
+	 */
+	onDelta?: (text: string) => void;
 }
 
 export interface TurnResult {
@@ -158,6 +166,7 @@ export async function executeWithTools(
 			const res = await provider.chat(conversation, {
 				tools: specs,
 				signal: turn.signal,
+				onDelta: opts.onDelta,
 			});
 			usage.inputTokens += res.usage?.inputTokens ?? 0;
 			usage.outputTokens += res.usage?.outputTokens ?? 0;
@@ -176,6 +185,7 @@ export async function executeWithTools(
 				let result: ToolResult;
 				if (tool) {
 					toolsUsed.add(tool.name);
+					opts.onStatus?.(tool.name);
 					result = await runTool(
 						tool,
 						call,

@@ -8,6 +8,7 @@ import api from "@/api";
  */
 const cases: Array<[string, string, unknown?]> = [
 	["POST", "/api/assistant/chat", { message: "Halo" }],
+	["POST", "/api/assistant/chat/stream", { message: "Halo" }],
 	["GET", "/api/assistant/conversations"],
 	["GET", "/api/assistant/conversations/abc/messages"],
 	["PATCH", "/api/assistant/conversations/abc", { title: "Judul" }],

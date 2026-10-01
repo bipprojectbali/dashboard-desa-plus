@@ -16210,6 +16210,147 @@
         }
       }
     },
+    "/api/assistant/chat/stream": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAssistantChatStream",
+        "summary": "Ask the AI assistant, streamed as server-sent events",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "conversationId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "pageContext": {
+                    "type": "object",
+                    "required": [
+                      "route"
+                    ],
+                    "properties": {
+                      "route": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "title": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "lang": {
+                        "default": "id",
+                        "type": "string",
+                        "enum": [
+                          "id",
+                          "en"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "conversationId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "pageContext": {
+                    "type": "object",
+                    "required": [
+                      "route"
+                    ],
+                    "properties": {
+                      "route": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "title": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "lang": {
+                        "default": "id",
+                        "type": "string",
+                        "enum": [
+                          "id",
+                          "en"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "conversationId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "pageContext": {
+                    "type": "object",
+                    "required": [
+                      "route"
+                    ],
+                    "properties": {
+                      "route": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "title": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "lang": {
+                        "default": "id",
+                        "type": "string",
+                        "enum": [
+                          "id",
+                          "en"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
     "/api/assistant/conversations/": {
       "get": {
         "parameters": [

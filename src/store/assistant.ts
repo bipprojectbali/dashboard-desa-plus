@@ -32,6 +32,12 @@ interface AssistantState {
 	error: string | null;
 	/** Teks pertanyaan terakhir yang gagal — untuk tombol "Kirim ulang". */
 	retryText: string | null;
+	/** Mode stream: tool yang sedang berjalan (null = belum/tidak ada). */
+	streamStatus: string | null;
+	/** Mode stream: teks jawaban yang sedang mengalir. */
+	streamingText: string;
+	/** Id bubble pertanyaan yang sedang menunggu jawaban; jawaban giliran lain diabaikan. */
+	turnId: string | null;
 }
 
 const initialConversation = () => ({
@@ -40,15 +46,39 @@ const initialConversation = () => ({
 	olderCursor: null,
 	error: null,
 	retryText: null,
+	pending: false,
+	streamStatus: null,
+	streamingText: "",
+	turnId: null,
 });
 
 export const assistantStore = proxy<AssistantState>({
 	open: false,
 	maximized: false,
 	view: "chat",
-	pending: false,
 	...initialConversation(),
 });
+
+/** Pengendali pembatalan giliran aktif (di luar proxy: bukan state tampilan). */
+let activeTurn: AbortController | null = null;
+
+/** Mulai giliran baru; giliran sebelumnya (bila masih berjalan) dibatalkan. */
+export function beginTurn(): AbortController {
+	activeTurn?.abort();
+	activeTurn = new AbortController();
+	return activeTurn;
+}
+
+/** Batalkan giliran yang sedang berjalan (tombol batal, ganti/buat percakapan). */
+export function cancelActiveTurn() {
+	activeTurn?.abort();
+	activeTurn = null;
+}
+
+/** Giliran ini masih yang ditunggu panel (belum dibatalkan/diganti percakapan). */
+export function isCurrentTurn(bubbleId: string): boolean {
+	return assistantStore.turnId === bubbleId;
+}
 
 export function openAssistant() {
 	assistantStore.open = true;
@@ -68,6 +98,7 @@ export function setAssistantView(view: AssistantState["view"]) {
 }
 
 export function startNewConversation() {
+	cancelActiveTurn();
 	Object.assign(assistantStore, initialConversation(), { view: "chat" });
 }
 
@@ -89,6 +120,7 @@ export function showConversation(
 	conversationId: string,
 	page: AssistantPage<AssistantHistoryMessageDto>,
 ) {
+	cancelActiveTurn();
 	Object.assign(assistantStore, initialConversation(), {
 		conversationId,
 		messages: historyToBubbles(page.items),
@@ -110,12 +142,35 @@ export function addUserBubble(id: string, content: string) {
 	assistantStore.pending = true;
 	assistantStore.error = null;
 	assistantStore.retryText = null;
+	assistantStore.turnId = id;
+	clearStream();
 }
 
+function clearStream() {
+	assistantStore.streamStatus = null;
+	assistantStore.streamingText = "";
+}
+
+/** Tool mulai berjalan: teks yang sudah mengalir bukan jawaban akhir, dibuang. */
+export function setStreamStatus(bubbleId: string, tool: string) {
+	if (!isCurrentTurn(bubbleId)) return;
+	assistantStore.streamStatus = tool;
+	assistantStore.streamingText = "";
+}
+
+export function appendStreamDelta(bubbleId: string, text: string) {
+	if (isCurrentTurn(bubbleId)) assistantStore.streamingText += text;
+}
+
+/** Jawaban akhir (dari `done`/`/chat`) menggantikan teks yang mengalir. */
 export function receiveAnswer(
+	bubbleId: string,
 	conversationId: string,
 	message: AssistantMessageDto,
 ) {
+	if (!isCurrentTurn(bubbleId)) return;
+	clearStream();
+	assistantStore.turnId = null;
 	assistantStore.conversationId = conversationId;
 	assistantStore.messages.push({
 		id: message.id,
@@ -133,6 +188,9 @@ export function failQuestion(
 	text: string,
 	conversationId?: string,
 ) {
+	if (!isCurrentTurn(bubbleId)) return;
+	clearStream();
+	assistantStore.turnId = null;
 	const bubble = assistantStore.messages.find((m) => m.id === bubbleId);
 	if (bubble) bubble.failed = true;
 	if (conversationId) assistantStore.conversationId = conversationId;

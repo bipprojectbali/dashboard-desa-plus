@@ -1,13 +1,17 @@
 import { beforeEach, describe, expect, it } from "bun:test";
 import {
 	addUserBubble,
+	appendStreamDelta,
 	assistantStore,
+	beginTurn,
+	cancelActiveTurn,
 	closeAssistant,
 	failQuestion,
 	historyToBubbles,
 	openAssistant,
 	prependOlderMessages,
 	receiveAnswer,
+	setStreamStatus,
 	showConversation,
 	startNewConversation,
 	toggleMaximized,
@@ -55,7 +59,7 @@ describe("assistantStore", () => {
 		openAssistant();
 		toggleMaximized();
 		addUserBubble("local-1", "Halo");
-		receiveAnswer("c1", {
+		receiveAnswer("local-1", "c1", {
 			id: "m1",
 			role: "assistant",
 			content: "Hai",
@@ -111,5 +115,54 @@ describe("assistantStore", () => {
 			assistantStore.conversationId,
 			assistantStore.messages.length,
 		]).toEqual([null, 0]);
+	});
+});
+
+describe("assistantStore — stream & giliran", () => {
+	const answer = (id: string) => ({
+		id,
+		role: "assistant" as const,
+		content: "Jawaban final",
+		toolsUsed: ["ringkasan_keuangan"],
+		createdAt: "2026-10-02T00:00:00.000Z",
+	});
+
+	it("delta mengalir, status tool membuang teks pengantar, jawaban akhir menggantikannya", () => {
+		addUserBubble("q1", "Anggaran?");
+		appendStreamDelta("q1", "Saya cek ");
+		setStreamStatus("q1", "ringkasan_keuangan");
+		expect([assistantStore.streamStatus, assistantStore.streamingText]).toEqual(
+			["ringkasan_keuangan", ""],
+		);
+		appendStreamDelta("q1", "Jawaban ");
+		appendStreamDelta("q1", "final");
+		expect(assistantStore.streamingText).toBe("Jawaban final");
+		receiveAnswer("q1", "c1", answer("a1"));
+		expect(assistantStore.streamingText).toBe("");
+		expect(assistantStore.messages.at(-1)?.content).toBe("Jawaban final");
+	});
+
+	it("percakapan baru saat menunggu: giliran dibatalkan, jawaban telat diabaikan", () => {
+		const controller = beginTurn();
+		addUserBubble("q1", "Anggaran?");
+		startNewConversation();
+		expect(controller.signal.aborted).toBe(true);
+		appendStreamDelta("q1", "telat");
+		receiveAnswer("q1", "c1", answer("a1"));
+		failQuestion("q1", "x", "Anggaran?");
+		expect(assistantStore.messages).toEqual([]);
+		expect([
+			assistantStore.pending,
+			assistantStore.conversationId,
+			assistantStore.error,
+		]).toEqual([false, null, null]);
+	});
+
+	it("beginTurn membatalkan giliran sebelumnya; cancelActiveTurn membatalkan yang aktif", () => {
+		const first = beginTurn();
+		const second = beginTurn();
+		expect(first.signal.aborted).toBe(true);
+		cancelActiveTurn();
+		expect(second.signal.aborted).toBe(true);
 	});
 });

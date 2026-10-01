@@ -53,6 +53,11 @@ export type ChatResult =
 export interface ChatOptions {
 	tools?: ToolSpec[];
 	signal?: AbortSignal;
+	/**
+	 * Diisi = minta jawaban di-stream: potongan teks dikirim ke sini selama
+	 * dihasilkan; hasil akhir tetap dikembalikan utuh seperti tanpa stream.
+	 */
+	onDelta?: (text: string) => void;
 }
 
 export interface AIProvider {

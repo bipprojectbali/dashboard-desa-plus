@@ -17,7 +17,12 @@ import { useSnapshot } from "valtio";
 import { useIsDark } from "@/hooks/useIsDark";
 import { assistantStore, type ChatBubble } from "@/store/assistant";
 import { i18nStore } from "@/store/i18n";
-import { fillTemplate, sourceLabels, toAssistantLang } from "./assistant.logic";
+import {
+	fillTemplate,
+	sourceLabels,
+	streamStatusLabel,
+	toAssistantLang,
+} from "./assistant.logic";
 import { suggestionsFor } from "./assistant-suggestions";
 import { useAssistantText } from "./use-assistant-access";
 
@@ -30,6 +35,8 @@ interface MessageListProps {
 }
 
 const GREETING_ID = "greeting";
+/** Bubble teks yang sedang mengalir — belum final, jadi tanpa tombol salin. */
+const STREAMING_ID = "streaming";
 
 function Bubble({ bubble }: { bubble: ChatBubble }) {
 	const dark = useIsDark();
@@ -76,7 +83,7 @@ function Bubble({ bubble }: { bubble: ChatBubble }) {
 						{text.source}: {sources.join(", ")}
 					</Text>
 				) : null}
-				{!mine && bubble.id !== GREETING_ID ? (
+				{!mine && bubble.id !== GREETING_ID && bubble.id !== STREAMING_ID ? (
 					<CopyButton value={bubble.content}>
 						{({ copied, copy }) => (
 							<Tooltip label={copied ? text.copied : text.copy} withArrow>
@@ -106,7 +113,8 @@ export function AssistantMessageList({
 	onAsk,
 	onLoadOlder,
 }: MessageListProps) {
-	const { messages, pending, olderCursor } = useSnapshot(assistantStore);
+	const { messages, pending, olderCursor, streamStatus, streamingText } =
+		useSnapshot(assistantStore);
 	const { lang } = useSnapshot(i18nStore);
 	const text = useAssistantText();
 	const bottomRef = useRef<HTMLDivElement>(null);
@@ -118,7 +126,7 @@ export function AssistantMessageList({
 	// biome-ignore lint/correctness/useExhaustiveDependencies: gulir saat jumlah pesan/pending berubah
 	useEffect(() => {
 		bottomRef.current?.scrollIntoView?.({ block: "end" });
-	}, [messages.length, pending]);
+	}, [messages.length, pending, streamingText]);
 
 	return (
 		<ScrollArea style={{ flex: 1, minHeight: 0 }} px="md" py="sm">
@@ -141,11 +149,23 @@ export function AssistantMessageList({
 				{messages.map((m) => (
 					<Bubble key={m.id} bubble={m} />
 				))}
-				{pending ? (
+				{pending && streamingText ? (
+					<Bubble
+						bubble={{
+							id: STREAMING_ID,
+							role: "assistant",
+							content: streamingText,
+							toolsUsed: [],
+						}}
+					/>
+				) : null}
+				{pending && !streamingText ? (
 					<Group gap="xs">
 						<Loader size="xs" type="dots" />
 						<Text size="xs" c="dimmed">
-							{text.thinking}
+							{streamStatus
+								? streamStatusLabel(streamStatus, text)
+								: text.thinking}
 						</Text>
 					</Group>
 				) : null}
