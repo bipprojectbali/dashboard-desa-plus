@@ -20,6 +20,9 @@ export interface AssistantText {
 	checking: string;
 	stop: string;
 	source: string;
+	pointToSource: string;
+	returnToChat: string;
+	pointerFailed: string;
 	copy: string;
 	copied: string;
 	retry: string;
@@ -69,6 +72,9 @@ const id: AssistantText = {
 	checking: "Memeriksa data {modul}…",
 	stop: "Hentikan jawaban",
 	source: "Sumber",
+	pointToSource: "Tunjukkan {modul} di layar",
+	returnToChat: "Kembali ke chat",
+	pointerFailed: "Maaf, saya belum bisa menunjukkan bagian itu di layar.",
 	copy: "Salin jawaban",
 	copied: "Tersalin",
 	retry: "Kirim ulang",
@@ -129,6 +135,9 @@ const en: AssistantText = {
 	checking: "Checking {modul} data…",
 	stop: "Stop answer",
 	source: "Source",
+	pointToSource: "Show {modul} on screen",
+	returnToChat: "Back to chat",
+	pointerFailed: "Sorry, I could not show that part on screen.",
 	copy: "Copy answer",
 	copied: "Copied",
 	retry: "Resend",

@@ -8,6 +8,8 @@ import {
 	openAssistant,
 } from "@/store/assistant";
 import { fillTemplate } from "./assistant.logic";
+import { AssistantReturnButton } from "./assistant-return-button";
+import { AssistantCursor } from "./pointer";
 import { useAssistantAccess, useAssistantText } from "./use-assistant-access";
 
 const AssistantPanel = lazy(() =>
@@ -47,6 +49,8 @@ export function AssistantFab({
 
 	return (
 		<>
+			<AssistantCursor />
+			<AssistantReturnButton />
 			<Tooltip label={label} position="left" withArrow>
 				<ActionIcon
 					ref={fabRef}

@@ -9,6 +9,7 @@ import {
 	beginTurn,
 	cancelActiveTurn,
 	failQuestion,
+	isCurrentTurn,
 	prependOlderMessages,
 	receiveAnswer,
 	setAssistantError,
@@ -24,6 +25,7 @@ import {
 } from "./assistant.logic";
 import { askAssistant } from "./assistant-stream.api";
 import { useAssistantText } from "./use-assistant-access";
+import { usePointerRunner } from "./use-pointer-runner";
 
 export const CONVERSATIONS_KEY = ["assistant", "conversations"] as const;
 
@@ -38,6 +40,7 @@ export function useAssistantChat(maxInputChars: number) {
 	const queryClient = useQueryClient();
 	const text = useAssistantText();
 	const { lang } = useSnapshot(i18nStore);
+	const pointer = usePointerRunner();
 	const pathname = useRouterState({ select: (s) => s.location.pathname });
 
 	const send = useCallback(
@@ -63,8 +66,10 @@ export function useAssistantChat(maxInputChars: number) {
 					},
 					controller.signal,
 				);
-				// res.actions selalu [] di fitur 1 — dipakai Fitur 2 (penunjuk).
+				const current = isCurrentTurn(bubbleId);
 				receiveAnswer(bubbleId, res.conversationId, res.message);
+				// Aksi penunjuk hanya dijalankan bila giliran ini belum dibatalkan/diganti.
+				if (current) await pointer.run(res.actions);
 			} catch (err) {
 				// Dibatalkan user: server tidak menyimpan apa pun; teks bisa dikirim ulang.
 				if (controller.signal.aborted) {
@@ -82,7 +87,7 @@ export function useAssistantChat(maxInputChars: number) {
 				await queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
 			}
 		},
-		[pathname, lang, text, maxInputChars, queryClient],
+		[pathname, lang, text, maxInputChars, queryClient, pointer],
 	);
 
 	const openConversation = useCallback(
@@ -111,5 +116,11 @@ export function useAssistantChat(maxInputChars: number) {
 		}
 	}, [text]);
 
-	return { send, cancel: cancelActiveTurn, openConversation, loadOlder };
+	return {
+		send,
+		cancel: cancelActiveTurn,
+		openConversation,
+		loadOlder,
+		pointToSource: pointer.pointToSource,
+	};
 }
