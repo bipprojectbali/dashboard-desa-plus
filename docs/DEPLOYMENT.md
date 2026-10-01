@@ -60,7 +60,6 @@ NOC_VILLAGE_ID="desa1"
 # Jenna AI Analytics API
 VITE_JENNA_API_URL="https://desa-platform-stg.wibudev.com"
 VITE_JENNA_API_TOKEN="<jenna-bearer-token>"
-JENNA_DAILY_COST_LIMIT=10000
 
 # Platform API — Pengaduan & Surat live (Fase 2), server-only Bearer
 PLATFORM_API_URL="https://desa-platform-stg.wibudev.com"
@@ -73,6 +72,11 @@ CACHE_ENABLED=true
 # Kosong ⇒ /wall terbuka tanpa login. Diisi ⇒ wajib akses via /wall?key=<token>.
 # Server-only (JANGAN pakai prefix VITE_).
 WALL_ACCESS_TOKEN=""
+
+# AI Assistant — kunci enkripsi API key provider (64 hex, `openssl rand -hex 32`).
+# Server-only, nilainya harus TETAP per environment (diganti ⇒ API key harus diisi ulang).
+# Kosong ⇒ asisten tidak bisa dikonfigurasi (fail-closed).
+AI_CREDENTIALS_KEY="<64-hex>"
 
 # App
 PORT=3000
