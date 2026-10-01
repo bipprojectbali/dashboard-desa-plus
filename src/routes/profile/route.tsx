@@ -1,6 +1,7 @@
 import { ActionIcon, AppShell, Box, Button, Group, Text } from "@mantine/core";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { AssistantFab } from "@/components/assistant/assistant-fab";
 import { useIsDark } from "@/hooks/useIsDark";
 
 export const Route = createFileRoute("/profile")({
@@ -72,6 +73,7 @@ function ProfileLayout() {
 
 			<AppShell.Main>
 				<Outlet />
+				<AssistantFab />
 			</AppShell.Main>
 		</AppShell>
 	);

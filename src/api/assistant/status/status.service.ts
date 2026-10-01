@@ -1,3 +1,4 @@
+import type { AssistantStatusDto } from "@/types/ai-assistant-chat";
 import { isSecretCryptoConfigured } from "@/utils/secret-crypto";
 import {
 	type AssistantSettingsValues,
@@ -9,20 +10,16 @@ import {
 } from "../config/settings.repo";
 import { pickSlot } from "../provider/resolve";
 
-/** Respons `GET /api/assistant/status` — hanya boolean + nama, tanpa detail kredensial. */
-export interface AssistantStatusDto {
-	enabled: boolean;
-	assistantName: string;
-	slots: Record<ProviderSlot, boolean>;
-}
-
 /**
  * Susun status dari pengaturan & slot. Slot `pointer`/`voice` dianggap siap
  * bila bisa jatuh ke `chat` (sama seperti getProvider). Tanpa kunci enkripsi,
  * tidak ada slot yang bisa dipakai.
  */
 export function buildAssistantStatus(
-	settings: Pick<AssistantSettingsValues, "enabled" | "assistantName">,
+	settings: Pick<
+		AssistantSettingsValues,
+		"enabled" | "assistantName" | "maxInputChars"
+	>,
 	configs: Record<ProviderSlot, ProviderConfigRow>,
 	cryptoConfigured: boolean,
 ): AssistantStatusDto {
@@ -33,6 +30,7 @@ export function buildAssistantStatus(
 	return {
 		enabled: settings.enabled,
 		assistantName: settings.assistantName,
+		maxInputChars: settings.maxInputChars,
 		slots,
 	};
 }

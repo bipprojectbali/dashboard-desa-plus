@@ -6,6 +6,18 @@
 
 export type AssistantLang = "id" | "en";
 
+/**
+ * Respons `GET /api/assistant/status` — dipakai tombol FAB & panel. Hanya
+ * boolean + nama + batas input, tanpa detail kredensial.
+ */
+export interface AssistantStatusDto {
+	enabled: boolean;
+	assistantName: string;
+	/** Batas panjang pesan (0 = tanpa batas) — untuk penghitung sisa karakter. */
+	maxInputChars: number;
+	slots: { chat: boolean; pointer: boolean; voice: boolean };
+}
+
 export interface AssistantPageContext {
 	route: string;
 	title?: string;

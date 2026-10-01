@@ -226,7 +226,7 @@ describe("apiKeyStatusOf & toSlotDto", () => {
 });
 
 describe("buildAssistantStatus", () => {
-	const s = { enabled: true, assistantName: "Jenna" };
+	const s = { enabled: true, assistantName: "Jenna", maxInputChars: 2000 };
 	const all = (chat: ProviderConfigRow) => ({
 		chat,
 		pointer: emptyProviderConfig("pointer"),
@@ -236,6 +236,7 @@ describe("buildAssistantStatus", () => {
 		expect(buildAssistantStatus(s, all(filled("chat")), true)).toEqual({
 			enabled: true,
 			assistantName: "Jenna",
+			maxInputChars: 2000,
 			slots: { chat: true, pointer: true, voice: true },
 		});
 	});

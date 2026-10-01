@@ -103,6 +103,7 @@ Dikelompokkan per fitur:
 
 ```
 components/
+├── assistant/          # Tombol AI melayang (FAB) + panel chat "Tanya AI" (lihat AI Assistant)
 ├── dashboard/          # Widget dashboard utama
 ├── kinerja-divisi/     # Komponen halaman kinerja divisi
 ├── umkm/               # Komponen halaman BUMDes (summary-cards, sales-table, top-products, dll)
@@ -126,6 +127,7 @@ Plus komponen top-level per halaman: `bumdes-page.tsx`, `dashboard-card.tsx`, `d
 | Store | Isi |
 |---|---|
 | `akses.ts` | State akses & tim (pengaturan) |
+| `assistant.ts` | Panel AI assistant: terbuka/perbesar, tampilan chat/daftar, percakapan aktif & pesannya. Tidak di-reset saat panel ditutup |
 | `auth.ts` | Session/user state di client |
 | `i18n.ts` | Bahasa aktif |
 | `notif.ts` | Notifikasi in-app |
@@ -178,7 +180,12 @@ Kiosk mode untuk TV/monitor NOC — menampilkan snapshot data lintas fitur (bera
 
 ## AI Assistant
 
-Asisten AI baca-saja. Backend chat (Fitur 1) sudah ada; panel chat untuk user belum (F1-c). Istilah di kode: **assistant**; nama tampilan ("Jenna") hanya nilai default di DB.
+Asisten AI baca-saja: tombol melayang + panel chat (Fitur 1). Istilah di kode: **assistant**; nama tampilan ("Jenna") hanya nilai default di DB.
+
+**Frontend** (`src/components/assistant/`, store `src/store/assistant.ts`, teks id/en `src/locales/assistant.ts`):
+- `AssistantFab` dipasang di `MainLayout`, layout `/profile`, dan `WallPage`; tidak di `/admin/*`, `/signin`, `/signup`. Tampil hanya bila sesi terverifikasi, `GET /api/assistant/status` → `enabled && slots.chat`, dan izin `use-ai-assistant` (dari `permissionStore`, atau `/api/my-permissions` di `/profile` & `/wall`). Status tidak diminta tanpa sesi (TV `/wall` publik tidak memicu 401). Aturan tampil di `assistant.logic.ts` (`shouldShowFab`).
+- `AssistantPanel` (dirender lazy saat FAB pertama diklik): Drawer kanan tanpa overlay, mode normal (440 px) & perbesar (lebar penuh); tidak ada tampilan HP. Esc menutup dan fokus kembali ke FAB. Di `/wall` halaman memberi ruang selebar panel (bukan menimpa widget NOC).
+- Isi: header (nama dari config, badge Beta, ☰ / percakapan baru / perbesar / tutup), daftar percakapan berhalaman (buka, ganti judul, hapus), bubble pesan (`aria-live`), indikator "memeriksa data…", label "Sumber" dari `toolsUsed`, tombol salin, saran pertanyaan per rute yang difilter izin (`assistant-suggestions.ts`), composer (Enter kirim, Shift+Enter baris baru, sisa karakter dari `maxInputChars`), satu baris disclaimer. Pesan error ramah untuk 401/403/404/409/422/429 (`Retry-After`)/503 + tombol kirim ulang. `pageContext { route, title, lang }` dikirim tiap pertanyaan; `actions` diabaikan (Fitur 2).
 
 - **Provider** (`src/api/assistant/provider/`): `OpenAICompatibleProvider` (`POST {baseUrl}/chat/completions`, Bearer; `temperature`/`max_tokens` hanya bila diisi; redirect tidak diikuti; error → `AiProviderError` `config`/`busy`/`unavailable`/`bad_response` tanpa isi body vendor), `MockProvider` untuk test, `getProvider(slot)` — slot `pointer`/`voice` yang belum siap jatuh ke `chat`, API key didekripsi via `src/utils/secret-crypto.ts`.
 - **Config** (`config/settings.repo.ts`): baca `AssistantSettings` & `AiProviderConfig` (cache 30 detik, tanpa menulis; tanpa baris → default). Penulis wajib memanggil `invalidateAssistantConfigCache()`.
@@ -189,7 +196,7 @@ Asisten AI baca-saja. Backend chat (Fitur 1) sudah ada; panel chat untuk user be
 - **Chat** (`chat/chat.service.ts` + `chat.persist.ts`): satu giliran = cek berurutan (asisten aktif → panjang input → slot `chat` siap → kepemilikan percakapan → rate/menit → kuota harian) → riwayat `historyWindow` pesan berstatus `ok` dari DB (tidak pernah dari klien) → prompt → executor → simpan pertanyaan + jawaban (tool, token, latensi). Kegagalan provider tetap menyimpan pertanyaan berstatus `error` (muncul sebagai "error terakhir" di admin; tidak dihitung kuota dan tidak masuk riwayat LLM).
 - **Akses** (`http/access.ts`): semua endpoint asisten hanya menerima **sesi browser** (`apiMiddleware` menandai `user.authMethod` = `session`/`apiKey`; API key dashboard → 403), user terverifikasi, dan role yang **dibaca dari DB** (role di sesi bisa basi hingga 30 hari karena cookieCache Better Auth).
 - **Route** (`routes/`):
-  - `GET /api/assistant/status` — izin `use-ai-assistant`; balas `{ enabled, assistantName, slots: { chat, pointer, voice } }` (boolean saja, slot pointer/voice ikut `chat` bila kosong). Dipakai tombol FAB.
+  - `GET /api/assistant/status` — izin `use-ai-assistant`; balas `{ enabled, assistantName, maxInputChars, slots: { chat, pointer, voice } }` (kontrak `AssistantStatusDto` di `src/types/ai-assistant-chat.ts`; slot boolean saja, pointer/voice ikut `chat` bila kosong). Dipakai tombol FAB & penghitung karakter panel.
   - `POST /api/assistant/chat` — kontrak `src/types/ai-assistant-chat.ts`: body `{ conversationId?, message, pageContext?: { route, title?, lang?: "id"|"en" } }` → `{ conversationId, message: { id, role, content, toolsUsed, createdAt }, actions: [] }`. Error: 401 tanpa sesi · 403 API key/belum terverifikasi/tanpa izin · 404 percakapan bukan milik user · 409 asisten mati atau slot chat belum siap · 422 input kosong/terlalu panjang · 429 rate/kuota (+ header `Retry-After`) · 503 layanan AI gagal (body memuat `conversationId` bila pertanyaan tersimpan).
   - `GET /api/assistant/conversations?cursor=&limit=` (default 20, maks 50, terbaru dulu) · `GET /api/assistant/conversations/:id/messages?cursor=&limit=` (default 50, terbaru dulu, termasuk `status`) · `PATCH /api/assistant/conversations/:id` `{ title }` (maks 60 char, kosong → 422) · `DELETE /api/assistant/conversations/:id` (pesan ikut terhapus). Izin `use-ai-assistant`; id milik user lain → 404 (bukan 403). `nextCursor` = id item terakhir; `null` = habis.
   - `/api/admin/ai-assistant/*` — admin saja, kontrak `src/types/ai-assistant-admin.ts`: `GET /` (pengaturan, 3 slot dengan `apiKeyStatus` `set`/`missing`/`needs-reentry` + `apiKeyHint`, statistik hari ini WITA, kandidat akun kiosk, `cryptoConfigured`), `PUT /settings` (rentang sama dengan form UI, `LIMIT_RULES`; akun kiosk harus terverifikasi), `PUT /providers/:feature` (`apiKey` tidak dikirim = pertahankan, `""` = hapus; disimpan terenkripsi + hint; hasil test lama dibuang bila URL/model/kunci berubah), `POST /providers/:feature/test` (kredensial slot sendiri, https saja kecuali localhost di luar produksi, tanpa redirect, batas 30 detik, simpan `lastTestAt`/`lastTestOk`, pesan error tersaring). Setiap simpan membuang cache config dan dicatat ke `ActivityLog` tanpa rahasia (hanya nama field/slot/hasil). Logika di `admin/`.
