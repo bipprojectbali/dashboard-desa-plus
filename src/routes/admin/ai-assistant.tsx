@@ -1,6 +1,7 @@
 import {
 	ActionIcon,
 	Alert,
+	Anchor,
 	Container,
 	Group,
 	Skeleton,
@@ -14,7 +15,7 @@ import {
 	IconInfoCircle,
 	IconRefresh,
 } from "@tabler/icons-react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ProviderCard } from "@/components/admin/ai-assistant/provider-card";
 import { SettingsSection } from "@/components/admin/ai-assistant/settings-section";
 import { TodaySummary } from "@/components/admin/ai-assistant/today-summary";
@@ -60,6 +61,10 @@ function AiAssistantAdminPage() {
 						</ActionIcon>
 					</Tooltip>
 				</Group>
+
+				<Anchor component={Link} to="/admin/ai-assistant/voice-lab" size="sm">
+					S0 — Halaman uji suara
+				</Anchor>
 
 				{unavailable && (
 					<Alert color="blue" icon={<IconInfoCircle size={16} />}>
