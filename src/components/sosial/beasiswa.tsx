@@ -33,6 +33,7 @@ export const Beasiswa = () => {
 
 	return (
 		<Card
+			data-ai-target="sosial.beasiswa"
 			p="md"
 			radius="xl"
 			withBorder

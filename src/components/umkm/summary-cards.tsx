@@ -16,6 +16,7 @@ interface KpiCardProps {
 	icon: React.ReactNode;
 	color: string;
 	backgroundColor: string;
+	target?: string;
 }
 
 const KpiCard = ({
@@ -25,6 +26,7 @@ const KpiCard = ({
 	icon,
 	color,
 	backgroundColor,
+	target,
 }: KpiCardProps) => {
 	const dark = useIsDark();
 	const { lang } = useSnapshot(i18nStore);
@@ -52,6 +54,7 @@ const KpiCard = ({
 
 	return (
 		<Card
+			data-ai-target={target}
 			p="md"
 			radius="xl"
 			withBorder
@@ -115,6 +118,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 
 	const kpiData: KpiCardProps[] = [
 		{
+			target: "bumdes.kpi-umkm-aktif",
 			title: t.bumdes.umkmAktif,
 			value: displayData.umkmAktif,
 			subtitle: t.bumdes.beroperasi,
@@ -123,6 +127,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			backgroundColor: "darmasaba-navy.7",
 		},
 		{
+			target: "bumdes.kpi-umkm-terdaftar",
 			title: t.bumdes.umkmTerdaftar,
 			value: displayData.umkmTerdaftar,
 			subtitle: t.bumdes.totalRegistrasi,
@@ -131,6 +136,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			backgroundColor: "darmasaba-navy.7",
 		},
 		{
+			target: "bumdes.kpi-omzet",
 			title: t.bumdes.omzet,
 			value: displayData.omzet,
 			subtitle: t.bumdes.omzetBumdes,
@@ -139,6 +145,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			backgroundColor: "darmasaba-navy.7",
 		},
 		{
+			target: "bumdes.kpi-kategori-terbanyak",
 			title: t.bumdes.umkmTerbanyak,
 			value: displayData.kategoriTerbanyak.count,
 			subtitle: `${t.bumdes.kategoriPrefix} ${displayData.kategoriTerbanyak.name}`,

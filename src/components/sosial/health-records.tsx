@@ -534,6 +534,7 @@ export const HealthRecords = () => {
 
 	return (
 		<Card
+			data-ai-target="sosial.riwayat-kesehatan"
 			p="md"
 			radius="xl"
 			withBorder
@@ -572,18 +573,27 @@ export const HealthRecords = () => {
 				>
 					<Tabs.List mb="md">
 						<Tabs.Tab
+							data-ai-target="sosial.tab-ibu-hamil"
+							data-ai-clickable="true"
 							value="ibu-hamil"
 							leftSection={<IconHeartbeat size={14} />}
 						>
 							Ibu Hamil
 						</Tabs.Tab>
 						<Tabs.Tab
+							data-ai-target="sosial.tab-balita"
+							data-ai-clickable="true"
 							value="balita"
 							leftSection={<IconBabyCarriage size={14} />}
 						>
 							Balita
 						</Tabs.Tab>
-						<Tabs.Tab value="penyakit" leftSection={<IconVirus size={14} />}>
+						<Tabs.Tab
+							data-ai-target="sosial.tab-penyakit"
+							data-ai-clickable="true"
+							value="penyakit"
+							leftSection={<IconVirus size={14} />}
+						>
 							Penderita Penyakit
 						</Tabs.Tab>
 					</Tabs.List>

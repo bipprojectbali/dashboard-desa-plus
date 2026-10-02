@@ -45,6 +45,7 @@ export const EventCalendar = ({ data }: EventCalendarProps) => {
 
 	return (
 		<Card
+			data-ai-target="sosial.kalender-event"
 			p="md"
 			radius="xl"
 			withBorder

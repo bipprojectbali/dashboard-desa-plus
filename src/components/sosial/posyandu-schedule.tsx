@@ -61,6 +61,7 @@ export const PosyanduSchedule = () => {
 
 	return (
 		<Card
+			data-ai-target="sosial.posyandu"
 			p="md"
 			radius="xl"
 			withBorder

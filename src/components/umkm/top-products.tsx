@@ -45,6 +45,7 @@ export const TopProducts = ({ products }: TopProductsProps) => {
 
 	return (
 		<Card
+			data-ai-target="bumdes.top-produk"
 			p="md"
 			radius="xl"
 			withBorder

@@ -24,6 +24,7 @@ export const HeaderToggle = ({ title, onRangeChange }: HeaderToggleProps) => {
 
 	return (
 		<Card
+			data-ai-target="bumdes.tampilan"
 			p="md"
 			radius="xl"
 			withBorder
@@ -37,6 +38,8 @@ export const HeaderToggle = ({ title, onRangeChange }: HeaderToggleProps) => {
 				</Title>
 				<Group gap="xs">
 					<Button
+						data-ai-target="bumdes.rentang-minggu"
+						data-ai-clickable="true"
 						variant={selectedRange === "minggu" ? "white" : "transparent"}
 						onClick={() => handleRangeChange("minggu")}
 						c={selectedRange === "minggu" ? "#1e3a5f" : "white"}
@@ -50,6 +53,8 @@ export const HeaderToggle = ({ title, onRangeChange }: HeaderToggleProps) => {
 						{t.bumdes.mingguIni}
 					</Button>
 					<Button
+						data-ai-target="bumdes.rentang-bulan"
+						data-ai-clickable="true"
 						variant={selectedRange === "bulan" ? "white" : "transparent"}
 						onClick={() => handleRangeChange("bulan")}
 						c={selectedRange === "bulan" ? "#1e3a5f" : "white"}
