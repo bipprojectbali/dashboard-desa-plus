@@ -33,11 +33,19 @@ interface SidebarProps {
 	rail?: boolean;
 	/** Dipanggil saat user memperlebar rel secara manual. */
 	onWiden?: () => void;
+	/** Membuka pencarian global dari ikon cari di rel. */
+	onSearch?: () => void;
 }
 
 const ICON_SIZE = 20;
+const RAIL_LOGO_SIZE = 40;
 
-export function Sidebar({ className, rail = false, onWiden }: SidebarProps) {
+export function Sidebar({
+	className,
+	rail = false,
+	onWiden,
+	onSearch,
+}: SidebarProps) {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const dark = useIsDark();
@@ -151,6 +159,7 @@ export function Sidebar({ className, rail = false, onWiden }: SidebarProps) {
 				onClick={() => navigate({ to: item.path })}
 				label={rail ? undefined : item.name}
 				aria-label={item.name}
+				aria-current={isActive ? "page" : undefined}
 				leftSection={<Icon size={ICON_SIZE} stroke={1.8} />}
 				active={isActive}
 				variant="subtle"
@@ -170,6 +179,30 @@ export function Sidebar({ className, rail = false, onWiden }: SidebarProps) {
 	if (rail) {
 		return (
 			<Stack gap={0} className={className} data-sidebar-rail="true">
+				<Image
+					src="/logo-desa-plus-baru.png"
+					alt="Logo"
+					w={RAIL_LOGO_SIZE}
+					h={RAIL_LOGO_SIZE}
+					mx="auto"
+					mb="xs"
+					radius="xl"
+				/>
+				{onSearch && (
+					<Tooltip label={t.sidebar.cariApaSaja} position="right" withArrow>
+						<ActionIcon
+							variant="subtle"
+							color="gray"
+							size="lg"
+							mx="auto"
+							mb="xs"
+							aria-label={t.sidebar.cariApaSaja}
+							onClick={onSearch}
+						>
+							<Search size={ICON_SIZE} />
+						</ActionIcon>
+					</Tooltip>
+				)}
 				{menuItems.map(renderLink)}
 				{onWiden && (
 					<Tooltip label={t.sidebar.perlebarMenu} position="right" withArrow>

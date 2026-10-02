@@ -1,35 +1,26 @@
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 
-export function useSidebarFullscreen() {
+/** Klik beruntun di area utama yang memicu fullscreen (sidebar disembunyikan penuh). */
+const FULLSCREEN_CLICK_COUNT = 3;
+const CLICK_RESET_MS = 500;
+
+/** Burger mobile + gestur fullscreen: klik tiga kali di area utama menyembunyikan sidebar penuh lewat `onHide`. */
+export function useSidebarFullscreen(hidden: boolean, onHide: () => void) {
 	const [opened, { toggle: toggleMobile }] = useDisclosure();
-	const [sidebarCollapsed, setSidebarCollapsed] = useDisclosure(false);
 	const [clickCount, setClickCount] = useState(0);
 
-	const toggleSidebar = () => {
-		setSidebarCollapsed.toggle();
-		setClickCount(0);
-	};
-
 	const handleMainClick = () => {
-		if (!sidebarCollapsed) {
-			const newCount = clickCount + 1;
+		if (hidden) return;
+		const newCount = clickCount + 1;
+		if (newCount >= FULLSCREEN_CLICK_COUNT) {
+			setClickCount(0);
+			onHide();
+		} else {
 			setClickCount(newCount);
-
-			if (newCount >= 3) {
-				toggleSidebar();
-			} else {
-				setTimeout(() => setClickCount(0), 500);
-			}
+			setTimeout(() => setClickCount(0), CLICK_RESET_MS);
 		}
 	};
 
-	return {
-		opened,
-		toggleMobile,
-		sidebarCollapsed,
-		toggleSidebar,
-		handleMainClick,
-		isCollapsed: sidebarCollapsed,
-	};
+	return { opened, toggleMobile, handleMainClick };
 }

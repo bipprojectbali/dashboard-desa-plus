@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { assistantSpaceFor } from "@/components/assistant/use-assistant-space";
 import {
+	expandedState,
+	INITIAL_SIDEBAR_STATE,
 	isRailEligible,
 	SIDEBAR_FULL_WIDTH,
 	SIDEBAR_RAIL_BELOW_VIEWPORT,
@@ -11,21 +13,21 @@ import {
 	type SidebarModeInput,
 	sidebarModeFor,
 	sidebarWidthFor,
+	toggledState,
 } from "@/components/layout/sidebar-layout";
 import en from "@/locales/en";
 import id from "@/locales/id";
 
-/** #44 sidebar ringkas (S-c): rel ikon saat panel terbuka di layar < 1600px, pilihan user dipulihkan. */
+/** #44 sidebar ringkas: rel ikon saat panel terbuka di layar < 1600px atau saat diminimize user; fullscreen menyembunyikan penuh. */
 
 const read = (p: string) =>
 	readFileSync(join(import.meta.dir, "../../..", p), "utf8");
 
 const PANEL = assistantSpaceFor(true, false);
 const base: SidebarModeInput = {
+	...INITIAL_SIDEBAR_STATE,
 	panelSpace: PANEL,
 	viewportWidth: 1366,
-	userCollapsed: false,
-	widened: false,
 };
 const mode = (o: Partial<SidebarModeInput>) =>
 	sidebarModeFor({ ...base, ...o });
@@ -57,28 +59,84 @@ describe("sidebarModeFor", () => {
 		).toBe("full");
 	});
 
-	it("sidebar yang disembunyikan user tetap tersembunyi, dengan atau tanpa panel", () => {
+	it("diminimize user → rel ikon di semua lebar layar, dengan atau tanpa panel", () => {
 		for (const panelSpace of [0, PANEL])
-			for (const viewportWidth of [1366, 1920])
-				expect(mode({ panelSpace, viewportWidth, userCollapsed: true })).toBe(
-					"hidden",
+			for (const viewportWidth of [800, 1366, 1600, 1920])
+				expect(mode({ panelSpace, viewportWidth, minimized: true })).toBe(
+					"rail",
 				);
 	});
 
-	it("user memperlebar rel → penuh selama panel terbuka", () => {
+	it("fullscreen menyembunyikan penuh, mengalahkan minimize dan panel", () => {
+		for (const panelSpace of [0, PANEL])
+			for (const viewportWidth of [1366, 1920])
+				for (const minimized of [false, true])
+					expect(
+						mode({ panelSpace, viewportWidth, minimized, hidden: true }),
+					).toBe("hidden");
+	});
+
+	it("user memperlebar rel otomatis → penuh selama panel terbuka", () => {
 		expect(mode({ widened: true })).toBe("full");
-		expect(mode({ widened: true, userCollapsed: true })).toBe("hidden");
+		expect(mode({ widened: true, hidden: true })).toBe("hidden");
+	});
+
+	it("minimize mengalahkan perlebaran (pilihan user selalu menang)", () => {
+		expect(mode({ widened: true, minimized: true })).toBe("rail");
 	});
 
 	it("pemulihan: pilihan user tidak diubah panel, jadi menutup panel mengembalikan keadaan semula", () => {
-		const choices = [false, true];
-		for (const userCollapsed of choices) {
-			const before = mode({ panelSpace: 0, userCollapsed });
-			const during = mode({ userCollapsed });
-			const after = mode({ panelSpace: 0, userCollapsed });
+		for (const minimized of [false, true]) {
+			const before = mode({ panelSpace: 0, minimized });
+			const during = mode({ minimized });
+			const after = mode({ panelSpace: 0, minimized });
 			expect(after).toBe(before);
-			expect(during).toBe(userCollapsed ? "hidden" : "rail");
+			expect(during).toBe("rail");
 		}
+	});
+});
+
+describe("toggledState (tombol header)", () => {
+	const toggle = (o: Partial<SidebarModeInput>, eligible: boolean) => {
+		const input = { ...base, ...o };
+		const next = toggledState(input, sidebarModeFor(input), eligible);
+		return { next, mode: sidebarModeFor({ ...input, ...next }) };
+	};
+
+	it("penuh → rel ikon (minimize), bukan hilang", () => {
+		expect(toggle({ panelSpace: 0 }, false).mode).toBe("rail");
+		expect(toggle({ panelSpace: 0 }, false).next.minimized).toBe(true);
+	});
+
+	it("rel ikon (minimize) → penuh", () => {
+		const r = toggle({ panelSpace: 0, minimized: true }, false);
+		expect(r.mode).toBe("full");
+		expect(r.next).toEqual(INITIAL_SIDEBAR_STATE);
+	});
+
+	it("rel otomatis oleh panel → penuh (tidak ada klik mati)", () => {
+		expect(toggle({}, true).mode).toBe("full");
+	});
+
+	it("rel minimize saat panel sempit → penuh, lalu kembali ke rel saat diminimize lagi", () => {
+		const first = toggle({ minimized: true }, true);
+		expect(first.mode).toBe("full");
+		const second = toggle({ ...first.next }, true);
+		expect(second.mode).toBe("rail");
+	});
+
+	it("keluar dari fullscreen mengembalikan keadaan sebelumnya (rel/penuh)", () => {
+		expect(toggle({ hidden: true, minimized: true }, false).mode).toBe("rail");
+		expect(toggle({ hidden: true, panelSpace: 0 }, false).mode).toBe("full");
+	});
+
+	it("expandedState: perlebaran hanya dicatat bila rel otomatis berlaku", () => {
+		expect(expandedState(true)).toEqual({
+			minimized: false,
+			widened: true,
+			hidden: false,
+		});
+		expect(expandedState(false).widened).toBe(false);
 	});
 });
 
@@ -100,24 +158,34 @@ describe("isRailEligible & lebar", () => {
 });
 
 describe("pemasangan", () => {
+	const layout = read("src/components/layout/main-layout.tsx");
+
 	it("MainLayout memakai useSidebarLayout dan menyetel lebar/collapse navbar dari mode", () => {
-		const src = read("src/components/layout/main-layout.tsx");
-		expect(src).toContain("useSidebarLayout(sidebarCollapsed, assistantSpace)");
-		expect(src).toContain("width: sidebarLayout.width");
-		expect(src).toContain('desktop: sidebarLayout.mode === "hidden"');
-		expect(src).toContain("<Sidebar rail={isRail}");
+		expect(layout).toContain("useSidebarLayout(assistantSpace)");
+		expect(layout).toContain("width: sidebarLayout.width");
+		expect(layout).toContain('desktop: sidebarLayout.mode === "hidden"');
+		expect(layout).toContain("rail={isRail}");
 	});
 
 	it("transisi navbar mengikuti animasiTransisi dan reduced-motion", () => {
-		expect(read("src/components/layout/main-layout.tsx")).toContain(
+		expect(layout).toContain(
 			"transitionDuration={animasiTransisi && !reducedMotion ? 200 : 0}",
 		);
 	});
 
-	it("toggle header membuang perlebaran manual (menampilkan lagi → mulai dari rel)", () => {
-		const src = read("src/components/layout/main-layout.tsx");
-		expect(src).toContain("sidebarLayout.reset();");
-		expect(src).toContain("onSidebarToggle={handleToggleSidebar}");
+	it("tombol header memakai toggle sidebar (minimize ↔ penuh), ikon cari rel membuka pencarian global", () => {
+		expect(layout).toContain("onSidebarToggle={sidebarLayout.toggle}");
+		expect(layout).toContain("onSearch={() => setSearchOpen(true)}");
+		expect(layout).toContain("<GlobalSearch");
+	});
+
+	it("gestur fullscreen (klik tiga kali) menyembunyikan penuh lewat hide, bukan minimize", () => {
+		expect(layout).toContain(
+			'useSidebarFullscreen(\n\t\tsidebarLayout.mode === "hidden",\n\t\tsidebarLayout.hide,',
+		);
+		const hook = read("src/hooks/use-sidebar-fullscreen.ts");
+		expect(hook).toContain("onHide()");
+		expect(hook).not.toContain("toggleSidebar");
 	});
 
 	it("/wall dan /profile tidak memakai sidebar rel", () => {
