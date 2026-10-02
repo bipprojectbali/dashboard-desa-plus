@@ -6,6 +6,11 @@ import {
 	type ProviderSlotDto,
 	type ProviderSlotUpdate,
 } from "@/types/ai-assistant-admin";
+import {
+	GUIDE_AUTO_ADVANCE_DEFAULT_SEC,
+	GUIDE_AUTO_ADVANCE_MAX_SEC,
+	GUIDE_AUTO_ADVANCE_MIN_SEC,
+} from "@/types/ai-assistant-pointer";
 
 /** Nilai awal sesuai default kolom Prisma (`AssistantSettings`) — dipakai saat data server belum ada. */
 export const DEFAULT_SETTINGS: AssistantSettingsDto = {
@@ -20,6 +25,7 @@ export const DEFAULT_SETTINGS: AssistantSettingsDto = {
 	retentionDays: 90,
 	kioskUserId: null,
 	dailyMessageLimitKiosk: 100,
+	guideAutoAdvanceSec: GUIDE_AUTO_ADVANCE_DEFAULT_SEC,
 };
 
 export const DEFAULT_TIMEOUT_MS = 60_000;
@@ -83,6 +89,12 @@ export const LIMIT_RULES: Record<
 		min: 0,
 		max: 3650,
 		zeroUnlimited: true,
+	},
+	guideAutoAdvanceSec: {
+		label: "Panduan di /wall: lanjut otomatis (detik)",
+		min: GUIDE_AUTO_ADVANCE_MIN_SEC,
+		max: GUIDE_AUTO_ADVANCE_MAX_SEC,
+		zeroUnlimited: false,
 	},
 };
 

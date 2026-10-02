@@ -1,4 +1,5 @@
 import type { AiProviderConfig, AssistantSettings } from "generated/prisma";
+import { GUIDE_AUTO_ADVANCE_DEFAULT_SEC } from "@/types/ai-assistant-pointer";
 import { cache, withCache } from "@/utils/cache";
 import { prisma } from "@/utils/db";
 
@@ -35,6 +36,7 @@ export const DEFAULT_ASSISTANT_SETTINGS: Readonly<AssistantSettingsValues> = {
 	retentionDays: 90,
 	kioskUserId: null,
 	dailyMessageLimitKiosk: 100,
+	guideAutoAdvanceSec: GUIDE_AUTO_ADVANCE_DEFAULT_SEC,
 };
 
 export type ProviderConfigRow = Omit<

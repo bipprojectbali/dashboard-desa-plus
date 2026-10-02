@@ -166,6 +166,7 @@ export function SettingsSection({
 						disabled={disabled}
 					/>
 					{limitInput("dailyMessageLimitKiosk")}
+					{limitInput("guideAutoAdvanceSec")}
 				</SimpleGrid>
 			</Card>
 

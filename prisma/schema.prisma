@@ -830,6 +830,7 @@ model AssistantSettings {
   retentionDays            Int      @default(90) // riwayat lebih tua dari ini dihapus job harian; 0 = simpan selamanya
   kioskUserId              String? // akun kiosk /wall yang dipakai bersama (dipilih admin)
   dailyMessageLimitKiosk   Int      @default(100) // kuota harian akun kiosk, menggantikan dailyMessageLimitPerUser; 0 = tanpa batas
+  guideAutoAdvanceSec      Int      @default(8) // detik jeda lanjut otomatis panduan bertahap di /wall (3–60)
   updatedAt                DateTime @updatedAt
   updatedBy                String?
   kioskUser                User?    @relation("AssistantKioskUser", fields: [kioskUserId], references: [id], onDelete: SetNull)

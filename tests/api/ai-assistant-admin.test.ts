@@ -91,6 +91,17 @@ describe("validateSettings", () => {
 		);
 	});
 
+	it("guideAutoAdvanceSec: awal 8, rentang 3–60, 0 tidak berarti tanpa batas", () => {
+		expect(DEFAULT_SETTINGS.guideAutoAdvanceSec).toBe(8);
+		const withSec = (guideAutoAdvanceSec: number) =>
+			validateSettings({ ...DEFAULT_SETTINGS, guideAutoAdvanceSec });
+		expect(withSec(3)).toEqual({});
+		expect(withSec(60)).toEqual({});
+		for (const bad of [0, 2, 61, 8.5]) {
+			expect(Object.keys(withSec(bad))).toEqual(["guideAutoAdvanceSec"]);
+		}
+	});
+
 	it("0 boleh untuk batas yang berarti 'tanpa batas'", () => {
 		expect(
 			validateSettings({
