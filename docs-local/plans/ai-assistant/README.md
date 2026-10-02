@@ -30,13 +30,15 @@
 | `discus/p-1-precheck.sql` | Query read-only sebelum deploy P-1 (user & API key terdampak) | Siap pakai |
 | `discus/fitur-2-pointer.md` | Diskusi Fitur 2 (P1–P7) — sesi 59 → 61 | **Tuntas** (2026-10-01) |
 | `discus/fitur-2-alasan-pendekatan-b.md` | **Pegangan untuk tim**: kenapa pendekatan B, bukan page-agent; cara kerja B; kapan page-agent layak dipakai | Final (keputusan #28) |
-| `discus/fitur-3-suara.md` | Analisa Fitur 3 suara full duplex (OpenAI): alur, opsi a/b/c, fakta kode, rekomendasi, 14 pertanyaan | Menunggu jawaban user |
+| `discus/fitur-3-suara.md` | Analisa Fitur 3 suara full duplex (OpenAI): alur, opsi a/b/c, fakta kode, rekomendasi, 14 pertanyaan | Dijawab user (2026-10-02); diskusi lanjut **ditunda** sampai uji manual F2 selesai |
 | `discus/fitur-2-page-agent-tinjau-ulang.md` | Tinjau ulang page-agent (permintaan user 2026-10-01): fakta baru v1.12.4, opsi O1–O4 | **Tuntas** — B diperluas (2026-10-02) |
 | `checklist-progress.md` | Checklist progres semua tahap | Aktif |
-| `uji-manual-fitur-2.md` | Daftar uji manual Fitur 2 (penunjuk) dengan kolom hasil | Siap dipakai |
-| `uji-manual-fitur-2-beranda-divisi.md` | Daftar uji manual penunjuk di Beranda & Kinerja Divisi (F2-d) | Siap dipakai setelah F2-d di-merge |
-| `uji-manual-fitur-2-f2f.md` | Daftar uji manual penunjuk di BUMDes, Sosial, Keamanan, Jenna Analytic (F2-f) | Siap dipakai setelah F2-f di-merge |
-| `uji-manual-fitur-2-wall.md` | Daftar uji manual penunjuk di `/wall` (F2-w) | Siap dipakai setelah F2-w di-merge |
+| `test/` | Semua daftar uji manual (kolom hasil diisi user) | Aktif |
+| `test/uji-manual-fitur-2.md` | Uji manual Fitur 2 (penunjuk) — Keuangan, P3, P6, izin | Siap dipakai |
+| `test/uji-manual-fitur-2-beranda-divisi.md` | Uji manual penunjuk di Beranda & Kinerja Divisi (F2-d) | Siap dipakai |
+| `test/uji-manual-fitur-2-f2f.md` | Uji manual penunjuk di BUMDes, Sosial, Keamanan, Jenna Analytic (F2-f) | Siap dipakai |
+| `test/uji-manual-fitur-2-wall.md` | Uji manual penunjuk di `/wall` (F2-w) | Siap dipakai |
+| `test/uji-manual-fitur-2-f2e.md` | Uji manual penunjuk di Pengaduan & Demografi (F2-e) | Siap dipakai |
 
 ## Keputusan yang sudah diambil user
 
@@ -83,6 +85,7 @@
 | 39 | Dokumen 05 & pembagian Fitur 2 | `05` **disetujui**; implementasi F2-a (paralel) + F2-b (setelah F1-e) | 05, checklist §7 |
 | 40 | Penunjuk di `/wall` | AI menjawab dan hanya menunjuk widget yang ada di wall; tidak pindah halaman keluar dari wall (untuk sekarang) | checklist §7 |
 | 41 | Urutan cakupan penunjuk | F2-d (Beranda & Kinerja Divisi) selesai → **F2-f** (BUMDes, Sosial, Keamanan, Jenna Analytic) → F2-e (Pengaduan & Demografi, perlu pecah file besar) | checklist §7 |
+| 42 | Widget Status Sistem (ops) di `/wall` | Dibuka untuk akun kiosk: izin penunjuk `view-dashboard` (bukan `sync-noc`) — keputusan user 2026-10-02 | checklist §7 |
 
 ## Ringkasan eksekutif
 
