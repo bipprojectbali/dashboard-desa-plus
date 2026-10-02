@@ -33,6 +33,7 @@ export type TranslationKeys = {
 	};
 	sidebar: {
 		cariApaSaja: string;
+		perlebarMenu: string;
 		beranda: string;
 		kinerjaDevisi: string;
 		pengaduanLayanan: string;
@@ -489,6 +490,7 @@ const id: TranslationKeys = {
 	},
 	sidebar: {
 		cariApaSaja: "cari apa saja",
+		perlebarMenu: "Perlebar menu",
 		beranda: "Beranda",
 		kinerjaDevisi: "Kinerja Divisi",
 		pengaduanLayanan: "Pengaduan & Layanan Publik",
