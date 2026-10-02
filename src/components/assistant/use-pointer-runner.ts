@@ -2,6 +2,7 @@ import { useRouter } from "@tanstack/react-router";
 import { useCallback } from "react";
 import { pointActionsFor } from "@/config/assistant-pointer";
 import { setAssistantError } from "@/store/assistant";
+import { returnStore, returnToChat } from "@/store/assistant-return";
 import type { UiAction } from "@/types/ai-assistant-pointer";
 import { runPointerActions } from "./pointer-run";
 import { useAssistantText } from "./use-assistant-access";
@@ -17,17 +18,26 @@ export function usePointerRunner() {
 
 	const run = useCallback(
 		async (actions: readonly UiAction[]) => {
+			// Panel yang ditutup sementara (P6) menyembunyikan galat; buka lagi agar kegagalan tidak senyap.
+			const report = (message: string) => {
+				if (returnStore.awaitingReturn) returnToChat();
+				setAssistantError(message);
+			};
 			try {
 				const outcome = await runPointerActions(
 					actions,
 					{ navigate: (route) => router.navigate({ to: route }) },
-					{ onFailure: () => setAssistantError(text.pointerFailed) },
+					{ onFailure: () => report(text.pointerFailed) },
 				);
 				if (!outcome.ok && outcome.reason !== "cancelled")
-					setAssistantError(text.pointerFailed);
+					report(
+						outcome.reason === "anchor-timeout"
+							? text.pointerTimeout
+							: text.pointerFailed,
+					);
 			} catch {
 				// Navigasi/DOM gagal di tengah aksi: jawaban AI tetap sah, cukup beri tahu user.
-				setAssistantError(text.pointerFailed);
+				report(text.pointerFailed);
 			}
 		},
 		[router, text],
