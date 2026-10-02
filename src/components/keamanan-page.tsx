@@ -18,40 +18,19 @@ import {
 	IconAlertTriangle,
 	IconCamera,
 	IconClock,
-	IconMapPin,
 	IconRefresh,
 } from "@tabler/icons-react";
-import L from "leaflet";
-import { useIsDark } from "@/hooks/useIsDark";
-import "leaflet/dist/leaflet.css";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useApiQuery } from "@/hooks/useApiQuery";
+import { useIsDark } from "@/hooks/useIsDark";
 import { useTranslate } from "@/hooks/useTranslate";
-
-type CctvItem = {
-	id: string;
-	kode: string;
-	nama: string;
-	lokasi: string;
-	latitude: number;
-	longitude: number;
-	status: string; // "Online" | "Offline"
-	lastActive: string;
-	isActive: boolean;
-};
-
-type LaporanItem = {
-	id: string;
-	judul: string;
-	lokasi: string;
-	tanggalWaktu: string;
-	status: string; // "Proses" | "Selesai" | "Baru"
-};
-
-type CctvStats = {
-	cctvOnline: number;
-	laporanMingguIni: number;
-};
+import { CctvMap } from "./keamanan/cctv-map";
+import type {
+	CctvItem,
+	CctvStats,
+	LaporanItem,
+} from "./keamanan/keamanan.types";
+import { LaporanCard } from "./keamanan/laporan-card";
 
 const CCTV_PER_PAGE = 5;
 
@@ -83,76 +62,6 @@ const EMPTY_KEAMANAN: KeamananData = {
 	cctvStats: { cctvOnline: 0, laporanMingguIni: 0 },
 	cctvList: [],
 	laporanList: [],
-};
-
-const markerIcon = L.icon({
-	iconUrl: "/marker-icon.png",
-	iconRetinaUrl: "/marker-icon-2x.png",
-	shadowUrl: "/marker-shadow.png",
-	iconSize: [25, 41],
-	iconAnchor: [12, 41],
-	popupAnchor: [1, -34],
-	shadowSize: [41, 41],
-});
-
-const CctvMap = ({
-	cctvList,
-	dark,
-}: {
-	cctvList: CctvItem[];
-	dark: boolean;
-}) => {
-	const mapRef = useRef<HTMLDivElement>(null);
-	const leafletMap = useRef<L.Map | null>(null);
-
-	useEffect(() => {
-		if (!mapRef.current || leafletMap.current) return;
-
-		const validItems = cctvList.filter((c) => c.latitude && c.longitude);
-		const first = validItems[0];
-		const center: [number, number] = first
-			? [first.latitude, first.longitude]
-			: [-8.6705, 115.212];
-
-		const map = L.map(mapRef.current, { center, zoom: 14 });
-		leafletMap.current = map;
-
-		L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-			attribution: "© OpenStreetMap contributors",
-		}).addTo(map);
-
-		for (const cctv of validItems) {
-			L.marker([cctv.latitude, cctv.longitude], { icon: markerIcon })
-				.addTo(map)
-				.bindPopup(
-					`<b>${cctv.kode}</b><br>${cctv.nama}<br><small>${cctv.lokasi}</small><br><span style="color:${cctv.status === "Online" ? "green" : "gray"}">${cctv.status}</span>`,
-				);
-		}
-
-		if (validItems.length > 1) {
-			const bounds = L.latLngBounds(
-				validItems.map((c) => [c.latitude, c.longitude]),
-			);
-			map.fitBounds(bounds, { padding: [40, 40] });
-		}
-
-		return () => {
-			map.remove();
-			leafletMap.current = null;
-		};
-	}, [cctvList]);
-
-	return (
-		<div
-			ref={mapRef}
-			style={{
-				height: "400px",
-				borderRadius: "8px",
-				border: `1px solid ${dark ? "#334155" : "#e2e8f0"}`,
-				zIndex: 0,
-			}}
-		/>
-	);
 };
 
 const KeamananPage = () => {
@@ -399,96 +308,7 @@ const KeamananPage = () => {
 
 				{/* Daftar Laporan Keamanan */}
 				<GridCol span={{ base: 12, lg: 6 }}>
-					<Card
-						p="md"
-						radius="md"
-						withBorder
-						bg={dark ? "#1E293B" : "white"}
-						style={{
-							borderColor: dark ? "#334155" : "white",
-							boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
-							transition: "transform 0.15s ease, box-shadow 0.15s ease",
-						}}
-						h="100%"
-					>
-						<Title order={3} mb="md" c={dark ? "dark.0" : "black"}>
-							{t.keamanan.laporanPublik}
-						</Title>
-						<Stack gap="sm">
-							{loading && (
-								<Stack gap="sm">
-									{[1, 2, 3, 4].map((i) => (
-										<Skeleton key={i} height={80} radius="md" />
-									))}
-								</Stack>
-							)}
-							{!loading && laporanList.length === 0 && (
-								<Text
-									size="sm"
-									c={dark ? "dark.3" : "dimmed"}
-									ta="center"
-									py="xl"
-								>
-									{t.keamanan.belumAdaLaporanKeamanan}
-								</Text>
-							)}
-							{laporanList.map((report) => (
-								<Card
-									key={report.id}
-									p="md"
-									radius="md"
-									withBorder
-									bg={dark ? "#263852ff" : "#F1F5F9"}
-									style={{ borderColor: dark ? "#263852ff" : "#F1F5F9" }}
-								>
-									<Group justify="space-between" mb="xs" align="flex-start">
-										<Text
-											fw={500}
-											c={dark ? "dark.0" : "black"}
-											style={{ flex: 1 }}
-										>
-											{report.judul}
-										</Text>
-										<Badge
-											variant="light"
-											color={
-												report.status === "Selesai"
-													? "green"
-													: report.status === "Proses"
-														? "yellow"
-														: "red"
-											}
-											ml="xs"
-										>
-											{report.status}
-										</Badge>
-									</Group>
-
-									<Group justify="space-between" align="center">
-										<Group gap={4} align="center">
-											<IconMapPin size={14} stroke={1.5} />
-											<Text size="sm" c={dark ? "white" : "dimmed"}>
-												{report.lokasi}
-											</Text>
-										</Group>
-										<Group gap={4} align="center">
-											<IconClock size={14} stroke={1.5} />
-											<Text size="sm" c={dark ? "white" : "dimmed"}>
-												{new Date(report.tanggalWaktu).toLocaleDateString(
-													"id-ID",
-													{
-														day: "numeric",
-														month: "short",
-														year: "numeric",
-													},
-												)}
-											</Text>
-										</Group>
-									</Group>
-								</Card>
-							))}
-						</Stack>
-					</Card>
+					<LaporanCard laporanList={laporanList} loading={loading} />
 				</GridCol>
 			</Grid>
 		</Stack>
