@@ -1,5 +1,6 @@
 import { Text } from "@mantine/core";
 import type { ReactNode } from "react";
+import { WALL_TARGET_PREFIX } from "@/config/assistant-pointer";
 import { WALL_THEME } from "./wall-theme";
 
 interface WidgetCardProps {
@@ -11,6 +12,8 @@ interface WidgetCardProps {
 	/** True → tampilkan empty state alih-alih children. */
 	empty?: boolean;
 	emptyLabel?: string;
+	/** Id widget katalog — memberi penanda `data-ai-target="wall.<id>"` agar AI bisa menunjuknya. */
+	widgetId?: string;
 }
 
 /**
@@ -25,9 +28,11 @@ export function WidgetCard({
 	actions,
 	empty,
 	emptyLabel = "Belum ada data",
+	widgetId,
 }: WidgetCardProps) {
 	return (
 		<div
+			data-ai-target={widgetId ? `${WALL_TARGET_PREFIX}${widgetId}` : undefined}
 			style={{
 				display: "flex",
 				flexDirection: "column",

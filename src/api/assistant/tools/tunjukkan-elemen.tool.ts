@@ -1,4 +1,4 @@
-import { POINTER_TARGETS } from "@/config/assistant-pointer";
+import { isWallRoute, POINTER_TARGETS } from "@/config/assistant-pointer";
 import {
 	actionResult,
 	type PointerRegistryDeps,
@@ -35,7 +35,7 @@ export function createTunjukkanElemenTool(
 			if (!r.ok) return { ok: false, error: r.error };
 			const t = r.value;
 			const actions: Parameters<typeof actionResult>[0] = [];
-			if (ctx.pageRoute !== t.route)
+			if (ctx.pageRoute !== t.route && !isWallRoute(ctx.pageRoute))
 				actions.push({ type: "navigate", route: t.route });
 			actions.push({ type: "pointTo", target: t.id });
 			return actionResult(

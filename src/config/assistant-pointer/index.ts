@@ -20,3 +20,12 @@ export {
 	sourceTargetFor,
 } from "./sources";
 export * from "./types";
+export {
+	deriveWallTargets,
+	isWallRoute,
+	isWallTargetId,
+	WALL_CATEGORY_FEATURE,
+	WALL_ROUTE,
+	WALL_TARGET_PREFIX,
+	WALL_TARGETS,
+} from "./wall";

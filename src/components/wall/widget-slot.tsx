@@ -35,7 +35,12 @@ export function WidgetSlot({ id, snapshot, actions, geom }: WidgetSlotProps) {
 	const data = def.selectData(snapshot);
 	const Body = def.Body;
 	return (
-		<WidgetCard title={def.title} actions={actions} empty={data == null}>
+		<WidgetCard
+			title={def.title}
+			actions={actions}
+			empty={data == null}
+			widgetId={def.id}
+		>
 			{data != null ? <Body data={data} geom={geom} /> : null}
 		</WidgetCard>
 	);
