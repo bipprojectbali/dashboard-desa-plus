@@ -22,8 +22,10 @@ export function isWallTargetId(value: unknown): boolean {
 }
 
 /**
- * Izin per kategori widget — sama dengan izin modul sumbernya. `ops` (status
- * sistem/sinkronisasi) dikunci ke `sync-noc` (admin) sebagai pilihan paling aman.
+ * Izin per kategori widget — sama dengan izin modul sumbernya. `ops` (Status
+ * Sistem) memakai `view-dashboard`: user memutuskan akun kiosk NOC boleh
+ * ditunjukkan widget ini. Pointer hanya menunjuk (read-only); tidak ada aksi
+ * sinkronisasi yang dipicu, jadi `sync-noc` tidak diperlukan.
  */
 export const WALL_CATEGORY_FEATURE: Record<WallCategory, FeatureKey> = {
 	beranda: "view-dashboard",
@@ -35,7 +37,7 @@ export const WALL_CATEGORY_FEATURE: Record<WallCategory, FeatureKey> = {
 	sosial: "view-sosial",
 	bumdes: "view-bumdes",
 	jenna: "view-jenna-analytic",
-	ops: "sync-noc",
+	ops: "view-dashboard",
 };
 
 const CATEGORY_LABEL: Record<WallCategory, string> = {
