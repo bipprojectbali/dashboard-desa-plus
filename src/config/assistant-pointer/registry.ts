@@ -1,9 +1,11 @@
 import { BERANDA_TARGETS } from "./beranda";
 import { BUMDES_TARGETS } from "./bumdes";
+import { DEMOGRAFI_TARGETS } from "./demografi";
 import { DIVISI_TARGETS } from "./divisi";
 import { JENNA_TARGETS } from "./jenna-analytic";
 import { KEAMANAN_TARGETS } from "./keamanan";
 import { KEUANGAN_TARGETS } from "./keuangan";
+import { PENGADUAN_TARGETS } from "./pengaduan";
 import { POINTER_ROUTES } from "./routes";
 import { SOSIAL_TARGETS } from "./sosial";
 import { AI_TARGET_ATTR, type PointerRoute, type PointerTarget } from "./types";
@@ -17,6 +19,8 @@ export const POINTER_TARGETS: readonly PointerTarget[] = [
 	...SOSIAL_TARGETS,
 	...KEAMANAN_TARGETS,
 	...JENNA_TARGETS,
+	...PENGADUAN_TARGETS,
+	...DEMOGRAFI_TARGETS,
 ];
 
 export function findPointerRoute(

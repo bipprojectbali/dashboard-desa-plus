@@ -91,6 +91,20 @@ describe("registry target penunjuk", () => {
 			prefix: "jenna.",
 			files: ["src/components/jenna-analytic.tsx"],
 		},
+		{
+			prefix: "pengaduan.",
+			files: [
+				"src/components/pengaduan-layanan-publik.tsx",
+				...sourceFiles("src/components/pengaduan"),
+			],
+		},
+		{
+			prefix: "demografi.",
+			files: [
+				"src/components/demografi-pekerjaan.tsx",
+				...sourceFiles("src/components/demografi"),
+			],
+		},
 	];
 
 	for (const { prefix, files } of MODULES) {
