@@ -55,9 +55,10 @@ describe("registry — izin per tool", () => {
 		tunjukkan_elemen: "use-ai-assistant",
 		klik_elemen: "use-ai-assistant",
 		pilih: "use-ai-assistant",
+		pandu_langkah: "use-ai-assistant",
 	};
 
-	it("enam tool MVP + empat tool penunjuk terdaftar dengan requiredFeature sesuai rancangan", () => {
+	it("enam tool MVP + lima tool penunjuk terdaftar dengan requiredFeature sesuai rancangan", () => {
 		expect(
 			Object.fromEntries(
 				ASSISTANT_TOOLS.map((t) => [t.name, t.requiredFeature]),

@@ -31,9 +31,13 @@ export interface JsonSchemaObject {
 }
 
 export interface JsonSchemaProperty {
-	type: "string" | "number" | "integer" | "boolean";
+	type: "string" | "number" | "integer" | "boolean" | "array";
 	description?: string;
 	enum?: ReadonlyArray<string | number>;
+	/** Hanya untuk `type: "array"`: skema satu elemen (objek). */
+	items?: JsonSchemaObject;
+	minItems?: number;
+	maxItems?: number;
 }
 
 export interface TokenUsage {

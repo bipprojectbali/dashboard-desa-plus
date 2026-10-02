@@ -17,11 +17,21 @@ export function extractUiActions(result: ToolResult): UiAction[] {
 	return raw.flatMap((item) => parseUiAction(item) ?? []);
 }
 
-/** Gabungkan aksi baru ke daftar giliran: buang duplikat identik, potong di batas. */
+/**
+ * Gabungkan aksi baru ke daftar giliran: buang duplikat identik, potong di batas.
+ * Panduan bertahap berdiri sendiri: begitu ada, ia menggantikan aksi lain dan
+ * aksi sesudahnya diabaikan (panduan sudah mengatur navigasi antar langkah).
+ */
 export function appendUiActions(
 	current: UiAction[],
 	incoming: readonly UiAction[],
 ): void {
+	if (current.some((a) => a.type === "guide")) return;
+	const guide = incoming.find((a) => a.type === "guide");
+	if (guide) {
+		current.splice(0, current.length, guide);
+		return;
+	}
 	for (const action of incoming) {
 		if (current.length >= MAX_UI_ACTIONS) return;
 		const key = JSON.stringify(action);

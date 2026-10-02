@@ -1,6 +1,8 @@
 import { isWallRoute, WALL_TARGETS } from "@/config/assistant-pointer";
+import type { JsonSchemaProperty } from "../provider/types";
 import { createBukaHalamanTool } from "./buka-halaman.tool";
 import { createKlikElemenTool } from "./klik-elemen.tool";
+import { createPanduLangkahTool } from "./pandu-langkah.tool";
 import { createPilihTool } from "./pilih.tool";
 import { createTunjukkanElemenTool } from "./tunjukkan-elemen.tool";
 import type { ToolContext, ToolDefinition } from "./types";
@@ -11,6 +13,7 @@ export const POINTER_TOOLS: readonly ToolDefinition[] = [
 	createTunjukkanElemenTool(),
 	createKlikElemenTool(),
 	createPilihTool(),
+	createPanduLangkahTool(),
 ];
 
 const POINTER_TOOL_NAMES: ReadonlySet<string> = new Set(
@@ -35,19 +38,37 @@ export function scopePointerTools(
 	const ids = WALL_TARGETS.filter((t) =>
 		ctx.allowedFeatures.has(t.requiredFeature),
 	).map((t) => t.id);
+	const withIds = (p: JsonSchemaProperty): JsonSchemaProperty => {
+		const { enum: _old, ...rest } = p;
+		return ids.length > 0 ? { ...rest, enum: ids } : rest;
+	};
 	return tools.map((t) => {
-		const target = t.parameters.properties.target;
-		if (t.name !== "tunjukkan_elemen" || !target) return t;
-		const { enum: _old, ...rest } = target;
-		return {
-			...t,
-			parameters: {
-				...t.parameters,
-				properties: {
-					...t.parameters.properties,
-					target: ids.length > 0 ? { ...rest, enum: ids } : rest,
+		const props = t.parameters.properties;
+		if (t.name === "tunjukkan_elemen" && props.target)
+			return withParameters(t, { ...props, target: withIds(props.target) });
+		const steps = props.langkah;
+		const stepTarget = steps?.items?.properties.target;
+		if (t.name === "pandu_langkah" && steps?.items && stepTarget)
+			return withParameters(t, {
+				...props,
+				langkah: {
+					...steps,
+					items: {
+						...steps.items,
+						properties: {
+							...steps.items.properties,
+							target: withIds(stepTarget),
+						},
+					},
 				},
-			},
-		};
+			});
+		return t;
 	});
+}
+
+function withParameters(
+	tool: ToolDefinition,
+	properties: Record<string, JsonSchemaProperty>,
+): ToolDefinition {
+	return { ...tool, parameters: { ...tool.parameters, properties } };
 }

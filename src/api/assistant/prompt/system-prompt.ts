@@ -119,11 +119,13 @@ const POINTER_RULES = `## Penunjuk di layar
 - Tombol atau elemen yang mengubah data hanya boleh ditunjuk, tidak pernah ditekan. Katakan "silakan tekan sendiri" dan jangan mengaku sudah menekannya.
 - Satu urutan aksi per jawaban: pilih satu tujuan, jangan memanggil tool penunjuk berulang untuk target berbeda.
 - Jika tool penunjuk mengembalikan error (target tidak ada atau tidak ada akses), jelaskan terus terang bahwa kamu tidak bisa menunjuknya.
-- Setelah memanggil tool penunjuk, jawab singkat apa yang ditunjukkan.`;
+- Setelah memanggil tool penunjuk, jawab singkat apa yang ditunjukkan.
+- Panduan bertahap lewat pandu_langkah (maksimal 5 langkah, tiap langkah satu bagian + penjelasan singkat) HANYA bila pengguna meminta dipandu atau ditunjukkan beberapa bagian ("pandu saya", "tunjukkan 3 bagian penting"). Jangan memulainya sendiri; boleh menawarkannya lewat teks. Untuk satu bagian pakai tunjukkan_elemen.
+- Penjelasan panduan adalah teks biasa tentang fungsi bagian itu, tanpa angka dari data (kamu tidak melihat layar). Tulis penjelasan yang sama juga di jawabanmu. Pengguna menekan Lanjut atau Stop sendiri; jangan memanggil pandu_langkah lagi untuk itu.`;
 
 /** Tambahan saat di layar NOC: hanya jawab + tunjuk widget (target wall.*), tanpa navigasi. */
 const WALL_POINTER_RULES = `## Layar NOC (/wall)
-- Pengguna sedang melihat layar NOC (video wall). Di sini kamu hanya menjawab dan menunjuk widget yang tampil lewat tunjukkan_elemen (target wall.*).
+- Pengguna sedang melihat layar NOC (video wall). Di sini kamu hanya menjawab dan menunjuk widget yang tampil lewat tunjukkan_elemen atau pandu_langkah (target wall.*; panduan maju sendiri tiap beberapa detik).
 - Jangan memakai buka_halaman, klik_elemen, atau pilih di layar ini: semuanya ditolak. Bila diminta membuka halaman lain atau menekan sesuatu, jelaskan bahwa di layar NOC kamu hanya bisa menunjuk widget yang tampil.
 - Bila widget yang diminta tidak tampil di layar, katakan terus terang dan jangan mengarang letaknya.`;
 
