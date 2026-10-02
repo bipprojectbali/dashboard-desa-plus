@@ -1,10 +1,12 @@
 import {
 	findPointerRoute,
 	findPointerTarget,
+	isWallRoute,
 	POINTER_ROUTES,
 	POINTER_TARGETS,
 	type PointerRoute,
 	type PointerTarget,
+	WALL_TARGETS,
 } from "@/config/assistant-pointer";
 import type { UiAction } from "@/types/ai-assistant-pointer";
 import type { ToolContext, ToolResult } from "./types";
@@ -13,10 +15,17 @@ import type { ToolContext, ToolResult } from "./types";
 export interface PointerRegistryDeps {
 	targets?: readonly PointerTarget[];
 	routes?: readonly PointerRoute[];
+	/** Target widget layar NOC (default: turunan registry widget wall). */
+	wallTargets?: readonly PointerTarget[];
 }
+
+type GuardCtx = Pick<ToolContext, "allowedFeatures" | "pageRoute">;
 
 export const WRITE_TARGET_NOTE =
 	"Elemen ini mengubah data, jadi AI tidak menekannya. Katakan kepada pengguna untuk menekannya sendiri.";
+
+export const WALL_ONLY_NOTE =
+	"Di layar NOC saya hanya bisa menunjuk widget yang tampil. Saya tidak bisa membuka halaman lain, menekan, atau memilih apa pun di layar ini.";
 
 type Resolved<T> = { ok: true; value: T } | { ok: false; error: string };
 
@@ -44,9 +53,10 @@ export function listAllowedRoutes(
 
 export function resolveRoute(
 	value: unknown,
-	ctx: Pick<ToolContext, "allowedFeatures">,
+	ctx: GuardCtx,
 	deps: PointerRegistryDeps = {},
 ): Resolved<PointerRoute> {
+	if (isWallRoute(ctx.pageRoute)) return { ok: false, error: WALL_ONLY_NOTE };
 	const routes = deps.routes ?? POINTER_ROUTES;
 	const route = findPointerRoute(value, routes);
 	if (!route) {
@@ -66,6 +76,34 @@ export function resolveRoute(
 
 export type TargetMode = "point" | "click" | "pilih";
 
+/** Di `/wall` hanya `wall.*` yang boleh ditunjuk; navigasi/klik/pilih dan target halaman lain ditolak. */
+function resolveWallTarget(
+	value: unknown,
+	mode: TargetMode,
+	ctx: GuardCtx,
+	deps: PointerRegistryDeps,
+): Resolved<PointerTarget> {
+	if (mode !== "point") return { ok: false, error: WALL_ONLY_NOTE };
+	const targets = deps.wallTargets ?? WALL_TARGETS;
+	const target = findPointerTarget(value, targets);
+	if (!target) {
+		const ids = targets
+			.filter((t) => allowed(ctx, t.requiredFeature))
+			.map((t) => t.id);
+		return {
+			ok: false,
+			error: `${WALL_ONLY_NOTE} Widget yang bisa ditunjuk: ${ids.join(", ") || "(tidak ada)"}.`,
+		};
+	}
+	if (!allowed(ctx, target.requiredFeature)) {
+		return {
+			ok: false,
+			error: `Pengguna tidak punya akses ke modul untuk target ${target.id}.`,
+		};
+	}
+	return { ok: true, value: target };
+}
+
 /**
  * Cek target terdaftar + izin user + jenis aksi. `point` boleh untuk target
  * `write` (hanya ditunjuk); `click`/`pilih` hanya untuk `view` yang ditandai.
@@ -73,9 +111,11 @@ export type TargetMode = "point" | "click" | "pilih";
 export function resolveTarget(
 	value: unknown,
 	mode: TargetMode,
-	ctx: Pick<ToolContext, "allowedFeatures">,
+	ctx: GuardCtx,
 	deps: PointerRegistryDeps = {},
 ): Resolved<PointerTarget> {
+	if (isWallRoute(ctx.pageRoute))
+		return resolveWallTarget(value, mode, ctx, deps);
 	const targets = deps.targets ?? POINTER_TARGETS;
 	const target = findPointerTarget(value, targets);
 	if (!target) {

@@ -2,11 +2,13 @@ import {
 	AI_CLICKABLE_ATTR,
 	findPointerRoute,
 	findPointerTarget,
+	isWallRoute,
 	POINTER_ROUTES,
 	POINTER_TARGETS,
 	type PointerRoute,
 	type PointerTarget,
 	parseUiAction,
+	WALL_TARGETS,
 } from "@/config/assistant-pointer";
 import type { UiActionOutcome } from "@/types/ai-assistant-pointer";
 import {
@@ -32,6 +34,8 @@ export interface PointerEnv {
 	pointAt: (el: HTMLElement, reducedMotion: boolean) => Promise<void>;
 	/** Batas tunggu elemen muncul (halaman pindah + data dimuat). */
 	anchorTimeoutMs: number;
+	/** Rute klien saat ini; `/wall` membatasi aksi ke penunjukan widget `wall.*`. */
+	pathname: () => string;
 	/** Jeda agar kursor terlihat sebelum klik/pilih; 0 saat reduced motion. */
 	settleMs: number;
 }
@@ -45,6 +49,9 @@ function resolveEnv(env: Partial<PointerEnv>): PointerEnv {
 		targets: env.targets ?? POINTER_TARGETS,
 		routes: env.routes ?? POINTER_ROUTES,
 		navigate: env.navigate,
+		pathname:
+			env.pathname ??
+			(() => (env.doc ?? document).defaultView?.location.pathname ?? ""),
 		reducedMotion: env.reducedMotion ?? prefersReducedMotion,
 		pointAt: env.pointAt ?? pointAtElement,
 		anchorTimeoutMs: env.anchorTimeoutMs ?? DEFAULT_ANCHOR_TIMEOUT_MS,
@@ -65,6 +72,11 @@ export async function executeUiAction(
 	const action = parseUiAction(raw);
 	if (!action) return { ok: false, reason: "invalid-action" };
 
+	// Lapisan kedua (server juga menolak): di layar NOC tidak ada navigasi/klik/pilih dan hanya widget wall.* yang ditunjuk.
+	const onWall = isWallRoute(env.pathname());
+	if (onWall && action.type !== "pointTo")
+		return { ok: false, reason: "wall-restricted" };
+
 	if (action.type === "navigate") {
 		if (!findPointerRoute(action.route, env.routes))
 			return { ok: false, reason: "unknown-route" };
@@ -74,7 +86,10 @@ export async function executeUiAction(
 		return { ok: true };
 	}
 
-	const target = findPointerTarget(action.target, env.targets);
+	const target = findPointerTarget(
+		action.target,
+		onWall ? WALL_TARGETS : env.targets,
+	);
 	if (!target) return { ok: false, reason: "unknown-target" };
 	if (action.type !== "pointTo" && target.kind !== "view")
 		return { ok: false, reason: "forbidden-target" };

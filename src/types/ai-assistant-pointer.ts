@@ -27,7 +27,8 @@ export type UiActionFailure =
 	| "not-clickable"
 	| "anchor-timeout"
 	| "option-not-found"
-	| "navigate-unavailable";
+	| "navigate-unavailable"
+	| "wall-restricted";
 
 export type UiActionOutcome =
 	| { ok: true }

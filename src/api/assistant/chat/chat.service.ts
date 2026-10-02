@@ -1,3 +1,4 @@
+import { isWallRoute } from "@/config/assistant-pointer";
 import type {
 	AssistantChatResponse,
 	AssistantPageContext,
@@ -20,7 +21,7 @@ import { buildSystemPrompt, sanitizeInline } from "../prompt/system-prompt";
 import { getProvider, type ResolveProviderResult } from "../provider/resolve";
 import { AiProviderError, type ChatMessage } from "../provider/types";
 import { type ExecuteOptions, executeWithTools } from "../tools/executor";
-import { hasPointerTools } from "../tools/pointer";
+import { hasPointerTools, scopePointerTools } from "../tools/pointer";
 import {
 	ASSISTANT_TOOLS,
 	getAvailableTools,
@@ -148,7 +149,10 @@ export async function runChatTurn(
 		pageRoute,
 		now,
 	};
-	const tools = getAvailableTools(ctx, deps.tools ?? ASSISTANT_TOOLS);
+	const tools = scopePointerTools(
+		getAvailableTools(ctx, deps.tools ?? ASSISTANT_TOOLS),
+		ctx,
+	);
 	const history = conversationId
 		? await repo.getRecentMessages(
 				user.id,
@@ -169,6 +173,7 @@ export async function runChatTurn(
 				unavailableModules: getUnavailableModules(ctx.allowedFeatures),
 				hasDataTools: tools.some((t) => t.requiredFeature.startsWith("view-")),
 				hasPointerTools: hasPointerTools(tools),
+				onWall: isWallRoute(pageRoute),
 			}),
 		},
 		...history,
