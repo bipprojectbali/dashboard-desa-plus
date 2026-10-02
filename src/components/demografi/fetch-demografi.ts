@@ -1,3 +1,4 @@
+import type { RawReligionRow } from "@/api/transforms/religion";
 import { apiClient } from "@/utils/api-client";
 import type { DemografiAll } from "./demografi.types";
 
