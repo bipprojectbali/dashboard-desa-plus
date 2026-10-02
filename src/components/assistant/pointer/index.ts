@@ -1,4 +1,12 @@
 export { AssistantCursor } from "./assistant-cursor";
+export {
+	endGuide,
+	type GuideOptions,
+	guideNext,
+	guideStop,
+	isGuideActive,
+	startGuide,
+} from "./guide-session";
 export { cancelPointer, onPointerCancel } from "./pointer-cancel";
 export {
 	executeUiAction,

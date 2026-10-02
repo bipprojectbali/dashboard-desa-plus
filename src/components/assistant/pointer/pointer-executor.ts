@@ -49,7 +49,7 @@ export interface PointerEnv {
 export const DEFAULT_ANCHOR_TIMEOUT_MS = 5000;
 export const DEFAULT_SETTLE_MS = 400;
 
-function resolveEnv(env: Partial<PointerEnv>): PointerEnv {
+export function resolvePointerEnv(env: Partial<PointerEnv>): PointerEnv {
 	return {
 		doc: env.doc ?? document,
 		targets: env.targets ?? POINTER_TARGETS,
@@ -75,11 +75,13 @@ export async function executeUiAction(
 	partialEnv: Partial<PointerEnv> = {},
 	run?: PointerRun,
 ): Promise<UiActionOutcome> {
-	const env = resolveEnv(partialEnv);
+	const env = resolvePointerEnv(partialEnv);
 	const cancelled = (): UiActionOutcome => ({ ok: false, reason: "cancelled" });
 	if (run?.cancelled) return cancelled();
 	const action = parseUiAction(raw);
-	if (!action) return { ok: false, reason: "invalid-action" };
+	// Panduan bertahap punya sesi sendiri (guide-session), bukan aksi tunggal.
+	if (!action || action.type === "guide")
+		return { ok: false, reason: "invalid-action" };
 
 	// Lapisan kedua (server juga menolak): di layar NOC tidak ada navigasi/klik/pilih dan hanya widget wall.* yang ditunjuk.
 	const onWall = isWallRoute(env.pathname());

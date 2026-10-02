@@ -18,9 +18,11 @@ export function usePointerRunner() {
 	const run = useCallback(
 		async (actions: readonly UiAction[]) => {
 			try {
-				const outcome = await runPointerActions(actions, {
-					navigate: (route) => router.navigate({ to: route }),
-				});
+				const outcome = await runPointerActions(
+					actions,
+					{ navigate: (route) => router.navigate({ to: route }) },
+					{ onFailure: () => setAssistantError(text.pointerFailed) },
+				);
 				if (!outcome.ok && outcome.reason !== "cancelled")
 					setAssistantError(text.pointerFailed);
 			} catch {
