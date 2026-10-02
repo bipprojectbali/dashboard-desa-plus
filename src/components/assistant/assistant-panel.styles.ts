@@ -1,19 +1,27 @@
 import type { CSSProperties } from "react";
 
-/** Ukuran & gaya tata letak panel asisten (Drawer FAB, mode tertanam, ruang di /wall). */
+/** Ukuran & gaya tata letak panel asisten (Drawer FAB, mode tertanam, ruang di halaman). */
 
-/** Lebar panel mode normal; /wall memberi ruang selebar ini agar panel NOC tidak tertutup. */
+/** Lebar panel mode normal; halaman & /wall memberi ruang selebar ini agar kontennya tidak tertutup. */
 export const ASSISTANT_PANEL_WIDTH = 440;
+
+/** Tinggi header AppShell (MainLayout & /profile); panel halaman ber-header dimulai di bawahnya. */
+export const ASSISTANT_HEADER_HEIGHT = 60;
 
 /**
  * Gaya Drawer panel (`styles` Mantine). Hanya `content` (panel); `inner`
- * (pembungkus fixed selayar penuh) sengaja tidak diberi gaya.
+ * (pembungkus fixed selayar penuh) sengaja tidak diberi gaya. `topOffset`
+ * menurunkan panel agar header halaman tetap terlihat.
  */
 export function assistantPanelStyles(
 	dark: boolean,
+	topOffset = 0,
 ): Record<"content", CSSProperties> {
 	return {
 		content: {
+			...(topOffset > 0
+				? { marginTop: topOffset, height: `calc(100% - ${topOffset}px)` }
+				: {}),
 			display: "flex",
 			flexDirection: "column",
 			overflow: "hidden",

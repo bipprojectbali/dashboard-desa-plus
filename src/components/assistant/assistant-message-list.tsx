@@ -22,6 +22,7 @@ import {
 	streamStatusLabel,
 	toAssistantLang,
 } from "./assistant.logic";
+import { AssistantMarkdown } from "./assistant-markdown";
 import { AssistantSources } from "./assistant-sources";
 import { suggestionsFor } from "./assistant-suggestions";
 import { useAssistantText } from "./use-assistant-access";
@@ -74,12 +75,16 @@ function Bubble({
 					opacity: bubble.failed ? 0.6 : 1,
 				}}
 			>
-				<Text
-					size="sm"
-					style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
-				>
-					{bubble.content}
-				</Text>
+				{mine ? (
+					<Text
+						size="sm"
+						style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+					>
+						{bubble.content}
+					</Text>
+				) : (
+					<AssistantMarkdown source={bubble.content} />
+				)}
 			</Paper>
 			<Group gap={6} mt={2} justify={mine ? "flex-end" : "flex-start"}>
 				{bubble.failed ? (

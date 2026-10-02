@@ -1,8 +1,15 @@
 import { ActionIcon, AppShell, Box, Button, Group, Text } from "@mantine/core";
+import { useReducedMotion } from "@mantine/hooks";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { useSnapshot } from "valtio";
 import { AssistantFab } from "@/components/assistant/assistant-fab";
+import {
+	assistantAsideConfig,
+	useAssistantSpace,
+} from "@/components/assistant/use-assistant-space";
 import { useIsDark } from "@/hooks/useIsDark";
+import { i18nStore } from "@/store/i18n";
 
 export const Route = createFileRoute("/profile")({
 	component: ProfileLayout,
@@ -11,10 +18,15 @@ export const Route = createFileRoute("/profile")({
 function ProfileLayout() {
 	const navigate = useNavigate();
 	const dark = useIsDark();
+	const assistantSpace = useAssistantSpace();
+	const reducedMotion = useReducedMotion();
+	const { animasiTransisi } = useSnapshot(i18nStore);
 
 	return (
 		<AppShell
 			header={{ height: 60 }}
+			aside={assistantAsideConfig(assistantSpace)}
+			transitionDuration={animasiTransisi && !reducedMotion ? 200 : 0}
 			padding="md"
 			styles={{
 				main: {

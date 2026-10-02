@@ -24,7 +24,7 @@ describe("tata letak panel asisten", () => {
 		const tags = panel.match(/<Drawer\.\w+\b[^>]*>/g) ?? [];
 		expect(tags.some((t) => t.startsWith("<Drawer.Content"))).toBe(true);
 		for (const tag of tags) expect(tag).not.toContain("style=");
-		expect(panel).toContain("styles={assistantPanelStyles(dark)}");
+		expect(panel).toMatch(/styles=\{assistantPanelStyles\(\s*dark,/);
 	});
 
 	it("gaya Drawer hanya untuk content; inner tidak disentuh", () => {
