@@ -35,6 +35,7 @@ const en: TranslationKeys = {
 	},
 	sidebar: {
 		cariApaSaja: "search anything",
+		perlebarMenu: "Expand menu",
 		beranda: "Home",
 		kinerjaDevisi: "Division Performance",
 		pengaduanLayanan: "Complaints & Public Services",

@@ -11,6 +11,7 @@ import {
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 import { useSidebarFullscreen } from "@/hooks/use-sidebar-fullscreen";
+import { useSidebarLayout } from "@/hooks/use-sidebar-layout";
 import { useIsDark } from "@/hooks/useIsDark";
 import { useSystemMonitor } from "@/hooks/useSystemMonitor";
 import { setAksesPrefs } from "@/store/akses";
@@ -105,6 +106,12 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 	useSystemMonitor();
 	const assistantSpace = useAssistantSpace();
 	const reducedMotion = useReducedMotion();
+	const sidebarLayout = useSidebarLayout(sidebarCollapsed, assistantSpace);
+	const isRail = sidebarLayout.mode === "rail";
+	const handleToggleSidebar = () => {
+		sidebarLayout.reset();
+		toggleSidebar();
+	};
 
 	// Non-admin users inherit display preferences from admin's global settings.
 	// user?.role sengaja dipakai (bukan `user`) — efek hanya perlu re-run saat
@@ -162,9 +169,12 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 		<AppShell
 			header={{ height: 60 }}
 			navbar={{
-				width: 300,
+				width: sidebarLayout.width,
 				breakpoint: "sm",
-				collapsed: { mobile: !opened, desktop: sidebarCollapsed },
+				collapsed: {
+					mobile: !opened,
+					desktop: sidebarLayout.mode === "hidden",
+				},
 			}}
 			aside={assistantAsideConfig(assistantSpace)}
 			transitionDuration={animasiTransisi && !reducedMotion ? 200 : 0}
@@ -178,17 +188,17 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 						hiddenFrom="sm"
 						size="sm"
 					/>
-					<Header onSidebarToggle={toggleSidebar} />
+					<Header onSidebarToggle={handleToggleSidebar} />
 				</Group>
 			</AppShell.Header>
 
 			<AppShell.Navbar
-				p="md"
+				p={isRail ? "xs" : "md"}
 				bg={navbarBgColor}
 				style={{ display: "flex", flexDirection: "column" }}
 			>
 				<div style={{ flex: 1, overflowY: "auto" }}>
-					<Sidebar />
+					<Sidebar rail={isRail} onWiden={sidebarLayout.widen} />
 				</div>
 			</AppShell.Navbar>
 

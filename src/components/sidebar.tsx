@@ -1,10 +1,24 @@
 import {
+	ActionIcon,
 	Box,
 	Image,
 	Input,
 	NavLink as MantineNavLink,
 	Stack,
+	Tooltip,
 } from "@mantine/core";
+import {
+	IconBuildingStore,
+	IconChartBar,
+	IconCoin,
+	IconHeartHandshake,
+	IconHome,
+	IconLayoutSidebarLeftExpand,
+	IconMessageReport,
+	IconShieldCheck,
+	IconSparkles,
+	IconUsers,
+} from "@tabler/icons-react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useState } from "react";
@@ -15,9 +29,15 @@ import { permissionStore } from "@/store/permission";
 
 interface SidebarProps {
 	className?: string;
+	/** Rel ikon: hanya ikon + tooltip nama menu (panel asisten terbuka di layar sempit). */
+	rail?: boolean;
+	/** Dipanggil saat user memperlebar rel secara manual. */
+	onWiden?: () => void;
 }
 
-export function Sidebar({ className }: SidebarProps) {
+const ICON_SIZE = 20;
+
+export function Sidebar({ className, rail = false, onWiden }: SidebarProps) {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const dark = useIsDark();
@@ -29,38 +49,59 @@ export function Sidebar({ className }: SidebarProps) {
 	const { allowed } = useSnapshot(permissionStore);
 
 	const allMenuItems = [
-		{ name: t.sidebar.beranda, path: "/", permission: "view-dashboard" },
+		{
+			name: t.sidebar.beranda,
+			path: "/",
+			permission: "view-dashboard",
+			icon: IconHome,
+		},
 		{
 			name: t.sidebar.kinerjaDevisi,
 			path: "/kinerja-divisi",
 			permission: "view-kinerja-divisi",
+			icon: IconChartBar,
 		},
 		{
 			name: t.sidebar.pengaduanLayanan,
 			path: "/pengaduan-layanan-publik",
 			permission: "view-pengaduan",
+			icon: IconMessageReport,
 		},
 		{
 			name: t.sidebar.analitik,
 			path: "/jenna-analytic",
 			permission: "view-jenna-analytic",
+			icon: IconSparkles,
 		},
 		{
 			name: t.sidebar.demografi,
 			path: "/demografi-pekerjaan",
 			permission: "view-demografi",
+			icon: IconUsers,
 		},
 		{
 			name: t.sidebar.keuangan,
 			path: "/keuangan-anggaran",
 			permission: "view-keuangan",
+			icon: IconCoin,
 		},
-		{ name: t.sidebar.bumdes, path: "/bumdes", permission: "view-bumdes" },
-		{ name: t.sidebar.sosial, path: "/sosial", permission: "view-sosial" },
+		{
+			name: t.sidebar.bumdes,
+			path: "/bumdes",
+			permission: "view-bumdes",
+			icon: IconBuildingStore,
+		},
+		{
+			name: t.sidebar.sosial,
+			path: "/sosial",
+			permission: "view-sosial",
+			icon: IconHeartHandshake,
+		},
 		{
 			name: t.sidebar.keamanan,
 			path: "/keamanan",
 			permission: "view-keamanan",
+			icon: IconShieldCheck,
 		},
 	];
 
@@ -95,6 +136,60 @@ export function Sidebar({ className }: SidebarProps) {
 		},
 	};
 
+	const railLinkStyles = {
+		root: { justifyContent: "center", paddingInline: 0 },
+		section: { margin: 0 },
+		body: { display: "none" },
+	};
+
+	const renderLink = (item: (typeof allMenuItems)[number]) => {
+		const isActive = location.pathname === item.path;
+		const Icon = item.icon;
+		const link = (
+			<MantineNavLink
+				key={item.path}
+				onClick={() => navigate({ to: item.path })}
+				label={rail ? undefined : item.name}
+				aria-label={item.name}
+				leftSection={<Icon size={ICON_SIZE} stroke={1.8} />}
+				active={isActive}
+				variant="subtle"
+				color="blue"
+				style={navLinkStyle(isActive)}
+				styles={rail ? railLinkStyles : navLinkStyles}
+			/>
+		);
+		if (!rail) return link;
+		return (
+			<Tooltip key={item.path} label={item.name} position="right" withArrow>
+				{link}
+			</Tooltip>
+		);
+	};
+
+	if (rail) {
+		return (
+			<Stack gap={0} className={className} data-sidebar-rail="true">
+				{menuItems.map(renderLink)}
+				{onWiden && (
+					<Tooltip label={t.sidebar.perlebarMenu} position="right" withArrow>
+						<ActionIcon
+							variant="subtle"
+							color="gray"
+							size="lg"
+							mt="sm"
+							mx="auto"
+							aria-label={t.sidebar.perlebarMenu}
+							onClick={onWiden}
+						>
+							<IconLayoutSidebarLeftExpand size={ICON_SIZE} />
+						</ActionIcon>
+					</Tooltip>
+				)}
+			</Stack>
+		);
+	}
+
 	return (
 		<Box className={className}>
 			{/* Logo — fixed size regardless of color scheme */}
@@ -126,21 +221,7 @@ export function Sidebar({ className }: SidebarProps) {
 
 			{/* Menu Items */}
 			<Stack gap={0} px="xs" style={{ overflowY: "auto" }}>
-				{filteredMenu.map((item) => {
-					const isActive = location.pathname === item.path;
-					return (
-						<MantineNavLink
-							key={item.path}
-							onClick={() => navigate({ to: item.path })}
-							label={item.name}
-							active={isActive}
-							variant="subtle"
-							color="blue"
-							style={navLinkStyle(isActive)}
-							styles={navLinkStyles}
-						/>
-					);
-				})}
+				{filteredMenu.map(renderLink)}
 			</Stack>
 		</Box>
 	);
