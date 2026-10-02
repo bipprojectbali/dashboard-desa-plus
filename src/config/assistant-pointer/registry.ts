@@ -1,9 +1,15 @@
+import { BERANDA_TARGETS } from "./beranda";
+import { DIVISI_TARGETS } from "./divisi";
 import { KEUANGAN_TARGETS } from "./keuangan";
 import { POINTER_ROUTES } from "./routes";
 import { AI_TARGET_ATTR, type PointerRoute, type PointerTarget } from "./types";
 
 /** Semua target terdaftar. Tambah halaman baru = tambah file `<modul>.ts` lalu sebarkan di sini. */
-export const POINTER_TARGETS: readonly PointerTarget[] = [...KEUANGAN_TARGETS];
+export const POINTER_TARGETS: readonly PointerTarget[] = [
+	...BERANDA_TARGETS,
+	...DIVISI_TARGETS,
+	...KEUANGAN_TARGETS,
+];
 
 export function findPointerRoute(
 	route: unknown,

@@ -56,6 +56,7 @@ export function ChartSurat() {
 
 	return (
 		<Card
+			data-ai-target="beranda.grafik-surat"
 			p="md"
 			radius="xl"
 			withBorder

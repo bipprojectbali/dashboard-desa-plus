@@ -210,6 +210,12 @@ describe("label Sumber yang bisa diklik (P3)", () => {
 			{ label: "Keuangan & Anggaran", target: "keuangan.kpi-total" },
 			{ label: "Kinerja Divisi", target: undefined },
 		]);
+		expect(
+			sourceItems(used, text, ["view-keuangan", "view-kinerja-divisi"]),
+		).toEqual([
+			{ label: "Keuangan & Anggaran", target: "keuangan.kpi-total" },
+			{ label: "Kinerja Divisi", target: "divisi.teraktif" },
+		]);
 		expect(sourceTargetFor("ringkasan_keuangan", [])).toBeUndefined();
 	});
 

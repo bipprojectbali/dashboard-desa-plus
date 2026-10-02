@@ -1,3 +1,5 @@
+export { BERANDA_TARGETS } from "./beranda";
+export { DIVISI_TARGETS } from "./divisi";
 export { KEUANGAN_TARGETS } from "./keuangan";
 export { parseUiAction } from "./parse";
 export {

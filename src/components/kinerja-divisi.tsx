@@ -66,6 +66,7 @@ const KinerjaDivisi = () => {
 		<Stack gap="lg">
 			<Group justify="flex-end">
 				<Button
+					data-ai-target="divisi.export-pdf"
 					variant="light"
 					color="blue"
 					leftSection={<IconFileDownload size={16} />}
@@ -89,6 +90,8 @@ const KinerjaDivisi = () => {
 						variant="light"
 						color="red"
 						leftSection={<IconRefresh size={14} />}
+						data-ai-target="divisi.coba-lagi"
+						data-ai-clickable="true"
 						onClick={() => refetch()}
 						mt="xs"
 					>
@@ -98,7 +101,7 @@ const KinerjaDivisi = () => {
 			)}
 
 			{/* SECTION 1 — PROGRAM KEGIATAN */}
-			<Grid gutter="md">
+			<Grid gutter="md" data-ai-target="divisi.kegiatan">
 				{loading ? (
 					Array.from({ length: 4 }).map((_, i) => (
 						// Skeleton placeholder statis (bukan data asli) — index sebagai key aman di sini.

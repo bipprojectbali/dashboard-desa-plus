@@ -38,6 +38,7 @@ export function ActivityList() {
 
 	return (
 		<Card
+			data-ai-target="beranda.kalender-kegiatan"
 			p="md"
 			radius="xl"
 			withBorder

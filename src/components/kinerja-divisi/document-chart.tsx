@@ -43,6 +43,7 @@ export function DocumentChart() {
 
 	return (
 		<Card
+			data-ai-target="divisi.dokumen"
 			p="md"
 			radius="xl"
 			withBorder

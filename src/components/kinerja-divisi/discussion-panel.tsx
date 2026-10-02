@@ -62,6 +62,7 @@ export function DiscussionPanel() {
 
 	return (
 		<Card
+			data-ai-target="divisi.diskusi"
 			p="md"
 			radius="xl"
 			withBorder

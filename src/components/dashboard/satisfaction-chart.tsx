@@ -76,6 +76,7 @@ export function SatisfactionChart() {
 
 	return (
 		<Card
+			data-ai-target="beranda.kepuasan"
 			p="md"
 			radius="xl"
 			withBorder
