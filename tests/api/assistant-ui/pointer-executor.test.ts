@@ -267,6 +267,12 @@ describe("executeUiActions", () => {
 });
 
 describe("pointAtElement & reduced motion", () => {
+	const FAST = {
+		glideMs: 30,
+		spawnDwellMs: 5,
+		scrollGraceMs: 10,
+		scrollPollMs: 5,
+	};
 	function stubEl(): { el: HTMLElement; calls: ScrollIntoViewOptions[] } {
 		const el = document.createElement("div");
 		const calls: ScrollIntoViewOptions[] = [];
@@ -276,20 +282,23 @@ describe("pointAtElement & reduced motion", () => {
 		return { el, calls };
 	}
 
-	it("reduced motion: gulir langsung, kursor tanpa animasi, sorotan tetap tampil", async () => {
+	it("reduced motion: gulir langsung, kursor langsung di tujuan, sorotan tetap tampil", async () => {
 		const { el, calls } = stubEl();
 		await pointAtElement(el, true);
 		expect(calls[0]?.behavior).toBe("auto");
 		expect(pointerStore.animate).toBe(false);
+		expect(pointerStore.phase).toBe("arrived");
+		expect(pointerStore.ringVisible).toBe(true);
 		expect(pointerStore.rect).not.toBeNull();
 	});
 
-	it("gerak normal: gulir halus dan kursor beranimasi", async () => {
+	it("gerak normal: gulir halus lalu kursor beranimasi dan ring tampil setelah tiba", async () => {
 		const { el, calls } = stubEl();
-		await pointAtElement(el, false);
+		await pointAtElement(el, false, FAST);
 		expect(calls[0]?.behavior).toBe("smooth");
 		expect(pointerStore.animate).toBe(true);
-		expect(pointerStore.rect).not.toBeNull();
+		expect(pointerStore.phase).toBe("arrived");
+		expect(pointerStore.ringVisible).toBe(true);
 	});
 
 	it("hidePointer menyembunyikan sorotan; cursorPosition dibatasi dekat tepi atas", async () => {
@@ -297,6 +306,7 @@ describe("pointAtElement & reduced motion", () => {
 		await pointAtElement(el, true);
 		hidePointer();
 		expect(pointerStore.rect).toBeNull();
+		expect(pointerStore.cursor).toBeNull();
 		expect(cursorPosition({ x: 10, y: 100, width: 200, height: 1000 })).toEqual(
 			{ x: 110, y: 128 },
 		);

@@ -16,6 +16,11 @@ import {
 	waitForAnchor,
 } from "./pointer-dom";
 import { pickSelectOption } from "./pointer-select";
+import {
+	beginPointerSequence,
+	endPointerSequence,
+	releasePointerTarget,
+} from "./pointer-store";
 
 export interface PointerEnv {
 	doc: Document;
@@ -64,6 +69,7 @@ export async function executeUiAction(
 		if (!findPointerRoute(action.route, env.routes))
 			return { ok: false, reason: "unknown-route" };
 		if (!env.navigate) return { ok: false, reason: "navigate-unavailable" };
+		releasePointerTarget();
 		await env.navigate(action.route);
 		return { ok: true };
 	}
@@ -94,14 +100,22 @@ export async function executeUiAction(
 	return pickSelectOption(env.doc, el, action.value, env.anchorTimeoutMs);
 }
 
-/** Jalankan daftar aksi berurutan; berhenti di kegagalan pertama. */
+/**
+ * Jalankan daftar aksi berurutan; berhenti di kegagalan pertama. Kursor tetap
+ * tampil di antara aksi (tidak memudar) dan baru memudar setelah rangkaian selesai.
+ */
 export async function executeUiActions(
 	actions: readonly unknown[],
 	env: Partial<PointerEnv> = {},
 ): Promise<UiActionOutcome> {
-	for (const action of actions) {
-		const outcome = await executeUiAction(action, env);
-		if (!outcome.ok) return outcome;
+	beginPointerSequence();
+	try {
+		for (const action of actions) {
+			const outcome = await executeUiAction(action, env);
+			if (!outcome.ok) return outcome;
+		}
+		return { ok: true };
+	} finally {
+		endPointerSequence();
 	}
-	return { ok: true };
 }

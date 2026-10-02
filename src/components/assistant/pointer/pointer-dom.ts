@@ -1,4 +1,10 @@
 import { anchorSelector } from "@/config/assistant-pointer";
+import {
+	type MotionTiming,
+	SCROLL_POLL_MS,
+	SCROLL_SETTLE_MAX_MS,
+	SCROLL_START_GRACE_MS,
+} from "./pointer-motion";
 import { rectOf, showPointer } from "./pointer-store";
 
 export const sleep = (ms: number) =>
@@ -29,34 +35,67 @@ export async function waitForAnchor(
 	}
 }
 
-const SCROLL_SETTLE_MAX_MS = 900;
+const supportsScrollEnd = (doc: Document): boolean =>
+	"onscrollend" in (doc.defaultView ?? window);
 
-/** Tunggu gulir halus selesai (posisi elemen tidak berubah dua kali berturut-turut). */
-async function waitForScrollSettle(el: Element): Promise<void> {
-	const deadline = Date.now() + SCROLL_SETTLE_MAX_MS;
-	let prev = rectOf(el);
-	let stable = 0;
-	while (stable < 2 && Date.now() < deadline) {
-		await sleep(50);
-		const cur = rectOf(el);
-		stable = cur.x === prev.x && cur.y === prev.y ? stable + 1 : 0;
-		prev = cur;
-	}
+/**
+ * Tunggu gulir halus selesai: `scrollend` bila didukung, bila tidak posisi
+ * elemen stabil dua kali berturut-turut. Tanpa gulir sama sekali (elemen sudah
+ * terlihat) selesai setelah jeda singkat; selalu dibatasi `scrollMaxMs`.
+ */
+export function waitForScrollEnd(
+	el: Element,
+	t: MotionTiming = {},
+): Promise<void> {
+	const doc = el.ownerDocument;
+	const maxMs = t.scrollMaxMs ?? SCROLL_SETTLE_MAX_MS;
+	const graceMs = t.scrollGraceMs ?? SCROLL_START_GRACE_MS;
+	const pollMs = t.scrollPollMs ?? SCROLL_POLL_MS;
+	const native = supportsScrollEnd(doc);
+	return new Promise((resolve) => {
+		let started = false;
+		let prev = rectOf(el);
+		let stable = 0;
+		const timers: ReturnType<typeof setTimeout>[] = [];
+		const onScroll = () => {
+			started = true;
+		};
+		const finish = () => {
+			for (const id of timers) clearTimeout(id);
+			clearInterval(poll);
+			doc.removeEventListener("scroll", onScroll, true);
+			doc.removeEventListener("scrollend", finish, true);
+			resolve();
+		};
+		doc.addEventListener("scroll", onScroll, true);
+		if (native) doc.addEventListener("scrollend", finish, true);
+		const poll = setInterval(() => {
+			const cur = rectOf(el);
+			const moved = cur.x !== prev.x || cur.y !== prev.y;
+			if (moved) started = true;
+			stable = moved ? 0 : stable + 1;
+			prev = cur;
+			if (!native && started && stable >= 2) finish();
+		}, pollMs);
+		timers.push(setTimeout(() => !started && finish(), graceMs));
+		timers.push(setTimeout(finish, maxMs));
+	});
 }
 
 /**
- * Gulir ke elemen lalu tampilkan kursor + sorotan. Reduced motion: gulir
- * langsung (tanpa animasi) dan kursor tanpa transisi; sorotan tetap tampil.
+ * Gulir ke elemen, tunggu gulir selesai, lalu tampilkan kursor + sorotan.
+ * Reduced motion: gulir langsung, tanpa spawn/luncur; sorotan tetap tampil.
  */
 export async function pointAtElement(
 	el: HTMLElement,
 	reducedMotion: boolean,
+	timing: MotionTiming = {},
 ): Promise<void> {
 	el.scrollIntoView({
 		block: "center",
 		inline: "nearest",
 		behavior: reducedMotion ? "auto" : "smooth",
 	});
-	if (!reducedMotion) await waitForScrollSettle(el);
-	showPointer(el, { animate: !reducedMotion });
+	if (!reducedMotion) await waitForScrollEnd(el, timing);
+	await showPointer(el, { animate: !reducedMotion, ...timing });
 }
