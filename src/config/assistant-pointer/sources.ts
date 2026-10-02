@@ -7,6 +7,7 @@ export const POINTER_TOOL_NAMES: ReadonlySet<string> = new Set([
 	"tunjukkan_elemen",
 	"klik_elemen",
 	"pilih",
+	"pandu_langkah",
 ]);
 
 /**

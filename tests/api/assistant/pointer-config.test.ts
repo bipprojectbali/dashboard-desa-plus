@@ -218,3 +218,60 @@ describe("parseUiAction", () => {
 		expect(a).toEqual({ type: "click", target: "a.b" });
 	});
 });
+
+describe("parseUiAction — guide", () => {
+	const step = (target: string, text = "Penjelasan") => ({ target, text });
+
+	it("menerima 1–5 langkah dan menjepit autoAdvanceSec ke 3–60", () => {
+		expect(parseUiAction({ type: "guide", steps: [step("a.b")] })).toEqual({
+			type: "guide",
+			steps: [step("a.b")],
+		});
+		expect(
+			parseUiAction({
+				type: "guide",
+				steps: [step("a.b", "  rapi  ")],
+				autoAdvanceSec: 1,
+			}),
+		).toMatchObject({ steps: [step("a.b", "rapi")], autoAdvanceSec: 3 });
+		expect(
+			parseUiAction({
+				type: "guide",
+				steps: [step("a.b")],
+				autoAdvanceSec: 999,
+			}),
+		).toMatchObject({ autoAdvanceSec: 60 });
+		expect(
+			parseUiAction({
+				type: "guide",
+				steps: [step("a.b")],
+				autoAdvanceSec: "8",
+			}),
+		).toEqual({ type: "guide", steps: [step("a.b")] });
+	});
+
+	it("menolak langkah kosong, lebih dari 5, penjelasan kosong/terlalu panjang, dan bentuk salah", () => {
+		for (const bad of [
+			{ type: "guide" },
+			{ type: "guide", steps: [] },
+			{ type: "guide", steps: "a.b" },
+			{ type: "guide", steps: Array.from({ length: 6 }, () => step("a.b")) },
+			{ type: "guide", steps: [step("a.b", "   ")] },
+			{ type: "guide", steps: [step("a.b", "x".repeat(501))] },
+			{ type: "guide", steps: [{ target: "", text: "x" }] },
+			{ type: "guide", steps: [{ text: "x" }] },
+			{ type: "guide", steps: [step("a.b"), null] },
+		])
+			expect(parseUiAction(bad)).toBeNull();
+	});
+
+	it("tidak membawa field tambahan dari input mentah", () => {
+		expect(
+			parseUiAction({
+				type: "guide",
+				steps: [{ target: "a.b", text: "x", evil: 1 }],
+				evil: 2,
+			}),
+		).toEqual({ type: "guide", steps: [{ target: "a.b", text: "x" }] });
+	});
+});

@@ -49,12 +49,13 @@ const run = (tool: ToolDefinition, args: Record<string, unknown>, c = ctx()) =>
 	tool.handler(args, c);
 
 describe("POINTER_TOOLS", () => {
-	it("empat tool, semuanya terdaftar di ASSISTANT_TOOLS dengan izin use-ai-assistant", () => {
+	it("lima tool, semuanya terdaftar di ASSISTANT_TOOLS dengan izin use-ai-assistant", () => {
 		expect(POINTER_TOOLS.map((t) => t.name)).toEqual([
 			"buka_halaman",
 			"tunjukkan_elemen",
 			"klik_elemen",
 			"pilih",
+			"pandu_langkah",
 		]);
 		for (const t of POINTER_TOOLS) {
 			expect(ASSISTANT_TOOLS.some((a) => a.name === t.name)).toBe(true);

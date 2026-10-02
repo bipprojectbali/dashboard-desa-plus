@@ -296,9 +296,10 @@ id ("singleton"), enabled, assistantName (default "Jenna"), personaNote?,
 dailyMessageLimitPerUser (50), dailyTokenLimitGlobal (1000000), ratePerMinutePerUser (6),
 maxInputChars (2000), historyWindow (20), retentionDays (90) — 0 = tanpa batas / simpan selamanya,
 kioskUserId? (akun kiosk /wall, relasi User onDelete SetNull), dailyMessageLimitKiosk (100),
+guideAutoAdvanceSec (8, rentang 3–60 — jeda lanjut otomatis panduan bertahap di /wall),
 updatedAt, updatedBy?
 ```
-Akun kiosk dipakai bersama di layar `/wall`; bila `userId === kioskUserId`, `dailyMessageLimitKiosk` menggantikan `dailyMessageLimitPerUser` (0 = tanpa batas). Akun kiosk dihapus → `kioskUserId` jadi `null`, pengaturan tetap ada.
+Akun kiosk dipakai bersama di layar `/wall`; bila `userId === kioskUserId`, `dailyMessageLimitKiosk` menggantikan `dailyMessageLimitPerUser` (0 = tanpa batas). Akun kiosk dihapus → `kioskUserId` jadi `null`, pengaturan tetap ada. `guideAutoAdvanceSec` (migrasi `add_assistant_guide_auto_advance`, `ADD COLUMN IF NOT EXISTS ... DEFAULT 8`) hanya dipakai layar `/wall`; halaman biasa selalu menunggu tombol Lanjut.
 
 #### `AiProviderConfig`
 Kredensial & model per slot fitur (`feature` = PK: `"chat"` | `"pointer"` | `"voice"`). Slot `pointer`/`voice` yang kosong memakai slot `chat`. API key disimpan terenkripsi AES-256-GCM (`apiKeyEnc`, format `v1:`, kunci env `AI_CREDENTIALS_KEY` — lihat `src/utils/secret-crypto.ts`) dan tidak pernah dikirim ke browser; `apiKeyHint` untuk tampilan.

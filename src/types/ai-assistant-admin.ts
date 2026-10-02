@@ -20,6 +20,7 @@ export interface AssistantSettingsDto {
 	retentionDays: number;
 	kioskUserId: string | null;
 	dailyMessageLimitKiosk: number;
+	guideAutoAdvanceSec: number;
 }
 
 /** Status kunci tersimpan: `needs-reentry` = gagal didekripsi (AI_CREDENTIALS_KEY berganti). */

@@ -11,6 +11,7 @@ import {
 	AssistantPanelContent,
 	type AssistantPanelContentProps,
 } from "./assistant-panel-content";
+import { ASSISTANT_PANEL_ATTR } from "./pointer";
 
 /**
  * Panel samping "Tanya AI" (Drawer kanan, tanpa overlay agar halaman tetap
@@ -47,7 +48,10 @@ export function AssistantPanel({
 				withHeader ? ASSISTANT_HEADER_HEIGHT : 0,
 			)}
 		>
-			<Drawer.Content aria-label={props.status.assistantName}>
+			<Drawer.Content
+				aria-label={props.status.assistantName}
+				{...{ [ASSISTANT_PANEL_ATTR]: true }}
+			>
 				<AssistantPanelContent {...props} />
 			</Drawer.Content>
 		</Drawer.Root>

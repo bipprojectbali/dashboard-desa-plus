@@ -23,6 +23,11 @@ export interface AssistantText {
 	pointToSource: string;
 	returnToChat: string;
 	pointerFailed: string;
+	guideLabel: string;
+	guideStep: string;
+	guideNext: string;
+	guideDone: string;
+	guideStop: string;
 	copy: string;
 	copied: string;
 	retry: string;
@@ -75,6 +80,11 @@ const id: AssistantText = {
 	pointToSource: "Tunjukkan {modul} di layar",
 	returnToChat: "Kembali ke chat",
 	pointerFailed: "Maaf, saya belum bisa menunjukkan bagian itu di layar.",
+	guideLabel: "Panduan",
+	guideStep: "Langkah {n} dari {total}",
+	guideNext: "Lanjut",
+	guideDone: "Selesai",
+	guideStop: "Stop",
 	copy: "Salin jawaban",
 	copied: "Tersalin",
 	retry: "Kirim ulang",
@@ -138,6 +148,11 @@ const en: AssistantText = {
 	pointToSource: "Show {modul} on screen",
 	returnToChat: "Back to chat",
 	pointerFailed: "Sorry, I could not show that part on screen.",
+	guideLabel: "Guide",
+	guideStep: "Step {n} of {total}",
+	guideNext: "Next",
+	guideDone: "Done",
+	guideStop: "Stop",
 	copy: "Copy answer",
 	copied: "Copied",
 	retry: "Resend",

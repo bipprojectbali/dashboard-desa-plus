@@ -32,6 +32,7 @@ const settingsBody = t.Object({
 	retentionDays: t.Number(),
 	kioskUserId: t.Union([t.String(), t.Null()]),
 	dailyMessageLimitKiosk: t.Number(),
+	guideAutoAdvanceSec: t.Number(),
 });
 
 const providerBody = t.Object({

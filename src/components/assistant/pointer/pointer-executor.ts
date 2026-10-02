@@ -12,6 +12,12 @@ import {
 } from "@/config/assistant-pointer";
 import type { UiActionOutcome } from "@/types/ai-assistant-pointer";
 import {
+	beginPointerRun,
+	endPointerRun,
+	type PointerRun,
+	withPointerNavigation,
+} from "./pointer-cancel";
+import {
 	pointAtElement,
 	prefersReducedMotion,
 	sleep,
@@ -43,7 +49,7 @@ export interface PointerEnv {
 export const DEFAULT_ANCHOR_TIMEOUT_MS = 5000;
 export const DEFAULT_SETTLE_MS = 400;
 
-function resolveEnv(env: Partial<PointerEnv>): PointerEnv {
+export function resolvePointerEnv(env: Partial<PointerEnv>): PointerEnv {
 	return {
 		doc: env.doc ?? document,
 		targets: env.targets ?? POINTER_TARGETS,
@@ -67,10 +73,15 @@ function resolveEnv(env: Partial<PointerEnv>): PointerEnv {
 export async function executeUiAction(
 	raw: unknown,
 	partialEnv: Partial<PointerEnv> = {},
+	run?: PointerRun,
 ): Promise<UiActionOutcome> {
-	const env = resolveEnv(partialEnv);
+	const env = resolvePointerEnv(partialEnv);
+	const cancelled = (): UiActionOutcome => ({ ok: false, reason: "cancelled" });
+	if (run?.cancelled) return cancelled();
 	const action = parseUiAction(raw);
-	if (!action) return { ok: false, reason: "invalid-action" };
+	// Panduan bertahap punya sesi sendiri (guide-session), bukan aksi tunggal.
+	if (!action || action.type === "guide")
+		return { ok: false, reason: "invalid-action" };
 
 	// Lapisan kedua (server juga menolak): di layar NOC tidak ada navigasi/klik/pilih dan hanya widget wall.* yang ditunjuk.
 	const onWall = isWallRoute(env.pathname());
@@ -82,8 +93,9 @@ export async function executeUiAction(
 			return { ok: false, reason: "unknown-route" };
 		if (!env.navigate) return { ok: false, reason: "navigate-unavailable" };
 		releasePointerTarget();
-		await env.navigate(action.route);
-		return { ok: true };
+		const navigate = env.navigate;
+		await withPointerNavigation(() => navigate(action.route));
+		return run?.cancelled ? cancelled() : { ok: true };
 	}
 
 	const target = findPointerTarget(
@@ -98,16 +110,25 @@ export async function executeUiAction(
 	if (action.type === "pilih" && !target.pilih)
 		return { ok: false, reason: "forbidden-target" };
 
-	const el = await waitForAnchor(env.doc, target.id, env.anchorTimeoutMs);
+	const el = await waitForAnchor(
+		env.doc,
+		target.id,
+		env.anchorTimeoutMs,
+		undefined,
+		() => run?.cancelled === true,
+	);
+	if (run?.cancelled) return cancelled();
 	if (!el) return { ok: false, reason: "anchor-timeout" };
 	if (action.type === "click" && el.getAttribute(AI_CLICKABLE_ATTR) !== "true")
 		return { ok: false, reason: "not-clickable" };
 
 	const reduced = env.reducedMotion();
 	await env.pointAt(el, reduced);
+	if (run?.cancelled) return cancelled();
 	if (action.type === "pointTo") return { ok: true };
 
 	if (!reduced && env.settleMs > 0) await sleep(env.settleMs);
+	if (run?.cancelled) return cancelled();
 	if (action.type === "click") {
 		el.click();
 		return { ok: true };
@@ -118,19 +139,23 @@ export async function executeUiAction(
 /**
  * Jalankan daftar aksi berurutan; berhenti di kegagalan pertama. Kursor tetap
  * tampil di antara aksi (tidak memudar) dan baru memudar setelah rangkaian selesai.
+ * Rangkaian ini terdaftar sebagai run aktif: pemicu pembatalan (pointer-cancel)
+ * menghentikannya dengan hasil `cancelled`, yang oleh pemanggil diperlakukan senyap.
  */
 export async function executeUiActions(
 	actions: readonly unknown[],
 	env: Partial<PointerEnv> = {},
 ): Promise<UiActionOutcome> {
 	beginPointerSequence();
+	const run = beginPointerRun();
 	try {
 		for (const action of actions) {
-			const outcome = await executeUiAction(action, env);
+			const outcome = await executeUiAction(action, env, run);
 			if (!outcome.ok) return outcome;
 		}
 		return { ok: true };
 	} finally {
+		endPointerRun(run);
 		endPointerSequence();
 	}
 }

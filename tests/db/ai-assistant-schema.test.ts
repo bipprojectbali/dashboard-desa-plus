@@ -61,6 +61,7 @@ describe("migrasi add_ai_assistant", () => {
 			retentionDays: 90,
 			kioskUserId: null,
 			dailyMessageLimitKiosk: 100,
+			guideAutoAdvanceSec: 8,
 		});
 		expect(slot).toMatchObject({
 			feature: "chat",

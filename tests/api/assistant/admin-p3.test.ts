@@ -127,6 +127,19 @@ describe("validateSettingsUpdate", () => {
 			"ratePerMinutePerUser",
 		]);
 	});
+	it("guideAutoAdvanceSec: awal 8, hanya 3–60 detik yang diterima", () => {
+		expect(DEFAULTS.guideAutoAdvanceSec).toBe(8);
+		for (const ok of [3, 8, 60]) {
+			expect(
+				validateSettingsUpdate(settings({ guideAutoAdvanceSec: ok })),
+			).toEqual({});
+		}
+		for (const bad of [0, 2, 61, 4.5]) {
+			expect(
+				validateSettingsUpdate(settings({ guideAutoAdvanceSec: bad })),
+			).toHaveProperty("guideAutoAdvanceSec");
+		}
+	});
 	it("nama kosong setelah trim ditolak; personaNote kosong → null", () => {
 		expect(
 			validateSettingsUpdate(settings({ assistantName: "   " })),

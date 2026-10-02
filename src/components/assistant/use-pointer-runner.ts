@@ -18,10 +18,13 @@ export function usePointerRunner() {
 	const run = useCallback(
 		async (actions: readonly UiAction[]) => {
 			try {
-				const outcome = await runPointerActions(actions, {
-					navigate: (route) => router.navigate({ to: route }),
-				});
-				if (!outcome.ok) setAssistantError(text.pointerFailed);
+				const outcome = await runPointerActions(
+					actions,
+					{ navigate: (route) => router.navigate({ to: route }) },
+					{ onFailure: () => setAssistantError(text.pointerFailed) },
+				);
+				if (!outcome.ok && outcome.reason !== "cancelled")
+					setAssistantError(text.pointerFailed);
 			} catch {
 				// Navigasi/DOM gagal di tengah aksi: jawaban AI tetap sah, cukup beri tahu user.
 				setAssistantError(text.pointerFailed);

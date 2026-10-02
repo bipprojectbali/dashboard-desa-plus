@@ -18,16 +18,18 @@ export function prefersReducedMotion(): boolean {
 	);
 }
 
-/** Tunggu elemen `data-ai-target` muncul (halaman/data masih dimuat); null bila batas waktu habis. */
+/** Tunggu elemen `data-ai-target` muncul (halaman/data masih dimuat); null bila batas waktu habis atau `aborted` bernilai true. */
 export async function waitForAnchor(
 	doc: Document,
 	id: string,
 	timeoutMs: number,
 	pollMs = 50,
+	aborted: () => boolean = () => false,
 ): Promise<HTMLElement | null> {
 	const selector = anchorSelector(id);
 	const deadline = Date.now() + timeoutMs;
 	for (;;) {
+		if (aborted()) return null;
 		const el = doc.querySelector<HTMLElement>(selector);
 		if (el?.isConnected) return el;
 		if (Date.now() >= deadline) return null;
