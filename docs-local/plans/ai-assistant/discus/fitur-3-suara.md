@@ -324,3 +324,154 @@ Opsi: terus / tekan-bicara / keduanya.  **Saran: keduanya; default tekan-untuk-b
 - Google — Gemini Live API (alternatif, barge-in, transkripsi, ephemeral token): [https://ai.google.dev/gemini-api/docs/live](https://ai.google.dev/gemini-api/docs/live), [https://ai.google.dev/gemini-api/docs/live-guide](https://ai.google.dev/gemini-api/docs/live-guide), [https://ai.google.dev/gemini-api/docs/ephemeral-tokens](https://ai.google.dev/gemini-api/docs/ephemeral-tokens)
 
 Catatan keterbatasan: tidak ada panggilan API yang diuji; angka harga/latensi di atas bersifat perkiraan dan harus dikonfirmasi sebelum keputusan biaya.
+
+---
+
+## 9. Analisa jawaban user & usulan lanjutan
+
+> Ditulis sesi `ai_suara` (worktree baru dari `join`), 2026-10-02. **Diskusi saja, tanpa kode.** §7 (jawaban user) tidak diubah.
+> Jawaban/keputusan baru user dicatat di §9.7 (log keputusan), bukan menimpa bagian di atas.
+
+### 9.1 Yang sudah final (dari jawaban §7)
+
+| # | Topik | Keputusan user |
+|---|---|---|
+| 1 | Provider suara | **OpenAI Realtime** (key lewat `/admin/ai-assistant` slot Suara, bukan chat/env) |
+| 2+3 | Peran OpenAI vs Claude | **Claude tetap otak** (menjawab, memakai tool, menggerakkan penunjuk); OpenAI sebagai penerima suara; data tersaring boleh ke OpenAI; teks ucapan harus masuk ke Claude → **menggeser rekomendasi lama O1**, lihat §9.3 |
+| 4 | Bahasa | id-ID formal-ramah; nama suara dipilih admin; Inggris bila user memulai |
+| 5 | Mikrofon | Tombol **On/Off** (terus mendengar saat On); auto-off setelah 2 menit diam |
+| 6 | Kuota | **60 menit/hari user** (naik dari 30), kiosk 60, diatur admin, tidak mengurangi kuota teks. *Belum jelas:* apakah pertanyaan suara juga dihitung pesan chat → Q3 |
+| 7 | Privasi | Audio tidak disimpan, transkrip disimpan; banner persetujuan sekali per user + ikon mikrofon permanen |
+| 8 | `/wall` | **Belum final** — user bingung dengan saran lama; tombol suara ingin tetap ada → §9.5 |
+| 9 | Perangkat | Wajib Chrome/Edge desktop; uji jaringan WebRTC/UDP dulu |
+| 10 | Penunjuk | Hanya bila diminta |
+| 11 | Riwayat | Satu riwayat dengan chat, ditandai modalitas suara |
+| 12 | Batas sesi | 10 menit/sesi, bisa diperpanjang manual |
+| 13 | Waktu | Dulu "paralel tanpa pointer"; **sekarang Fitur 2 sudah di `join`** → konfirmasi Q4 |
+| 14 | Key | Diisi admin lewat slot Suara |
+
+### 9.2 Koreksi atas analisa awal (kode `join`, commit `2bd0f7a`, dicek 2026-10-02)
+
+- §3 / §2.2 menulis "`chatStream` belum ada". **Sudah ada**: `POST /api/assistant/chat/stream` (SSE: `status`, `delta`, `done`/`error`) memakai `runChatTurn` yang sama dengan `/chat` — guard, izin, batas, kuota, penyimpanan. Latensi pipeline V2 (§9.3) jadi **tidak seburuk** yang saya tulis di §2.2.
+- `actions` sudah bukan `never` lagi (`AssistantUiAction = UiAction`) — penunjuk Fitur 2 nyata.
+- Bug status `slots.voice` (`status.service.ts:28`, ikut `slots.chat`) **masih ada** — tetap harus diperbaiki saat implementasi.
+- `runTool` di `executor.ts` masih private; di desain V1/V2 di bawah **tidak perlu diekspor**, karena suara memanggil `runChatTurn`, bukan tool satu per satu.
+
+### 9.3 Inti permintaan: Claude sebagai otak, OpenAI sebagai "telinga" (dan mungkin "mulut")
+
+**Cek docs OpenAI (diambil 2026-10-02) — apakah V1 dan V2 mungkin?**
+
+| Hal | Temuan di docs | Kesimpulan |
+|---|---|---|
+| Sesi suara realtime di browser | WebRTC dengan token sementara dari server (`POST /v1/realtime/client_secrets`, SDP ke `/v1/realtime/calls`); model contoh `gpt-live-1` / `gpt-realtime-2.1` | Mungkin |
+| V1: otak sendiri | Guide "Delegation and tools in GPT-Live": ada **Responses delegation** (OpenAI memanggil model OpenAI) dan **client delegation** ("aplikasi Anda menyiapkan konteks, menjalankan agent/workflow, lalu mengirim hasilnya balik ke GPT-Live"; cocok bila hasil perlu divalidasi/disensor sebelum sampai ke GPT-Live). Browser boleh meneruskan event pemanggilan fungsi dari data channel ke backend terautentikasi untuk dieksekusi | **Mungkin** lewat *client delegation* ke Claude. Responses delegation **tidak dipakai** (itu model OpenAI, bukan Claude) |
+| V1: dibacakan apa adanya | Docs tidak menjamin model membacakan hasil persis tanpa parafrase; hanya bisa diarahkan lewat instruksi sesi | **Perlu dikonfirmasi lewat uji nyata** |
+| V2: telinga saja | Sesi `type: "transcription"` tersedia (WebRTC untuk browser, WebSocket untuk server); model `gpt-live-transcribe` memberi transkrip bertahap + final; mendukung `languages`, `keywords`, `prompt` (bisa memberi istilah "APBDes", "Darmasaba", dll.) | Mungkin |
+| V2: akhir ucapan (VAD) | Di `gpt-live-transcribe`, **`server_vad`/`semantic_vad` tidak didukung** (`turn_detection` harus kosong); docs menyebut VAD hanya "pada model yang mendukung". Model `gpt-transcribe` justru butuh WebSocket + `input_audio_buffer.commit` | **Celah**: penentu "user sudah selesai bicara" harus dibuat sendiri di browser, atau memakai model transkripsi lain yang mendukung VAD (**perlu dikonfirmasi** model mana & apakah lewat WebRTC) |
+| V2: mulut | Endpoint TTS `audio/speech` (`gpt-4o-mini-tts`, 11 suara bawaan, instruksi gaya bicara, **streaming audio**); bahasa Indonesia termasuk yang didukung (suara dioptimalkan untuk Inggris → **uji kualitas id**). Docs tidak menyebut token sementara untuk TTS → panggilan lewat **server** (stream HTTP biasa, bukan WebSocket) | Mungkin |
+| Aturan wajib | Usage policy OpenAI: user harus diberi tahu jelas bahwa **suara adalah buatan AI** (berlaku bila ada TTS/suara AI) | Masuk banner persetujuan |
+| Nama model & harga | Berubah cepat; halaman harga tidak dibaca rinci | **Jangan hard-code; nama model = setelan admin; biaya perlu dikonfirmasi** |
+
+Sumber (dibaca 2026-10-02): `platform.openai.com/docs/guides/` → `realtime`, `voice-webrtc`, `voice-server-controls`, `realtime-transcription`, `realtime-vad`, `text-to-speech`; `developers.openai.com/api/docs/guides/live-delegation`.
+
+**Penjelasan awam.** Bayangkan Jenna punya dua orang di kantor: **Claude = pakar yang paham data & izin**, **OpenAI = resepsionis yang bisa mendengar dan berbicara**. Pertanyaannya: siapa yang memegang percakapan?
+
+- **V1 "kulit suara"**: resepsionis (OpenAI) mendengar, lalu *setiap pertanyaan berisi ia teruskan ke pakar (Claude)*, menerima jawaban, dan membacakannya. Percakapan tetap natural (bisa dipotong, jeda manusiawi). Risikonya: resepsionis *masih punya otak sendiri* — bisa menjawab sendiri, mengubah kata-kata pakar, atau lupa meneruskan. Kita hanya bisa mengarahkan lewat instruksi, bukan memaksa.
+- **V2 "telinga & mulut"**: resepsionis hanya **menulis apa yang didengar** (STT), lalu dialihkan sepenuhnya ke Claude; jawaban Claude diserahkan ke "pembaca" (TTS) untuk dibacakan. OpenAI **tidak pernah memutuskan apa pun**. Ini paling sesuai kalimat user ("OpenAI sebagai penerima input suara, Claude yang menjawab & menunjuk"). Harga yang dibayar: kita yang mengatur kapan user selesai bicara dan kapan memotong jawaban (kode lebih banyak).
+
+```
+V1 (kulit suara)
+ Mikrofon ─► [OpenAI Realtime: dengar + giliran bicara]
+                │ pertanyaan berisi → panggil tool "tanya_jenna"
+                ▼
+        [Server: izin + kuota → Claude + tool + penunjuk]
+                │ teks jawaban + actions
+                ▼
+ Speaker ◄─ [OpenAI membacakan jawaban]        actions ─► browser gerakkan penunjuk
+
+V2 (telinga & mulut)
+ Mikrofon ─► [OpenAI: suara→teks saja] ─► teks final ─► browser
+ browser ─► POST /api/assistant/chat/stream (Claude, jalur chat yang sama)
+ Claude delta teks ─► tampil di layar  +  dipotong per kalimat ─► [server → OpenAI TTS] ─► Speaker
+ actions (penunjuk) ikut keluar dari stream yang sama
+ Memotong (barge-in): browser mendeteksi user bicara → hentikan pemutaran + batalkan permintaan Claude
+```
+
+| Aspek | V1 kulit suara | V2 telinga & mulut |
+|---|---|---|
+| Siapa otak | Claude untuk isi; OpenAI ikut mengatur alur bicara | **100% Claude** |
+| Kesesuaian dengan kalimat user | Sebagian | **Penuh** |
+| Teks ucapan masuk ke Claude | Ya, lewat parameter tool (parafrase mungkin) | Ya, **persis transkrip** |
+| Risiko jawaban "diubah/dikarang" oleh OpenAI | Ada (hanya bisa diredam instruksi) | **Tidak ada** |
+| Rasa natural & barge-in | Terbaik (dikelola OpenAI) | Cukup; dibuat sendiri, perlu disetel |
+| Latensi | Claude selesai dulu → baru dibacakan; ada dua model | Claude streaming per kalimat → TTS; kira-kira sebanding atau lebih baik, **perlu diukur** |
+| Gema (AEC) | Audio lewat WebRTC → peredam gema browser bekerja baik | Audio TTS diputar biasa → peredam kurang pasti, **perlu diuji** |
+| Mulut bisa dimatikan (mis. di `/wall`) | Sulit | **Mudah** (jawaban hanya teks) |
+| Izin/kuota/riwayat | Lewat `runChatTurn` (tool `tanya_jenna`) | Lewat `/chat/stream` apa adanya |
+| Kode baru | Sesi Realtime + tool + prompt kulit | Sesi transkripsi + penentu akhir ucapan + TTS server + pemotong |
+| Biaya (perkiraan, belum dihitung) | Audio realtime + Claude | STT + TTS + Claude; suara cenderung lebih murah — **perlu konfirmasi harga** |
+| Server Bun | Endpoint HTTP biasa (token + callback) | Endpoint HTTP + stream audio TTS (tanpa WebSocket) |
+
+**Rekomendasi: V2, bertahap**, karena paling jujur dengan keinginan user dan paling aman (otak tunggal Claude, tidak ada jalur lain yang melewati izin/kuota):
+
+1. **S1a — telinga saja**: user bicara → transkrip tampil langsung → masuk chat Claude yang ada → jawaban tampil sebagai teks + penunjuk bergerak. Sudah menjawab hampir semua kebutuhan dan murah.
+2. **S1b — tambah mulut (TTS)** + memotong jawaban (barge-in).
+3. V1 disimpan sebagai **rencana cadangan** bila setelah diuji suara V2 terasa terlalu kaku/lambat.
+
+Peringatan jujur: V2 **belum seluwes ChatGPT Voice** (itu ciri V1/speech-to-speech murni). Bila rasa natural lebih penting daripada "Claude 100%", V1 lebih tepat — itu pilihan user (Q1).
+
+### 9.4 Dampak ke bagian lain
+
+- **Kuota.** Menit suara (60/hari user & kiosk, K1) melindungi biaya **OpenAI**. Tetapi di V1/V2 tiap pertanyaan memanggil **Claude**; bila tidak dihitung sebagai pesan chat, 60 menit suara bisa memicu ratusan panggilan Claude melewati batas 50/100 → usulan: **dihitung dua-duanya** (Q3). Aturan #35 (gagal karena provider tidak dihitung) tetap berlaku. Menit diukur server dari penerbitan sesi + heartbeat/penutupan (browser bicara langsung ke OpenAI, jadi server tidak melihat audio).
+- **Izin.** Pintu masuk tetap `authorizeAssistantUser` + izin `use-ai-assistant`; tool/izin/penyaringan data tetap satu jalur (`runChatTurn`). Opsi izin baru `use-ai-voice` (Q7).
+- **Riwayat.** `AssistantMessage` perlu kolom modalitas (`text`/`voice`) lewat migrasi idempoten; pesan user = transkrip akhir, pesan Jenna = **teks dari Claude** (bukan transkrip ucapan model suara). Audio tidak disimpan. Perlu tabel/kolom penghitung menit per hari (WITA).
+- **Penunjuk.** V2: `actions` ikut keluar dari stream chat, dijalankan executor Fitur 2 yang sama; "hanya bila diminta" (#10) cukup dijaga oleh prompt chat. Prompt varian suara: jawaban pendek, tanpa markdown/tabel, detail panjang tetap di layar.
+- **Slot admin "Suara".** Tipe provider baru (usulan `openai-voice`); isian: nama model transkripsi, model TTS, nama suara, bahasa; V1 menambah model realtime. **Tanpa fallback ke slot chat untuk audio.** Otak tetap memakai slot Chat (Claude), bukan slot Suara. Slot Penunjuk tetap "belum dipakai". Status `slots.voice` harus berarti "slot suara terisi", bukan "chat siap". Tes koneksi admin khusus suara (dirancang saat implementasi; tidak dijalankan sekarang).
+- **Istilah sulit.** Dengan `keywords`/`prompt` transkripsi, istilah desa ("APBDes", "BUMDes", "Darmasaba", "banjar", "posyandu") bisa diberi petunjuk supaya tidak salah dengar — daftar bisa jadi setelan admin.
+- **Privasi.** Banner persetujuan menyebut: suara dikirim ke OpenAI, tidak disimpan dashboard, **dan suara jawaban dibuat AI** (kewajiban usage policy OpenAI untuk TTS).
+- **Keputusan lama yang tergeser.** #38 ("provider suara OpenAI, bukan Claude") tetap benar untuk *telinga/mulut*, tetapi *otak* tetap Claude — keputusan #38 perlu diralat setelah user memilih (§9.7). Saran lama O1 (§5) dan MVP "tekan-untuk-bicara" (§6) **tidak berlaku lagi**.
+
+### 9.5 `/wall` (TV) — penjelasan ulang dan opsi
+
+Saran lama saya ("MVP tanpa suara di `/wall`") memang membingungkan. Maksud sebenarnya: **bukan** wajib beli perangkat lain, melainkan peringatan bahwa suara di TV punya dua masalah:
+
+1. **Mikrofon.** Fitur suara butuh mikrofon di **perangkat yang menjalankan browser `/wall`** (PC/mini-PC/laptop yang tersambung ke TV, atau TV-box). TV biasanya tidak punya mikrofon yang bisa dipakai browser; webcam/mic USB/headset bisa. Tanpa mikrofon, tombol suara tidak berguna.
+2. **Gema & obrolan ruangan.** Speaker TV berjarak jauh dan keras → suara Jenna masuk lagi ke mikrofon (gema); mikrofon juga menangkap obrolan orang lain di ruang NOC, lalu menganggapnya pertanyaan.
+
+Mitigasi **tanpa perangkat tambahan**:
+
+| Mitigasi | Efek |
+|---|---|
+| Peredam gema/derau bawaan browser (`echoCancellation`, `noiseSuppression`) | Mengurangi, tidak menghilangkan, terutama untuk speaker jauh |
+| Tombol On/Off (bukan terus aktif) + auto-off 2 menit diam | Mikrofon tidak "mendengar" ruangan sepanjang hari |
+| Batas sesi 10 menit | Membatasi biaya & salah dengar |
+| Ambang deteksi suara (VAD) lebih ketat | Obrolan kecil jauh tidak dianggap pertanyaan |
+| **V2: jawaban hanya teks + penunjuk di `/wall` (mulut dimatikan)** | **Gema hilang total** — hanya "telinga" yang aktif; pilihan ini hanya mudah di V2 |
+| Tombol disembunyikan/nonaktif otomatis bila browser tak menemukan mikrofon | Tidak ada tombol yang tampak rusak |
+
+Opsi yang menghormati keinginan user (**tombol tetap ada di `/wall`**):
+
+- **W1** — tombol ada, suara dua arah penuh (dibacakan). Risiko gema paling besar; bagus bila ada speakerphone/headset.
+- **W2** — tombol ada, **telinga saja**: user bicara → teks muncul → Jenna menjawab sebagai teks + penunjuk bergerak di TV. Tanpa gema. *Saran.*
+- **W3** — W2 sebagai default, dengan setelan admin "bacakan jawaban di wall" yang diaktifkan **setelah** uji gema di TV sungguhan.
+
+Info perangkat NOC yang dibutuhkan (Q5): perangkat apa yang menjalankan `/wall` (PC/mini-PC/TV-box?), apakah punya mikrofon/webcam, browser & sistemnya, speaker dari TV (HDMI) atau terpisah, apakah ruangan ramai.
+
+### 9.6 Pertanyaan baru (tersisa)
+
+Format: pertanyaan → opsi → **saran**.
+
+1. **V1 atau V2?** (§9.3) Siapa yang memegang percakapan. Opsi: V1 kulit suara / V2 telinga & mulut / V2 bertahap (telinga dulu, mulut menyusul). **Saran: V2 bertahap**; V1 cadangan.
+2. **Jawaban dibacakan atau hanya teks?** Opsi: selalu dibacakan + teks / hanya teks / dibacakan tapi ada tombol "bisukan jawaban". **Saran: dibacakan + teks + tombol bisukan** di panel; di `/wall` ikut W2/W3 (Q5). Jawaban panjang: dibacakan ringkas, detail di layar.
+3. **Kuota pesan chat.** Pertanyaan suara dihitung juga sebagai pesan chat (50/100)? Opsi: dihitung dua-duanya / hanya menit suara / pesan suara punya batas sendiri (mis. 100/hari). **Saran: dihitung dua-duanya** (menjaga biaya Claude); batas bisa dinaikkan admin.
+4. **Penunjuk sejak awal?** Fitur 2 sudah di `join`. Opsi: ikut di S1 / menyusul. **Saran: ikut sejak S1** (gratis dalam desain V2).
+5. **`/wall`.** Opsi: W1 / W2 / W3 (§9.5). **Saran: W3.** Mohon info perangkat NOC (§9.5): jenis perangkat, mikrofon, browser, jalur speaker, keramaian ruangan.
+6. **Jaringan & perangkat.** Siapa yang menguji WebRTC/UDP & mikrofon dari jaringan NOC, dan mau dibuat dulu halaman uji kecil (S0) sebelum S1? Opsi: S0 dulu / langsung S1. **Saran: S0 dulu** (tanpa key di chat; key diisi admin) — termasuk uji kualitas id-ID & gema. (S0 adalah pekerjaan kode → butuh perintah eksplisit.)
+7. **Izin suara terpisah?** Opsi: tidak (ikut `use-ai-assistant`; admin atur kuota menit) / izin baru `use-ai-voice` (default admin & user, bisa dimatikan per role). **Saran: izin baru** — suara berbiaya OpenAI dan sebaiknya bisa dimatikan per role.
+8. **Penentu akhir ucapan (khusus V2).** Model transkripsi `gpt-live-transcribe` tidak punya VAD server. Opsi: (a) VAD buatan sendiri di browser (mungkin butuh satu pustaka kecil → perlu izin sesuai aturan dependency) / (b) pakai model transkripsi lain yang punya VAD (perlu dikonfirmasi) / (c) uji dua-duanya di S0 lalu pilih. **Saran: (c)**; nama pustaka + lisensi dilaporkan dulu sebelum ditambah.
+
+### 9.7 Log keputusan user (diisi saat diskusi berlanjut)
+
+| Tanggal | Pertanyaan | Jawaban user |
+|---|---|---|
+| — | (belum ada) | — |
