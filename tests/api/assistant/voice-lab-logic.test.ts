@@ -14,6 +14,7 @@ import {
 	type TurnMetrics,
 } from "@/components/assistant/voice-lab/voice-lab.stats";
 import {
+	chunkText,
 	stripMarkdown,
 	takeSentences,
 	wordOverlap,
@@ -262,5 +263,25 @@ describe("ekspor hasil", () => {
 		const json = JSON.stringify(out).toLowerCase();
 		expect(json).not.toContain("apikey");
 		expect(json).not.toContain('audio":');
+	});
+});
+
+describe("voice-lab chunkText", () => {
+	it("teks pendek tetap satu potongan", () => {
+		expect(chunkText("Halo dunia.", 100)).toEqual(["Halo dunia."]);
+	});
+
+	it("memotong di batas kalimat dan tiap potongan ≤ max", () => {
+		const text = "Kalimat satu. Kalimat dua. Kalimat tiga. Kalimat empat.";
+		const parts = chunkText(text, 30);
+		expect(parts.length).toBeGreaterThan(1);
+		for (const p of parts) expect(p.length).toBeLessThanOrEqual(30);
+		expect(parts.join(" ")).toBe(text);
+	});
+
+	it("tanpa spasi sama sekali: dipotong paksa pada max, tidak ada teks hilang", () => {
+		const parts = chunkText("a".repeat(25), 10);
+		expect(parts.join("")).toBe("a".repeat(25));
+		for (const p of parts) expect(p.length).toBeLessThanOrEqual(10);
 	});
 });

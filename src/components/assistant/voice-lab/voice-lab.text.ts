@@ -17,7 +17,7 @@ export function takeSentences(
 	for (;;) {
 		const m = SENTENCE_END.exec(rest);
 		if (!m || m.index === undefined) break;
-		const end = m.index + m[1].length;
+		const end = m.index + (m[1]?.length ?? 0);
 		const sentence = `${carry}${rest.slice(0, end)}`.trim();
 		rest = rest.slice(end).replace(/^\s+/, "");
 		if (sentence.length < minChars) {
@@ -61,4 +61,24 @@ export function wordOverlap(a: string, b: string): number {
 	let shared = 0;
 	for (const w of wa) if (wb.has(w)) shared++;
 	return shared / (wa.size + wb.size - shared);
+}
+
+/** Potong teks panjang menjadi potongan ≤ `max` karakter, diutamakan di batas kalimat/spasi. */
+export function chunkText(text: string, max: number): string[] {
+	const out: string[] = [];
+	let rest = text.trim();
+	while (rest.length > max) {
+		const window = rest.slice(0, max);
+		const sentenceCut = Math.max(
+			window.lastIndexOf(". "),
+			window.lastIndexOf("! "),
+			window.lastIndexOf("? "),
+		);
+		const cut = sentenceCut > 0 ? sentenceCut + 1 : window.lastIndexOf(" ");
+		const at = cut > 0 ? cut : max;
+		out.push(rest.slice(0, at).trim());
+		rest = rest.slice(at).trim();
+	}
+	if (rest) out.push(rest);
+	return out;
 }
