@@ -28,7 +28,9 @@ export type UiActionFailure =
 	| "anchor-timeout"
 	| "option-not-found"
 	| "navigate-unavailable"
-	| "wall-restricted";
+	| "wall-restricted"
+	/** Dihentikan user (gulir, Esc, navigasi manual, panel ditutup); dilaporkan senyap. */
+	| "cancelled";
 
 export type UiActionOutcome =
 	| { ok: true }

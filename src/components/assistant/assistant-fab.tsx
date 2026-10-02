@@ -9,7 +9,7 @@ import {
 } from "@/store/assistant";
 import { fillTemplate } from "./assistant.logic";
 import { AssistantReturnButton } from "./assistant-return-button";
-import { AssistantCursor } from "./pointer";
+import { AssistantCursor, cancelPointer, usePointerCancel } from "./pointer";
 import { useAssistantAccess, useAssistantText } from "./use-assistant-access";
 
 const AssistantPanel = lazy(() =>
@@ -36,7 +36,10 @@ export function AssistantFab({
 	const fabRef = useRef<HTMLButtonElement>(null);
 	const [panelLoaded, setPanelLoaded] = useState(false);
 
+	usePointerCancel();
+
 	const handleClose = useCallback(() => {
+		cancelPointer();
 		closeAssistant();
 		// Panel tidak mengunci fokus, jadi fokus dikembalikan manual ke FAB.
 		requestAnimationFrame(() => fabRef.current?.focus());
