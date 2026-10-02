@@ -475,11 +475,11 @@ Format: pertanyaan → opsi → **saran**.
 | Tanggal | Pertanyaan | Jawaban user |
 |---|---|---|
 | 2026-10-02 | Catatan awal di `jawab-fitur3.md` | Bertanya "Apa itu S0?" (dijawab di compare §0). Belum ada keputusan |
-| 2026-10-02 | No. 1 otak suara | Bertanya: "V1-A menjanjikan, tapi tidak bisa suaranya OpenAI dan otaknya tetap Claude?" → dijelaskan itulah V1-B/V2; rekomendasi V2 bertahap (compare §7.1). **Belum diputuskan** |
-| 2026-10-02 | No. 3 menit suara | Setuju **bila** FOREVIA menerapkan "ukur menit nyata, tidak memotong kuota saat gagal". FOREVIA **tidak** menerapkan (reservasi 600 dtk/percobaan, tidak dikembalikan, tanpa usage final; handoff §17). Syarat tidak terpenuhi → **belum final**, diminta konfirmasi ulang (compare §7.2) |
-| 2026-10-02 | No. 9 batas sesi bersamaan | User belum paham → dijelaskan ulang dengan contoh NOC (compare §7.3). **Belum diputuskan** |
-| 2026-10-02 | No. 10 diagnostik admin | User belum paham → dijelaskan ulang (compare §7.4). **Belum diputuskan** |
-| — | No. 2, 4, 5, 6, 7, 8 | Belum dijawab user |
+| 2026-10-02 | No. 1 otak suara | Bertanya apakah suara OpenAI + otak Claude mungkin (compare §7.1) lalu apakah V1-A dua otak bisa menjawab sama (compare §8). **Jawaban: V2 dulu** (Claude satu-satunya otak, OpenAI telinga + mulut). V1-A dan V1-B jadi cadangan; ambang jeda dan ukuran "cukup sama" ditetapkan setelah hasil S0. **FINAL**. Keputusan #38 diralat: OpenAI = telinga/mulut, Claude = otak (README #46) |
+| 2026-10-02 | No. 3 menit suara | FOREVIA ternyata tidak mengukur menit nyata (reservasi 600 dtk/percobaan, tidak dikembalikan; handoff §17). User memilih **(a)**: ukur menit nyata dari server; gagal start tidak memotong kuota. **FINAL** (README #47) |
+| 2026-10-02 | No. 9 batas sesi bersamaan | User memilih **A**: 1 sesi per orang + total 3, admin bisa ubah. Tab kedua **ditolak dengan pesan**; sesi lama tidak diputus. **FINAL** (README #47) |
+| 2026-10-02 | No. 10 diagnostik admin | User memilih **B**: log tahapan tanpa data pribadi + daftar sesi di `/admin/ai-assistant`, hanya baca (tanpa tombol tutup paksa). **FINAL** (README #47) |
+| — | No. 2, 4, 5 (+ info perangkat NOC), 6, 7, 8, ambang cadangan | Belum dijawab / ditetapkan setelah hasil S0 |
 
 **Catatan analisa 2026-10-02 (bukan jawaban user): perbandingan dengan FOREVIA.** Detail di [`../idea/compare-forevia-vs-dashboard-desa.md`](../idea/compare-forevia-vs-dashboard-desa.md).
 

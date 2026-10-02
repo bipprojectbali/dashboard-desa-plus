@@ -231,17 +231,103 @@ Dua hal yang ditawarkan:
 | B | Catatan tahapan + daftar sesi di halaman admin (**saran**) |
 | C | B + tombol "tutup paksa" sesi yang nyangkut (aksi tulis; sebaiknya menyusul) |
 
-### 7.5 Ringkasan status pertanyaan
+### 7.5 Ringkasan status pertanyaan (2026-10-02, jawaban lengkap user)
+
+**Sudah FINAL:**
+
+| No. | Keputusan |
+|---|---|
+| 1 | **V2 dulu**: Claude satu-satunya otak, OpenAI hanya telinga + mulut. V1-A dan V1-B menjadi **cadangan** (kapan dipakai: §8.5) |
+| 3 | **(a)** ukur menit nyata dari server; gagal start tidak memotong kuota |
+| 9 | **A** 1 sesi per orang + total 3 (admin bisa ubah). Tab kedua **ditolak** dengan pesan; sesi lama tidak diputus |
+| 10 | **B** log tahapan tanpa data pribadi + daftar sesi di `/admin/ai-assistant` (hanya baca; tanpa tombol tutup paksa) |
+
+**Masih terbuka:**
 
 | No. | Status | Yang diperlukan dari user |
 |---|---|---|
-| 1 | Dijelaskan; rekomendasi V2 bertahap | Pilih V1-A / V1-B / V2 |
-| 2 | Belum dijawab | Jawab |
-| 3 | Syarat user tidak terpenuhi (§7.2) | Konfirmasi: (a) ukur nyata, gagal tidak memotong (**saran**) / (b) ikut FOREVIA reservasi 600 dtk / (c) tahan sementara 10 menit lalu kembalikan selisih saat sesi ditutup |
-| 4 | Belum dijawab | Jawab |
-| 5 | Belum dijawab (+ info perangkat NOC) | Jawab |
-| 6 | Belum dijawab (S0 dijelaskan di §0) | Jawab |
-| 7 | Belum dijawab | Jawab |
-| 8 | Belum dijawab | Jawab |
-| 9 | Dijelaskan ulang (§7.3) | Pilih A/B/C + tolak vs ganti |
-| 10 | Dijelaskan ulang (§7.4) | Pilih A/B/C |
+| 2 | Belum dijawab | Jawaban dibacakan atau teks saja |
+| 4 | Belum dijawab | Penunjuk ikut sejak tahap pertama |
+| 5 | Belum dijawab (+ info perangkat NOC) | Opsi `/wall` (W1/W2/W3) dan info perangkat |
+| 6 | Belum dijawab (S0 dijelaskan di §0) | S0 dulu atau langsung tahap 1; **perlu perintah eksplisit karena menyentuh `src/`** |
+| 7 | Belum dijawab | Izin terpisah `use-ai-voice` |
+| 8 | Belum dijawab | Cara mendeteksi akhir ucapan |
+| — | Ambang cadangan | Ditetapkan **setelah hasil S0** (§8.5) |
+
+---
+
+## 8. No. 1 lanjutan: "V1-A, dua otak, tetapi jawabannya sama. Mungkinkah?" (2026-10-02)
+
+**Jawaban jujur: sebagian bisa dibuat sama, sebagian tidak bisa dijamin.** Bayangkan dua petugas pintar yang berbeda orang. Bila keduanya membaca **buku catatan yang sama** dan **aturan kerja yang sama**, angka yang mereka sebut akan sama. Tetapi cara mereka menjelaskan, atau kesimpulannya pada pertanyaan yang butuh penilaian, tetap bisa berbeda.
+
+### 8.1 Apa yang bisa sama, dan apa yang tidak
+
+| Bagian jawaban | Bisa dibuat sama? | Syarat / catatan |
+|---|---|---|
+| **(a) Fakta dan angka** (APBDes, jumlah pengaduan, jumlah penduduk) | **Ya, bisa konsisten** | Kedua otak memakai **tool data yang sama lewat server kita**: registry tool yang sama, izin yang sama, saringan data sensitif yang sama (#16), pembungkus `wrapToolResult` dan batas 8.000 karakter yang sama (dicek di `executor.ts`). Angkanya datang dari satu sumber (builder `wall-snapshot` dan cache), bukan dari ingatan model. Juga: aturan format angka yang sama ("Rp 1,2 miliar", bukan "1200 juta") di kedua prompt |
+| **Persona dan aturan** | **Ya, tapi manual** | Prompt sistem (nama Jenna, bahasa, batas baca-saja) ditulis ulang untuk OpenAI dan harus dijaga sinkron |
+| **Riwayat percakapan** | **Ya, bisa** | Transkrip suara dan chat teks disimpan satu percakapan di DB (keputusan #11); otak mana pun membaca riwayat yang sama |
+| **(b) Kalimat dan penalaran** | **Tidak bisa dijamin identik** | Model berbeda berarti gaya, urutan, pilihan rincian, dan kesimpulan bisa berbeda, terutama untuk pertanyaan analitis |
+| **(c) Penunjuk layar (Fitur 2)** | **Ya, bisa**, bila tool penunjuk yang sama dipakai | Target yang dipilih bisa tetap berbeda bila pertanyaannya ambigu |
+
+**Contoh konkret di NOC:**
+
+- *"Berapa total anggaran APBDes tahun ini?"*: **sama.** Keduanya memanggil tool keuangan yang sama dan menyebut angka yang sama. Perbedaannya paling jauh pada gaya kalimat.
+- *"Tunjukkan di mana realisasi belanja."*: **kemungkinan sama.** Keduanya memakai tool penunjuk dengan daftar target yang sama.
+- *"Bagaimana kondisi keuangan desa dibanding tahun lalu, apa yang perlu diperhatikan?"*: **bisa berbeda.** Keduanya benar secara angka, tetapi yang satu menonjolkan realisasi, yang lain sisa anggaran; kesimpulan "perlu diperhatikan" bisa tidak sama.
+- *"Ringkas pengaduan minggu ini."*: **angka sama, urutan dan penekanan beda.**
+
+### 8.2 Apa yang harus dibangun ekstra untuk V1-A
+
+1. **Function tool di sisi OpenAI** yang tiap tool-nya memanggil server kita (tidak membuat jalur data baru). Yang ditiru dari FOREVIA: tool dijalankan di browser dengan daftar nama tool terbatas, ukuran argumen dibatasi (§12.6).
+2. **Penjaga izin dua jalur.** Izin `use-ai-assistant`, `view-*`, kuota, dan #16 dipastikan berlaku sama pada jalur chat dan jalur suara. Jalur suara lewat browser, jadi **penegakan wajib di server**, tidak mengandalkan browser (FOREVIA mengakui hasil tool dari browser tidak boleh dipercaya untuk data sensitif, §16.5).
+3. **Dua prompt yang dijaga sinkron.** Setiap perubahan persona atau aturan format harus diterapkan di dua tempat.
+4. **Test kesetaraan** (§8.3) dan, **tiap tool baru atau diubah, diuji di dua model**.
+5. **Penyimpanan transkrip suara** ke percakapan yang sama (keputusan #11), plus penghitungan menit (no. 3) dan sesi (no. 9), yang dibutuhkan semua opsi.
+
+**Biaya dan risiko pemeliharaan:** pekerjaan awal lebih banyak daripada V2 untuk lapisan tool dan izin, dan **biaya rutin lebih tinggi**: setiap perubahan fitur harus dikerjakan dan diuji dua kali. Risikonya jawaban suara dan chat menyimpang pelan-pelan tanpa ada yang menyadari, karena tidak ada satu jalur yang memaksa keduanya sama.
+
+### 8.3 Cara mengukur "seberapa sama" di S0
+
+Siapkan **20 pertanyaan uji** NOC (campuran: angka tunggal, perbandingan, daftar, penunjuk layar, pertanyaan analitis, pertanyaan di luar wewenang). Jalankan di kedua jalur (chat Claude dan suara V1-A, lalu V2 sebagai pembanding) dan nilai:
+
+| Yang dinilai | Cara | Target |
+|---|---|---|
+| Angka | Bandingkan angka yang disebut dengan nilai di dashboard | harus identik pada pertanyaan faktual |
+| Target penunjuk | Bandingkan elemen yang ditunjuk | sama pada pertanyaan yang jelas |
+| Izin | Pertanyaan yang tidak boleh dijawab, dicoba dengan akun tanpa izin | sama-sama menolak |
+| Kesimpulan analitis | Penilai manusia (Anda/operator) menandai "setara / agak beda / bertentangan" | tidak boleh ada yang bertentangan |
+| Jeda dan kenyamanan | Waktu sampai kata pertama terdengar, bisa dipotong atau tidak | dicatat |
+
+Angka ambang "cukup sama" ditetapkan bersama setelah hasil pertama; saya tidak mengarang target dari awal.
+
+### 8.4 Rekomendasi diperbarui
+
+**V1-A memang layak, tetapi sebagai opsi kedua yang diuji di S0, bukan pilihan utama.**
+
+- **Pilihan utama tetap V2** (Claude satu-satunya otak): kesamaan jawaban **dijamin oleh desain** (satu jalur), bukan oleh disiplin tim menjaga dua prompt.
+- **V1-A diuji di S0** sebagai pembanding, karena mungkin terasa jauh lebih natural. Bila jeda V2 terlalu mengganggu **dan** ukuran kesamaan di §8.3 lolos, V1-A bisa dipilih dengan sadar akan biaya pemeliharaan dua otaknya.
+- V1-B tetap cadangan bila V2 terlalu lambat tetapi Anda tetap ingin Claude sebagai otak.
+
+**Pertanyaan pilihan ulang (no. 1):**
+
+| Opsi | Arti |
+|---|---|
+| A | V2 utama; S0 menguji V2 dan V1-A, dengan V1-B cadangan (**saran**) |
+| B | V2 utama; S0 hanya menguji V2 dan V1-B, V1-A tidak diuji |
+| C | V1-A utama (suara cepat; terima dua otak dan biaya pemeliharaannya) |
+| D | V2 saja, tanpa S0 pembanding |
+
+### 8.5 Keputusan user: V2 dulu, cadangan kapan dipakai (FINAL 2026-10-02)
+
+User memilih **V2 dulu** (setara opsi A/B di §8.4). V1-A dan V1-B **tidak dibangun sekarang**; keduanya cadangan.
+
+**Kapan cadangan dipakai:**
+
+- **V1-B** (Claude tetap otak, OpenAI meneruskan): bila hasil S0 menunjukkan jeda V2 terlalu lama atau terasa terlalu "gantian", tetapi Claude tetap harus otak.
+- **V1-A** (otak OpenAI, dua otak): hanya bila V1-B juga tidak memadai **dan** ukuran kesamaan jawaban di §8.3 lolos, dengan sadar akan biaya pemeliharaan dua otak.
+
+**Pertanyaan terbuka (ditetapkan setelah hasil S0, tidak dikarang sekarang):**
+
+1. Berapa detik jeda dianggap terlalu lama untuk V2.
+2. Seberapa "cukup sama" jawaban V1-A dengan chat (ambang di §8.3).
