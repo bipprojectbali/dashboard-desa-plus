@@ -484,6 +484,7 @@ Format: pertanyaan → opsi → **saran**.
 | 2026-10-02 | No. 7 izin | **Ya**: izin baru `use-ai-voice` (default admin & user, bisa dimatikan per role). **FINAL** |
 | 2026-10-02 | No. 6 S0 | **S0 dulu** (halaman uji kecil sekali pakai). Menulis kodenya menunggu perintah eksplisit + konfirmasi sesi/worktree. **FINAL** |
 | 2026-10-02 | No. 5 dan No. 8 | No. 5: user belum membaca konteks W1/W2/W3 (dijelaskan ulang di tab). No. 8: user bertanya apakah FOREVIA membahasnya; jawab: tidak, FOREVIA V1 sehingga GPT-Live mengurus giliran bicara. Belum diputuskan |
+| 2026-10-02 | No. 8 + pemilihan versi | User: di NOC cukup tombol On untuk mulai dan Off atau auto-off untuk selesai. **S0 wajib** dan menguji V2 dan V1-B; **V1-B naik jadi pilihan utama bila V2 tidak mungkin** (detail compare §8.5). Tombol On/Off per sesi tidak menghapus kebutuhan deteksi akhir ucapan di V2, jadi no. 8 tetap diuji di S0. **FINAL (keputusan versi)**; cara deteksi belum dipilih |
 | — | No. 5 (+ info perangkat NOC), 8, ambang cadangan | Belum dijawab / ditetapkan setelah hasil S0 |
 
 **Catatan analisa 2026-10-02 (bukan jawaban user): perbandingan dengan FOREVIA.** Detail di [`../idea/compare-forevia-vs-dashboard-desa.md`](../idea/compare-forevia-vs-dashboard-desa.md).

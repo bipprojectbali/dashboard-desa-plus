@@ -241,7 +241,7 @@ Dua hal yang ditawarkan:
 | 2 | **Setuju**: jawaban dibacakan + teks + tombol "bisukan jawaban" (di `/wall` mengikuti no. 5) |
 | 3 | **(a)** ukur menit nyata dari server; gagal start tidak memotong kuota |
 | 4 | **Ya**: penunjuk ikut sejak S1 |
-| 6 | **S0 dulu** (halaman uji kecil sekali pakai). Menulis kodenya tetap menunggu perintah eksplisit + konfirmasi sesi/worktree |
+| 6 | **S0 dulu dan WAJIB** (halaman uji kecil sekali pakai), menguji **V2 dan V1-B** berdampingan. Menulis kodenya tetap menunggu perintah eksplisit + konfirmasi sesi/worktree |
 | 7 | **Ya**: izin baru `use-ai-voice` (default admin & user, bisa dimatikan per role) |
 | 9 | **A** 1 sesi per orang + total 3 (admin bisa ubah). Tab kedua **ditolak** dengan pesan; sesi lama tidak diputus |
 | 10 | **B** log tahapan tanpa data pribadi + daftar sesi di `/admin/ai-assistant` (hanya baca; tanpa tombol tutup paksa) |
@@ -251,7 +251,7 @@ Dua hal yang ditawarkan:
 | No. | Status | Yang diperlukan dari user |
 |---|---|---|
 | 5 | Belum dijawab: user belum membaca konteks W1/W2/W3, dijelaskan ulang di tab (+ info perangkat NOC) | Opsi `/wall` (W1/W2/W3) dan info perangkat |
-| 8 | Belum dijawab. User bertanya apakah FOREVIA membahasnya: **tidak** (FOREVIA V1, GPT-Live mengurus giliran bicara sendiri; handoff hanya menyebut interupsi di voice prompt dan uji manusia, tanpa cara deteksi akhir ucapan) | Cara mendeteksi akhir ucapan (saran: uji dua cara di S0) |
+| 8 | Belum dijawab; **jadi kendala utama V2**. User: di NOC cukup tombol On untuk mulai dan Off atau auto-off untuk selesai. Catatan: tombol On/Off per sesi **tidak menghapus** kebutuhan deteksi akhir ucapan di V2 (di dalam sesi tetap perlu tahu kapan satu pertanyaan selesai); diuji di S0. User bertanya apakah FOREVIA membahasnya: **tidak** (FOREVIA V1, GPT-Live mengurus giliran bicara sendiri; handoff hanya menyebut interupsi di voice prompt dan uji manusia, tanpa cara deteksi akhir ucapan) | Cara mendeteksi akhir ucapan (saran: uji dua cara di S0) |
 | — | Ambang cadangan | Ditetapkan **setelah hasil S0** (§8.5) |
 
 ---
@@ -322,10 +322,13 @@ Angka ambang "cukup sama" ditetapkan bersama setelah hasil pertama; saya tidak m
 
 User memilih **V2 dulu** (setara opsi A/B di §8.4). V1-A dan V1-B **tidak dibangun sekarang**; keduanya cadangan.
 
-**Kapan cadangan dipakai:**
+**Kapan cadangan dipakai (diperbarui, keputusan user 2026-10-02):**
 
-- **V1-B** (Claude tetap otak, OpenAI meneruskan): bila hasil S0 menunjukkan jeda V2 terlalu lama atau terasa terlalu "gantian", tetapi Claude tetap harus otak.
-- **V1-A** (otak OpenAI, dua otak): hanya bila V1-B juga tidak memadai **dan** ukuran kesamaan jawaban di §8.3 lolos, dengan sadar akan biaya pemeliharaan dua otak.
+- **S0 wajib** dan menguji **V2 dan V1-B** berdampingan (termasuk dua cara deteksi akhir ucapan untuk V2, no. 8).
+- **V1-B naik jadi pilihan utama** bila S0 menunjukkan V2 tidak mungkin atau tidak layak: deteksi akhir ucapan tidak andal, atau jeda terlalu lama. Dasar penilaian: hasil ukur S0, bukan tebakan.
+- **V1-B tetap tidak boleh dipilih** bila OpenAI terbukti mengubah kalimat Claude saat membacakan (hal yang masih perlu dikonfirmasi) sehingga jawaban tidak setara dengan chat.
+- **V1-A** (otak OpenAI, dua otak): hanya bila V2 dan V1-B sama-sama tidak memadai **dan** ukuran kesamaan jawaban di §8.3 lolos, dengan sadar akan biaya pemeliharaan dua otak.
+- **Mode NOC:** tombol On untuk mulai; Off atau auto-off (diam beberapa waktu) untuk selesai. Berlaku untuk semua versi.
 
 **Pertanyaan terbuka (ditetapkan setelah hasil S0, tidak dikarang sekarang):**
 
