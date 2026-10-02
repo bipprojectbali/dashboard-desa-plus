@@ -1,6 +1,6 @@
-# 06 — Fitur 3: Suara dua arah (full-duplex) — Draf v2
+# 06 — Fitur 3: Suara dua arah (full-duplex) — v2 (disetujui)
 
-> **Status: DRAF v2 — menunggu persetujuan user. Belum ada kode.** Menggantikan draf lama
+> **Status: DISETUJUI user 2026-10-02 (v2).** S0 dikerjakan di worktree baru atas perintah user. Menggantikan draf lama
 > (tiga tingkat, Web Speech dulu, "tekan-untuk-bicara"). Disusun dari semua keputusan final
 > (README #46–#49, `discus/fitur-3-suara.md` §7 & §9.7, `idea/compare-forevia-vs-dashboard-desa.md`).
 > Kode baru dimulai setelah dokumen ini disetujui **dan** ada perintah + konfirmasi lokasi (worktree).
@@ -134,7 +134,7 @@ jawaban dianggap "cukup sama". Belum diisi — sengaja menunggu data nyata.
 - **Start gagal tidak memotong kuota** (konsisten #35).
 - **60 menit/hari** untuk user dan untuk akun kiosk (admin bisa ubah; 0 = tanpa batas). Batas ini **terpisah** dari kuota teks 50/100.
 - Hari dihitung WITA, seperti kuota teks.
-- Saran (belum keputusan user): giliran suara **juga** menghitung satu pesan pada kuota teks.
+- **Keputusan user (2026-10-02, #50):** setiap giliran suara yang dijawab Claude **juga** menghitung satu pesan pada kuota teks (50/100), selain menit suara.
 
 ### 6.2 Batas sesi
 - **10 menit per sesi**; sebelum habis muncul pilihan **perpanjang manual**.
@@ -253,7 +253,7 @@ Menunggu no. 5 dan info perangkat NOC. Kriteria & test disusun setelah keputusan
 | 3 | Ambang cadangan (jeda "terlalu lama", kesamaan "cukup sama") | Ditetapkan setelah S0. |
 | 4 | Apakah OpenAI mengubah kalimat Claude pada V1-B? | Dikonfirmasi di S0 (syarat V1-B). |
 | 5 | Jeda total V2 (transkrip → Claude → TTS) bisa terasa lama | S0 mengukur; TTS stream + jawaban singkat. |
-| 6 | Suara juga menghitung kuota teks? | Saran saja; butuh keputusan user. |
+| 6 | ~~Suara juga menghitung kuota teks?~~ | **Diputuskan (#50): ya**, giliran suara = 1 pesan kuota teks + menit suara. |
 | 7 | Nama model/harga OpenAI berubah | Nama = setelan admin; harga tidak ditulis di sini. |
 | 8 | Belum terbukti di FOREVIA: Safari, percakapan manusia nyata, sesi 10 menit nyata, penggunaan final | Dibatasi Chrome/Edge; diuji di S0/S1. |
 

@@ -22,7 +22,7 @@
 | `03-pondasi.md`                             | **Setup &amp; persiapan**: model data, kredensial per fitur, izin, provider, tool/executor, prompt, batas, endpoint, halaman admin, test | **Disetujui** (2026-09-30)                                                         |
 | `04-fitur-1-chat-panel.md`                  | FAB + panel "Tanya AI", endpoint percakapan, tool awal                                                                                   | **Disetujui** (2026-10-01)                                                         |
 | `05-fitur-2-pointer.md`                     | AI menunjuk elemen (pendekatan page-agent vs whitelist)                                                                                  | **Disetujui** (2026-10-02)                                                         |
-| `06-fitur-3-suara.md`                       | Fitur 3 — suara dua arah (V2: Claude otak, OpenAI telinga & mulut; S0 wajib)                                                            | Draf v2 — menunggu persetujuan user                                                |
+| `06-fitur-3-suara.md`                       | Fitur 3 — suara dua arah (V2: Claude otak, OpenAI telinga & mulut; S0 wajib)                                                            | **Disetujui** (2026-10-02) — S0 berjalan |
 | `07-roadmap.md`                             | Tahapan P0–P3 (pondasi) lalu F1–F3                                                                                                       | Draf                                                                               |
 | `discus/temuan.md`                          | Diskusi temuan satu per satu: fakta → opsi → rekomendasi → keputusan                                                                     | Selesai (1–7)                                                                      |
 | `discus/jawab.md`                           | Jawaban user + tanggapan agent (A–D)                                                                                                     | Berjalan                                                                           |
@@ -94,6 +94,7 @@
 | 47 | Fitur 3 — kuota, sesi, diagnostik | Menit dihitung nyata oleh server, gagal mulai tidak memotong (3a); 1 sesi/orang + total 3 diatur admin, tab kedua **ditolak** (9A); log tahapan tanpa PII + daftar sesi di admin, hanya baca (10B) | `idea/compare-forevia-vs-dashboard-desa.md` |
 | 48 | Fitur 3 — jawaban, penunjuk, izin suara | Jawaban **dibacakan + teks + tombol bisukan** (no. 2); penunjuk ikut **sejak S1** (no. 4); izin baru **`use-ai-voice`** bisa dimatikan per role (no. 7) | `idea/compare-forevia-vs-dashboard-desa.md` |
 | 49 | Fitur 3 — halaman uji S0 & mode NOC | **S0 wajib** sebelum S1, menguji V2 dan V1-B berdampingan (kode menunggu perintah + lokasi). Mode NOC: tombol **On** untuk mulai, **Off** atau auto-off untuk selesai | `discus/fitur-3-suara.md` §9.7 |
+| 50 | Fitur 3 — kuota teks untuk suara & persetujuan 06 | Giliran suara yang dijawab Claude **ikut menghitung** 1 pesan kuota teks (50/100) selain menit suara. `06-fitur-3-suara.md` v2 **disetujui**; S0 dikerjakan di worktree baru | `06-fitur-3-suara.md` |
 
 ## Ringkasan eksekutif
 
