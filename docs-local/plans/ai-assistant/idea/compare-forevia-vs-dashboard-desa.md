@@ -241,6 +241,7 @@ Dua hal yang ditawarkan:
 | 2 | **Setuju**: jawaban dibacakan + teks + tombol "bisukan jawaban" (di `/wall` mengikuti no. 5) |
 | 3 | **(a)** ukur menit nyata dari server; gagal start tidak memotong kuota |
 | 4 | **Ya**: penunjuk ikut sejak S1 |
+| 6 | **S0 dulu** (halaman uji kecil sekali pakai). Menulis kodenya tetap menunggu perintah eksplisit + konfirmasi sesi/worktree |
 | 7 | **Ya**: izin baru `use-ai-voice` (default admin & user, bisa dimatikan per role) |
 | 9 | **A** 1 sesi per orang + total 3 (admin bisa ubah). Tab kedua **ditolak** dengan pesan; sesi lama tidak diputus |
 | 10 | **B** log tahapan tanpa data pribadi + daftar sesi di `/admin/ai-assistant` (hanya baca; tanpa tombol tutup paksa) |
@@ -249,9 +250,8 @@ Dua hal yang ditawarkan:
 
 | No. | Status | Yang diperlukan dari user |
 |---|---|---|
-| 5 | Belum dijawab (+ info perangkat NOC) | Opsi `/wall` (W1/W2/W3) dan info perangkat |
-| 6 | Belum dijawab (S0 dijelaskan di §0) | S0 dulu atau langsung tahap 1; **perlu perintah eksplisit karena menyentuh `src/`** |
-| 8 | Belum dijawab | Cara mendeteksi akhir ucapan |
+| 5 | Belum dijawab: user belum membaca konteks W1/W2/W3, dijelaskan ulang di tab (+ info perangkat NOC) | Opsi `/wall` (W1/W2/W3) dan info perangkat |
+| 8 | Belum dijawab. User bertanya apakah FOREVIA membahasnya: **tidak** (FOREVIA V1, GPT-Live mengurus giliran bicara sendiri; handoff hanya menyebut interupsi di voice prompt dan uji manusia, tanpa cara deteksi akhir ucapan) | Cara mendeteksi akhir ucapan (saran: uji dua cara di S0) |
 | — | Ambang cadangan | Ditetapkan **setelah hasil S0** (§8.5) |
 
 ---
