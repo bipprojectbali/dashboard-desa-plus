@@ -38,8 +38,14 @@ export interface PointerEnv {
 	navigate?: (route: string) => void | Promise<void>;
 	reducedMotion: () => boolean;
 	pointAt: (el: HTMLElement, reducedMotion: boolean) => Promise<void>;
-	/** Batas tunggu elemen muncul (halaman pindah + data dimuat). */
+	/** Batas tunggu elemen di halaman yang sudah terbuka. */
 	anchorTimeoutMs: number;
+	/**
+	 * Batas tunggu elemen pertama SETELAH aksi `navigate` di rangkaian yang sama:
+	 * halaman baru masih memuat data (cold) sehingga kontrolnya baru dirender lama
+	 * setelah rute pindah.
+	 */
+	navigationTimeoutMs: number;
 	/** Rute klien saat ini; `/wall` membatasi aksi ke penunjukan widget `wall.*`. */
 	pathname: () => string;
 	/** Jeda agar kursor terlihat sebelum klik/pilih; 0 saat reduced motion. */
@@ -47,6 +53,7 @@ export interface PointerEnv {
 }
 
 export const DEFAULT_ANCHOR_TIMEOUT_MS = 5000;
+export const DEFAULT_NAVIGATION_TIMEOUT_MS = 20000;
 export const DEFAULT_SETTLE_MS = 400;
 
 export function resolvePointerEnv(env: Partial<PointerEnv>): PointerEnv {
@@ -61,6 +68,11 @@ export function resolvePointerEnv(env: Partial<PointerEnv>): PointerEnv {
 		reducedMotion: env.reducedMotion ?? prefersReducedMotion,
 		pointAt: env.pointAt ?? pointAtElement,
 		anchorTimeoutMs: env.anchorTimeoutMs ?? DEFAULT_ANCHOR_TIMEOUT_MS,
+		// Pemanggil yang hanya mengatur batas anchor (mis. test) ingin batas itu juga berlaku setelah navigasi.
+		navigationTimeoutMs:
+			env.navigationTimeoutMs ??
+			env.anchorTimeoutMs ??
+			DEFAULT_NAVIGATION_TIMEOUT_MS,
 		settleMs: env.settleMs ?? DEFAULT_SETTLE_MS,
 	};
 }
@@ -69,11 +81,14 @@ export function resolvePointerEnv(env: Partial<PointerEnv>): PointerEnv {
  * Jalankan satu aksi dari server. Aksi/target di luar registry ditolak;
  * `click` hanya pada target `view` yang terdaftar boleh-diklik DAN elemennya
  * bertanda `data-ai-clickable`; tombol `write` tidak pernah ditekan.
+ * `afterNavigation`: aksi ini pertama sesudah pindah halaman, jadi menunggu elemen
+ * sepanjang `navigationTimeoutMs`.
  */
 export async function executeUiAction(
 	raw: unknown,
 	partialEnv: Partial<PointerEnv> = {},
 	run?: PointerRun,
+	afterNavigation = false,
 ): Promise<UiActionOutcome> {
 	const env = resolvePointerEnv(partialEnv);
 	const cancelled = (): UiActionOutcome => ({ ok: false, reason: "cancelled" });
@@ -113,7 +128,7 @@ export async function executeUiAction(
 	const el = await waitForAnchor(
 		env.doc,
 		target.id,
-		env.anchorTimeoutMs,
+		afterNavigation ? env.navigationTimeoutMs : env.anchorTimeoutMs,
 		undefined,
 		() => run?.cancelled === true,
 	);
@@ -148,10 +163,12 @@ export async function executeUiActions(
 ): Promise<UiActionOutcome> {
 	beginPointerSequence();
 	const run = beginPointerRun();
+	let justNavigated = false;
 	try {
 		for (const action of actions) {
-			const outcome = await executeUiAction(action, env, run);
+			const outcome = await executeUiAction(action, env, run, justNavigated);
 			if (!outcome.ok) return outcome;
+			justNavigated = parseUiAction(action)?.type === "navigate";
 		}
 		return { ok: true };
 	} finally {
