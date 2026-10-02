@@ -232,7 +232,7 @@
   - [ ] (Opsional) target menu sidebar sebagai klik tampilan
   - [x] Keputusan `/wall` (user 2026-10-02): di wall AI **menjawab** dan **hanya menunjuk widget yang ada di wall** — tidak pindah halaman keluar dari wall
   - [x] **F2-w** selesai 2026-10-02 (worker `ai_pointer`; commit `7f92c19` refactor metadata widget ke `widget-meta.ts` (registry 459→364), `f97139c`, `44fec3f`; dicek 0d: test 816/0, test:db 81/0, lint 0, merge ke `join` bersih): target `wall.<id>` diturunkan dari 48 widget, penanda sekali di `WidgetCard`, server & klien menolak navigate/klik/pilih/target non-wall di `/wall`, widget ops/sistem butuh `sync-noc`; uji manual di `test/uji-manual-fitur-2-wall.md`. **Di-merge ke `join` (`0da20f7`) atas perintah user 2026-10-02** (test 816/0, test:db 81/0).
-  - [x] Widget **Status Sistem** (ops) di `/wall` dibuka untuk akun kiosk (keputusan #42) — worker `ai_pointer`, commit `9c59a5a` + `c11adc5` (`ops` → `view-dashboard`, test & `docs/ARCHITECTURE.md` disesuaikan); dicek 0d: test 843/0, lint 0 error, merge ke `join` bersih; worker lapor test:db 81/0. Uji manual: `test/uji-manual-fitur-2-wall.md` langkah 5. **Menunggu perintah merge.**
+  - [x] Widget **Status Sistem** (ops) di `/wall` dibuka untuk akun kiosk (keputusan #42) — worker `ai_pointer`, commit `9c59a5a` + `c11adc5` (`ops` → `view-dashboard`, test & `docs/ARCHITECTURE.md` disesuaikan); dicek 0d: test 843/0, lint 0 error, merge ke `join` bersih; worker lapor test:db 81/0. Uji manual: `test/uji-manual-fitur-2-wall.md` langkah 5. **Di-merge ke `join` (`30f73d7`) atas perintah user 2026-10-02** (test 843/0).
   - [ ] Test: registry/izin, tool menolak target tak terdaftar, whitelist aksi di klien
 
 ## 8. Fitur 3 — Suara · menunggu pembahasan `06`
