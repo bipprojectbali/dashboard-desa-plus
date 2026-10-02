@@ -97,14 +97,14 @@ describe("PUT providers/:feature", () => {
 		const overview = await call("GET", ADMIN, { cookie: admin.cookie });
 		expect(await overview.text()).not.toContain(SECRET_KEY);
 	});
-	it("status menandai slot chat siap (pointer/voice ikut fallback)", async () => {
+	it("status menandai chat & pointer siap (fallback), voice tidak ikut chat", async () => {
 		const res = await call("GET", "/api/assistant/status", {
 			cookie: member.cookie,
 		});
 		expect((await res.json()).slots).toEqual({
 			chat: true,
 			pointer: true,
-			voice: true,
+			voice: false,
 		});
 	});
 	it("apiKey tidak dikirim → kunci dipertahankan", async () => {

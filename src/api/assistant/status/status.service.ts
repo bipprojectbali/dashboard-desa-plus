@@ -8,12 +8,14 @@ import {
 	type ProviderConfigRow,
 	type ProviderSlot,
 } from "../config/settings.repo";
-import { pickSlot } from "../provider/resolve";
+import { isSlotUsable, pickSlot } from "../provider/resolve";
 
 /**
- * Susun status dari pengaturan & slot. Slot `pointer`/`voice` dianggap siap
- * bila bisa jatuh ke `chat` (sama seperti getProvider). Tanpa kunci enkripsi,
- * tidak ada slot yang bisa dipakai.
+ * Susun status dari pengaturan & slot. Slot `pointer` dianggap siap bila bisa
+ * jatuh ke `chat` (sama seperti getProvider). Slot `voice` TIDAK jatuh ke
+ * `chat`: model chat tidak bisa transkripsi/suara, jadi `voice` siap hanya bila
+ * slot voice sendiri terisi dan aktif. Tanpa kunci enkripsi, tidak ada slot
+ * yang bisa dipakai.
  */
 export function buildAssistantStatus(
 	settings: Pick<
@@ -25,7 +27,11 @@ export function buildAssistantStatus(
 ): AssistantStatusDto {
 	const slots = {} as Record<ProviderSlot, boolean>;
 	for (const slot of PROVIDER_SLOTS) {
-		slots[slot] = cryptoConfigured && pickSlot(configs, slot) !== null;
+		const usable =
+			slot === "voice"
+				? isSlotUsable(configs.voice)
+				: pickSlot(configs, slot) !== null;
+		slots[slot] = cryptoConfigured && usable;
 	}
 	return {
 		enabled: settings.enabled,

@@ -17,6 +17,7 @@ export interface AssistantStatusDto {
 	assistantName: string;
 	/** Batas panjang pesan (0 = tanpa batas) — untuk penghitung sisa karakter. */
 	maxInputChars: number;
+	/** `pointer` ikut `chat` bila kosong; `voice` hanya true bila slot voice sendiri siap. */
 	slots: { chat: boolean; pointer: boolean; voice: boolean };
 }
 
