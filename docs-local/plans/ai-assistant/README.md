@@ -34,6 +34,7 @@
 | `discus/fitur-2-page-agent-tinjau-ulang.md` | Tinjau ulang page-agent (permintaan user 2026-10-01): fakta baru v1.12.4, opsi O1–O4 | **Tuntas** — B diperluas (2026-10-02) |
 | `checklist-progress.md` | Checklist progres semua tahap | Aktif |
 | `uji-manual-fitur-2.md` | Daftar uji manual Fitur 2 (penunjuk) dengan kolom hasil | Siap dipakai |
+| `uji-manual-fitur-2-beranda-divisi.md` | Daftar uji manual penunjuk di Beranda & Kinerja Divisi (F2-d) | Siap dipakai setelah F2-d di-merge |
 
 ## Keputusan yang sudah diambil user
 
@@ -78,6 +79,8 @@
 | 37 | Fitur 2 — pendekatan setelah tinjau ulang page-agent | **B diperluas**: tool `klik_elemen(target)` / `pilih(target, nilai)` khusus target tampilan terdaftar (daftar izin); page-agent tidak dipakai sekarang | 05, `discus/fitur-2-page-agent-tinjau-ulang.md` Q2 |
 | 38 | Fitur 3 — provider suara | **OpenAI** (bukan Claude); user sudah menyiapkan API key OpenAI, disimpan lewat slot `voice` di halaman admin (terenkripsi). Arsitektur full duplex dianalisa worker `ai_suara` | `discus/fitur-3-suara.md` |
 | 39 | Dokumen 05 & pembagian Fitur 2 | `05` **disetujui**; implementasi F2-a (paralel) + F2-b (setelah F1-e) | 05, checklist §7 |
+| 40 | Penunjuk di `/wall` | AI menjawab dan hanya menunjuk widget yang ada di wall; tidak pindah halaman keluar dari wall (untuk sekarang) | checklist §7 |
+| 41 | Urutan cakupan penunjuk | F2-d (Beranda & Kinerja Divisi) selesai → **F2-f** (BUMDes, Sosial, Keamanan, Jenna Analytic) → F2-e (Pengaduan & Demografi, perlu pecah file besar) | checklist §7 |
 
 ## Ringkasan eksekutif
 
