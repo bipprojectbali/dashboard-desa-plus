@@ -53,6 +53,7 @@ export function DivisionProgress() {
 
 	return (
 		<Card
+			data-ai-target="beranda.progres-divisi"
 			p="md"
 			radius="xl"
 			withBorder

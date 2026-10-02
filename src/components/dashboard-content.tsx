@@ -82,6 +82,7 @@ export function DashboardContent() {
 			<Grid gutter="md">
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
+						aiTarget="beranda.surat-minggu-ini"
 						title={t.dashboard.suratMingguIni}
 						value={stats.weeklyService}
 						detail={t.dashboard.totalSuratDiajukan}
@@ -90,6 +91,7 @@ export function DashboardContent() {
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
+						aiTarget="beranda.pengaduan-aktif"
 						title={t.dashboard.pengaduanAktif}
 						value={stats.complaints.baru}
 						detail={`${stats.complaints.baru} ${t.dashboard.baru}, ${stats.complaints.ditolak} ${t.dashboard.ditolak}`}
@@ -98,6 +100,7 @@ export function DashboardContent() {
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
+						aiTarget="beranda.layanan-selesai"
 						title={t.dashboard.layananSelesai}
 						value={stats.complaints.selesai}
 						detail={t.dashboard.totalDiselesaikan}
@@ -106,6 +109,7 @@ export function DashboardContent() {
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
 					<StatCard
+						aiTarget="beranda.total-penduduk"
 						title={t.dashboard.totalPenduduk}
 						value={stats.residents.total.toLocaleString()}
 						detail={`${stats.residents.heads} ${t.dashboard.kepalaKeluarga}`}
@@ -149,7 +153,7 @@ export function DashboardContent() {
 					))}
 				</Grid>
 			) : (
-				<Grid gutter="md">
+				<Grid gutter="md" data-ai-target="beranda.sdgs">
 					{[...sdgsData]
 						.sort((a, b) => b.score - a.score)
 						.slice(0, 4)

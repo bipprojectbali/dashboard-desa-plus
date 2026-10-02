@@ -44,35 +44,72 @@ describe("registry target penunjuk", () => {
 		}
 	});
 
-	it("setiap data-ai-target di komponen Keuangan ada di registry, dan sebaliknya", () => {
-		const files = [
-			"src/components/keuangan-anggaran.tsx",
-			...sourceFiles("src/components/keuangan"),
-		];
-		const marked = new Set<string>();
-		for (const f of files)
-			for (const m of read(f).matchAll(
-				/data-ai-target"?[=:]\s*\{?["']([^"']+)["']/g,
-			))
-				marked.add(m[1] ?? "");
-		// kpi-cards memakai `target: "keuangan.xxx"` lalu data-ai-target={item.target}
-		for (const m of read("src/components/keuangan/kpi-cards.tsx").matchAll(
-			/target:\s*"(keuangan\.[^"]+)"/g,
-		))
-			marked.add(m[1] ?? "");
-		const registered = POINTER_TARGETS.filter((t) =>
-			t.id.startsWith("keuangan."),
-		).map((t) => t.id);
-		expect([...marked].sort()).toEqual([...registered].sort());
-	});
+	const MODULES: Array<{ prefix: string; files: string[] }> = [
+		{
+			prefix: "keuangan.",
+			files: [
+				"src/components/keuangan-anggaran.tsx",
+				...sourceFiles("src/components/keuangan"),
+			],
+		},
+		{
+			prefix: "beranda.",
+			files: [
+				"src/components/dashboard-content.tsx",
+				...sourceFiles("src/components/dashboard"),
+			],
+		},
+		{
+			prefix: "divisi.",
+			files: [
+				"src/components/kinerja-divisi.tsx",
+				...sourceFiles("src/components/kinerja-divisi"),
+			],
+		},
+	];
+
+	for (const { prefix, files } of MODULES) {
+		it(`setiap data-ai-target ${prefix}* di komponen ada di registry, dan sebaliknya`, () => {
+			const marked = new Set<string>();
+			for (const f of files) {
+				const src = read(f);
+				for (const m of src.matchAll(
+					/data-ai-target"?[=:]\s*\{?["']([^"']+)["']/g,
+				))
+					marked.add(m[1] ?? "");
+				// kpi-cards & dashboard-content memakai `target:`/`aiTarget=` lalu meneruskannya ke data-ai-target
+				for (const m of src.matchAll(
+					/(?:target:\s*|aiTarget=)"([a-z]+\.[^"]+)"/g,
+				))
+					marked.add(m[1] ?? "");
+			}
+			const registered = POINTER_TARGETS.filter((t) =>
+				t.id.startsWith(prefix),
+			).map((t) => t.id);
+			expect([...marked].sort()).toEqual([...registered].sort());
+		});
+	}
 
 	it("data-ai-clickable hanya ada pada target yang clickable di registry", () => {
 		const clickable = POINTER_TARGETS.filter((t) => t.clickable).map(
 			(t) => t.id,
 		);
-		const src = read("src/components/keuangan-anggaran.tsx");
-		expect(src.match(/data-ai-clickable/g)?.length ?? 0).toBe(clickable.length);
-		expect(clickable).toEqual(["keuangan.coba-lagi"]);
+		const pages = [
+			"src/components/keuangan-anggaran.tsx",
+			"src/components/kinerja-divisi.tsx",
+		];
+		const all = MODULES.flatMap((m) => m.files);
+		const marked = all.reduce(
+			(n, f) => n + (read(f).match(/data-ai-clickable/g)?.length ?? 0),
+			0,
+		);
+		expect(marked).toBe(clickable.length);
+		expect(clickable.sort()).toEqual([
+			"divisi.coba-lagi",
+			"keuangan.coba-lagi",
+		]);
+		for (const f of pages)
+			expect(read(f).match(/data-ai-clickable/g)?.length).toBe(1);
 	});
 
 	it("POINTER_ROUTES sama dengan menu sidebar (tidak melenceng)", () => {

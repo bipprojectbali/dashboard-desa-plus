@@ -19,7 +19,7 @@ function keuangan(
 	};
 }
 
-/** Target percontohan halaman Keuangan (rancangan 05 P5). Beranda menyusul. */
+/** Target percontohan halaman Keuangan (rancangan 05 P5). */
 export const KEUANGAN_TARGETS: readonly PointerTarget[] = [
 	keuangan(
 		"tahun",

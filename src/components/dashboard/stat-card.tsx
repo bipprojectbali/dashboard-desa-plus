@@ -10,6 +10,8 @@ interface StatCardProps {
 	trendValue?: number;
 	icon: ReactNode;
 	iconColor?: string;
+	/** Nilai `data-ai-target` agar penunjuk AI bisa menyorot kartu ini. */
+	aiTarget?: string;
 }
 
 export function StatCard({
@@ -20,6 +22,7 @@ export function StatCard({
 	trendValue,
 	icon,
 	iconColor = "#1E3A5F",
+	aiTarget,
 }: StatCardProps) {
 	const dark = useIsDark();
 
@@ -27,6 +30,7 @@ export function StatCard({
 
 	return (
 		<Card
+			data-ai-target={aiTarget}
 			p="md"
 			radius="xl"
 			withBorder

@@ -31,6 +31,7 @@ export function DivisionList() {
 
 	return (
 		<Card
+			data-ai-target="divisi.teraktif"
 			p="md"
 			radius="xl"
 			withBorder

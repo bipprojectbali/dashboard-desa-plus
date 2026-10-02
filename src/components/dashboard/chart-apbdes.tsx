@@ -222,6 +222,7 @@ export function ChartAPBDes() {
 
 	return (
 		<Card
+			data-ai-target="beranda.apbdes"
 			p="lg"
 			radius="xl"
 			withBorder

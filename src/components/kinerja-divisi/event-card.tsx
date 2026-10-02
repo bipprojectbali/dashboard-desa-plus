@@ -44,6 +44,7 @@ export function EventCard({ agendas: propAgendas }: EventCardProps) {
 
 	return (
 		<Card
+			data-ai-target="divisi.acara"
 			p="md"
 			radius="xl"
 			withBorder

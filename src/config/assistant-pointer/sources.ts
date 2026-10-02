@@ -14,6 +14,8 @@ export const POINTER_TOOL_NAMES: ReadonlySet<string> = new Set([
  * diklik (P3). Modul tanpa target di sini tetap berupa teks biasa.
  */
 export const SOURCE_POINTER_TARGETS: Readonly<Record<string, string>> = {
+	ringkasan_beranda: "beranda.total-penduduk",
+	kinerja_divisi: "divisi.teraktif",
 	ringkasan_keuangan: "keuangan.kpi-total",
 };
 

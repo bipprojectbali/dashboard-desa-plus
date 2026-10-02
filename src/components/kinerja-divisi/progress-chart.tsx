@@ -39,6 +39,7 @@ export function ProgressChart() {
 
 	return (
 		<Card
+			data-ai-target="divisi.progres"
 			p="md"
 			radius="xl"
 			withBorder
