@@ -30,12 +30,12 @@ export function apiMiddleware(app: Elysia) {
 			});
 
 			if (userSession?.user) {
-				// emailVerified dibaca dari DB, bukan dari sesi: cookieCache Better
-				// Auth menyimpan data user hingga 30 hari, jadi pencabutan
-				// verifikasi oleh admin baru terlihat lewat DB.
+				// emailVerified dan role dibaca dari DB, bukan dari sesi: cookieCache
+				// Better Auth menyimpan data user hingga 30 hari, jadi pencabutan
+				// verifikasi / penurunan role oleh admin baru terlihat lewat DB.
 				const userExists = await prisma.user.findUnique({
 					where: { id: userSession.user.id },
-					select: { id: true, emailVerified: true },
+					select: { id: true, emailVerified: true, role: true },
 				});
 				if (!userExists) return { user: null };
 
@@ -47,7 +47,7 @@ export function apiMiddleware(app: Elysia) {
 						name: userSession.user.name,
 						image: userSession.user.image,
 						emailVerified: userExists.emailVerified,
-						role: userSession.user.role || "user",
+						role: userExists.role || "user",
 						// Dibedakan dari API key: AI assistant hanya menerima sesi browser.
 						authMethod: "session" as const,
 					},
