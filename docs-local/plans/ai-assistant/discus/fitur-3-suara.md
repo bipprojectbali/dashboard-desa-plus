@@ -474,4 +474,12 @@ Format: pertanyaan → opsi → **saran**.
 
 | Tanggal | Pertanyaan | Jawaban user |
 |---|---|---|
-| — | (belum ada) | — |
+| — | (belum ada jawaban atas §9.6; user hanya bertanya "Apa itu S0?" di `jawab-fitur3.md`, dijawab di compare §0) | — |
+
+**Catatan analisa 2026-10-02 (bukan jawaban user): perbandingan dengan FOREVIA.** Detail di [`../idea/compare-forevia-vs-dashboard-desa.md`](../idea/compare-forevia-vs-dashboard-desa.md).
+
+- FOREVIA = V1 dengan **otak OpenAI** (GPT-Live + *Responses delegation*). Bukan Claude, bukan V2. Client delegation (yang dibutuhkan "Claude tetap otak" lewat V1) **tidak dibangun** di sana dan disebut desain baru yang perlu uji.
+- Yang terbukti di sana: WebRTC + data channel, tool runner di browser, kursor/sorotan dari registry target, lifecycle sesi di DB + penyapu. Yang **belum** terbukti: Safari nyata, percakapan manusia, sesi 10 menit nyata, rekonsiliasi pemakaian final.
+- Saran §9 **arah tetap** (V2 bertahap, Claude otak), dengan dua revisi: ada opsi ketiga V1-A (ikut FOREVIA, otak OpenAI, dua otak) dan S0 menguji V2 melawan V1-B (client delegation) di perangkat nyata.
+- Diadopsi dari FOREVIA: state machine sesi + reservasi atomik, generation guard, error pulih vs fatal, tanpa ulang `create` otomatis, konteks halaman segar setelah navigasi, ledger pemakaian server, urutan penutupan, copy status Indonesia.
+- Pertanyaan §9.6 direvisi menjadi 10 (3 baru: cara hitung menit, batas sesi bersamaan, diagnostik admin; no. 1 direvisi). Fakta tak terverifikasi ditandai "perlu dikonfirmasi" di compare §6.
