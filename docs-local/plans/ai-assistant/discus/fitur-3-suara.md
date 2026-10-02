@@ -479,7 +479,10 @@ Format: pertanyaan → opsi → **saran**.
 | 2026-10-02 | No. 3 menit suara | FOREVIA ternyata tidak mengukur menit nyata (reservasi 600 dtk/percobaan, tidak dikembalikan; handoff §17). User memilih **(a)**: ukur menit nyata dari server; gagal start tidak memotong kuota. **FINAL** (README #47) |
 | 2026-10-02 | No. 9 batas sesi bersamaan | User memilih **A**: 1 sesi per orang + total 3, admin bisa ubah. Tab kedua **ditolak dengan pesan**; sesi lama tidak diputus. **FINAL** (README #47) |
 | 2026-10-02 | No. 10 diagnostik admin | User memilih **B**: log tahapan tanpa data pribadi + daftar sesi di `/admin/ai-assistant`, hanya baca (tanpa tombol tutup paksa). **FINAL** (README #47) |
-| — | No. 2, 4, 5 (+ info perangkat NOC), 6, 7, 8, ambang cadangan | Belum dijawab / ditetapkan setelah hasil S0 |
+| 2026-10-02 | No. 2 jawaban dibacakan | **Setuju**: jawaban dibacakan + teks + tombol "bisukan jawaban" (di `/wall` mengikuti no. 5). **FINAL** |
+| 2026-10-02 | No. 4 penunjuk | **Ya**: penunjuk ikut sejak S1. **FINAL** |
+| 2026-10-02 | No. 7 izin | **Ya**: izin baru `use-ai-voice` (default admin & user, bisa dimatikan per role). **FINAL** |
+| — | No. 5 (+ info perangkat NOC), 6, 8, ambang cadangan | Belum dijawab / ditetapkan setelah hasil S0 |
 
 **Catatan analisa 2026-10-02 (bukan jawaban user): perbandingan dengan FOREVIA.** Detail di [`../idea/compare-forevia-vs-dashboard-desa.md`](../idea/compare-forevia-vs-dashboard-desa.md).
 

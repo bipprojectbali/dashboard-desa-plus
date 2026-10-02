@@ -238,7 +238,10 @@ Dua hal yang ditawarkan:
 | No. | Keputusan |
 |---|---|
 | 1 | **V2 dulu**: Claude satu-satunya otak, OpenAI hanya telinga + mulut. V1-A dan V1-B menjadi **cadangan** (kapan dipakai: §8.5) |
+| 2 | **Setuju**: jawaban dibacakan + teks + tombol "bisukan jawaban" (di `/wall` mengikuti no. 5) |
 | 3 | **(a)** ukur menit nyata dari server; gagal start tidak memotong kuota |
+| 4 | **Ya**: penunjuk ikut sejak S1 |
+| 7 | **Ya**: izin baru `use-ai-voice` (default admin & user, bisa dimatikan per role) |
 | 9 | **A** 1 sesi per orang + total 3 (admin bisa ubah). Tab kedua **ditolak** dengan pesan; sesi lama tidak diputus |
 | 10 | **B** log tahapan tanpa data pribadi + daftar sesi di `/admin/ai-assistant` (hanya baca; tanpa tombol tutup paksa) |
 
@@ -246,11 +249,8 @@ Dua hal yang ditawarkan:
 
 | No. | Status | Yang diperlukan dari user |
 |---|---|---|
-| 2 | Belum dijawab | Jawaban dibacakan atau teks saja |
-| 4 | Belum dijawab | Penunjuk ikut sejak tahap pertama |
 | 5 | Belum dijawab (+ info perangkat NOC) | Opsi `/wall` (W1/W2/W3) dan info perangkat |
 | 6 | Belum dijawab (S0 dijelaskan di §0) | S0 dulu atau langsung tahap 1; **perlu perintah eksplisit karena menyentuh `src/`** |
-| 7 | Belum dijawab | Izin terpisah `use-ai-voice` |
 | 8 | Belum dijawab | Cara mendeteksi akhir ucapan |
 | — | Ambang cadangan | Ditetapkan **setelah hasil S0** (§8.5) |
 
