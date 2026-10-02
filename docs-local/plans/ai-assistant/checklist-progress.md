@@ -237,13 +237,16 @@
   - [x] **Adaptasi FOREVIA** (#43/#44, worker `ai_pointer`, 2026-10-02): T1 `fix/pointer-cancel` `7e0d1b6`; T2 `feat/sidebar-rail` `108cce1`; T3 `feat/assistant-guide` `0088d5f`…`7af40b8` (dari T1; tool `pandu_langkah`, aksi `guide`, kartu catatan, `/wall` lanjut otomatis `guideAutoAdvanceSec` default 8, migration `20261002060000_add_assistant_guide_auto_advance`). Dicek 0d di T3: test 928/0, test:db 81/0, lint 0 error; merge T3 + T2 ke `join` bersih. `src/locales/id.ts` sudah 922 baris sebelumnya (+2). Uji manual: `test/uji-manual-panduan-sidebar.md`. **Di-merge ke `join` (`256a8e8` guide+cancel, `e521cec` sidebar) atas perintah user 2026-10-02** (test 945/0, test:db 81/0, migration sudah ada di DB lokal).
   - [ ] Test: registry/izin, tool menolak target tak terdaftar, whitelist aksi di klien
 
-## 8. Fitur 3 — Suara · menunggu pembahasan `06`
+## 8. Fitur 3 — Suara · `06` Draf v2 menunggu persetujuan user
 
-- [x] Analisa awal Fitur 3 oleh worker Orca `ai_suara` **selesai** (worker_done succeeded, 2026-10-02; terminal di-*retain*) — rekomendasi: OpenAI Realtime (WebRTC, token efemeral dari server, tool lewat endpoint server yang sama), otak O1, kuota menit suara terpisah; 14 pertanyaan menunggu user. Sebelumnya: (Run `run_72c2dada8768`, Task `task_5651c7d8228d`, perintah user 2026-10-02): mode suara ala ChatGPT, **full duplex**, transkrip input suara tampil langsung, pointer bergerak sesuai perintah bila perlu → hasil di `discus/fitur-3-suara.md` (diskusi saja, tanpa kode)
-- [x] 14 pertanyaan §7 `discus/fitur-3-suara.md` dijawab user (2026-10-02)
-- [ ] **Ditunda atas perintah user (2026-10-02)**: diskusi lanjut & worktree/agent `ai_suara` baru menunggu uji manual F2 selesai
-- [ ] Pembahasan & keputusan (browser target, bacakan otomatis, gabungan dengan fitur 2, privasi)
-- [ ] Rincian checklist ditambahkan setelah dokumen `06` disetujui
+- [x] Analisa awal Fitur 3 oleh worker Orca `ai_suara` selesai → `discus/fitur-3-suara.md`; 14 pertanyaan §7 dijawab user (2026-10-02)
+- [x] Keputusan final #46–#49 (V2 dulu, S0 wajib, menit nyata, sesi, diagnostik, bisukan, penunjuk S1, izin `use-ai-voice`) tercatat di README
+- [x] `06-fitur-3-suara.md` **ditulis ulang (Draf v2)** dari semua keputusan final + verifikasi model OpenAI (2026-10-02)
+- [ ] **User menyetujui `06` Draf v2** (kode belum dimulai)
+- [ ] Putuskan no. 5 (`/wall`: W1/W2/W3 + info perangkat NOC) — hanya menahan S3
+- [ ] **S0** — halaman uji wajib (V2 vs V1-B, jaringan NOC, id-ID, echo, deteksi akhir ucapan no. 8); butuh perintah eksplisit + konfirmasi worktree
+- [ ] Tetapkan ambang cadangan (jeda "terlalu lama", kesamaan "cukup sama") setelah S0
+- [ ] Rincian checklist S1/S2/S3 ditambahkan setelah `06` disetujui dan S0 selesai
 
 ## 9. Pekerjaan terpisah (sudah diputuskan, di luar AI)
 
