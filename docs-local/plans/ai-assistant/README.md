@@ -35,6 +35,8 @@
 | `checklist-progress.md` | Checklist progres semua tahap | Aktif |
 | `uji-manual-fitur-2.md` | Daftar uji manual Fitur 2 (penunjuk) dengan kolom hasil | Siap dipakai |
 | `uji-manual-fitur-2-beranda-divisi.md` | Daftar uji manual penunjuk di Beranda & Kinerja Divisi (F2-d) | Siap dipakai setelah F2-d di-merge |
+| `uji-manual-fitur-2-f2f.md` | Daftar uji manual penunjuk di BUMDes, Sosial, Keamanan, Jenna Analytic (F2-f) | Siap dipakai setelah F2-f di-merge |
+| `uji-manual-fitur-2-wall.md` | Daftar uji manual penunjuk di `/wall` (F2-w) | Siap dipakai setelah F2-w di-merge |
 
 ## Keputusan yang sudah diambil user
 
