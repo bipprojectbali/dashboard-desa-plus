@@ -45,7 +45,7 @@ const FALLBACK_NOTE: Record<string, string> = {
 	pointer:
 		"Belum dipakai: penunjuk memakai otak Chat, jadi isian di kartu ini belum berpengaruh.",
 	voice:
-		"Kosong → memakai kredensial Chat. Proxy Claude tidak menyediakan suara; slot ini dipakai bila fitur suara memakai provider lain.",
+		"Kosong → fitur suara dianggap belum siap (tidak memakai kredensial Chat). Proxy Claude tidak menyediakan suara; isi slot ini dengan provider yang mendukung suara.",
 };
 
 /** Kartu kredensial satu slot (Chat / Penunjuk / Suara) + tombol test koneksi. */
