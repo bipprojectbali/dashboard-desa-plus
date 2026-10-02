@@ -13,32 +13,33 @@
 
 ## Isi folder
 
-| File | Isi | Status |
-|---|---|---|
-| `00-design-plan.md` | **Ringkasan design plan untuk dipaparkan ke tim**: wireframe UI, alur kerja, keputusan, roadmap, status | Ringkasan |
-| `discus/keputusan.md` | Jawaban user atas 7 pertanyaan awal (+ screenshot di folder utama) | Sumber keputusan |
-| `01-kondisi-project.md` | Inventaris aset yang bisa dipakai ulang, gap, dan temuan di kode | Analisa |
-| `02-analisa-blueprint.md` | Fase 0–11 blueprint desa-platform: Terapkan / Adaptasi / Tunda / Tidak relevan | Analisa |
-| `03-pondasi.md` | **Setup & persiapan**: model data, kredensial per fitur, izin, provider, tool/executor, prompt, batas, endpoint, halaman admin, test | **Disetujui** (2026-09-30) |
-| `04-fitur-1-chat-panel.md` | FAB + panel "Tanya AI", endpoint percakapan, tool awal | **Disetujui** (2026-10-01) |
-| `05-fitur-2-pointer.md` | AI menunjuk elemen (pendekatan page-agent vs whitelist) | **Disetujui** (2026-10-02) |
-| `06-fitur-3-suara.md` | Interaksi suara (3 tingkat) | Draf |
-| `07-roadmap.md` | Tahapan P0–P3 (pondasi) lalu F1–F3 | Draf |
-| `discus/temuan.md` | Diskusi temuan satu per satu: fakta → opsi → rekomendasi → keputusan | Selesai (1–7) |
-| `discus/jawab.md` | Jawaban user + tanggapan agent (A–D) | Berjalan |
-| `discus/p-1-verifikasi-api.md` | Rancangan P-1: API menolak user belum terverifikasi | **Disetujui** (2026-10-01) |
-| `discus/p-1-precheck.sql` | Query read-only sebelum deploy P-1 (user & API key terdampak) | Siap pakai |
-| `discus/fitur-2-pointer.md` | Diskusi Fitur 2 (P1–P7) — sesi 59 → 61 | **Tuntas** (2026-10-01) |
-| `discus/fitur-2-alasan-pendekatan-b.md` | **Pegangan untuk tim**: kenapa pendekatan B, bukan page-agent; cara kerja B; kapan page-agent layak dipakai | Final (keputusan #28) |
-| `discus/fitur-3-suara.md` | Analisa Fitur 3 suara full duplex (OpenAI): alur, opsi a/b/c, fakta kode, rekomendasi, 14 pertanyaan | Dijawab user (2026-10-02); diskusi lanjut **ditunda** sampai uji manual F2 selesai |
-| `discus/fitur-2-page-agent-tinjau-ulang.md` | Tinjau ulang page-agent (permintaan user 2026-10-01): fakta baru v1.12.4, opsi O1–O4 | **Tuntas** — B diperluas (2026-10-02) |
-| `checklist-progress.md` | Checklist progres semua tahap | Aktif |
-| `test/` | Semua daftar uji manual (kolom hasil diisi user) | Aktif |
-| `test/uji-manual-fitur-2.md` | Uji manual Fitur 2 (penunjuk) — Keuangan, P3, P6, izin | Siap dipakai |
-| `test/uji-manual-fitur-2-beranda-divisi.md` | Uji manual penunjuk di Beranda & Kinerja Divisi (F2-d) | Siap dipakai |
-| `test/uji-manual-fitur-2-f2f.md` | Uji manual penunjuk di BUMDes, Sosial, Keamanan, Jenna Analytic (F2-f) | Siap dipakai |
-| `test/uji-manual-fitur-2-wall.md` | Uji manual penunjuk di `/wall` (F2-w) | Siap dipakai |
-| `test/uji-manual-fitur-2-f2e.md` | Uji manual penunjuk di Pengaduan & Demografi (F2-e) | Siap dipakai |
+| File                                        | Isi                                                                                                                                      | Status                                                                             |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `00-design-plan.md`                         | **Ringkasan design plan untuk dipaparkan ke tim**: wireframe UI, alur kerja, keputusan, roadmap, status                                  | Ringkasan                                                                          |
+| `discus/keputusan.md`                       | Jawaban user atas 7 pertanyaan awal (+ screenshot di folder utama)                                                                       | Sumber keputusan                                                                   |
+| `01-kondisi-project.md`                     | Inventaris aset yang bisa dipakai ulang, gap, dan temuan di kode                                                                         | Analisa                                                                            |
+| `02-analisa-blueprint.md`                   | Fase 0–11 blueprint desa-platform: Terapkan / Adaptasi / Tunda / Tidak relevan                                                           | Analisa                                                                            |
+| `03-pondasi.md`                             | **Setup &amp; persiapan**: model data, kredensial per fitur, izin, provider, tool/executor, prompt, batas, endpoint, halaman admin, test | **Disetujui** (2026-09-30)                                                         |
+| `04-fitur-1-chat-panel.md`                  | FAB + panel "Tanya AI", endpoint percakapan, tool awal                                                                                   | **Disetujui** (2026-10-01)                                                         |
+| `05-fitur-2-pointer.md`                     | AI menunjuk elemen (pendekatan page-agent vs whitelist)                                                                                  | **Disetujui** (2026-10-02)                                                         |
+| `06-fitur-3-suara.md`                       | Interaksi suara (3 tingkat)                                                                                                              | Draf                                                                               |
+| `07-roadmap.md`                             | Tahapan P0–P3 (pondasi) lalu F1–F3                                                                                                       | Draf                                                                               |
+| `discus/temuan.md`                          | Diskusi temuan satu per satu: fakta → opsi → rekomendasi → keputusan                                                                     | Selesai (1–7)                                                                      |
+| `discus/jawab.md`                           | Jawaban user + tanggapan agent (A–D)                                                                                                     | Berjalan                                                                           |
+| `discus/p-1-verifikasi-api.md`              | Rancangan P-1: API menolak user belum terverifikasi                                                                                      | **Disetujui** (2026-10-01)                                                         |
+| `discus/p-1-precheck.sql`                   | Query read-only sebelum deploy P-1 (user &amp; API key terdampak)                                                                        | Siap pakai                                                                         |
+| `discus/fitur-2-pointer.md`                 | Diskusi Fitur 2 (P1–P7) — sesi 59 → 61                                                                                                   | **Tuntas** (2026-10-01)                                                            |
+| `discus/fitur-2-alasan-pendekatan-b.md`     | **Pegangan untuk tim**: kenapa pendekatan B, bukan page-agent; cara kerja B; kapan page-agent layak dipakai                              | Final (keputusan #28)                                                              |
+| `discus/fitur-3-suara.md`                   | Analisa Fitur 3 suara full duplex (OpenAI): alur, opsi a/b/c, fakta kode, rekomendasi, 14 pertanyaan                                     | Dijawab user (2026-10-02); diskusi lanjut **ditunda** sampai uji manual F2 selesai |
+| `discus/fitur-2-page-agent-tinjau-ulang.md` | Tinjau ulang page-agent (permintaan user 2026-10-01): fakta baru v1.12.4, opsi O1–O4                                                     | **Tuntas** — B diperluas (2026-10-02)                                              |
+| `discus/fitur-2-panduan-bertahap.md` | Adaptasi FOREVIA: panduan bertahap, sidebar ringkas, hasil cek pembatalan penunjuk, 6 pertanyaan | **Disetujui** (2026-10-02) — dikerjakan `ai_pointer` |
+| `checklist-progress.md`                     | Checklist progres semua tahap                                                                                                            | Aktif                                                                              |
+| `test/`                                     | Semua daftar uji manual (kolom hasil diisi user)                                                                                         | Aktif                                                                              |
+| `test/uji-manual-fitur-2.md`                | Uji manual Fitur 2 (penunjuk) — Keuangan, P3, P6, izin                                                                                   | Siap dipakai                                                                       |
+| `test/uji-manual-fitur-2-beranda-divisi.md` | Uji manual penunjuk di Beranda &amp; Kinerja Divisi (F2-d)                                                                               | Siap dipakai                                                                       |
+| `test/uji-manual-fitur-2-f2f.md`            | Uji manual penunjuk di BUMDes, Sosial, Keamanan, Jenna Analytic (F2-f)                                                                   | Siap dipakai                                                                       |
+| `test/uji-manual-fitur-2-wall.md`           | Uji manual penunjuk di `/wall` (F2-w)                                                                                                    | Siap dipakai                                                                       |
+| `test/uji-manual-fitur-2-f2e.md`            | Uji manual penunjuk di Pengaduan &amp; Demografi (F2-e)                                                                                  | Siap dipakai                                                                       |
 
 ## Keputusan yang sudah diambil user
 
@@ -86,6 +87,13 @@
 | 40 | Penunjuk di `/wall` | AI menjawab dan hanya menunjuk widget yang ada di wall; tidak pindah halaman keluar dari wall (untuk sekarang) | checklist §7 |
 | 41 | Urutan cakupan penunjuk | F2-d (Beranda & Kinerja Divisi) selesai → **F2-f** (BUMDes, Sosial, Keamanan, Jenna Analytic) → F2-e (Pengaduan & Demografi, perlu pecah file besar) | checklist §7 |
 | 42 | Widget Status Sistem (ops) di `/wall` | Dibuka untuk akun kiosk: izin penunjuk `view-dashboard` (bukan `sync-noc`) — keputusan user 2026-10-02 | checklist §7 |
+| 43 | Panduan bertahap (adaptasi FOREVIA) | **Diadopsi**: panduan 1–5 langkah dengan catatan penjelasan + Lanjut/Stop, memakai registry Fitur 2. Rancangan disetujui 2026-10-02 (5 langkah, catatan dekat target, hanya bila diminta, wall lanjut otomatis 8 dtk diatur admin) | `discus/fitur-2-panduan-bertahap.md` |
+| 44 | Sidebar saat panel terbuka | **Diadopsi**: sidebar diringkas saat panel terbuka dan dipulihkan saat ditutup — opsi S-c: rel ikon bila layar < 1600px (disetujui 2026-10-02) | `discus/fitur-2-panduan-bertahap.md` |
+| 45 | Membaca layar (snapshot DOM, FOREVIA) | **Ditolak** — menegaskan #16: data ke AI hanya lewat tool server yang tersaring, layar tidak dibaca | `discus/fitur-2-panduan-bertahap.md` |
+| 46 | Fitur 3 — otak mode suara | **V2 dulu**: Claude satu-satunya otak, OpenAI hanya telinga (suara→teks) + mulut (teks→suara). Cadangan: **V1-B** (GPT-Live delegasi ke Claude) naik jadi utama bila S0 menunjukkan V2 tidak layak — dengan syarat OpenAI **tidak** mengubah kalimat Claude; **V1-A** (otak OpenAI) cadangan terakhir | `idea/compare-forevia-vs-dashboard-desa.md` |
+| 47 | Fitur 3 — kuota, sesi, diagnostik | Menit dihitung nyata oleh server, gagal mulai tidak memotong (3a); 1 sesi/orang + total 3 diatur admin, tab kedua **ditolak** (9A); log tahapan tanpa PII + daftar sesi di admin, hanya baca (10B) | `idea/compare-forevia-vs-dashboard-desa.md` |
+| 48 | Fitur 3 — jawaban, penunjuk, izin suara | Jawaban **dibacakan + teks + tombol bisukan** (no. 2); penunjuk ikut **sejak S1** (no. 4); izin baru **`use-ai-voice`** bisa dimatikan per role (no. 7) | `idea/compare-forevia-vs-dashboard-desa.md` |
+| 49 | Fitur 3 — halaman uji S0 & mode NOC | **S0 wajib** sebelum S1, menguji V2 dan V1-B berdampingan (kode menunggu perintah + lokasi). Mode NOC: tombol **On** untuk mulai, **Off** atau auto-off untuk selesai | `discus/fitur-3-suara.md` §9.7 |
 
 ## Ringkasan eksekutif
 
