@@ -77,7 +77,7 @@ describe("registry wall.* diturunkan dari WIDGETS", () => {
 			sosial: "view-sosial",
 			bumdes: "view-bumdes",
 			jenna: "view-jenna-analytic",
-			ops: "sync-noc",
+			ops: "view-dashboard",
 		});
 		for (const w of allWidgets()) {
 			const t = WALL_TARGETS.find((x) => x.id === `wall.${w.id}`);
@@ -141,24 +141,34 @@ describe("server di /wall", () => {
 		}
 	});
 
-	it("izin tetap dari DB: tanpa modul → ditolak; ops hanya untuk sync-noc", async () => {
+	it("izin tetap dari DB: tanpa modul → ditolak; ops untuk view-dashboard tanpa sync-noc", async () => {
 		const noPerm = await tunjuk.handler(
 			{ target: "wall.keuangan-kpi" },
 			ctx(["view-dashboard"], "/wall"),
 		);
 		expect(noPerm.ok).toBe(false);
 		if (!noPerm.ok) expect(noPerm.error).toContain("tidak punya akses");
-		expect(
-			(await tunjuk.handler({ target: "wall.ops-panel" }, onWall)).ok,
-		).toBe(false);
+		// Akun kiosk: view-dashboard tanpa sync-noc boleh menunjuk widget ops.
 		expect(
 			(
 				await tunjuk.handler(
 					{ target: "wall.ops-panel" },
-					ctx(["sync-noc"], "/wall"),
+					ctx(["view-dashboard"], "/wall"),
 				)
 			).ok,
 		).toBe(true);
+		expect(
+			(await tunjuk.handler({ target: "wall.ops-panel" }, onWall)).ok,
+		).toBe(true);
+		// Tanpa view-dashboard ditolak, meski punya sync-noc.
+		for (const features of [[], ["view-keuangan"], ["sync-noc"]]) {
+			const r = await tunjuk.handler(
+				{ target: "wall.ops-panel" },
+				ctx(features, "/wall"),
+			);
+			expect(r.ok).toBe(false);
+			if (!r.ok) expect(r.error).toContain("tidak punya akses");
+		}
 	});
 
 	it("pageRoute '/wall' dari klien tidak memberi akses data: id wall tak dikenal ditolak", async () => {
