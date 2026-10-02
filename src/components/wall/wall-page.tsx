@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useSnapshot } from "valtio";
 import "@mantine/charts/styles.css";
 import { AssistantFab } from "@/components/assistant/assistant-fab";
-import { ASSISTANT_PANEL_WIDTH } from "@/components/assistant/assistant-panel.styles";
-import { assistantStore } from "@/store/assistant";
+import { useAssistantSpace } from "@/components/assistant/use-assistant-space";
 import { authStore } from "@/store/auth";
 import { fetchWallLayout } from "./fetch-wall-layout";
 import { fetchWallSnapshot } from "./fetch-wall-snapshot";
@@ -55,9 +54,7 @@ export function WallPage({ accessKey }: WallPageProps) {
 
 	// Panel AI (hanya kiosk yang login + izin) didorong ke kanan, bukan menimpa:
 	// wall memberi ruang selebar panel agar widget NOC tetap terlihat utuh.
-	const assistant = useSnapshot(assistantStore);
-	const assistantSpace =
-		assistant.open && !assistant.maximized ? ASSISTANT_PANEL_WIDTH : 0;
+	const assistantSpace = useAssistantSpace();
 
 	const requestFullscreen = () => {
 		document.documentElement

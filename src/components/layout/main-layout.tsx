@@ -1,8 +1,13 @@
 import { AppShell, Burger, Group } from "@mantine/core";
+import { useReducedMotion } from "@mantine/hooks";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useSnapshot } from "valtio";
 import { AssistantFab } from "@/components/assistant/assistant-fab";
+import {
+	assistantAsideConfig,
+	useAssistantSpace,
+} from "@/components/assistant/use-assistant-space";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 import { useSidebarFullscreen } from "@/hooks/use-sidebar-fullscreen";
@@ -98,6 +103,8 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 	const { animasiTransisi } = useSnapshot(i18nStore);
 	const { user } = useSnapshot(authStore);
 	useSystemMonitor();
+	const assistantSpace = useAssistantSpace();
+	const reducedMotion = useReducedMotion();
 
 	// Non-admin users inherit display preferences from admin's global settings.
 	// user?.role sengaja dipakai (bukan `user`) — efek hanya perlu re-run saat
@@ -159,6 +166,8 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 				breakpoint: "sm",
 				collapsed: { mobile: !opened, desktop: sidebarCollapsed },
 			}}
+			aside={assistantAsideConfig(assistantSpace)}
+			transitionDuration={animasiTransisi && !reducedMotion ? 200 : 0}
 			padding="md"
 		>
 			<AppShell.Header bg={headerBgColor}>
