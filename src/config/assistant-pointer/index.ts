@@ -1,10 +1,12 @@
 export { BERANDA_TARGETS } from "./beranda";
 export { BUMDES_TARGETS } from "./bumdes";
+export { DEMOGRAFI_TARGETS } from "./demografi";
 export { DIVISI_TARGETS } from "./divisi";
 export { JENNA_TARGETS } from "./jenna-analytic";
 export { KEAMANAN_TARGETS } from "./keamanan";
 export { KEUANGAN_TARGETS } from "./keuangan";
 export { parseUiAction } from "./parse";
+export { PENGADUAN_TARGETS } from "./pengaduan";
 export {
 	anchorSelector,
 	findPointerRoute,

@@ -60,6 +60,7 @@ const DemografiPekerjaan = () => {
 				>
 					{error}
 					<Button
+						data-ai-target="demografi.coba-lagi"
 						size="xs"
 						variant="light"
 						color="red"

@@ -19,6 +19,7 @@ export function PengaduanMusrenbangCard({ items, loading }: Props) {
 
 	return (
 		<Card
+			data-ai-target="pengaduan.ide-inovatif"
 			p="md"
 			radius="xl"
 			withBorder

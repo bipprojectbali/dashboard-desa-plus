@@ -31,6 +31,7 @@ export function PengaduanSummaryCards({ stats, loading }: Props) {
 
 	const summaryData = [
 		{
+			target: "pengaduan.kpi-total",
 			title: t.pengaduanLayanan.totalPengaduan,
 			value: stats.total,
 			subtitle: t.pengaduanLayanan.bulanIni,
@@ -38,6 +39,7 @@ export function PengaduanSummaryCards({ stats, loading }: Props) {
 			color: "darmasaba-navy.7",
 		},
 		{
+			target: "pengaduan.kpi-baru",
 			title: t.pengaduanLayanan.baru,
 			value: stats.baru,
 			subtitle: t.pengaduanLayanan.belumDiproses,
@@ -45,6 +47,7 @@ export function PengaduanSummaryCards({ stats, loading }: Props) {
 			color: "darmasaba-navy.7",
 		},
 		{
+			target: "pengaduan.kpi-diproses",
 			title: t.pengaduanLayanan.diproses,
 			value: stats.diproses,
 			subtitle: t.pengaduanLayanan.sedangDitangani,
@@ -52,6 +55,7 @@ export function PengaduanSummaryCards({ stats, loading }: Props) {
 			color: "darmasaba-navy.7",
 		},
 		{
+			target: "pengaduan.kpi-selesai",
 			title: t.pengaduanLayanan.selesai,
 			value: stats.selesai,
 			subtitle: t.pengaduanLayanan.terselesaikan,
@@ -59,6 +63,7 @@ export function PengaduanSummaryCards({ stats, loading }: Props) {
 			color: "darmasaba-navy.7",
 		},
 		{
+			target: "pengaduan.kpi-ditolak",
 			title: t.pengaduanLayanan.ditolak,
 			value: ditolak,
 			subtitle: t.pengaduanLayanan.tidakDitindaklanjuti,
@@ -79,6 +84,7 @@ export function PengaduanSummaryCards({ stats, loading }: Props) {
 				: summaryData.map((item) => (
 						<Grid.Col key={item.title} span={{ base: 12, sm: 6, lg: 2.4 }}>
 							<Card
+								data-ai-target={item.target}
 								p="md"
 								radius="xl"
 								withBorder

@@ -27,6 +27,7 @@ export function PengaduanSuratCard({ suratTerbanyak, loading }: Props) {
 
 	return (
 		<Card
+			data-ai-target="pengaduan.surat-terbanyak"
 			p="md"
 			radius="xl"
 			withBorder

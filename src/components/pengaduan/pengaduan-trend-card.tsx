@@ -27,6 +27,7 @@ export function PengaduanTrendCard({ trends, loading }: Props) {
 
 	return (
 		<Card
+			data-ai-target="pengaduan.tren"
 			p="md"
 			radius="xl"
 			withBorder

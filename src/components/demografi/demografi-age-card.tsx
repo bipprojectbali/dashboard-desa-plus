@@ -31,6 +31,7 @@ export const DemografiAgeCard = ({
 
 	return (
 		<Card
+			data-ai-target="demografi.umur"
 			p="md"
 			radius="xl"
 			withBorder

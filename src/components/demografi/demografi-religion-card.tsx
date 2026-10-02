@@ -70,6 +70,7 @@ export const DemografiReligionCard = ({
 
 	return (
 		<Card
+			data-ai-target="demografi.agama"
 			p="md"
 			radius="xl"
 			withBorder
@@ -103,6 +104,7 @@ export const DemografiReligionCard = ({
 						value={activeReligionYear}
 						onChange={setSelectedReligionYear}
 						allowDeselect={false}
+						wrapperProps={{ "data-ai-target": "demografi.tahun-agama" }}
 						comboboxProps={{ withinPortal: true }}
 					/>
 				)}

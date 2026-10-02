@@ -31,6 +31,7 @@ export const DemografiSummaryCards = ({
 	const kpiData = [
 		{
 			id: 1,
+			target: "demografi.kpi-penduduk",
 			title: t.demografiPekerjaan.totalPenduduk,
 			value: stats.total.toLocaleString(),
 			subtitle: t.demografiPekerjaan.aktifTerdaftar,
@@ -38,6 +39,7 @@ export const DemografiSummaryCards = ({
 		},
 		{
 			id: 2,
+			target: "demografi.kpi-kk",
 			title: t.demografiPekerjaan.kepalaKeluarga,
 			value: stats.heads.toLocaleString(),
 			subtitle: t.demografiPekerjaan.totalKk,
@@ -45,6 +47,7 @@ export const DemografiSummaryCards = ({
 		},
 		{
 			id: 3,
+			target: "demografi.kpi-kelahiran",
 			title: t.demografiPekerjaan.kelahiran,
 			value: births.toString(),
 			subtitle: t.demografiPekerjaan.tahunIni,
@@ -52,6 +55,7 @@ export const DemografiSummaryCards = ({
 		},
 		{
 			id: 4,
+			target: "demografi.kpi-kemiskinan",
 			title: t.demografiPekerjaan.kemiskinan,
 			value: stats.poor.toLocaleString(),
 			subtitle: t.demografiPekerjaan.keluargaPrasejahtera,
@@ -73,6 +77,7 @@ export const DemografiSummaryCards = ({
 				: kpiData.map((item) => (
 						<Grid.Col key={item.id} span={{ base: 12, sm: 6, lg: 3 }}>
 							<Card
+								data-ai-target={item.target}
 								p="md"
 								radius="xl"
 								withBorder

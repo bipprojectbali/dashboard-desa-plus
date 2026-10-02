@@ -31,6 +31,7 @@ export const DemografiJobCard = ({
 
 	return (
 		<Card
+			data-ai-target="demografi.pekerjaan"
 			p="md"
 			radius="xl"
 			withBorder

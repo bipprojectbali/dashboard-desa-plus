@@ -17,6 +17,8 @@ export const SOURCE_POINTER_TARGETS: Readonly<Record<string, string>> = {
 	ringkasan_beranda: "beranda.total-penduduk",
 	kinerja_divisi: "divisi.teraktif",
 	ringkasan_keuangan: "keuangan.kpi-total",
+	statistik_pengaduan: "pengaduan.kpi-total",
+	statistik_demografi: "demografi.kpi-penduduk",
 };
 
 /**

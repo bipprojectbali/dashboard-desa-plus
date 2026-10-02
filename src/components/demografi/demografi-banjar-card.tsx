@@ -27,6 +27,7 @@ export const DemografiBanjarCard = ({
 
 	return (
 		<Card
+			data-ai-target="demografi.banjar"
 			p="md"
 			radius="xl"
 			withBorder

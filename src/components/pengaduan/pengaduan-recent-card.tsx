@@ -41,6 +41,7 @@ export function PengaduanRecentCard({ items, loading }: Props) {
 
 	return (
 		<Card
+			data-ai-target="pengaduan.pengajuan-terbaru"
 			p="md"
 			radius="xl"
 			withBorder

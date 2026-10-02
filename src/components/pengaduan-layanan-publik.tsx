@@ -33,6 +33,7 @@ const PengaduanLayananPublik = () => {
 				>
 					{error}
 					<Button
+						data-ai-target="pengaduan.coba-lagi"
 						size="xs"
 						variant="light"
 						color="red"

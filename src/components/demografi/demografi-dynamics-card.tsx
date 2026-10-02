@@ -61,6 +61,7 @@ export const DemografiDynamicsCard = ({
 
 	return (
 		<Card
+			data-ai-target="demografi.dinamika"
 			p="md"
 			radius="xl"
 			withBorder

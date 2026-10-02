@@ -32,6 +32,7 @@ export const DemografiSectorCard = ({
 
 	return (
 		<Card
+			data-ai-target="demografi.sektor"
 			p="md"
 			radius="xl"
 			withBorder
