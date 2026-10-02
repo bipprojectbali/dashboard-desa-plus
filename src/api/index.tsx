@@ -72,9 +72,11 @@ const api = new Elysia({
 			if (data?.user?.id) {
 				const userExists = await prisma.user.findUnique({
 					where: { id: data.user.id },
-					select: { id: true },
+					select: { id: true, role: true },
 				});
 				if (!userExists) return { data: null };
+				// Role dari DB (bukan cookieCache) agar gating UI ikut penurunan role.
+				data.user.role = userExists.role;
 			}
 			return { data };
 		},
