@@ -474,7 +474,12 @@ Format: pertanyaan → opsi → **saran**.
 
 | Tanggal | Pertanyaan | Jawaban user |
 |---|---|---|
-| — | (belum ada jawaban atas §9.6; user hanya bertanya "Apa itu S0?" di `jawab-fitur3.md`, dijawab di compare §0) | — |
+| 2026-10-02 | Catatan awal di `jawab-fitur3.md` | Bertanya "Apa itu S0?" (dijawab di compare §0). Belum ada keputusan |
+| 2026-10-02 | No. 1 otak suara | Bertanya: "V1-A menjanjikan, tapi tidak bisa suaranya OpenAI dan otaknya tetap Claude?" → dijelaskan itulah V1-B/V2; rekomendasi V2 bertahap (compare §7.1). **Belum diputuskan** |
+| 2026-10-02 | No. 3 menit suara | Setuju **bila** FOREVIA menerapkan "ukur menit nyata, tidak memotong kuota saat gagal". FOREVIA **tidak** menerapkan (reservasi 600 dtk/percobaan, tidak dikembalikan, tanpa usage final; handoff §17). Syarat tidak terpenuhi → **belum final**, diminta konfirmasi ulang (compare §7.2) |
+| 2026-10-02 | No. 9 batas sesi bersamaan | User belum paham → dijelaskan ulang dengan contoh NOC (compare §7.3). **Belum diputuskan** |
+| 2026-10-02 | No. 10 diagnostik admin | User belum paham → dijelaskan ulang (compare §7.4). **Belum diputuskan** |
+| — | No. 2, 4, 5, 6, 7, 8 | Belum dijawab user |
 
 **Catatan analisa 2026-10-02 (bukan jawaban user): perbandingan dengan FOREVIA.** Detail di [`../idea/compare-forevia-vs-dashboard-desa.md`](../idea/compare-forevia-vs-dashboard-desa.md).
 

@@ -113,3 +113,135 @@ Format: pertanyaan → opsi → **saran**. Dari 10 pertanyaan di bawah, **3 baru
 - Perilaku gema (AEC) untuk audio TTS yang diputar biasa, serta seluruh perilaku di perangkat NOC.
 - Topologi staging kita (proses Bun tunggal atau banyak) untuk memutuskan perlu tidaknya kunci advisory.
 - Seluruh klaim "berjalan lancar" FOREVIA di luar bukti sintetis di §1.
+
+---
+
+## 7. Jawaban lanjutan untuk user (2026-10-02)
+
+Jawaban atas catatan user di `discus/jawab-fitur3.md` untuk no. 1, 3, 9, 10. Pertanyaan 2, 4, 5, 6, 7, 8 **belum dijawab user** dan tidak diputuskan di sini.
+
+### 7.1 No. 1: "Bisakah suaranya OpenAI tetapi otaknya tetap Claude?"
+
+**Bisa. Itulah V1-B dan V2.** Bedanya dengan V1-A hanya pada *siapa yang berpikir*:
+
+| | V1-A (ikut FOREVIA) | V1-B | V2 (saran) |
+|---|---|---|---|
+| Suara & dengar | OpenAI | OpenAI | OpenAI |
+| Otak | **OpenAI** | **Claude** | **Claude** |
+| Cara Claude dipanggil | tidak dipanggil | OpenAI "bertanya" ke server kita, server memanggil Claude, jawabannya dibacakan OpenAI | server kita memanggil Claude lewat jalur chat yang sudah ada; OpenAI hanya mengubah suara→teks dan teks→suara |
+| Contoh yang sudah jalan | ada (FOREVIA, dengan batas bukti di §1) | **tidak ada** (FOREVIA menyebutnya desain baru yang perlu uji) | tidak ada di FOREVIA, tetapi bagian-bagiannya sederhana |
+| Terasa natural (bisa dipotong saat bicara) | paling natural | natural | **kita bangun sendiri**; terasa lebih "gantian" |
+| Jeda sebelum jawaban | paling pendek | sedang | paling panjang (**perlu diukur**, tanpa angka yang bisa dijanjikan) |
+| Jumlah otak | 2 (chat Claude, suara OpenAI) | 1 | 1 |
+| Izin, kuota, riwayat, penunjuk | harus **ditulis ulang** untuk OpenAI, dua jalur yang bisa tidak sinkron | satu jalur (`runChatTurn`) | satu jalur (`runChatTurn`) |
+| Risiko utama | jawaban suara ≠ jawaban chat; melepas "Claude otak" | OpenAI bisa menambah/mengubah kalimat Claude saat membacakan (**perlu dikonfirmasi**); jalurnya belum teruji siapa pun | jeda lebih lama; pendeteksi "kapan user selesai bicara" harus kita atur (lihat §9.3, soal 8) |
+
+**Rekomendasi tegas: V2, bertahap.** Alasannya:
+
+1. **Sesuai keinginan Anda:** Claude tetap satu-satunya otak, jadi jawaban, izin, kuota, riwayat, dan penunjuk layar (Fitur 2) sama persis dengan chat. Tidak ada dua otak yang bisa saling bertentangan.
+2. **Risiko paling bisa dikendalikan:** V2 memakai jalur chat yang sudah jalan. Kita memegang teks jawaban, sehingga tidak ada kemungkinan OpenAI mengubah isinya. V1-B bergantung pada perilaku yang belum bisa dipastikan.
+3. **Harga yang dibayar:** jeda lebih panjang dan terasa lebih "bergantian". Untuk ruang NOC yang menjawab pertanyaan data, ini bisa diterima. S0 akan mengukurnya di perangkat nyata supaya tidak berdasar tebakan.
+4. **Jalan keluar tetap ada:** jika S0 menunjukkan jeda V2 terlalu mengganggu, V1-B diuji sebagai pengganti. V1-A baru dipertimbangkan bila Anda rela otak suara OpenAI.
+
+Tahapan V2: **tahap 1** Anda bicara, tampil teks, Claude menjawab teks (tanpa dibacakan) → **tahap 2** jawaban dibacakan.
+
+```
+Anda bicara ke mikrofon NOC
+        │
+        ▼
+Browser ──suara──► OpenAI (hanya MENDENGAR: suara → teks)
+        │                         │
+        │◄──────── teks ucapan ───┘
+        ▼
+Server kita: jalur chat yang sama (login, izin, kuota, tool, riwayat)
+        │
+        ▼
+CLAUDE (otak) menjawab; bila perlu menunjuk layar ──► kursor/sorotan (Fitur 2)
+        │  jawaban mengalir per kalimat
+        ▼
+OpenAI (hanya BERBICARA: teks → suara) ──► speaker, teks tampil di panel
+```
+
+### 7.2 No. 3: "Apakah ukur menit nyata dan tidak memotong kuota saat gagal itu yang dipakai FOREVIA?"
+
+**Tidak. Saran "ukur menit nyata" itu usulan kita sendiri, bukan yang dilakukan FOREVIA** (di tabel §2 baris 7 memang tercatat "tidak cocok"; pertanyaan no. 3 mungkin terbaca seolah FOREVIA begitu). Menurut handoff (§17.1-17.2, §13.6):
+
+- FOREVIA **mereservasi 600 detik (10 menit) setiap kali sesi dimulai**, walau sesi selesai dalam 1 menit.
+- Reservasi itu **tidak dikembalikan**. Enam kali mencoba (termasuk yang gagal) sudah memenuhi batas 3.600 detik/hari, padahal audio yang dipakai bisa hampir nol.
+- Mereka **tidak mengukur pemakaian akhir** dari penyedia: hangup diterima belum berarti biaya final diketahui, dan angka pemakaian akhir tidak disimpan di server (§13.6).
+- Mereka sendiri menulis bahwa angka itu "reservasi, bukan tagihan" dan tidak menjamin batas biaya (§17.2). Gejala "suara berhenti sendiri" di §18.2 salah satunya disebabkan kuota habis oleh reservasi.
+
+Jadi saran kita **berbeda** dari FOREVIA, dan saya tetap menyarankan saran kita, dengan satu catatan jujur:
+
+| | FOREVIA | Saran kita |
+|---|---|---|
+| Saat sesi dimulai | potong 10 menit | tidak potong apa pun |
+| Sesi gagal dimulai | tetap terpotong | **tidak terpotong** (selaras keputusan #35) |
+| Sesi selesai 1 menit | terpotong 10 menit | terpotong ±1 menit |
+| Sumber angka | tebakan di depan | **jam server kita** (mulai, denyut tiap beberapa detik, akhir) |
+
+Catatan jujur: "menit nyata" di sini adalah **hitungan server kita**, bukan tagihan OpenAI. Selisih kecil mungkin ada; tagihan resmi tetap dicek di akun OpenAI. Biaya tetap terjaga oleh batas 10 menit per sesi, auto-off 2 menit sunyi, batas sesi bersamaan (no. 9), dan kuota harian 60 menit.
+
+**Yang Anda setujui bersyarat "bila FOREVIA begitu": syaratnya tidak terpenuhi, jadi saya anggap no. 3 belum final.** Mohon konfirmasi ulang di §7.5.
+
+### 7.3 No. 9: Batas sesi suara bersamaan (penjelasan awam)
+
+**Satu "sesi suara" = satu sambungan telepon berbayar ke OpenAI, ditagih per menit selama tersambung.** Pertanyaannya: berapa sambungan boleh menyala sekaligus?
+
+Contoh di NOC Desa Darmasaba:
+
+- Operator A menyalakan suara di PC-nya. Lalu **membuka tab dashboard kedua** dan menyalakan suara lagi. Tanpa batas, ada **dua sambungan berbayar** untuk satu orang yang hanya bicara ke satu tab.
+- Operator A **lupa mematikan** suara, pindah ke rapat. Sambungan tetap menyala. Bila tab/komputer mati mendadak (listrik, jaringan putus), sambungan bisa **"nyangkut"**: sistem kita mengira masih aktif, padahal tidak ada yang bicara. Tanpa penjaga, ini menahan "jatah" dan bisa tetap berbiaya (sisi penyedia **perlu dikonfirmasi**).
+- Layar TV `/wall` (akun kiosk) menyala suara sepanjang hari, ditambah dua operator: biaya bisa naik tanpa terasa.
+
+Dua batas yang diusulkan (FOREVIA memakai pola yang sama: 1 per user, 3 per organisasi):
+
+- **Batas per orang = 1:** satu akun hanya boleh punya satu sesi suara aktif. Tab kedua akan ditolak dengan pesan jelas: "Anda sudah memakai suara di tab lain."
+- **Batas total = 3 (awal):** paling banyak 3 sesi suara menyala serentak di seluruh dashboard, misalnya TV + 2 operator. Admin bisa mengubah angkanya di `/admin/ai-assistant`.
+
+**Pertanyaan ulang:**
+
+| Opsi | Arti |
+|---|---|
+| A | 1 per orang + total 3, admin boleh mengubah (**saran**) |
+| B | 1 per orang saja, tanpa batas total |
+| C | Lebih longgar (mis. 2 per orang, total diatur admin) |
+
+Sub-pertanyaan: saat tab kedua mencoba, apakah **ditolak** dengan pesan (**saran**, sesi lama tidak terputus mendadak) atau **menggantikan** sesi lama?
+
+### 7.4 No. 10: Diagnostik untuk admin (penjelasan awam)
+
+**Intinya: supaya admin bisa melihat dan menjawab "kenapa suara tidak jalan?" tanpa menebak-nebak dan tanpa membongkar database.**
+
+Contoh: Selasa pagi, TV `/wall` tidak menjawab saat dipanggil.
+
+- **Tanpa diagnostik:** admin hanya tahu "suara rusak". Apakah mikrofon, jaringan NOC, key OpenAI, atau Claude? Tidak ada yang tahu. FOREVIA mengaku persis begini: penyebab suara Safari berhenti **belum tertangkap** karena tidak ada jejak yang menghubungkan tahap-tahapnya (§17.3).
+- **Dengan diagnostik:** admin membuka halaman admin dan melihat, misalnya: "Akun kiosk, 07.58, berhenti di tahap *menyambung jaringan* 3 kali berturut-turut". Artinya masalah jaringan NOC, bukan Claude atau key.
+
+Dua hal yang ditawarkan:
+
+1. **Catatan tahapan (log)** tanpa data pribadi: mikrofon diizinkan → tersambung → siap bicara (berapa detik) → selesai atau gagal di tahap apa. **Tanpa audio, tanpa isi percakapan, tanpa kunci.**
+2. **Daftar sesi suara di `/admin/ai-assistant`** (hanya dibaca): akun, jam mulai, lama, status (aktif / menutup / tidak pasti), menit terpakai hari ini dibanding batas, dan sesi yang "nyangkut". Isi percakapan tidak ditampilkan.
+
+**Pertanyaan ulang:**
+
+| Opsi | Arti |
+|---|---|
+| A | Hanya catatan tahapan di log server (admin harus buka log) |
+| B | Catatan tahapan + daftar sesi di halaman admin (**saran**) |
+| C | B + tombol "tutup paksa" sesi yang nyangkut (aksi tulis; sebaiknya menyusul) |
+
+### 7.5 Ringkasan status pertanyaan
+
+| No. | Status | Yang diperlukan dari user |
+|---|---|---|
+| 1 | Dijelaskan; rekomendasi V2 bertahap | Pilih V1-A / V1-B / V2 |
+| 2 | Belum dijawab | Jawab |
+| 3 | Syarat user tidak terpenuhi (§7.2) | Konfirmasi: (a) ukur nyata, gagal tidak memotong (**saran**) / (b) ikut FOREVIA reservasi 600 dtk / (c) tahan sementara 10 menit lalu kembalikan selisih saat sesi ditutup |
+| 4 | Belum dijawab | Jawab |
+| 5 | Belum dijawab (+ info perangkat NOC) | Jawab |
+| 6 | Belum dijawab (S0 dijelaskan di §0) | Jawab |
+| 7 | Belum dijawab | Jawab |
+| 8 | Belum dijawab | Jawab |
+| 9 | Dijelaskan ulang (§7.3) | Pilih A/B/C + tolak vs ganti |
+| 10 | Dijelaskan ulang (§7.4) | Pilih A/B/C |
