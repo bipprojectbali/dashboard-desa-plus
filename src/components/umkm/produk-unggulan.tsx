@@ -83,6 +83,7 @@ export const ProdukUnggulan = ({ data }: ProdukUnggulanProps) => {
 
 	return (
 		<Card
+			data-ai-target="bumdes.produk-unggulan"
 			p="md"
 			radius="xl"
 			withBorder

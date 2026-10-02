@@ -66,6 +66,31 @@ describe("registry target penunjuk", () => {
 				...sourceFiles("src/components/kinerja-divisi"),
 			],
 		},
+		{
+			prefix: "bumdes.",
+			files: [
+				"src/components/bumdes-page.tsx",
+				...sourceFiles("src/components/umkm"),
+			],
+		},
+		{
+			prefix: "sosial.",
+			files: [
+				"src/components/sosial-page.tsx",
+				...sourceFiles("src/components/sosial"),
+			],
+		},
+		{
+			prefix: "keamanan.",
+			files: [
+				"src/components/keamanan-page.tsx",
+				...sourceFiles("src/components/keamanan"),
+			],
+		},
+		{
+			prefix: "jenna.",
+			files: ["src/components/jenna-analytic.tsx"],
+		},
 	];
 
 	for (const { prefix, files } of MODULES) {
@@ -105,8 +130,13 @@ describe("registry target penunjuk", () => {
 		);
 		expect(marked).toBe(clickable.length);
 		expect(clickable.sort()).toEqual([
+			"bumdes.rentang-bulan",
+			"bumdes.rentang-minggu",
 			"divisi.coba-lagi",
 			"keuangan.coba-lagi",
+			"sosial.tab-balita",
+			"sosial.tab-ibu-hamil",
+			"sosial.tab-penyakit",
 		]);
 		for (const f of pages)
 			expect(read(f).match(/data-ai-clickable/g)?.length).toBe(1);

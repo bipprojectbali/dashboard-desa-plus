@@ -37,6 +37,7 @@ export const Pendidikan = () => {
 
 	return (
 		<Card
+			data-ai-target="sosial.pendidikan"
 			p="md"
 			radius="xl"
 			withBorder

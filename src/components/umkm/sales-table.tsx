@@ -82,6 +82,7 @@ export const SalesTable = ({
 
 	return (
 		<Card
+			data-ai-target="bumdes.detail-penjualan"
 			p="md"
 			radius="xl"
 			withBorder
@@ -97,7 +98,7 @@ export const SalesTable = ({
 				<Title order={4} c={dark ? "dark.0" : "#1e3a5f"}>
 					{t.bumdes.detailPenjualan}
 				</Title>
-				<Group gap="xs">
+				<Group gap="xs" data-ai-target="bumdes.filter">
 					<Select
 						placeholder={t.bumdes.semuaKategori}
 						data={[

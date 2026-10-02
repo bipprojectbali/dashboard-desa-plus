@@ -43,6 +43,7 @@ import { CHART } from "@/theme";
 
 type KpiItem = {
 	id: number;
+	target: string;
 	title: string;
 	value: string;
 	subtitle: string;
@@ -120,6 +121,7 @@ const JennaAnalytic = () => {
 	const kpiData = [
 		{
 			id: 1,
+			target: "jenna.kpi-interaksi",
 			title: t.jennaAnalytic.interaksiHariIni,
 			value: data?.stats.interaksiHariIni.toString() ?? "—",
 			subtitle: `${change >= 0 ? "+" : ""}${change}% ${t.jennaAnalytic.plusDariKemarin}`,
@@ -128,6 +130,7 @@ const JennaAnalytic = () => {
 		},
 		{
 			id: 2,
+			target: "jenna.kpi-otomatis",
 			title: t.jennaAnalytic.jawabanOtomatis,
 			value: data ? `${data.stats.jawabanOtomatis}%` : "—",
 			subtitle: `dari ${data?.stats.interaksiHariIni ?? 0} interaksi`,
@@ -135,6 +138,7 @@ const JennaAnalytic = () => {
 		},
 		{
 			id: 3,
+			target: "jenna.kpi-belum-ditindak",
 			title: t.jennaAnalytic.belumDitindak,
 			value: data?.stats.belumDitindak.toString() ?? "—",
 			subtitle: t.jennaAnalytic.perluResponManual,
@@ -142,6 +146,7 @@ const JennaAnalytic = () => {
 		},
 		{
 			id: 4,
+			target: "jenna.kpi-waktu-respon",
 			title: t.jennaAnalytic.waktuRespon,
 			value: data?.stats.waktuRespon ?? "—",
 			subtitle: t.jennaAnalytic.rataRata,
@@ -168,6 +173,7 @@ const JennaAnalytic = () => {
 				{kpiData.map((item) => (
 					<Grid.Col key={item.id} span={{ base: 12, sm: 6, lg: 3 }}>
 						<Card
+							data-ai-target={item.target}
 							p="md"
 							radius="xl"
 							withBorder
@@ -221,6 +227,7 @@ const JennaAnalytic = () => {
 
 			{/* Chart - Interaksi Chatbot */}
 			<Card
+				data-ai-target="jenna.grafik-interaksi"
 				p="md"
 				radius="xl"
 				withBorder
@@ -285,6 +292,7 @@ const JennaAnalytic = () => {
 			<Grid gutter="lg">
 				<Grid.Col span={{ base: 12, lg: 6 }}>
 					<Card
+						data-ai-target="jenna.topik-pertanyaan"
 						p="md"
 						radius="xl"
 						withBorder
@@ -330,6 +338,7 @@ const JennaAnalytic = () => {
 
 				<Grid.Col span={{ base: 12, lg: 6 }}>
 					<Card
+						data-ai-target="jenna.jam-tersibuk"
 						p="md"
 						radius="xl"
 						withBorder

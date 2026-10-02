@@ -24,6 +24,7 @@ interface SummaryCardProps {
 	color: string;
 	highlight?: boolean;
 	backgroundColor: string;
+	aiTarget?: string;
 }
 
 const SummaryCard = ({
@@ -34,11 +35,13 @@ const SummaryCard = ({
 	color,
 	highlight = false,
 	backgroundColor,
+	aiTarget,
 }: SummaryCardProps) => {
 	const dark = useIsDark();
 
 	return (
 		<Card
+			data-ai-target={aiTarget}
 			p="md"
 			radius="xl"
 			withBorder
@@ -103,6 +106,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 		<Grid gutter="md">
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
 				<SummaryCard
+					aiTarget="sosial.kpi-ibu-hamil"
 					title={t.sosial.ibuHamilAktif}
 					value={displayData.ibuHamil}
 					subtitle={t.sosial.aktif}
@@ -113,6 +117,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
 				<SummaryCard
+					aiTarget="sosial.kpi-balita"
 					title={t.sosial.balitaTerdaftar}
 					value={displayData.balita}
 					subtitle={t.sosial.terdaftar}
@@ -123,6 +128,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
 				<SummaryCard
+					aiTarget="sosial.kpi-stunting"
 					title={t.sosial.alertStunting}
 					value={displayData.alertStunting}
 					subtitle={t.sosial.perhatian}
@@ -133,6 +139,7 @@ export const SummaryCards = ({ data }: SummaryCardsProps) => {
 			</GridCol>
 			<GridCol span={{ base: 12, sm: 6, lg: 3 }}>
 				<SummaryCard
+					aiTarget="sosial.kpi-posyandu"
 					title={t.sosial.posyanduAktif}
 					value={displayData.posyanduAktif}
 					subtitle={t.sosial.aktif}

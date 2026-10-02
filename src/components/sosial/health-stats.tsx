@@ -27,6 +27,7 @@ export const HealthStats = ({ data }: HealthStatsProps) => {
 
 	return (
 		<Card
+			data-ai-target="sosial.statistik-kesehatan"
 			p="md"
 			radius="xl"
 			withBorder

@@ -25,6 +25,7 @@ export const LaporanCard = ({
 
 	return (
 		<Card
+			data-ai-target="keamanan.laporan"
 			p="md"
 			radius="md"
 			withBorder

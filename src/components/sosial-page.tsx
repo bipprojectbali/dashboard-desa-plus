@@ -134,6 +134,7 @@ const SosialPage = () => {
 				>
 					{error}
 					<Button
+						data-ai-target="sosial.coba-lagi"
 						size="xs"
 						variant="light"
 						color="red"

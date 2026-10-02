@@ -48,6 +48,7 @@ export const Kesejahteraan = () => {
 
 	return (
 		<Card
+			data-ai-target="sosial.kesejahteraan"
 			p="md"
 			radius="xl"
 			withBorder

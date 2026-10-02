@@ -99,6 +99,7 @@ const KeamananPage = () => {
 
 	const kpiCards = [
 		{
+			target: "keamanan.kpi-cctv-aktif",
 			title: t.keamanan.cctvAktif,
 			value: cctvStats.cctvOnline,
 			subtitle: t.keamanan.kameraOnline,
@@ -106,6 +107,7 @@ const KeamananPage = () => {
 			color: "darmasaba-success",
 		},
 		{
+			target: "keamanan.kpi-laporan",
 			title: t.keamanan.laporanKeamanan,
 			value: cctvStats.laporanMingguIni,
 			subtitle: t.keamanan.mingguIni,
@@ -125,6 +127,7 @@ const KeamananPage = () => {
 				>
 					{error}
 					<Button
+						data-ai-target="keamanan.coba-lagi"
 						size="xs"
 						variant="light"
 						color="red"
@@ -145,6 +148,7 @@ const KeamananPage = () => {
 							{kpiCards.map((kpi) => (
 								<GridCol key={kpi.title} span={{ base: 12, sm: 6, md: 6 }}>
 									<Card
+										data-ai-target={kpi.target}
 										p="md"
 										radius="md"
 										withBorder
@@ -192,6 +196,7 @@ const KeamananPage = () => {
 							))}
 						</Grid>
 						<Card
+							data-ai-target="keamanan.peta"
 							p="md"
 							radius="md"
 							withBorder
@@ -217,7 +222,7 @@ const KeamananPage = () => {
 							)}
 
 							{/* CCTV Locations List */}
-							<Stack mt="md" gap="sm">
+							<Stack mt="md" gap="sm" data-ai-target="keamanan.daftar-cctv">
 								<Group justify="space-between" align="center">
 									<Title order={4} c={dark ? "dark.0" : "black"}>
 										{t.keamanan.daftarCctv}
