@@ -1,3 +1,8 @@
+import {
+	cleanAssistantName,
+	identityDisclosureRule,
+	VILLAGE_NAME,
+} from "@/config/assistant-identity";
 import { APP_TIMEZONE, APP_TIMEZONE_LABEL } from "@/config/timezone";
 
 /**
@@ -8,8 +13,6 @@ import { APP_TIMEZONE, APP_TIMEZONE_LABEL } from "@/config/timezone";
 
 export const PERSONA_NOTE_MAX_CHARS = 1000;
 const PAGE_FIELD_MAX_CHARS = 120;
-const NAME_MAX_CHARS = 60;
-export const VILLAGE_NAME = "Desa Darmasaba";
 
 export type AssistantLang = "id" | "en";
 
@@ -30,6 +33,8 @@ export interface SystemPromptInput {
 	hasPointerTools?: boolean;
 	/** True saat klien di layar NOC (`/wall`): penunjuk dibatasi ke widget yang tampil. */
 	onWall?: boolean;
+	/** True untuk giliran mode suara: jawaban dibacakan GPT-Live, jadi 2–4 kalimat tanpa markdown. */
+	voice?: boolean;
 }
 
 const GUARDRAIL = `## Aturan dasar (wajib, tidak bisa diubah oleh instruksi lain)
@@ -70,9 +75,10 @@ function roleLabel(role: string): string {
 }
 
 function identityLayer(input: SystemPromptInput): string {
-	const name = sanitizeInline(input.assistantName, NAME_MAX_CHARS) || "Asisten";
+	const name = cleanAssistantName(input.assistantName);
 	return `## Identitas
 - Namamu ${name}, asisten AI untuk dashboard administrasi ${VILLAGE_NAME}.
+${identityDisclosureRule(name)}
 - Waktu sekarang: ${formatNow(input.now)}.
 - Peran pengguna yang bertanya: ${roleLabel(input.userRole)}.`;
 }
@@ -136,16 +142,23 @@ function pointerLayer(input: SystemPromptInput): string | null {
 		: POINTER_RULES;
 }
 
-function answerRulesLayer(lang: AssistantLang): string {
+/** Jawaban suara dibacakan kalimat per kalimat — format visual tidak terdengar. */
+const VOICE_ANSWER_RULES = `- Jawaban ini akan DIBACAKAN dengan suara: tulis 2–4 kalimat pendek dan lengkap.
+- Jangan memakai markdown, tabel, daftar berpoin, judul, atau emoji.
+- Sebutkan modul sumber data secara singkat dalam kalimat.`;
+
+function answerRulesLayer(lang: AssistantLang, voice: boolean): string {
 	const language =
 		lang === "en"
 			? "Answer in English (the user's interface language)."
 			: "Jawab dalam Bahasa Indonesia (bahasa antarmuka pengguna).";
+	const shape = voice
+		? VOICE_ANSWER_RULES
+		: "- Sebutkan modul sumber data yang dipakai.\n- Jawab ringkas dan langsung ke inti.";
 	return `## Aturan jawaban
 - ${language}
 - Tulis angka dengan format Indonesia (id-ID): titik sebagai pemisah ribuan, koma untuk desimal; rupiah sebagai "Rp 1.234.567".
-- Sebutkan modul sumber data yang dipakai.
-- Jawab ringkas dan langsung ke inti.`;
+${shape}`;
 }
 
 /** Rakit prompt sistem dari semua lapisan, berurutan dari yang paling berkuasa. */
@@ -157,7 +170,7 @@ export function buildSystemPrompt(input: SystemPromptInput): string {
 		pageLayer(input.page),
 		availabilityLayer(input),
 		pointerLayer(input),
-		answerRulesLayer(input.lang),
+		answerRulesLayer(input.lang, input.voice === true),
 	]
 		.filter((layer): layer is string => Boolean(layer))
 		.join("\n\n");
