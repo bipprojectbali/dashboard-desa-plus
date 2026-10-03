@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { fetchVoiceLabConfig } from "./voice-lab.api";
 import {
 	DEFAULT_SEND_MODE,
+	DEFAULT_SPOKEN_NUMBERS,
 	READ_EXACT_INSTRUCTION,
 	VAD_DEFAULTS,
 } from "./voice-lab.constants";
@@ -21,6 +22,7 @@ function initialSettings(config: VoiceLabConfig | null): VoiceLabSettings {
 		liveModel: d?.liveModel ?? "",
 		liveInstructions: READ_EXACT_INSTRUCTION,
 		sendMode: DEFAULT_SEND_MODE,
+		spokenNumbers: DEFAULT_SPOKEN_NUMBERS,
 		endMethod: "vad",
 		threshold: VAD_DEFAULTS.threshold,
 		silenceMs: VAD_DEFAULTS.silenceMs,

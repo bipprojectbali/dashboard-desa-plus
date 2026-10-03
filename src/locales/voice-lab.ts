@@ -110,6 +110,9 @@ export interface VoiceLabText {
 	verifyPending: string;
 	verifySkipped: string;
 	chunksSent: string;
+	spokenNumbers: string;
+	spokenNumbersHint: string;
+	verifyConversions: string;
 }
 
 const id: VoiceLabText = {
@@ -230,6 +233,10 @@ const id: VoiceLabText = {
 	verifyPending: "Menunggu GPT-Live selesai bicara…",
 	verifySkipped: "Tidak dinilai (giliran terputus)",
 	chunksSent: "potongan",
+	spokenNumbers: "Ringkas angka besar saat diucapkan (V1-B)",
+	spokenNumbersHint:
+		"Angka ≥ 1 juta dikirim ke GPT-Live sebagai juta/miliar (mis. 940,2 juta). Teks jawaban tetap lengkap. Matikan untuk membandingkan.",
+	verifyConversions: "Angka ringkas",
 };
 
 const en: VoiceLabText = {
@@ -349,6 +356,10 @@ const en: VoiceLabText = {
 	verifyPending: "Waiting for GPT-Live to finish speaking…",
 	verifySkipped: "Not scored (turn interrupted)",
 	chunksSent: "chunks",
+	spokenNumbers: "Shorten large numbers when spoken (V1-B)",
+	spokenNumbersHint:
+		"Numbers ≥ 1 million are sent to GPT-Live as juta/miliar (e.g. 940,2 juta). The answer text stays complete. Turn off to compare.",
+	verifyConversions: "Shortened numbers",
 };
 
 export const voiceLabTexts = { id, en } as const;

@@ -217,6 +217,7 @@ export function useVoiceLab() {
 					ttsVoice: s.ttsVoice,
 					liveModel: s.liveModel,
 					sendMode: s.sendMode,
+					spokenNumbers: s.spokenNumbers,
 					liveInstructionsChars: s.liveInstructions.trim().length,
 					endMethod: s.endMethod,
 					threshold: s.threshold,

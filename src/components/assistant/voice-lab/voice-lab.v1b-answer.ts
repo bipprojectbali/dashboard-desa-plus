@@ -1,4 +1,5 @@
 import { askClaude, describeError, isAbort } from "./voice-lab.claude";
+import { formatSpokenNumbers } from "./voice-lab.spoken-numbers";
 import type { ControllerEvents } from "./voice-lab.types";
 import { createAnswerSender } from "./voice-lab.v1b-send";
 import type { V1bTurn } from "./voice-lab.v1b-turn";
@@ -33,10 +34,25 @@ export async function answerQuestion(
 ): Promise<void> {
 	const { events } = ctx;
 	turn.view.sendMode = turn.sendMode;
+	const view = turn.view;
 	const sender = createAnswerSender({
 		mode: turn.sendMode,
-		send: (content) => ctx.commentary(delegationId, content),
+		send: (content) => {
+			view.sentText = view.sentText ? `${view.sentText} ${content}` : content;
+			ctx.commentary(delegationId, content);
+		},
 		isCancelled: () => turn.abort.signal.aborted,
+		transform: turn.spokenNumbers
+			? (piece) => {
+					const res = formatSpokenNumbers(piece);
+					if (res.conversions.length > 0)
+						view.conversions = [
+							...(view.conversions ?? []),
+							...res.conversions,
+						];
+					return res.text;
+				}
+			: undefined,
 		onFirstSend: () => {
 			const now = performance.now();
 			turn.firstSentenceSentMs = now - endAt;

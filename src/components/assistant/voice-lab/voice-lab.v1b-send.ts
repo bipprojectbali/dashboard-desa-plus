@@ -17,6 +17,8 @@ export interface AnswerSenderOptions {
 	/** Kirim satu potongan teks (`session.commentary.append`). */
 	send(content: string): void;
 	isCancelled(): boolean;
+	/** Ubah tiap potongan sebelum dikirim (mis. pemformat angka lisan). */
+	transform?(piece: string): string;
 	/** Dipanggil sekali tepat sebelum potongan pertama dikirim. */
 	onFirstSend?(): void;
 }
@@ -39,7 +41,12 @@ export function createAnswerSender(opts: AnswerSenderOptions): AnswerSender {
 
 	const dispatch = (pieces: string[]) => {
 		for (const piece of pieces) {
-			for (const content of chunkText(piece, COMMENTARY_MAX_CHARS)) {
+			if (cancelled || opts.isCancelled()) {
+				cancelled = true;
+				return;
+			}
+			const text = opts.transform ? opts.transform(piece) : piece;
+			for (const content of chunkText(text, COMMENTARY_MAX_CHARS)) {
 				if (cancelled || opts.isCancelled()) {
 					cancelled = true;
 					return;

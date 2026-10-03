@@ -66,13 +66,14 @@ export async function createV1bController(
 	const record = (t: V1bTurn) => {
 		if (t.recorded || t.transcriptMs === null) return;
 		t.recorded = true;
-		const { answerText, spokenText, fillerChars } = t.view;
+		const { answerText, sentText, spokenText, fillerChars } = t.view;
 		const verify =
 			t.settled && answerText && fillerChars !== undefined
 				? verifyAnswer(
-						answerText,
+						sentText ?? answerText,
 						spokenText.slice(fillerChars),
 						deps.getTerms(),
+						t.view.conversions,
 					)
 				: undefined;
 		if (verify) {
@@ -118,7 +119,7 @@ export async function createV1bController(
 			events.log("barge-in: sisa jawaban dibatalkan");
 		}
 		closeTurn(current);
-		const turn = newV1bTurn(events.nextTurnId(), now, getSettings().sendMode);
+		const turn = newV1bTurn(events.nextTurnId(), now, getSettings());
 		current = turn;
 		emit(turn);
 		events.status("listening");

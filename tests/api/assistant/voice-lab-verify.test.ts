@@ -1,9 +1,9 @@
 import { describe, expect, it } from "bun:test";
+import { parseNumberWords } from "@/components/assistant/voice-lab/voice-lab.number-words";
 import {
 	extractNumbers,
 	extractWordNumbers,
 	parseDigitNumber,
-	parseNumberWords,
 } from "@/components/assistant/voice-lab/voice-lab.numbers";
 import {
 	createSentenceStream,
@@ -105,6 +105,43 @@ describe("ekstraksi angka", () => {
 		).toEqual([2_500_000, 12]);
 	});
 
+	it("juta/miliar/triliun diucapkan dengan kata", () => {
+		expect(
+			parseNumberWords(
+				words(
+					"sembilan ratus empat puluh juta dua ratus empat puluh delapan ribu enam ratus delapan puluh delapan",
+				),
+			),
+		).toBe(940_248_688);
+		expect(
+			parseNumberWords(words("satu miliar dua ratus lima puluh juta")),
+		).toBe(1_250_000_000);
+		expect(parseNumberWords(words("dua triliun tiga ratus miliar"))).toBe(
+			2_300_000_000_000,
+		);
+	});
+
+	it("campuran digit + skala jadi satu angka", () => {
+		expect(
+			extractNumbers("940 juta 248 ribu 688 rupiah").map((n) => n.value),
+		).toEqual([940_248_688]);
+		expect(
+			extractNumbers("sembilan ratus empat puluh juta 248 ribu").map(
+				(n) => n.value,
+			),
+		).toEqual([940_248_000]);
+	});
+
+	it("deret kata skala saja / digit berdampingan tidak digabung", () => {
+		expect(extractWordNumbers("juta ribu rupiah")).toEqual([]);
+		expect(extractNumbers("tahun 2025 2026").map((n) => n.value)).toEqual([
+			2025, 2026,
+		]);
+		expect(
+			extractNumbers("Ada 2 juta. 3 orang hadir.").map((n) => n.value),
+		).toEqual([2_000_000, 3]);
+	});
+
 	it("'satu' yang berdiri sendiri diabaikan", () => {
 		expect(extractWordNumbers("satu-satunya banjar")).toEqual([]);
 		expect(extractWordNumbers("ada tiga banjar").map((n) => n.value)).toEqual([
@@ -170,6 +207,23 @@ describe("pencocokan jawaban", () => {
 		expect(r.score).toBeNull();
 		expect(r.extraNumbers).toEqual(["10"]);
 		expect(r.numbersChanged).toBe(true);
+	});
+
+	it("angka besar terucap utuh cocok; 'ribu' berlebih di akhir ditandai berubah", () => {
+		const claude = "Total anggaran Rp 940.248.688.";
+		const full =
+			"Total anggaran sembilan ratus empat puluh juta dua ratus empat puluh delapan ribu enam ratus delapan puluh delapan rupiah.";
+		expect(verifyAnswer(claude, full).score).toBe(1);
+		expect(
+			verifyAnswer(claude, "Total anggaran 940 juta 248 ribu 688 rupiah.")
+				.score,
+		).toBe(1);
+		const wrong = verifyAnswer(
+			claude,
+			full.replace("delapan rupiah", "delapan ribu rupiah"),
+		);
+		expect(wrong.score).toBe(0);
+		expect(wrong.numbersChanged).toBe(true);
 	});
 
 	it("nama dari daftar istilah yang tidak disebut ikut dilaporkan", () => {

@@ -1,5 +1,5 @@
 import type { SendMode } from "./voice-lab.constants";
-import type { TurnView } from "./voice-lab.types";
+import type { TurnView, VoiceLabSettings } from "./voice-lab.types";
 
 /** Satu giliran V1-B beserta pengukuran waktunya (semua `*Ms` relatif ke akhir ucapan). */
 export interface V1bTurn {
@@ -13,6 +13,8 @@ export interface V1bTurn {
 	firstAudioMs: number | null;
 	answerAudioMs: number | null;
 	sendMode: SendMode;
+	/** Pemformat angka lisan aktif untuk giliran ini (diambil saat giliran dimulai). */
+	spokenNumbers: boolean;
 	abort: AbortController;
 	/** Ditutup normal setelah GPT-Live selesai bicara (bukan Off/barge-in) → boleh dinilai. */
 	settled: boolean;
@@ -22,7 +24,7 @@ export interface V1bTurn {
 export function newV1bTurn(
 	id: number,
 	now: number,
-	sendMode: SendMode,
+	settings: Pick<VoiceLabSettings, "sendMode" | "spokenNumbers">,
 ): V1bTurn {
 	return {
 		view: {
@@ -42,7 +44,8 @@ export function newV1bTurn(
 		firstSentenceSentMs: null,
 		firstAudioMs: null,
 		answerAudioMs: null,
-		sendMode,
+		sendMode: settings.sendMode,
+		spokenNumbers: settings.spokenNumbers,
 		abort: new AbortController(),
 		settled: false,
 		recorded: false,

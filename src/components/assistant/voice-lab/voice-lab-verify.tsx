@@ -60,6 +60,12 @@ export function VoiceLabVerify({
 				<List label={t.verifyMissing} items={v.missingNumbers} />
 				<List label={t.verifyExtra} items={v.extraNumbers} />
 				<List label={t.verifyTerms} items={v.missingTerms} />
+				<List
+					label={t.verifyConversions}
+					items={v.conversions.map(
+						(c) => `${c.spoken} ≈ ${c.original} ${c.heard ? "✓" : "✗"}`,
+					)}
+				/>
 			</Stack>
 		);
 	} else if (!turn.answerText) {

@@ -45,4 +45,8 @@ export const READ_EXACT_INSTRUCTION =
 	"Saat membacakan teks dari delegasi (jawaban asisten), bacakan APA ADANYA, kata per kata. " +
 	"Jangan meringkas, menambah, atau mengubah urutan. Angka, satuan (Rp, %, jiwa, KK), " +
 	"nama tempat/banjar, dan tahun harus diucapkan persis seperti tertulis. " +
-	"Jangan menambahkan komentar sendiri tentang isi jawaban.";
+	"Jangan menambahkan komentar sendiri tentang isi jawaban. " +
+	"Angka ringkas seperti '940,2 juta' dibaca apa adanya, jangan diubah ke angka lengkap.";
+
+/** Default pemformat angka lisan V1-B (angka ≥ 1 juta diringkas sebelum dikirim ke GPT-Live). */
+export const DEFAULT_SPOKEN_NUMBERS = true;

@@ -147,6 +147,12 @@ export function VoiceLabSettingsPanel({
 						]}
 					/>
 				</div>
+				<Checkbox
+					label={t.spokenNumbers}
+					description={t.spokenNumbersHint}
+					checked={s.spokenNumbers}
+					onChange={(e) => onChange("spokenNumbers", e.currentTarget.checked)}
+				/>
 				<Textarea
 					label={t.liveInstructions}
 					description={`${t.instructionsHint} (${s.liveInstructions.trim().length}/${LIVE_INSTRUCTIONS_MAX})`}

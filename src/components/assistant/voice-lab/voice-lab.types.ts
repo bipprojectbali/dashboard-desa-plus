@@ -1,4 +1,5 @@
 import type { SendMode, VoiceLabPath } from "./voice-lab.constants";
+import type { NumberConversion } from "./voice-lab.spoken-numbers";
 import type { VerifyResult } from "./voice-lab.verify";
 
 /** Bentuk respons `GET /api/admin/ai-assistant/voice-lab/config`. */
@@ -36,6 +37,8 @@ export interface VoiceLabSettings {
 	liveModel: string;
 	liveInstructions: string;
 	sendMode: SendMode;
+	/** V1-B: ringkas angka besar (juta/miliar) sebelum dikirim ke GPT-Live. */
+	spokenNumbers: boolean;
 	endMethod: EndMethod;
 	threshold: number;
 	silenceMs: number;
@@ -75,6 +78,10 @@ export interface TurnView {
 	sendMode?: SendMode;
 	/** V1-B: jumlah potongan (kalimat) yang dikirim ke GPT-Live. */
 	sentencesSent?: number;
+	/** V1-B: teks yang benar-benar dikirim ke GPT-Live (sesudah pemformat angka lisan). */
+	sentText?: string;
+	/** V1-B: angka yang diringkas pemformat angka lisan pada giliran ini. */
+	conversions?: NumberConversion[];
 	/** V1-B: hasil pencocokan otomatis angka/nama (ada setelah giliran selesai). */
 	verify?: VerifyResult;
 	/** Jumlah aksi penunjuk dari jawaban (hanya ditampilkan sebagai "ada"). */
