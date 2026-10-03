@@ -2,6 +2,9 @@
 
 > Ditetapkan user 2026-10-03: **S1 suara = MVP (beta)**. Dicatat sesi induk agar setelah versi ini di-deploy kita bisa
 > lanjut membahasnya. Urutan di bawah = saran prioritas, bukan keputusan.
+>
+> **Deploy staging 0.1.65 berhasil 2026-10-03** (`stg` = `ea1e180`; publish run 37124897401 sukses; `/api/version` = 0.1.65).
+> Backup `main` sebelum deploy: branch `backup/2026-10-03` (`dd66cc5`, juga di origin).
 
 ## 1. Isi versi MVP (semua di `join`)
 
@@ -39,7 +42,11 @@
 ### D. Uji manual yang belum diisi hasilnya (`test/`)
 F2 (sebagian), F2-d, F2-e, F2-f, wall, panel+Markdown, panduan+sidebar, fix batch 1, sidebar minimize, refactor file besar, upgrade dependency, S0, S1 (lisan: "berhasil, terkesan lambat").
 
-### E. Sebelum deploy (aturan global)
+### E. Deploy & operasi
+- **`re-pull.yml` melapor gagal (HTTP 524, timeout Cloudflare ±100 dtk saat Portainer menarik image)** padahal redeploy tetap selesai (versi live 0.1.65). Usul: `re-pull.sh` (di `main`, `.github/workflows/script/`) jangan menunggu respons sinkron / tambah polling status stack, agar riwayat Actions tidak merah palsu.
+- Pastikan env `AI_CREDENTIALS_KEY` ada di stack Portainer staging (tanpa itu fitur AI tidak bisa menyimpan kredensial), lalu isi slot Chat & Suara di `/admin/ai-assistant` staging.
+
+### F. Sebelum deploy berikutnya (aturan global)
 - Checklist pre-deploy (test, type check, lint, build, migrasi tanpa gap, secret leak, CHANGELOG, rollback plan).
 - **CHANGELOG.md** belum memuat versi ini.
 - Migrasi baru sejak deploy terakhir: `add_assistant_guide_auto_advance`, `add_assistant_voice_s1` (+ migrasi pondasi AI bila belum di staging) — semuanya idempoten.
