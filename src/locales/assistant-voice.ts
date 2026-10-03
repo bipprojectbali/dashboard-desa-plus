@@ -23,7 +23,6 @@ export interface AssistantVoiceText {
 	voiceMarker: string;
 	dismiss: string;
 	unsupported: string;
-	slotNotReady: string;
 	/** Dibacakan GPT-Live saat ucapan tak terbaca / jawaban gagal diambil. */
 	commentary: {
 		empty: string;
@@ -72,7 +71,6 @@ const id: AssistantVoiceText = {
 	voiceMarker: "Pesan suara",
 	dismiss: "Tutup pesan",
 	unsupported: "Mode suara hanya tersedia di Chrome atau Edge versi desktop.",
-	slotNotReady: "Mode suara belum disiapkan admin.",
 	commentary: {
 		empty: "Ucapan tidak terbaca. Mohon ulangi.",
 		failed: "Maaf, jawabannya gagal diambil. Silakan tanyakan lagi.",
@@ -122,7 +120,6 @@ const en: AssistantVoiceText = {
 	voiceMarker: "Voice message",
 	dismiss: "Dismiss message",
 	unsupported: "Voice mode is only available in desktop Chrome or Edge.",
-	slotNotReady: "Voice mode has not been set up by an admin.",
 	commentary: {
 		empty: "I couldn't make out what you said. Please repeat.",
 		failed: "Sorry, I couldn't get the answer. Please ask again.",
