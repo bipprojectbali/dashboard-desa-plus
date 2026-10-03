@@ -1,10 +1,10 @@
+import { createLevelMeter, type LevelMeter } from "../voice/voice-devices";
+import { openPeer, type Peer } from "../voice/voice-peer";
 import { createAnswerAudioTracker } from "./voice-lab.answer-audio";
 import { createLiveSession } from "./voice-lab.api";
 import { LIVE_INSTRUCTIONS_MAX } from "./voice-lab.constants";
-import { createLevelMeter, type LevelMeter } from "./voice-lab.devices";
 import { validateLiveInstructions } from "./voice-lab.instructions";
-import { openPeer, type Peer } from "./voice-lab.peer";
-import { wordOverlap } from "./voice-lab.text";
+import { wordOverlap } from "./voice-lab.similarity";
 import type {
 	ControllerEvents,
 	VoiceController,

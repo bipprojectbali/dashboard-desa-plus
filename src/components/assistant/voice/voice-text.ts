@@ -1,4 +1,4 @@
-/** Utilitas teks: pemotong kalimat untuk TTS bertahap & ukuran kemiripan kata. */
+/** Utilitas teks suara: pemotong kalimat, pembersih markdown, pemotong panjang. */
 
 const SENTENCE_END = /([.!?…]+["')\]]*)(\s+|$)/;
 
@@ -40,27 +40,6 @@ export function stripMarkdown(text: string): string {
 		.replace(/[*_~>]+/g, "")
 		.replace(/\s+/g, " ")
 		.trim();
-}
-
-function words(text: string): Set<string> {
-	return new Set(
-		text
-			.toLowerCase()
-			.normalize("NFKD")
-			.replace(/[^\p{L}\p{N}\s]/gu, " ")
-			.split(/\s+/)
-			.filter(Boolean),
-	);
-}
-
-/** Kemiripan kata (Jaccard, 0..1) — 1 = kata sama persis, 0 = tidak ada yang sama. */
-export function wordOverlap(a: string, b: string): number {
-	const wa = words(a);
-	const wb = words(b);
-	if (wa.size === 0 || wb.size === 0) return 0;
-	let shared = 0;
-	for (const w of wa) if (wb.has(w)) shared++;
-	return shared / (wa.size + wb.size - shared);
 }
 
 /** Potong teks panjang menjadi potongan ≤ `max` karakter, diutamakan di batas kalimat/spasi. */

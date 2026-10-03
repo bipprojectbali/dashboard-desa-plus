@@ -1,5 +1,5 @@
+import { stripMarkdown, takeSentences } from "../voice/voice-text";
 import { askClaude, describeError, isAbort } from "./voice-lab.claude";
-import { stripMarkdown, takeSentences } from "./voice-lab.text";
 import { createTranscriber } from "./voice-lab.transcriber";
 import { createTtsPlayer } from "./voice-lab.tts";
 import type {

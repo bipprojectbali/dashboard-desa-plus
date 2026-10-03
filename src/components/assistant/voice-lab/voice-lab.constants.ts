@@ -1,3 +1,4 @@
+import type { SendMode } from "../voice/voice-answer-sender";
 /** Konstanta sisi browser halaman uji suara S0 (nilai awal bisa diubah di halaman). */
 
 export const VAD_DEFAULTS = {
@@ -28,9 +29,7 @@ export const PARAPHRASE_SIMILAR_MIN = 0.7;
 export const VOICE_LAB_PATHS = ["v2", "v1b"] as const;
 export type VoiceLabPath = (typeof VOICE_LAB_PATHS)[number];
 
-/** V1-B: jawaban Claude dikirim ke GPT-Live sekaligus ("whole") atau per kalimat selagi Claude masih menulis ("sentence"). */
-export const SEND_MODES = ["whole", "sentence"] as const;
-export type SendMode = (typeof SEND_MODES)[number];
+/** V1-B: default lab mengirim jawaban per kalimat. */
 export const DEFAULT_SEND_MODE: SendMode = "sentence";
 
 /** Sama dengan `VOICE_LAB_LIMITS.instructionsMax` di server (dijaga test). */

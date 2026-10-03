@@ -1,6 +1,4 @@
-import { SESSION_LIMITS } from "./voice-lab.constants";
-
-/** Batas waktu sesi uji: mati otomatis bila diam 2 menit, atau total 10 menit. */
+/** Jam sesi suara: mati otomatis bila diam melewati `idleMs`, atau total melewati `maxMs`. */
 
 export interface SessionClock {
 	startedAt: number;
@@ -27,7 +25,7 @@ export function touchSession(clock: SessionClock, nowMs: number): SessionClock {
 export function evaluateSession(
 	clock: SessionClock,
 	nowMs: number,
-	limits: SessionLimits = SESSION_LIMITS,
+	limits: SessionLimits,
 ): SessionVerdict {
 	if (nowMs - clock.startedAt >= limits.maxMs) return "cap";
 	if (nowMs - clock.lastActivityAt >= limits.idleMs) return "idle";
@@ -38,7 +36,7 @@ export function evaluateSession(
 export function remainingMs(
 	clock: SessionClock,
 	nowMs: number,
-	limits: SessionLimits = SESSION_LIMITS,
+	limits: SessionLimits,
 ): number {
 	const untilCap = clock.startedAt + limits.maxMs - nowMs;
 	const untilIdle = clock.lastActivityAt + limits.idleMs - nowMs;

@@ -1,6 +1,6 @@
-import { type ExtractedNumber, extractNumbers } from "./voice-lab.numbers";
-import type { NumberConversion } from "./voice-lab.spoken-numbers";
-import { stripMarkdown } from "./voice-lab.text";
+import { type ExtractedNumber, extractNumbers } from "../voice/voice-numbers";
+import type { NumberConversion } from "../voice/voice-spoken-numbers";
+import { stripMarkdown } from "../voice/voice-text";
 
 /**
  * Pencocokan otomatis jawaban Claude vs transkrip ucapan GPT-Live: angka

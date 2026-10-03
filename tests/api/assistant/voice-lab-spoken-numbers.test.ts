@@ -1,15 +1,15 @@
 import { describe, expect, it } from "bun:test";
+import { createAnswerSender } from "@/components/assistant/voice/voice-answer-sender";
+import {
+	formatSpokenNumbers,
+	SPOKEN_MIN_VALUE,
+	shortForm,
+} from "@/components/assistant/voice/voice-spoken-numbers";
 import {
 	DEFAULT_SPOKEN_NUMBERS,
 	READ_EXACT_INSTRUCTION,
 } from "@/components/assistant/voice-lab/voice-lab.constants";
 import { validateLiveInstructions } from "@/components/assistant/voice-lab/voice-lab.instructions";
-import {
-	formatSpokenNumbers,
-	SPOKEN_MIN_VALUE,
-	shortForm,
-} from "@/components/assistant/voice-lab/voice-lab.spoken-numbers";
-import { createAnswerSender } from "@/components/assistant/voice-lab/voice-lab.v1b-send";
 import { verifyAnswer } from "@/components/assistant/voice-lab/voice-lab.verify";
 
 const fmt = (s: string) => formatSpokenNumbers(s).text;

@@ -1,9 +1,13 @@
 import { describe, expect, it } from "bun:test";
 import { VOICE_LAB_LIMITS } from "@/api/assistant/voice-lab/voice-lab.constants";
 import {
+	COMMENTARY_MAX_CHARS,
+	createAnswerSender,
+	type SendMode,
+} from "@/components/assistant/voice/voice-answer-sender";
+import {
 	LIVE_INSTRUCTIONS_MAX,
 	READ_EXACT_INSTRUCTION,
-	type SendMode,
 } from "@/components/assistant/voice-lab/voice-lab.constants";
 import { validateLiveInstructions } from "@/components/assistant/voice-lab/voice-lab.instructions";
 import {
@@ -16,10 +20,6 @@ import {
 	MODULE_TERMS,
 	mergeTerms,
 } from "@/components/assistant/voice-lab/voice-lab.terms";
-import {
-	COMMENTARY_MAX_CHARS,
-	createAnswerSender,
-} from "@/components/assistant/voice-lab/voice-lab.v1b-send";
 import {
 	createSettleWatcher,
 	isSettled,

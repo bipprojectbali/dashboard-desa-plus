@@ -1,14 +1,14 @@
 import { describe, expect, it } from "bun:test";
-import { parseNumberWords } from "@/components/assistant/voice-lab/voice-lab.number-words";
+import { parseNumberWords } from "@/components/assistant/voice/voice-number-words";
 import {
 	extractNumbers,
 	extractWordNumbers,
 	parseDigitNumber,
-} from "@/components/assistant/voice-lab/voice-lab.numbers";
+} from "@/components/assistant/voice/voice-numbers";
 import {
 	createSentenceStream,
 	splitSentences,
-} from "@/components/assistant/voice-lab/voice-lab.sentences";
+} from "@/components/assistant/voice/voice-sentences";
 import { verifyAnswer } from "@/components/assistant/voice-lab/voice-lab.verify";
 
 const words = (s: string) => s.split(" ");

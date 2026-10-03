@@ -14,12 +14,12 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import type { VoiceLabText } from "@/locales/voice-lab";
+import { listInputDevices } from "../voice/voice-devices";
 import {
 	LIVE_INSTRUCTIONS_MAX,
 	READ_EXACT_INSTRUCTION,
 	VAD_LIMITS,
 } from "./voice-lab.constants";
-import { listInputDevices } from "./voice-lab.devices";
 import { validateLiveInstructions } from "./voice-lab.instructions";
 import type { VoiceLabConfig, VoiceLabSettings } from "./voice-lab.types";
 

@@ -1,9 +1,9 @@
+import { openPeer, type Peer } from "../voice/voice-peer";
 import {
 	relayTranscribeSdp,
 	requestTranscribeToken,
 	type TranscribeParams,
 } from "./voice-lab.api";
-import { openPeer, type Peer } from "./voice-lab.peer";
 import type { TranscribeMode } from "./voice-lab.types";
 
 /**

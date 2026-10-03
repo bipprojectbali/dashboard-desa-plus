@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useVoiceLabConfig } from "./use-voice-lab-config";
-import { describeError } from "./voice-lab.claude";
-import type { VoiceLabPath } from "./voice-lab.constants";
-import { VAD_DEFAULTS } from "./voice-lab.constants";
-import { createLevelMeter, openMic, stopStream } from "./voice-lab.devices";
-import { buildExport, type VoiceLabExport } from "./voice-lab.export";
-import { createLevelBus } from "./voice-lab.level-bus";
+import { createLevelMeter, openMic, stopStream } from "../voice/voice-devices";
 import {
 	evaluateSession,
 	remainingMs,
 	type SessionClock,
 	startSession,
 	touchSession,
-} from "./voice-lab.session";
+} from "../voice/voice-session-clock";
+import { useVoiceLabConfig } from "./use-voice-lab-config";
+import { describeError } from "./voice-lab.claude";
+import type { VoiceLabPath } from "./voice-lab.constants";
+import { SESSION_LIMITS, VAD_DEFAULTS } from "./voice-lab.constants";
+import { buildExport, type VoiceLabExport } from "./voice-lab.export";
+import { createLevelBus } from "./voice-lab.level-bus";
 import type { TurnMetrics } from "./voice-lab.stats";
 import { fetchVoiceLabTerms, MODULE_TERMS } from "./voice-lab.terms";
 import type {
@@ -158,13 +158,13 @@ export function useVoiceLab() {
 			session.current.stopMeter = meter.stop;
 			const now = performance.now();
 			session.current.clock = startSession(now);
-			setRemaining(remainingMs(session.current.clock, now));
+			setRemaining(remainingMs(session.current.clock, now, SESSION_LIMITS));
 			session.current.timer = setInterval(() => {
 				const clock = session.current.clock;
 				if (!clock) return;
 				const t = performance.now();
-				setRemaining(remainingMs(clock, t));
-				const verdict = evaluateSession(clock, t);
+				setRemaining(remainingMs(clock, t, SESSION_LIMITS));
+				const verdict = evaluateSession(clock, t, SESSION_LIMITS);
 				if (verdict !== "ok") stop(verdict);
 			}, TICK_MS);
 			await controller.start();
