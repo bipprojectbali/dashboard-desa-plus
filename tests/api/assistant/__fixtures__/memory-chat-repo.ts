@@ -33,6 +33,7 @@ export function createMemoryRepo() {
 				role: m.role,
 				content: m.content,
 				toolsUsed: m.toolsUsed ?? [],
+				modality: m.modality ?? "text",
 				status: m.status ?? "ok",
 				pageRoute: m.pageRoute ?? null,
 				inputTokens: m.inputTokens ?? null,

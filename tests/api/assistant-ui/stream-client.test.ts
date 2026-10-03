@@ -24,6 +24,7 @@ const DONE: AssistantChatResponse = {
 		role: "assistant",
 		content: "Rp 1.000",
 		toolsUsed: ["ringkasan_keuangan"],
+		modality: "text",
 		createdAt: "2026-10-02T00:00:00.000Z",
 	},
 	actions: [],

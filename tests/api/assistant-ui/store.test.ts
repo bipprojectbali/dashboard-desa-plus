@@ -29,6 +29,7 @@ const msg = (
 	role,
 	content: id,
 	toolsUsed: role === "assistant" ? ["ringkasan_beranda"] : [],
+	modality: "text",
 	pageRoute: "/",
 	status,
 	createdAt: "2026-10-02T00:00:00.000Z",
@@ -64,6 +65,7 @@ describe("assistantStore", () => {
 			role: "assistant",
 			content: "Hai",
 			toolsUsed: [],
+			modality: "text",
 			createdAt: "2026-10-02T00:00:00.000Z",
 		});
 		closeAssistant();
@@ -124,6 +126,7 @@ describe("assistantStore — stream & giliran", () => {
 		role: "assistant" as const,
 		content: "Jawaban final",
 		toolsUsed: ["ringkasan_keuangan"],
+		modality: "text" as const,
 		createdAt: "2026-10-02T00:00:00.000Z",
 	});
 
