@@ -87,3 +87,18 @@
 
 **Yang perlu diputuskan setelah uji:** berapa % kecocokan angka yang dianggap cukup (mis. 100% angka harus sama, gaya bahasa
 boleh beda), dan mode kirim mana yang dipakai di S1.
+
+## G. Angka lisan ringkas (commit `b2b8671`)
+
+> Diagnosa kasus "940.248.688": pencocok kita sudah benar untuk frasa lengkap; yang salah memang **GPT-Live** (membaca
+> "688 … ribu"). Pencocok juga diperbaiki untuk campuran digit + skala ("940 juta 248 ribu 688").
+> Pemformat: angka ≥ 1 juta diringkas sebelum dikirim ke GPT-Live (juta 1 desimal; miliar/triliun 2 desimal; "Rp" → "rupiah";
+> kata "sekitar" hanya bila pembulatan mengubah nilai). Teks panel tetap teks asli Claude.
+
+| # | Langkah | Yang seharusnya terlihat | Hasil |
+|---|---|---|---|
+| G1 | V1-B, toggle **"Ringkas angka besar" = aktif**, tanya *"berapa total anggaran APBDes?"* | Diucapkan ringkas, mis. "sekitar 940,2 juta rupiah"; teks panel tetap angka lengkap | |
+| G2 | Lihat kartu giliran | Baris **"940,2 juta ≈ Rp 940.248.688 ✓"**; lencana angka cocok | |
+| G3 | Matikan toggle, ulangi G1 | Angka lengkap dikirim; catat apakah GPT-Live salah baca lagi (✗) | |
+| G4 | Angka < 1 juta, tahun, persen | Tidak diringkas | |
+| G5 | Tempel JSON di §E | — | |
