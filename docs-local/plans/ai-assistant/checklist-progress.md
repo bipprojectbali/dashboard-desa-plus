@@ -264,8 +264,11 @@ harga OpenAI per menit belum dicek (sebelum produksi).
 - [ ] User menyetujui **batas parafrase** (§4) & aturan **pemformat angka lisan** (§3.3)
 - [ ] Merge `feature/ai-voice-s0` ke `join` (perintah user) — prasyarat S1
 - [ ] **S1 MVP** — suara di panel Jenna (laptop/desktop); butuh perintah eksplisit + konfirmasi worktree
-- [ ] Cek harga per menit GPT-Live sebelum produksi
-- [ ] S2 — sesi bersamaan, sweeper, diagnostik lengkap
+- [x] Cek harga per menit GPT-Live (2026-10-03): `gpt-live-1` $0,05/menit per detik → `06b` §12 (beberapa butir "perlu dikonfirmasi")
+- [ ] User meninjau perkiraan biaya `06b` §12
+- [x] `06b-fitur-3-s2.md` **Draf** ditulis (2026-10-03): batas sesi bersamaan, state machine, sweeper, perpanjangan, diagnostik admin, metrik M1–M4 (#56), §Biaya
+- [ ] **User menyetujui `06b`** (Q1–Q9) — kode S2 belum dimulai
+- [ ] S2 — sesi bersamaan, sweeper, diagnostik lengkap, metrik kepatuhan (setelah S1 di-merge & `06b` disetujui)
 - [ ] Putuskan no. 5 (`/wall`: W1/W2/W3 + info perangkat NOC) — hanya menahan S3
 - [ ] S3 — `/wall` + uji jaringan & perangkat NOC (menyusul)
 
