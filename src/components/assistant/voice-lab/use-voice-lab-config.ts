@@ -20,7 +20,7 @@ function initialSettings(config: VoiceLabConfig | null): VoiceLabSettings {
 		ttsModel: d?.ttsModel ?? "",
 		ttsVoice: d?.ttsVoice ?? "",
 		liveModel: d?.liveModel ?? "",
-		liveInstructions: READ_EXACT_INSTRUCTION,
+		liveInstructions: config?.liveInstructions ?? READ_EXACT_INSTRUCTION,
 		sendMode: DEFAULT_SEND_MODE,
 		spokenNumbers: DEFAULT_SPOKEN_NUMBERS,
 		endMethod: "vad",

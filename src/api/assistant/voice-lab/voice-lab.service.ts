@@ -1,3 +1,8 @@
+import { buildLiveSessionInstruction } from "@/config/assistant-identity";
+import {
+	type AssistantSettingsValues,
+	getAssistantSettings,
+} from "../config/settings.repo";
 import {
 	type AccessDenied,
 	type AccessUser,
@@ -43,6 +48,7 @@ export interface VoiceLabDeps extends VoiceSlotDeps {
 		user: AccessUser | null | undefined,
 	) => Promise<AccessDenied | null>;
 	fetchImpl?: FetchLike;
+	loadSettings?: () => Promise<AssistantSettingsValues>;
 }
 
 export interface VoiceLabFailure {
@@ -96,6 +102,8 @@ export interface VoiceLabConfigDto {
 	slotReady: boolean;
 	slotError: { code: string; error: string } | null;
 	defaults: typeof VOICE_LAB_DEFAULTS;
+	/** Instruksi GPT-Live bawaan = persona nama asisten + bacakan-persis bawaan (sama dengan produksi). */
+	liveInstructions: string;
 	suggestions: typeof VOICE_LAB_SUGGESTIONS;
 }
 
@@ -106,13 +114,20 @@ export async function getVoiceLabConfig(
 ): Promise<VoiceLabResult<VoiceLabConfigDto>> {
 	const denied = await authorize(user, deps);
 	if (denied) return denied;
-	const slot = await resolveVoiceSlot(deps);
+	const [slot, settings] = await Promise.all([
+		resolveVoiceSlot(deps),
+		(deps.loadSettings ?? getAssistantSettings)(),
+	]);
 	return {
 		ok: true,
 		value: {
 			slotReady: slot.ok,
 			slotError: slot.ok ? null : { code: slot.code, error: slot.error },
 			defaults: VOICE_LAB_DEFAULTS,
+			liveInstructions: buildLiveSessionInstruction(
+				settings.assistantName,
+				null,
+			),
 			suggestions: VOICE_LAB_SUGGESTIONS,
 		},
 	};

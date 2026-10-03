@@ -15,6 +15,8 @@ export interface VoiceLabConfig {
 		ttsVoice: string;
 		liveModel: string;
 	};
+	/** Persona nama asisten + bacakan-persis bawaan. */
+	liveInstructions: string;
 	suggestions: {
 		transcribeModels: string[];
 		ttsModels: string[];

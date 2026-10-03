@@ -57,6 +57,8 @@ export function VoiceLabSettingsPanel({
 			.catch(() => setDevices([]));
 	}, []);
 	const sg = config?.suggestions;
+	const defaultInstructions =
+		config?.liveInstructions ?? READ_EXACT_INSTRUCTION;
 	return (
 		<Paper withBorder p="md" radius="md">
 			<Stack gap="sm">
@@ -171,8 +173,8 @@ export function VoiceLabSettingsPanel({
 					<Button
 						size="xs"
 						variant="subtle"
-						disabled={disabled || s.liveInstructions === READ_EXACT_INSTRUCTION}
-						onClick={() => onChange("liveInstructions", READ_EXACT_INSTRUCTION)}
+						disabled={disabled || s.liveInstructions === defaultInstructions}
+						onClick={() => onChange("liveInstructions", defaultInstructions)}
 					>
 						{t.instructionsReset}
 					</Button>
