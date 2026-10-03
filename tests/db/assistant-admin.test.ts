@@ -103,8 +103,11 @@ describe("GET /api/assistant/status", () => {
 			"enabled",
 			"maxInputChars",
 			"slots",
+			"voiceAllowed",
+			"voiceConsented",
 		]);
 		expect(body.slots).toEqual({ chat: false, pointer: false, voice: false });
+		expect(body.voiceAllowed).toBe(false);
 	});
 });
 
