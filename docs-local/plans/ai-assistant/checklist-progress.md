@@ -238,18 +238,24 @@
   - [x] **Batch perbaikan 1** (2026-10-02, di-merge ke `join` atas perintah user, test 973/0, test:db 85/0, lint 0 error): `fix/pointer-manual-bugs` `ff61c43` (bug uji 2.1 & 4.1: tunggu 20 dtk setelah navigasi, pesan gagal, panel P6 dibuka lagi), `fix/role-from-db` `3c50f05` (temuan 8), `fix/voice-slot-status` `56070dc`, `fix/sidebar-collapse-rail` `56f9575` (sesi `ui_tampilan`: minimize sidebar → rel ikon). Uji manual: `test/uji-manual-fix-batch-1.md`, `test/uji-manual-ui-sidebar-minimize.md`.
   - [ ] Test: registry/izin, tool menolak target tak terdaftar, whitelist aksi di klien
 
-## 8. Fitur 3 — Suara · `06` Draf v2 menunggu persetujuan user
+## 8. Fitur 3 — Suara · `06` v3 (V1-B MVP) menunggu persetujuan user
 
 - [x] Analisa awal Fitur 3 oleh worker Orca `ai_suara` selesai → `discus/fitur-3-suara.md`; 14 pertanyaan §7 dijawab user (2026-10-02)
 - [x] Keputusan final #46–#49 (V2 dulu, S0 wajib, menit nyata, sesi, diagnostik, bisukan, penunjuk S1, izin `use-ai-voice`) tercatat di README
 - [x] `06-fitur-3-suara.md` **ditulis ulang (Draf v2)** dari semua keputusan final + verifikasi model OpenAI (2026-10-02)
-- [ ] **User menyetujui `06` Draf v2** (kode belum dimulai)
+- [x] User menyetujui `06` v2 (#50, 2026-10-02)
+- [x] S0 diuji user; keputusan #51 (V1-B utama, V2 cadangan) & #52 (MVP dulu, NOC menyusul, angka lisan ringkas, voice-lab dipertahankan) — 2026-10-03
+- [x] `06` **v3 — V1-B MVP** ditulis (arsitektur V1-B, pemformat angka lisan, usulan batas parafrase, lingkup S1/S2/S3, reuse kode S0, verifikasi docs 2026-10-03)
+- [ ] **User menyetujui `06` v3** (kode S1 belum dimulai)
+- [ ] User menyetujui **batas parafrase** (§4) & aturan **pemformat angka lisan** (§3.3)
+- [ ] Merge `feature/ai-voice-s0` ke `join` (perintah user) — prasyarat S1
+- [ ] **S1 MVP** — suara di panel Jenna (laptop/desktop); butuh perintah eksplisit + konfirmasi worktree
+- [ ] Cek harga per menit GPT-Live sebelum produksi
+- [ ] S2 — sesi bersamaan, sweeper, diagnostik lengkap
 - [ ] Putuskan no. 5 (`/wall`: W1/W2/W3 + info perangkat NOC) — hanya menahan S3
-- [ ] **S0** — halaman uji wajib (V2 vs V1-B, jaringan NOC, id-ID, echo, deteksi akhir ucapan no. 8); butuh perintah eksplisit + konfirmasi worktree
-- [ ] Tetapkan ambang cadangan (jeda "terlalu lama", kesamaan "cukup sama") setelah S0
-- [ ] Rincian checklist S1/S2/S3 ditambahkan setelah `06` disetujui dan S0 selesai
+- [ ] S3 — `/wall` + uji jaringan & perangkat NOC (menyusul)
 
-- [x] **S0 halaman uji suara** (worker `ai_suara_s0`, worktree `dashboard-desa-plus-voice-s0`, branch `feature/ai-voice-s0`: `d6b8235`, `8cee1b6`, `8140b7b`, `4ca50d0`) — `/admin/ai-assistant/voice-lab` admin-only; V2 (transkripsi `gpt-live-transcribe` → `/chat/stream` Claude → TTS `gpt-4o-mini-tts`) & V1-B (GPT-Live + delegasi klien) berdampingan; VAD browser + manual; pengukuran p50/p95; kunci hanya dari slot Suara. Dicek 0d: test 986/0, test:db 81/0, lint 0 error, merge ke `join` bersih, tanpa paket baru. Uji manual: `test/uji-manual-s0-suara.md`. **Menunggu uji user & perintah merge.**
+- [x] **S0 halaman uji suara** (worker `ai_suara_s0`, worktree `dashboard-desa-plus-voice-s0`, branch `feature/ai-voice-s0`: `d6b8235`, `8cee1b6`, `8140b7b`, `4ca50d0`) — `/admin/ai-assistant/voice-lab` admin-only; V2 (transkripsi `gpt-live-transcribe` → `/chat/stream` Claude → TTS `gpt-4o-mini-tts`) & V1-B (GPT-Live + delegasi klien) berdampingan; VAD browser + manual; pengukuran p50/p95; kunci hanya dari slot Suara. Dicek 0d: test 986/0, test:db 81/0, lint 0 error, merge ke `join` bersih, tanpa paket baru. Uji manual: `test/uji-manual-s0-suara.md`. **Sudah diuji user (#51–#52); menunggu perintah merge.**
 ## 9. Pekerjaan terpisah (sudah diputuskan, di luar AI)
 
 - [ ] `fix/api-permission-guard` — izin `view-*` ditegakkan di API + guard rute frontend, dengan test (temuan 4; **setelah P1 di-merge** karena memakai `resolveAllowedFeatures`, dan setelah P-1 karena sama-sama menyentuh `apiMiddleware`)
