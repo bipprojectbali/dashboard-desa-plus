@@ -1,6 +1,6 @@
-# 06 — Fitur 3: Suara dua arah (full-duplex) — v3 (V1-B MVP)
+# 06 — Fitur 3: Suara dua arah (full-duplex) — v3 (V1-B MVP, disetujui)
 
-> **Status: v3 — menunggu persetujuan user. S1 belum dikerjakan.**
+> **Status: v3 DISETUJUI user 2026-10-03 (#53).** Usulan batas parafrase, aturan angka lisan, kirim per kalimat disetujui; penolakan tab kedua (versi sederhana) ditarik ke S1. S1 dikerjakan sesi `ai_suara_s0` di branch `feature/ai-voice-s1`.
 > v2 disetujui 2026-10-02 (#50) dan S0 sudah diuji user. v3 menyesuaikan rancangan dengan hasil S0
 > (README #51, #52) dan `test/uji-manual-s0-suara.md`. Kode S1 baru dimulai setelah v3 disetujui **dan**
 > ada perintah + konfirmasi lokasi (worktree). Bagian "perubahan teknis" (§9) adalah **perkiraan**, bukan kontrak.
