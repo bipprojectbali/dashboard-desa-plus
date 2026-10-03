@@ -6,6 +6,11 @@ import {
 	type SendMode,
 } from "@/components/assistant/voice/voice-answer-sender";
 import {
+	createSettleWatcher,
+	isSettled,
+	SETTLE_DEFAULTS,
+} from "@/components/assistant/voice/voice-settle";
+import {
 	LIVE_INSTRUCTIONS_MAX,
 	READ_EXACT_INSTRUCTION,
 } from "@/components/assistant/voice-lab/voice-lab.constants";
@@ -20,11 +25,6 @@ import {
 	MODULE_TERMS,
 	mergeTerms,
 } from "@/components/assistant/voice-lab/voice-lab.terms";
-import {
-	createSettleWatcher,
-	isSettled,
-	SETTLE_DEFAULTS,
-} from "@/components/assistant/voice/voice-settle";
 
 function mockSender(mode: SendMode) {
 	const sent: string[] = [];
