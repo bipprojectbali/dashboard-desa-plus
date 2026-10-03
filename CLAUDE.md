@@ -11,8 +11,8 @@ Dashboard administrasi desa berbasis web untuk **Desa Darmasaba**. Full-stack ap
 | Layer | Tech |
 |---|---|
 | Runtime | Bun |
-| Backend | Elysia `^1.4.22` |
-| Frontend | React `^19` + Vite `^7.3.1` (via Bun) |
+| Backend | Elysia `^1.4.30` |
+| Frontend | React `^19` + Vite `^7.3.6` (via Bun) |
 | Router | TanStack Router (`@tanstack/react-router` `^1.170.41`) |
 | UI | Mantine `^8.3.14` + Radix UI (27 primitives) + Tailwind v4 (`@tailwindcss/vite` `^4.1.18`) |
 | State | Valtio `^2.3.0`, TanStack Query `^5.101.2` |
