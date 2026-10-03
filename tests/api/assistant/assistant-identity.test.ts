@@ -5,7 +5,6 @@ import {
 } from "@/api/assistant/prompt/system-prompt";
 import {
 	ASSISTANT_NAME_MAX_CHARS,
-	ASSISTANT_VENDOR_NAMES,
 	buildLiveSessionInstruction,
 	cleanAssistantName,
 	LIVE_INSTRUCTIONS_MAX,
@@ -13,7 +12,10 @@ import {
 	VOICE_READ_EXACT_MAX_CHARS,
 } from "@/config/assistant-identity";
 
-/** Identitas asisten sama untuk chat & suara: nama dari setelan, tanpa vendor, jujur sebagai AI. */
+/** Keputusan #55: nama vendor tidak disebut sama sekali, termasuk di aturan larangannya. */
+const VENDORS = ["OpenAI", "ChatGPT", "Claude", "Anthropic", "GPT"];
+
+/** Identitas asisten sama untuk chat & suara (#55): nama dari setelan, larangan + pengganti, tanpa vendor. */
 const BASE: SystemPromptInput = {
 	assistantName: "Sari",
 	personaNote: null,
@@ -31,19 +33,27 @@ function identitySection(prompt: string): string {
 }
 
 describe("aturan identitas di prompt chat", () => {
-	it("memakai nama dari setelan dan aturan jujur tanpa vendor", () => {
+	it("memakai nama dari setelan, arahkan ke admin, tanpa nama vendor", () => {
 		const section = identitySection(buildSystemPrompt(BASE));
-		expect(section).toContain("jawab sebagai Sari, asisten virtual Dashboard");
-		for (const vendor of ASSISTANT_VENDOR_NAMES)
-			expect(section).toContain(vendor);
-		expect(section).toContain("jangan menyangkal bahwa kamu AI");
-		expect(section).toContain("admin/pengelola");
+		expect(section).toContain(
+			"jawab bahwa kamu Sari, asisten virtual Dashboard Desa Darmasaba",
+		);
+		expect(section).toContain("detail teknis bisa ditanyakan ke admin");
+		expect(section).toContain("jangan menyangkal bahwa kamu asisten AI");
+		for (const vendor of VENDORS) expect(section).not.toContain(vendor);
 		expect(section).not.toContain("Jenna");
+	});
+
+	it("larangan aturan dasar selalu disertai pengganti", () => {
+		const p = buildSystemPrompt(BASE);
+		expect(p).toContain("sebutkan menu tempat pengguna bisa melakukannya");
+		expect(p).toContain("tolak singkat dengan sopan lalu tawarkan bantuan");
+		expect(p).toContain("sebutkan modul yang bisa dicek");
 	});
 
 	it("nama lain di setelan ikut terpakai", () => {
 		const p = buildSystemPrompt({ ...BASE, assistantName: "Made" });
-		expect(identitySection(p)).toContain("jawab sebagai Made");
+		expect(identitySection(p)).toContain("jawab bahwa kamu Made");
 	});
 
 	it("mode suara menambah aturan 2–4 kalimat tanpa markdown", () => {
@@ -56,15 +66,19 @@ describe("aturan identitas di prompt chat", () => {
 });
 
 describe("instruksi sesi GPT-Live", () => {
-	it("berisi nama, larangan mengaku vendor, dan perintah delegasi", () => {
+	it("berisi nama, delegasi, dan larangan + pengganti tanpa nama vendor", () => {
 		const text = buildLiveSessionInstruction("Sari", null);
-		expect(text).toContain(
-			"Kamu Sari, asisten virtual dashboard Desa Darmasaba",
+		expect(text).toStartWith(
+			"Kamu Sari, asisten virtual Dashboard Desa Darmasaba.",
 		);
-		expect(text).toContain("Jangan pernah mengaku ChatGPT, OpenAI");
-		expect(text).toContain("Delegasikan SEMUA pertanyaan");
-		expect(text).toContain("termasuk identitas dan teknologi");
-		expect(text).toContain(VOICE_READ_EXACT_DEFAULT);
+		expect(text).toContain("Untuk SETIAP pertanyaan pengguna");
+		expect(text).toContain("teruskan ke backend dan bacakan jawabannya");
+		expect(text).toContain(
+			"Jangan menyebut nama model atau perusahaan teknologi; bila ditanya, katakan kamu Sari",
+		);
+		expect(text).toContain("Jangan menjawab dari pengetahuanmu sendiri.");
+		for (const vendor of VENDORS) expect(text).not.toContain(vendor);
+		expect(text.endsWith(`\n${VOICE_READ_EXACT_DEFAULT}`)).toBe(true);
 		expect(text.length).toBeLessThanOrEqual(LIVE_INSTRUCTIONS_MAX);
 	});
 
