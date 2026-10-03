@@ -108,6 +108,11 @@ components/
 ├── umkm/               # Komponen halaman BUMDes (summary-cards, sales-table, top-products, dll)
 ├── keuangan/            # KPI cards, income-expense-chart, allocation-chart, dana-bantuan-card, laporan-card
 ├── sosial/              # Kesejahteraan, beasiswa, posyandu-schedule, health-records/stats, event-calendar
+│                        #   health-records.tsx = kartu utama; tab per jenis (health-ibu-hamil/balita/penderita-tab.tsx),
+│                        #   health-records.{types,api,format,paging}.ts + health-records-table-parts.tsx
+├── demografi/           # Bagian halaman Demografi; fetch-demografi.ts + parser respons bertipe (demografi-response.parse.ts)
+├── help/                # Bagian halaman Bantuan, dipakai /bantuan & /admin/help: palet, stats grid, list card,
+│                        #   modal (detail/panduan/video/dokumen), FAQ, form tiket; konten admin di admin-help-content.ts
 ├── wall/                # Widget registry & layout builder untuk NOC Video Wall
 ├── pengaturan/          # Komponen halaman pengaturan
 ├── figma/               # ImageWithFallback dan asset dari Figma
