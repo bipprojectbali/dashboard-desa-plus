@@ -44,6 +44,7 @@ import { Route as AdminHelpRouteImport } from './routes/admin/help'
 import { Route as AdminAuditLogRouteImport } from './routes/admin/audit-log'
 import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
 import { Route as AdminAiAssistantRouteImport } from './routes/admin/ai-assistant'
+import { Route as AdminAiAssistantVoiceLabRouteImport } from './routes/admin/ai-assistant_.voice-lab'
 
 const WallRoute = WallRouteImport.update({
   id: '/wall',
@@ -220,6 +221,12 @@ const AdminAiAssistantRoute = AdminAiAssistantRouteImport.update({
   path: '/ai-assistant',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminAiAssistantVoiceLabRoute =
+  AdminAiAssistantVoiceLabRouteImport.update({
+    id: '/ai-assistant_/voice-lab',
+    path: '/ai-assistant/voice-lab',
+    getParentRoute: () => AdminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/users/': typeof UsersIndexRoute
+  '/admin/ai-assistant/voice-lab': typeof AdminAiAssistantVoiceLabRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -292,6 +300,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/users': typeof UsersIndexRoute
+  '/admin/ai-assistant/voice-lab': typeof AdminAiAssistantVoiceLabRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -330,6 +339,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/users/': typeof UsersIndexRoute
+  '/admin/ai-assistant_/voice-lab': typeof AdminAiAssistantVoiceLabRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -369,6 +379,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/profile/'
     | '/users/'
+    | '/admin/ai-assistant/voice-lab'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -404,6 +415,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/profile'
     | '/users'
+    | '/admin/ai-assistant/voice-lab'
   id:
     | '__root__'
     | '/'
@@ -441,6 +453,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/profile/'
     | '/users/'
+    | '/admin/ai-assistant_/voice-lab'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -711,6 +724,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAiAssistantRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/ai-assistant_/voice-lab': {
+      id: '/admin/ai-assistant_/voice-lab'
+      path: '/ai-assistant/voice-lab'
+      fullPath: '/admin/ai-assistant/voice-lab'
+      preLoaderRoute: typeof AdminAiAssistantVoiceLabRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
   }
 }
 
@@ -725,6 +745,7 @@ interface AdminRouteRouteChildren {
   AdminSystemHealthRoute: typeof AdminSystemHealthRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminAiAssistantVoiceLabRoute: typeof AdminAiAssistantVoiceLabRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
@@ -738,6 +759,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminSystemHealthRoute: AdminSystemHealthRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminAiAssistantVoiceLabRoute: AdminAiAssistantVoiceLabRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
