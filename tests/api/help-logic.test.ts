@@ -91,3 +91,15 @@ describe("help palette", () => {
 		expect(helpCardStyle(userHelpPalette(true)).borderColor).toBe("#334155");
 	});
 });
+
+describe("admin help content", () => {
+	it("keeps stat counts in sync with the guide and FAQ lists", async () => {
+		const { adminGuideItems, adminFaqItems, adminHelpStats } = await import(
+			"@/components/help/admin-help-content"
+		);
+		const statValue = (label: string) =>
+			adminHelpStats.find((s) => s.label === label)?.value;
+		expect(statValue("Panduan Admin")).toBe(String(adminGuideItems.length));
+		expect(statValue("FAQ Tersedia")).toBe(String(adminFaqItems.length));
+	});
+});
