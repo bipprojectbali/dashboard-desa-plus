@@ -22,6 +22,9 @@ export const chatBody = t.Object({
 			lang: t.Optional(t.UnionEnum(["id", "en"])),
 		}),
 	),
+	/** "voice" = giliran dari mode suara panel (wajib `voiceSessionId` yang masih aktif). */
+	modality: t.Optional(t.UnionEnum(["text", "voice"])),
+	voiceSessionId: t.Optional(t.String({ minLength: 1, maxLength: 64 })),
 });
 
 /** Factory agar test bisa menyuntik provider/pengaturan; produksi memakai `assistantChatApi`. */

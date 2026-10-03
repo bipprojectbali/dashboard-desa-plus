@@ -14,6 +14,7 @@ import { assistantChatApi } from "./assistant/routes/chat.route";
 import { assistantChatStreamApi } from "./assistant/routes/chat-stream.route";
 import { assistantConversationsApi } from "./assistant/routes/conversations.route";
 import { assistantStatusApi } from "./assistant/routes/status.route";
+import { assistantVoiceApi } from "./assistant/routes/voice.route";
 import { assistantVoiceLabApi } from "./assistant/routes/voice-lab.route";
 import { bantuanApi } from "./bantuan";
 import { bumdes } from "./bumdes";
@@ -122,7 +123,8 @@ const api = new Elysia({
 	.use(assistantChatStreamApi)
 	.use(assistantConversationsApi)
 	.use(assistantAdminApi)
-	.use(assistantVoiceLabApi);
+	.use(assistantVoiceLabApi)
+	.use(assistantVoiceApi);
 
 if (!isProduction) {
 	api.use(
