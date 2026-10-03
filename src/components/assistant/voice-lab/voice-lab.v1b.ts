@@ -1,5 +1,6 @@
 import { createLevelMeter, type LevelMeter } from "../voice/voice-devices";
 import { openPeer, type Peer } from "../voice/voice-peer";
+import { createSettleWatcher } from "../voice/voice-settle";
 import { createAnswerAudioTracker } from "./voice-lab.answer-audio";
 import { createLiveSession } from "./voice-lab.api";
 import { LIVE_INSTRUCTIONS_MAX } from "./voice-lab.constants";
@@ -11,7 +12,6 @@ import type {
 	VoiceLabSettings,
 } from "./voice-lab.types";
 import { type AnswerContext, answerQuestion } from "./voice-lab.v1b-answer";
-import { createSettleWatcher } from "./voice-lab.v1b-settle";
 import { newV1bTurn, type V1bTurn } from "./voice-lab.v1b-turn";
 import type { VadEvent } from "./voice-lab.vad";
 import { verifyAnswer } from "./voice-lab.verify";

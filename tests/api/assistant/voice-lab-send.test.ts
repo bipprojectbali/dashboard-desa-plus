@@ -24,7 +24,7 @@ import {
 	createSettleWatcher,
 	isSettled,
 	SETTLE_DEFAULTS,
-} from "@/components/assistant/voice-lab/voice-lab.v1b-settle";
+} from "@/components/assistant/voice/voice-settle";
 
 function mockSender(mode: SendMode) {
 	const sent: string[] = [];
