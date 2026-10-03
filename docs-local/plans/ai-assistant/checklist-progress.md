@@ -27,10 +27,12 @@
 | Sidebar diminimize → rel ikon (sesi `ui_tampilan`) | ✅ di `join` | sesi siap untuk perbaikan tampilan berikutnya |
 | Fitur 3 suara — diskusi & keputusan (#38, #46–#56) | ✅ | `06` v3 V1-B MVP disetujui (#53) |
 | Fitur 3 — S0 halaman uji `/admin/ai-assistant/voice-lab` | ✅ di `join`, dipertahankan sebagai alat diagnosa | uji user: V1-B mulus, angka besar diringkas |
-| **Fitur 3 — S1 MVP suara di panel Jenna** | 🔄 dikerjakan `ai_suara_s0`, branch `feature/ai-voice-s1` | + identitas Jenna & pola prompt berlapis (#54, #55) |
+| **Fitur 3 — S1 MVP suara di panel Jenna** | ✅ **MVP (beta)**, di-merge ke `join` (`c3704d5`) 2026-10-03 (test 1161/0, test:db 95/0, build OK) | terasa lambat → lanjutan di `mvp/README.md` |
 | Fitur 3 — S2 (sesi bersamaan, sweeper, diagnostik, metrik kepatuhan #56) | ⏳ setelah S1 | |
 | Fitur 3 — S3 (`/wall`, uji NOC) | ⏳ menunggu no. 5 + info perangkat | |
-| Izin `view-*` di API (temuan 4) & upgrade dependency (better-auth dll.) | 📄 analisa siap, menunggu jawaban user | `discus/analisa-izin-api-dan-dependency.md` |
+| Upgrade dependency (better-auth 1.7.7, Router 1.170, Elysia/Vite) | ✅ di `join` (`5f051ac`) | audit 122→102 |
+| Refactor file besar (help, sosial, demografi) | ✅ di `join` (`f930713`) | |
+| Izin `view-*` di API (temuan 4) | 📄 analisa siap, menunggu jawaban user | `discus/analisa-izin-api-dan-dependency.md` |
 
 **Uji manual (hasil diisi user):** baru `uji-manual-fitur-2.md` (sebagian) — sisanya belum diisi:
 F2-d/e/f, wall, panel+Markdown, panduan+sidebar, fix batch 1, sidebar minimize, S0 (dicoba lisan, belum diisi).
@@ -252,7 +254,7 @@ harga OpenAI per menit belum dicek (sebelum produksi).
   - [x] **Batch perbaikan 1** (2026-10-02, di-merge ke `join` atas perintah user, test 973/0, test:db 85/0, lint 0 error): `fix/pointer-manual-bugs` `ff61c43` (bug uji 2.1 & 4.1: tunggu 20 dtk setelah navigasi, pesan gagal, panel P6 dibuka lagi), `fix/role-from-db` `3c50f05` (temuan 8), `fix/voice-slot-status` `56070dc`, `fix/sidebar-collapse-rail` `56f9575` (sesi `ui_tampilan`: minimize sidebar → rel ikon). Uji manual: `test/uji-manual-fix-batch-1.md`, `test/uji-manual-ui-sidebar-minimize.md`.
   - [ ] Test: registry/izin, tool menolak target tak terdaftar, whitelist aksi di klien
 
-## 8. Fitur 3 — Suara · `06` v3 disetujui (#53) · S0 ✅ · S1 🔄
+## 8. Fitur 3 — Suara · `06` v3 disetujui (#53) · S0 ✅ · S1 ✅ MVP · S2/S3 ⏳
 
 - [x] Analisa awal Fitur 3 oleh worker Orca `ai_suara` selesai → `discus/fitur-3-suara.md`; 14 pertanyaan §7 dijawab user (2026-10-02)
 - [x] Keputusan final #46–#49 (V2 dulu, S0 wajib, menit nyata, sesi, diagnostik, bisukan, penunjuk S1, izin `use-ai-voice`) tercatat di README
