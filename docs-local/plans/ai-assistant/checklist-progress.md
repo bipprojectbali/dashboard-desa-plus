@@ -11,19 +11,33 @@
 > Rujukan: `03-pondasi.md` (disetujui), `04`–`06` (fitur), `07-roadmap.md`, `discus/*`.
 > Revisi 2 (2026-10-01): diselaraskan ulang dengan seluruh keputusan; ditambah §9 pembagian kerja lintas sesi.
 
-## Ringkasan progres (diperbarui sesi induk 0d, 2026-10-01)
+## Ringkasan progres (diperbarui sesi induk 0d, 2026-10-03)
 
-| Tahap | Status | Lokasi |
+> Rencana awal (`00-design-plan.md`): **Pondasi → Fitur 1 chat → Fitur 2 penunjuk → Fitur 3 suara**, satu per satu.
+> Status: **on track** — Pondasi, F1, F2 selesai di `join`; F3 sedang S1 (MVP). Cabang tambahan di bawah semuanya hasil
+> uji/permintaan user dan sudah di `join`, kecuali yang ditandai.
+
+| Tahap | Status | Catatan |
 |---|---|---|
-| P-1 verifikasi API | ✅ selesai, di `join` & `origin/join` | — |
-| P1 data, izin, enkripsi | ✅ selesai, di `join` (lokal, belum di-push) | `feature/ai-assistant-pondasi` |
-| P2 otak AI (tanpa UI) | ✅ selesai (8 commit `f3e1649`…`3fcceaa`), dicek ulang 0d: test 461/0, test:db 26/0, lint error 0, tsc tidak ada error baru; **di-merge ke `join` (`325d4a1`)** atas perintah user; `join` (`74f1791`) belum di-push (21 commit di depan `origin/join`) | `feature/ai-assistant-pondasi` (sesi 61) |
-| P3 endpoint admin & status | ✅ selesai (3 commit), dicek ulang 0d: test 508/0, test:db 47/0, lint error 0, tsc tanpa error baru; **di-merge ke `join` (`1febae3`)**, belum di-push; sisa: uji koneksi ke proxy nyata bersama user | worktree `../dashboard-desa-plus-p3`, branch `feature/ai-assistant-admin-api` dari `join` `74f1791` |
-| UI `/admin/ai-assistant` | ✅ di `join`; tersambung ke endpoint P3 | `feature/ai-assistant-admin-ui` (worktree `../dashboard-desa-plus-admin-ui`, ada sesi `-91` idle) |
-| Fitur 1 | ✅ F1-c selesai & di `join` (`730563b`), generated di-commit (`44a464c`); `join` belum di-push · ✅ F1-b selesai (2 commit `e74198f`, `6fa6eac`), dicek ulang 0d: test 580/0, test:db 73/0, lint 0 error, tsc tanpa error baru; di-push ke `origin/feature/ai-assistant-chat` dan **di-merge ke `join` (`b5c72ec`)** atas perintah user; `join` belum di-push. Berikutnya F1-c (tunggu perintah) | worktree `../dashboard-desa-plus-chat`, sesi `chat-a6` |
-| Fitur 2 | ✅ Keputusan tuntas lagi (2026-10-02): **B diperluas** + klik tampilan; menunggu persetujuan akhir `05`; belum ada kode | sesi **59** (diskusi page-agent) | sesi **61** (dialihkan dari 59, keputusan user) |
-| Fitur 3 | 📄 belum dibahas | — |
-| `PROJECT-STRUCTURE.md` | ⏳ menunggu perintah | sesi 59 |
+| P-1 verifikasi API, Pondasi P1–P3, UI admin | ✅ di `join` | uji koneksi proxy nyata sudah dipakai lewat F1 |
+| Fitur 1 chat (panel, streaming SSE, riwayat DB) | ✅ di `join` | + panel tidak menutupi halaman & render Markdown (2026-10-02) |
+| Fitur 2 penunjuk (9 menu + `/wall`) | ✅ di `join` | + kiosk boleh tunjuk Status Sistem (#42) |
+| Adaptasi FOREVIA (#43–#45): panduan bertahap, sidebar rel ikon, pembatalan penunjuk | ✅ di `join` | membaca layar ditolak (#45) |
+| Perbaikan dari uji manual user (bug 2.1 & 4.1) + temuan 8 (role dari DB) + status slot Suara | ✅ di `join` | |
+| Sidebar diminimize → rel ikon (sesi `ui_tampilan`) | ✅ di `join` | sesi siap untuk perbaikan tampilan berikutnya |
+| Fitur 3 suara — diskusi & keputusan (#38, #46–#56) | ✅ | `06` v3 V1-B MVP disetujui (#53) |
+| Fitur 3 — S0 halaman uji `/admin/ai-assistant/voice-lab` | ✅ di `join`, dipertahankan sebagai alat diagnosa | uji user: V1-B mulus, angka besar diringkas |
+| **Fitur 3 — S1 MVP suara di panel Jenna** | 🔄 dikerjakan `ai_suara_s0`, branch `feature/ai-voice-s1` | + identitas Jenna & pola prompt berlapis (#54, #55) |
+| Fitur 3 — S2 (sesi bersamaan, sweeper, diagnostik, metrik kepatuhan #56) | ⏳ setelah S1 | |
+| Fitur 3 — S3 (`/wall`, uji NOC) | ⏳ menunggu no. 5 + info perangkat | |
+| Izin `view-*` di API (temuan 4) & upgrade dependency (better-auth dll.) | 📄 analisa siap, menunggu jawaban user | `discus/analisa-izin-api-dan-dependency.md` |
+
+**Uji manual (hasil diisi user):** baru `uji-manual-fitur-2.md` (sebagian) — sisanya belum diisi:
+F2-d/e/f, wall, panel+Markdown, panduan+sidebar, fix batch 1, sidebar minimize, S0 (dicoba lisan, belum diisi).
+
+**Hutang yang tercatat:** file over-limit (`help-page.tsx`, `admin/help.tsx`, `health-records.tsx` 632, `locales/id.ts` 926),
+`fetch-demografi.ts` 7 `any` + console, ±70 error `tsc` lama, perubahan `generated/api.ts`/`schema.json` belum diputuskan,
+harga OpenAI per menit belum dicek (sebelum produksi).
 
 ## 0. Keputusan
 
@@ -197,7 +211,7 @@
 - [ ] Tool tahap 2: `ringkasan_sosial`, `ringkasan_keamanan` (tanpa koordinat/kode CCTV & teks laporan warga), `ringkasan_bumdes`, `analitik_chatbot`, `cari_data` (export fungsi di `search.ts`; tanpa cuplikan deskripsi pengaduan)
 - [ ] Cek per modul apakah sumbernya punya data multi-tahun → parameter tahun bila ada (temuan 1)
 
-## 7. Fitur 2 — Penunjuk · menunggu pembahasan `05`
+## 7. Fitur 2 — Penunjuk · ✅ selesai di `join` (+ adaptasi FOREVIA, perbaikan uji)
 
 - [x] P1 pendekatan: **B** (target terdaftar, baca-saja); page-agent = opsi masa depan untuk aksi tulis — 2026-10-01
 - [x] P2 slot `pointer`: **belum dipakai** — penunjuk memakai otak chat; slot tetap ada (2026-10-01, sesi 61)
@@ -238,7 +252,7 @@
   - [x] **Batch perbaikan 1** (2026-10-02, di-merge ke `join` atas perintah user, test 973/0, test:db 85/0, lint 0 error): `fix/pointer-manual-bugs` `ff61c43` (bug uji 2.1 & 4.1: tunggu 20 dtk setelah navigasi, pesan gagal, panel P6 dibuka lagi), `fix/role-from-db` `3c50f05` (temuan 8), `fix/voice-slot-status` `56070dc`, `fix/sidebar-collapse-rail` `56f9575` (sesi `ui_tampilan`: minimize sidebar → rel ikon). Uji manual: `test/uji-manual-fix-batch-1.md`, `test/uji-manual-ui-sidebar-minimize.md`.
   - [ ] Test: registry/izin, tool menolak target tak terdaftar, whitelist aksi di klien
 
-## 8. Fitur 3 — Suara · `06` v3 (V1-B MVP) menunggu persetujuan user
+## 8. Fitur 3 — Suara · `06` v3 disetujui (#53) · S0 ✅ · S1 🔄
 
 - [x] Analisa awal Fitur 3 oleh worker Orca `ai_suara` selesai → `discus/fitur-3-suara.md`; 14 pertanyaan §7 dijawab user (2026-10-02)
 - [x] Keputusan final #46–#49 (V2 dulu, S0 wajib, menit nyata, sesi, diagnostik, bisukan, penunjuk S1, izin `use-ai-voice`) tercatat di README
