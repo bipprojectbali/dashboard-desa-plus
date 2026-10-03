@@ -135,7 +135,7 @@ describe("VoiceControlsView — aktif", () => {
 		root?.unmount();
 		const { host, calls } = controls({ status: "ready", inviteExtend: true });
 		expect(host.textContent).toContain(t.extendInvite);
-		const btn = [...host.querySelectorAll("button")].find(
+		const btn = Array.from(host.querySelectorAll("button")).find(
 			(b) => b.textContent === t.extend,
 		);
 		btn?.click();
@@ -158,7 +158,7 @@ describe("VoiceConsentBanner", () => {
 		expect(dialog?.getAttribute("role")).toBe("dialog");
 		expect(dialog?.textContent).toContain("OpenAI");
 		(q(host, "[data-voice-consent-accept]") as HTMLButtonElement).click();
-		const decline = [...host.querySelectorAll("button")].find(
+		const decline = Array.from(host.querySelectorAll("button")).find(
 			(b) => b.textContent === t.consent.decline,
 		);
 		decline?.click();

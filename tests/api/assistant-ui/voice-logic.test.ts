@@ -180,7 +180,7 @@ describe("store suara", () => {
 		voiceStore.transcript = "halo";
 		expect(isVoiceActive()).toBe(true);
 		resetVoice("selesai");
-		expect(voiceStore.status).toBe("off");
+		expect<string>(voiceStore.status).toBe("off");
 		expect(voiceStore.sessionId).toBeNull();
 		expect(voiceStore.transcript).toBe("");
 		expect(voiceStore.notice).toBe("selesai");
