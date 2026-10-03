@@ -72,6 +72,8 @@ export interface VoiceLabText {
 	metricTranscript: string;
 	metricFirstToken: string;
 	metricFirstAudio: string;
+	metricAnswerAudio: string;
+	fillerLabel: string;
 	metricOverlap: string;
 	metricEnd: string;
 	turnCol: string;
@@ -165,6 +167,8 @@ const id: VoiceLabText = {
 	metricTranscript: "Akhir ucapan → transkrip",
 	metricFirstToken: "→ token Claude pertama",
 	metricFirstAudio: "→ audio pertama",
+	metricAnswerAudio: "→ suara jawaban",
+	fillerLabel: "Pengisi (sebelum jawaban)",
 	metricOverlap: "Kemiripan",
 	metricEnd: "Akhir",
 	turnCol: "Giliran",
@@ -259,6 +263,8 @@ const en: VoiceLabText = {
 	metricTranscript: "End of speech → transcript",
 	metricFirstToken: "→ first Claude token",
 	metricFirstAudio: "→ first audio",
+	metricAnswerAudio: "→ answer audio",
+	fillerLabel: "Filler (before the answer)",
 	metricOverlap: "Similarity",
 	metricEnd: "End",
 	turnCol: "Turn",

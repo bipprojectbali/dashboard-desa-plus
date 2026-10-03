@@ -11,15 +11,22 @@ export interface TurnMetrics {
 	firstTokenMs: number | null;
 	/** Akhir ucapan → audio pertama terdengar. */
 	firstAudioMs: number | null;
+	/** Akhir ucapan → awal suara jawaban (setelah kalimat pengisi; V2: sama dengan audio pertama). */
+	answerAudioMs: number | null;
 	/** Hanya V1-B: kemiripan kata teks Claude vs transkrip ucapan GPT-Live (0..1). */
 	overlap: number | null;
 }
 
-export type MetricKey = "transcriptMs" | "firstTokenMs" | "firstAudioMs";
+export type MetricKey =
+	| "transcriptMs"
+	| "firstTokenMs"
+	| "firstAudioMs"
+	| "answerAudioMs";
 export const METRIC_KEYS: readonly MetricKey[] = [
 	"transcriptMs",
 	"firstTokenMs",
 	"firstAudioMs",
+	"answerAudioMs",
 ];
 
 export interface Summary {
@@ -57,6 +64,7 @@ export function summarizeByPath(
 			transcriptMs: summarize(own.map((t) => t.transcriptMs)),
 			firstTokenMs: summarize(own.map((t) => t.firstTokenMs)),
 			firstAudioMs: summarize(own.map((t) => t.firstAudioMs)),
+			answerAudioMs: summarize(own.map((t) => t.answerAudioMs)),
 		};
 	};
 	return { v2: build("v2"), v1b: build("v1b") };

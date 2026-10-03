@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import { createAnswerAudioTracker } from "@/components/assistant/voice-lab/voice-lab.answer-audio";
 import { SESSION_LIMITS } from "@/components/assistant/voice-lab/voice-lab.constants";
 import { buildExport } from "@/components/assistant/voice-lab/voice-lab.export";
 import {
@@ -161,6 +162,7 @@ describe("statistik p50/p95", () => {
 			transcriptMs: 400,
 			firstTokenMs: 900,
 			firstAudioMs,
+			answerAudioMs: firstAudioMs,
 			overlap: null,
 		});
 		const s = summarizeByPath([
@@ -242,6 +244,7 @@ describe("ekspor hasil", () => {
 		transcriptMs: 300,
 		firstTokenMs: 800,
 		firstAudioMs: 1200,
+		answerAudioMs: 1500,
 		overlap: null,
 	};
 	const base = {
@@ -283,5 +286,56 @@ describe("voice-lab chunkText", () => {
 		const parts = chunkText("a".repeat(25), 10);
 		expect(parts.join("")).toBe("a".repeat(25));
 		for (const p of parts) expect(p.length).toBeLessThanOrEqual(10);
+	});
+});
+
+describe("pendeteksi suara jawaban V1-B", () => {
+	const THR = 0.01;
+	const GAP = 400;
+	const LOUD = 0.2;
+
+	it("pengisi masih terdengar saat jawaban dikirim: jawaban = audio setelah jeda hening", () => {
+		const tr = createAnswerAudioTracker(THR, GAP);
+		expect(tr.sample(LOUD, 100)).toBeNull(); // pengisi
+		tr.sent(200);
+		expect(tr.sample(LOUD, 250)).toBeNull(); // pengisi masih jalan
+		expect(tr.sample(0, 300)).toBeNull();
+		expect(tr.sample(0, 800)).toBeNull(); // hening >= 400 ms
+		expect(tr.sample(LOUD, 900)).toBe(900); // jawaban
+		expect(tr.sample(LOUD, 1000)).toBe(900); // tetap
+	});
+
+	it("tanpa pengisi (sudah hening saat dikirim): audio pertama setelahnya = jawaban", () => {
+		const tr = createAnswerAudioTracker(THR, GAP);
+		tr.sample(LOUD, 0);
+		tr.sample(0, 100);
+		tr.sent(1000);
+		expect(tr.sample(0, 1100)).toBeNull();
+		expect(tr.sample(LOUD, 1200)).toBe(1200);
+	});
+
+	it("pengisi menyambung langsung ke jawaban tanpa jeda: tidak terukur (null)", () => {
+		const tr = createAnswerAudioTracker(THR, GAP);
+		tr.sample(LOUD, 100);
+		tr.sent(150);
+		for (let t = 200; t <= 2000; t += 100)
+			expect(tr.sample(LOUD, t)).toBeNull();
+	});
+
+	it("tidak ada hasil sebelum jawaban dikirim", () => {
+		const tr = createAnswerAudioTracker(THR, GAP);
+		expect(tr.sample(LOUD, 0)).toBeNull();
+		expect(tr.sample(0, 1000)).toBeNull();
+		expect(tr.sample(LOUD, 1100)).toBeNull();
+	});
+
+	it("sent() lagi untuk giliran berikut mengulang deteksi", () => {
+		const tr = createAnswerAudioTracker(THR, GAP);
+		tr.sent(0);
+		expect(tr.sample(LOUD, 100)).toBe(100);
+		tr.sample(0, 200);
+		tr.sent(300);
+		expect(tr.sample(0, 400)).toBeNull();
+		expect(tr.sample(LOUD, 900)).toBe(900);
 	});
 });

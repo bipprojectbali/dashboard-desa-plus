@@ -1,3 +1,4 @@
+import { createAnswerAudioTracker } from "./voice-lab.answer-audio";
 import { createLiveSession } from "./voice-lab.api";
 import { askClaude, describeError, isAbort } from "./voice-lab.claude";
 import { createLevelMeter, type LevelMeter } from "./voice-lab.devices";
@@ -5,10 +6,10 @@ import { openPeer, type Peer } from "./voice-lab.peer";
 import { chunkText, wordOverlap } from "./voice-lab.text";
 import type {
 	ControllerEvents,
-	TurnView,
 	VoiceController,
 	VoiceLabSettings,
 } from "./voice-lab.types";
+import { newV1bTurn, type V1bTurn } from "./voice-lab.v1b-turn";
 import type { VadEvent } from "./voice-lab.vad";
 
 /**
@@ -31,22 +32,12 @@ const TRANSCRIPT_WAIT_MS = 2000;
 const TRANSCRIPT_POLL_MS = 100;
 /** RMS audio GPT-Live yang dianggap "terdengar". */
 const REMOTE_AUDIBLE_RMS = 0.01;
+/** Jeda hening yang memisahkan kalimat pengisi GPT-Live dari jawaban Claude. */
+const ANSWER_GAP_MS = 400;
 /** Tunggu `session.started` setelah data channel terbuka sebelum dianggap siap. */
 const STARTED_FALLBACK_MS = 3000;
 /** Setelah jawaban dikirim, tunggu audio pertama maksimal selama ini sebelum pengukuran ditutup. */
 const AUDIO_WAIT_MS = 10_000;
-
-interface Turn {
-	view: TurnView;
-	startedAt: number;
-	endAt: number | null;
-	endMethod: "vad" | "manual";
-	transcriptMs: number | null;
-	firstTokenMs: number | null;
-	firstAudioMs: number | null;
-	abort: AbortController;
-	recorded: boolean;
-}
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
@@ -55,17 +46,21 @@ export async function createV1bController(
 ): Promise<VoiceController> {
 	const { events, getSettings } = deps;
 	let conversationId: string | undefined;
-	let current: Turn | null = null;
+	let current: V1bTurn | null = null;
 	let peer: Peer | null = null;
 	let meter: LevelMeter | null = null;
 	let closed = false;
 	const remote = new Audio();
 	const unknownTypes = new Set<string>();
 	let started = false;
+	const answerAudio = createAnswerAudioTracker(
+		REMOTE_AUDIBLE_RMS,
+		ANSWER_GAP_MS,
+	);
 
-	const emit = (t: Turn) => events.turn({ ...t.view });
+	const emit = (t: V1bTurn) => events.turn({ ...t.view });
 
-	const record = (t: Turn) => {
+	const record = (t: V1bTurn) => {
 		if (t.recorded || t.transcriptMs === null) return;
 		t.recorded = true;
 		events.metrics({
@@ -75,6 +70,7 @@ export async function createV1bController(
 			transcriptMs: t.transcriptMs,
 			firstTokenMs: t.firstTokenMs,
 			firstAudioMs: t.firstAudioMs,
+			answerAudioMs: t.answerAudioMs,
 			overlap:
 				t.view.answerText && t.view.spokenText
 					? wordOverlap(t.view.answerText, t.view.spokenText)
@@ -82,27 +78,7 @@ export async function createV1bController(
 		});
 	};
 
-	const newTurn = (now: number): Turn => ({
-		view: {
-			id: events.nextTurnId(),
-			path: "v1b",
-			state: "listening",
-			userText: "",
-			answerText: "",
-			spokenText: "",
-			actionCount: 0,
-		},
-		startedAt: now,
-		endAt: null,
-		endMethod: "vad",
-		transcriptMs: null,
-		firstTokenMs: null,
-		firstAudioMs: null,
-		abort: new AbortController(),
-		recorded: false,
-	});
-
-	const closeTurn = (t: Turn | null) => {
+	const closeTurn = (t: V1bTurn | null) => {
 		if (!t) return;
 		if (
 			["listening", "transcribing", "thinking", "answering"].includes(
@@ -116,9 +92,9 @@ export async function createV1bController(
 		record(t);
 	};
 
-	const beginTurn = (now: number): Turn => {
+	const beginTurn = (now: number): V1bTurn => {
 		closeTurn(current);
-		const turn = newTurn(now);
+		const turn = newV1bTurn(events.nextTurnId(), now);
 		current = turn;
 		emit(turn);
 		events.status("listening");
@@ -126,7 +102,7 @@ export async function createV1bController(
 		return turn;
 	};
 
-	const waitForUserText = async (turn: Turn) => {
+	const waitForUserText = async (turn: V1bTurn) => {
 		const until = performance.now() + TRANSCRIPT_WAIT_MS;
 		while (!turn.view.userText.trim() && performance.now() < until)
 			await sleep(TRANSCRIPT_POLL_MS);
@@ -185,6 +161,9 @@ export async function createV1bController(
 			turn.view.answerText = res.text;
 			turn.view.actionCount = res.actionCount;
 			emit(turn);
+			turn.view.fillerChars = turn.view.spokenText.length;
+			emit(turn);
+			answerAudio.sent(performance.now());
 			sendCommentary(delegationId, res.text);
 			events.log("jawaban Claude dikirim ke GPT-Live");
 			setTimeout(() => {
@@ -260,14 +239,15 @@ export async function createV1bController(
 			});
 			meter = createLevelMeter(stream, (rms, now) => {
 				const turn = current;
-				if (
-					turn &&
-					turn.endAt !== null &&
-					turn.firstAudioMs === null &&
-					rms > REMOTE_AUDIBLE_RMS
-				) {
+				const answerAt = answerAudio.sample(rms, now);
+				if (!turn || turn.endAt === null) return;
+				if (turn.firstAudioMs === null && rms > REMOTE_AUDIBLE_RMS) {
 					turn.firstAudioMs = now - turn.endAt;
 					events.log("audio pertama terdengar");
+				}
+				if (turn.answerAudioMs === null && answerAt !== null) {
+					turn.answerAudioMs = answerAt - turn.endAt;
+					events.log("audio jawaban terdengar");
 				}
 			});
 		},

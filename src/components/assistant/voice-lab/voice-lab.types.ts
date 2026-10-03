@@ -67,6 +67,8 @@ export interface TurnView {
 	userText: string;
 	answerText: string;
 	spokenText: string;
+	/** V1-B: jumlah karakter awal `spokenText` yang diucapkan sebelum jawaban Claude dikirim (kalimat pengisi). */
+	fillerChars?: number;
 	/** Jumlah aksi penunjuk dari jawaban (hanya ditampilkan sebagai "ada"). */
 	actionCount: number;
 	error?: string;

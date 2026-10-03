@@ -7,6 +7,7 @@ import {
 	Text,
 	Title,
 } from "@mantine/core";
+import { AssistantMarkdown } from "@/components/assistant/assistant-markdown";
 import type { VoiceLabText } from "@/locales/voice-lab";
 import type { TurnState, TurnView } from "./voice-lab.types";
 
@@ -21,6 +22,24 @@ function stateLabel(t: VoiceLabText, state: TurnState): string {
 		error: t.stateError,
 	};
 	return map[state];
+}
+
+function ClaudeText({ text }: { text: string }) {
+	return text ? <AssistantMarkdown source={text} /> : <Text size="sm">…</Text>;
+}
+
+function SpokenText({ t, turn }: { t: VoiceLabText; turn: TurnView }) {
+	const filler = turn.fillerChars ?? 0;
+	if (!turn.spokenText) return <Text size="sm">…</Text>;
+	if (filler <= 0) return <Text size="sm">{turn.spokenText}</Text>;
+	return (
+		<Stack gap={4}>
+			<Text size="xs" c="dimmed" fs="italic" title={t.fillerLabel}>
+				{t.fillerLabel}: {turn.spokenText.slice(0, filler).trim()}
+			</Text>
+			<Text size="sm">{turn.spokenText.slice(filler).trim() || "…"}</Text>
+		</Stack>
+	);
 }
 
 function TurnCard({ t, turn }: { t: VoiceLabText; turn: TurnView }) {
@@ -54,17 +73,17 @@ function TurnCard({ t, turn }: { t: VoiceLabText; turn: TurnView }) {
 							<Text size="xs" c="dimmed">
 								{t.claudeOriginal}
 							</Text>
-							<Text size="sm">{turn.answerText || "…"}</Text>
+							<ClaudeText text={turn.answerText} />
 						</div>
 						<div>
 							<Text size="xs" c="dimmed">
 								{t.gptLiveSpoken}
 							</Text>
-							<Text size="sm">{turn.spokenText || "…"}</Text>
+							<SpokenText t={t} turn={turn} />
 						</div>
 					</SimpleGrid>
 				) : (
-					<Text size="sm">{turn.answerText || "…"}</Text>
+					<ClaudeText text={turn.answerText} />
 				)}
 				{turn.error && (
 					<Text size="xs" c="red">

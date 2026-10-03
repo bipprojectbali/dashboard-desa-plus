@@ -26,6 +26,7 @@ function metricLabel(t: VoiceLabText, key: MetricKey): string {
 		transcriptMs: t.metricTranscript,
 		firstTokenMs: t.metricFirstToken,
 		firstAudioMs: t.metricFirstAudio,
+		answerAudioMs: t.metricAnswerAudio,
 	}[key];
 }
 
