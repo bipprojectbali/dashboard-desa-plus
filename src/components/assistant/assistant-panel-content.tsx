@@ -8,6 +8,7 @@ import { AssistantHeader } from "./assistant-header";
 import { AssistantMessageList } from "./assistant-message-list";
 import { PANEL_BODY_STYLE } from "./assistant-panel.styles";
 import { useAssistantChat } from "./use-assistant-chat";
+import { AssistantVoicePanel } from "./voice/assistant-voice-panel";
 
 export interface AssistantPanelContentProps {
 	status: AssistantStatusDto;
@@ -15,6 +16,8 @@ export interface AssistantPanelContentProps {
 	pathname: string;
 	/** Tidak diisi = mode tertanam (tanpa perbesar & tutup). */
 	onClose?: () => void;
+	/** Tampilkan mode suara (tidak di /wall). */
+	voice?: boolean;
 }
 
 /**
@@ -27,6 +30,7 @@ export function AssistantPanelContent({
 	allowed,
 	pathname,
 	onClose,
+	voice = true,
 }: AssistantPanelContentProps) {
 	const { view } = useSnapshot(assistantStore);
 	const chat = useAssistantChat(status.maxInputChars);
@@ -47,6 +51,7 @@ export function AssistantPanelContent({
 							onLoadOlder={chat.loadOlder}
 							onPointSource={chat.pointToSource}
 						/>
+						{voice ? <AssistantVoicePanel status={status} /> : null}
 						<AssistantComposer
 							name={status.assistantName}
 							maxInputChars={status.maxInputChars}

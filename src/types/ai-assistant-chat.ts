@@ -8,6 +8,9 @@ import type { UiAction } from "./ai-assistant-pointer";
 
 export type AssistantLang = "id" | "en";
 
+/** Cara pesan dikirim: ketik (`text`) atau mode suara (`voice`, ikon 🎙 di riwayat). */
+export type AssistantModality = "text" | "voice";
+
 /**
  * Respons `GET /api/assistant/status` — dipakai tombol FAB & panel. Hanya
  * boolean + nama + batas input, tanpa detail kredensial.
@@ -19,6 +22,10 @@ export interface AssistantStatusDto {
 	maxInputChars: number;
 	/** `pointer` ikut `chat` bila kosong; `voice` hanya true bila slot voice sendiri siap. */
 	slots: { chat: boolean; pointer: boolean; voice: boolean };
+	/** Mode suara boleh dipakai: asisten aktif + slot voice siap + izin `use-ai-voice`. */
+	voiceAllowed: boolean;
+	/** Persetujuan mikrofon sudah diberikan user (tersimpan di DB, sekali per user). */
+	voiceConsented: boolean;
 }
 
 export interface AssistantPageContext {
@@ -31,6 +38,9 @@ export interface AssistantChatRequest {
 	conversationId?: string;
 	message: string;
 	pageContext?: AssistantPageContext;
+	/** `voice` = giliran mode suara: wajib `voiceSessionId` aktif, jawaban ringkas tanpa markdown. */
+	modality?: AssistantModality;
+	voiceSessionId?: string;
 }
 
 /** Aksi UI fitur 2 (penunjuk); kosong bila jawaban tidak menunjuk apa pun. */
@@ -42,6 +52,7 @@ export interface AssistantMessageDto {
 	content: string;
 	/** Nama tool sumber data — untuk label "Sumber". */
 	toolsUsed: string[];
+	modality: AssistantModality;
 	/** ISO 8601. */
 	createdAt: string;
 }

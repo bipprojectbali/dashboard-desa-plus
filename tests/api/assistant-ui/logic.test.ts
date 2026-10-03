@@ -26,6 +26,8 @@ const READY: AssistantStatusDto = {
 	assistantName: "Sari",
 	maxInputChars: 2000,
 	slots: { chat: true, pointer: true, voice: true },
+	voiceAllowed: true,
+	voiceConsented: true,
 };
 const VERIFIED = { emailVerified: true };
 const ALLOWED = ["use-ai-assistant", "view-dashboard"];

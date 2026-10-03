@@ -1,11 +1,13 @@
 import { describe, expect, it } from "bun:test";
 import api from "@/api";
 import {
+	DEFAULT_ASSISTANT_SETTINGS,
 	emptyProviderConfig,
 	type ProviderConfigRow,
 	type ProviderSlot,
 } from "@/api/assistant/config/settings.repo";
-import { SAFETY_IDENTIFIER_HEADER } from "@/api/assistant/voice-lab/voice-lab.constants";
+import { SAFETY_IDENTIFIER_HEADER } from "@/api/assistant/voice/voice.constants";
+import { hashSafetyIdentifier } from "@/api/assistant/voice/voice.slot";
 import {
 	createLiveSession,
 	createTranscribeToken,
@@ -14,7 +16,7 @@ import {
 	relayTranscribeCall,
 	type VoiceLabDeps,
 } from "@/api/assistant/voice-lab/voice-lab.service";
-import { hashSafetyIdentifier } from "@/api/assistant/voice-lab/voice-lab.slot";
+import { buildLiveSessionInstruction } from "@/config/assistant-identity";
 
 // test-only: kunci & ID palsu
 const FAKE_KEY = "sk-test-voice-slot-key";
@@ -56,6 +58,10 @@ function makeDeps(
 	const decrypted: string[] = [];
 	const deps: VoiceLabDeps = {
 		checkAdmin: async () => null,
+		loadSettings: async () => ({
+			...DEFAULT_ASSISTANT_SETTINGS,
+			assistantName: "Sari",
+		}),
 		loadConfigs: async () => configs(voice),
 		decrypt: async (payload) => {
 			decrypted.push(payload);
@@ -151,6 +157,17 @@ describe("voice-lab slot Suara", () => {
 		expect(text).not.toContain(FAKE_KEY);
 		expect(text).not.toContain("voice.example.test");
 		if (r.ok) expect(r.value.slotReady).toBe(true);
+	});
+
+	it("config: instruksi bawaan memuat persona nama asisten, ≤ 500 karakter", async () => {
+		const { deps } = makeDeps();
+		const r = await getVoiceLabConfig(ADMIN, deps);
+		if (!r.ok) throw new Error(r.error);
+		expect(r.value.liveInstructions).toBe(
+			buildLiveSessionInstruction("Sari", null),
+		);
+		expect(r.value.liveInstructions).toContain("Kamu Sari");
+		expect(r.value.liveInstructions.length).toBeLessThanOrEqual(500);
 	});
 
 	it("config pada slot kosong: slotReady false + alasan", async () => {

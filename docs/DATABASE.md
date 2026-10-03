@@ -113,7 +113,7 @@ Matrix permission per role x feature (dipakai halaman admin Role & Permission).
 id, role, feature, allowed, createdAt, updatedAt
 ```
 `@@unique([role, feature])`
-Fitur tanpa baris jatuh ke `DEFAULT_PERMISSIONS` per fitur (`resolveAllowedFeatures()` di `src/utils/permission.ts`); role `admin` selalu semua fitur. Migrasi `add_ai_assistant` menyisipkan `use-ai-assistant` untuk `admin` & `user`.
+Fitur tanpa baris jatuh ke `DEFAULT_PERMISSIONS` per fitur (`resolveAllowedFeatures()` di `src/utils/permission.ts`); role `admin` selalu semua fitur. Migrasi `add_ai_assistant` menyisipkan `use-ai-assistant` untuk `admin` & `user`; migrasi `add_assistant_voice_s1` menyisipkan `use-ai-voice` (mode suara) untuk `admin` & `user` dengan `ON CONFLICT DO NOTHING`.
 
 ---
 
@@ -297,8 +297,12 @@ dailyMessageLimitPerUser (50), dailyTokenLimitGlobal (1000000), ratePerMinutePer
 maxInputChars (2000), historyWindow (20), retentionDays (90) — 0 = tanpa batas / simpan selamanya,
 kioskUserId? (akun kiosk /wall, relasi User onDelete SetNull), dailyMessageLimitKiosk (100),
 guideAutoAdvanceSec (8, rentang 3–60 — jeda lanjut otomatis panduan bertahap di /wall),
+voiceDailyMinutesUser (60), voiceDailyMinutesKiosk (60) — 0 = tanpa batas,
+voiceSessionMaxMinutes (10), voiceIdleOffSeconds (120),
+voiceLiveModel ("gpt-live-1"), voiceName?, voiceReadExactInstruction?,
 updatedAt, updatedBy?
 ```
+Kolom `voice*` (migrasi `add_assistant_voice_s1`) mengatur mode suara Jenna: kuota menit harian per WITA (akun kiosk memakai `voiceDailyMinutesKiosk`), batas durasi per sesi (bisa diperpanjang manual), auto-mati setelah hening, model & suara GPT-Live, serta instruksi "bacakan persis" yang digabung server dengan persona (nama dari `assistantName`). Default kode di `src/types/ai-assistant-voice.ts` (`VOICE_SETTINGS_DEFAULTS`) wajib sama dengan default skema.
 Akun kiosk dipakai bersama di layar `/wall`; bila `userId === kioskUserId`, `dailyMessageLimitKiosk` menggantikan `dailyMessageLimitPerUser` (0 = tanpa batas). Akun kiosk dihapus → `kioskUserId` jadi `null`, pengaturan tetap ada. `guideAutoAdvanceSec` (migrasi `add_assistant_guide_auto_advance`, `ADD COLUMN IF NOT EXISTS ... DEFAULT 8`) hanya dipakai layar `/wall`; halaman biasa selalu menunggu tombol Lanjut.
 
 #### `AiProviderConfig`
@@ -319,9 +323,25 @@ id, userId, title (default "Percakapan baru"), createdAt, updatedAt
 Satu pesan dalam percakapan (cascade dari `AssistantConversation`). Hasil mentah tool **tidak** disimpan — hanya nama tool di `toolsUsed`. `userId` didenormalisasi untuk kuota harian tanpa join; kuota & statistik dihitung dari tabel ini (tidak ada tabel usage terpisah).
 ```
 id, conversationId, userId, role ("user" | "assistant"), content, toolsUsed (String[]),
-pageRoute?, status ("ok" | "error" | "limited"), inputTokens?, outputTokens?, latencyMs?, createdAt
+pageRoute?, status ("ok" | "error" | "limited"), modality ("text" | "voice", default "text"),
+inputTokens?, outputTokens?, latencyMs?, createdAt
 ```
 Index: `[conversationId, createdAt]`, `[userId, createdAt]`, `[createdAt]` (job retensi).
+`modality = "voice"` menandai giliran mode suara (ikon 🎙 di riwayat); giliran suara tetap dihitung sebagai pesan kuota teks.
+
+#### `AssistantVoiceSession`
+Satu sesi mode suara (relasi `User`, cascade delete). Menit dihitung server dari detik nyata lewat start → heartbeat (~15 dtk) → close; audio & transkrip **tidak** disimpan. Satu user hanya boleh punya satu sesi aktif — sesi dengan `lastHeartbeatAt` basi dianggap selesai dan ditutup malas (`endReason "stale"`, ditagih sampai heartbeat terakhir). Start yang gagal → `status "failed"`, `billedSeconds 0`.
+```
+id, userId, status ("starting" | "active" | "ended" | "failed"), startedAt, lastHeartbeatAt,
+endedAt?, billedSeconds (0), extendedSeconds (0), endReason?
+```
+Index: `[userId, startedAt]` (kuota harian), `[status]` (cek sesi aktif).
+
+#### `AssistantVoiceConsent`
+Persetujuan mikrofon sekali per user (PK `userId`, cascade delete) — tersimpan di DB supaya banner tidak muncul lagi di perangkat lain.
+```
+userId, acceptedAt
+```
 
 ---
 

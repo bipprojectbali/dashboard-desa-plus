@@ -33,6 +33,13 @@ const settingsBody = t.Object({
 	kioskUserId: t.Union([t.String(), t.Null()]),
 	dailyMessageLimitKiosk: t.Number(),
 	guideAutoAdvanceSec: t.Number(),
+	voiceLiveModel: t.String({ maxLength: 64 }),
+	voiceName: t.Union([t.String({ maxLength: 32 }), t.Null()]),
+	voiceReadExactInstruction: t.Union([t.String({ maxLength: 1000 }), t.Null()]),
+	voiceDailyMinutesUser: t.Number(),
+	voiceDailyMinutesKiosk: t.Number(),
+	voiceSessionMaxMinutes: t.Number(),
+	voiceIdleOffSeconds: t.Number(),
 });
 
 const providerBody = t.Object({

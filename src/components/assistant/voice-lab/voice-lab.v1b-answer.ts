@@ -1,7 +1,7 @@
+import { createAnswerSender } from "../voice/voice-answer-sender";
+import { formatSpokenNumbers } from "../voice/voice-spoken-numbers";
 import { askClaude, describeError, isAbort } from "./voice-lab.claude";
-import { formatSpokenNumbers } from "./voice-lab.spoken-numbers";
 import type { ControllerEvents } from "./voice-lab.types";
-import { createAnswerSender } from "./voice-lab.v1b-send";
 import type { V1bTurn } from "./voice-lab.v1b-turn";
 
 /**

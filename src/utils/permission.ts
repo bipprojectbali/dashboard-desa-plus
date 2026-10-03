@@ -15,6 +15,7 @@ export const FEATURES = [
 	{ key: "view-keamanan", label: "Keamanan" },
 	{ key: "sync-noc", label: "Sinkronisasi Data (NOC)" },
 	{ key: "use-ai-assistant", label: "AI Assistant" },
+	{ key: "use-ai-voice", label: "AI Assistant — Mode Suara" },
 ] as const;
 
 export type FeatureKey = (typeof FEATURES)[number]["key"];
@@ -34,8 +35,8 @@ const VIEW_FEATURES: FeatureKey[] = [
 ];
 
 export const DEFAULT_PERMISSIONS: Record<AppRole, FeatureKey[]> = {
-	admin: [...VIEW_FEATURES, "sync-noc", "use-ai-assistant"],
-	user: [...VIEW_FEATURES, "use-ai-assistant"],
+	admin: [...VIEW_FEATURES, "sync-noc", "use-ai-assistant", "use-ai-voice"],
+	user: [...VIEW_FEATURES, "use-ai-assistant", "use-ai-voice"],
 };
 
 /**

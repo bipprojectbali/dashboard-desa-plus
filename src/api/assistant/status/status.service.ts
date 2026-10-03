@@ -8,7 +8,17 @@ import {
 	type ProviderConfigRow,
 	type ProviderSlot,
 } from "../config/settings.repo";
+import { type AssistantPrincipal, hasVoicePermission } from "../http/access";
 import { isSlotUsable, pickSlot } from "../provider/resolve";
+import { hasConsent } from "../voice/voice.session.repo";
+
+/** Hak mode suara user ini: izin `use-ai-voice` & persetujuan mikrofon. */
+export interface VoiceAccess {
+	permitted: boolean;
+	consented: boolean;
+}
+
+const NO_VOICE: VoiceAccess = { permitted: false, consented: false };
 
 /**
  * Susun status dari pengaturan & slot. Slot `pointer` dianggap siap bila bisa
@@ -24,6 +34,7 @@ export function buildAssistantStatus(
 	>,
 	configs: Record<ProviderSlot, ProviderConfigRow>,
 	cryptoConfigured: boolean,
+	voice: VoiceAccess = NO_VOICE,
 ): AssistantStatusDto {
 	const slots = {} as Record<ProviderSlot, boolean>;
 	for (const slot of PROVIDER_SLOTS) {
@@ -38,14 +49,23 @@ export function buildAssistantStatus(
 		assistantName: settings.assistantName,
 		maxInputChars: settings.maxInputChars,
 		slots,
+		voiceAllowed: settings.enabled && slots.voice && voice.permitted,
+		voiceConsented: voice.consented,
 	};
 }
 
-/** Status asisten saat ini (pengaturan & slot dari cache 30 detik). */
-export async function getAssistantStatus(): Promise<AssistantStatusDto> {
-	const [settings, configs] = await Promise.all([
+/** Status asisten untuk user ini (pengaturan & slot dari cache 30 detik, persetujuan suara dari DB). */
+export async function getAssistantStatus(
+	principal: AssistantPrincipal,
+): Promise<AssistantStatusDto> {
+	const permitted = hasVoicePermission(principal);
+	const [settings, configs, consented] = await Promise.all([
 		getAssistantSettings(),
 		getProviderConfigs(),
+		permitted ? hasConsent(principal.user.id) : Promise.resolve(false),
 	]);
-	return buildAssistantStatus(settings, configs, isSecretCryptoConfigured());
+	return buildAssistantStatus(settings, configs, isSecretCryptoConfigured(), {
+		permitted,
+		consented,
+	});
 }

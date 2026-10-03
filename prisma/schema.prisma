@@ -22,16 +22,16 @@ model User {
   apiKeys       ApiKey[]
 
   // Relations
-  discussions       Discussion[]
-  events            Event[]
-  complaints        Complaint[]         @relation("ComplaintReporter")
-  assignedComplaints Complaint[]        @relation("ComplaintAssignee")
-  complaintUpdates  ComplaintUpdate[]
-  serviceLetters    ServiceLetter[]
-  innovationIdeas   InnovationIdea[]    @relation("IdeaReviewer")
-  healthRecords     HealthRecord[]
-  populationDynamics PopulationDynamic[]
-  budgetTransactions BudgetTransaction[]
+  discussions            Discussion[]
+  events                 Event[]
+  complaints             Complaint[]             @relation("ComplaintReporter")
+  assignedComplaints     Complaint[]             @relation("ComplaintAssignee")
+  complaintUpdates       ComplaintUpdate[]
+  serviceLetters         ServiceLetter[]
+  innovationIdeas        InnovationIdea[]        @relation("IdeaReviewer")
+  healthRecords          HealthRecord[]
+  populationDynamics     PopulationDynamic[]
+  budgetTransactions     BudgetTransaction[]
   posyandus              Posyandu[]
   securityReports        SecurityReport[]
   notificationPreference NotificationPreference?
@@ -39,10 +39,13 @@ model User {
   keamananPreference     KeamananPreference?
   aksesPreference        AksesPreference?
   activityLogs           ActivityLog[]
-  invitations            Invitation[]  @relation("InvitedByUser")
+  invitations            Invitation[]            @relation("InvitedByUser")
   ipWhitelistEntries     IpWhitelistEntry[]
   assistantConversations AssistantConversation[]
   assistantKioskSettings AssistantSettings[]     @relation("AssistantKioskUser")
+  assistantVoiceSessions AssistantVoiceSession[]
+  assistantVoiceConsent  AssistantVoiceConsent?
+
   @@map("user")
 }
 
@@ -68,44 +71,44 @@ model NotificationPreference {
 }
 
 model UmumPreference {
-  id                String   @id @default(cuid())
-  userId            String   @unique
-  bahasa            String   @default("id")
-  zonaWaktu         String   @default("Asia/Makassar")
-  formatTanggal     String   @default("DD/MM/YYYY")
-  refreshOtomatis   Boolean  @default(true)
-  intervalRefresh   String   @default("1")
-  tampilkanGrid     Boolean  @default(true)
-  animasiTransisi   Boolean  @default(true)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  bahasa          String   @default("id")
+  zonaWaktu       String   @default("Asia/Makassar")
+  formatTanggal   String   @default("DD/MM/YYYY")
+  refreshOtomatis Boolean  @default(true)
+  intervalRefresh String   @default("1")
+  tampilkanGrid   Boolean  @default(true)
+  animasiTransisi Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("umum_preference")
 }
 
 model KeamananPreference {
-  id              String   @id @default(cuid())
-  userId          String   @unique
-  twoFactorAuth   Boolean  @default(false)
-  biometrikLogin  Boolean  @default(false)
-  ipWhitelist     Boolean  @default(false)
-  logAktivitas    Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  twoFactorAuth  Boolean  @default(false)
+  biometrikLogin Boolean  @default(false)
+  ipWhitelist    Boolean  @default(false)
+  logAktivitas   Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("keamanan_preference")
 }
 
 model AksesPreference {
-  id                        String   @id @default(cuid())
-  userId                    String   @unique
-  izinExportData            Boolean  @default(true)
-  requireApprovalPerubahan  Boolean  @default(true)
-  createdAt                 DateTime @default(now())
-  updatedAt                 DateTime @updatedAt
-  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                       String   @id @default(cuid())
+  userId                   String   @unique
+  izinExportData           Boolean  @default(true)
+  requireApprovalPerubahan Boolean  @default(true)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+  user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("akses_preference")
 }
@@ -121,7 +124,7 @@ model WallLayout {
   // pakai default preset di kode. Layout lama tanpa kolom ini tetap valid.
   sizes     Json?
   updatedAt DateTime @updatedAt
-  updatedBy String?  // userId editor terakhir (audit; nullable saat baris pertama)
+  updatedBy String? // userId editor terakhir (audit; nullable saat baris pertama)
 
   @@map("wall_layout")
 }
@@ -141,17 +144,17 @@ model IpWhitelistEntry {
 // --- KATEGORI 1: KINERJA DIVISI & AKTIVITAS ---
 
 model Division {
-  id          String   @id @default(cuid())
-  externalId  String?  @unique // ID asli dari server NOC
-  villageId   String?  @default("desa1") // ID Desa dari sistem NOC
-  name        String   @unique
-  description String?
-  color         String   @default("#1E3A5F")
-  isActive      Boolean  @default(true)
-  externalActivityCount Int @default(0) // Total kegiatan dari sistem NOC (misal: 47)
-  lastSyncedAt  DateTime? // Terakhir kali sinkronisasi dilakukan
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                    String    @id @default(cuid())
+  externalId            String?   @unique // ID asli dari server NOC
+  villageId             String?   @default("desa1") // ID Desa dari sistem NOC
+  name                  String    @unique
+  description           String?
+  color                 String    @default("#1E3A5F")
+  isActive              Boolean   @default(true)
+  externalActivityCount Int       @default(0) // Total kegiatan dari sistem NOC (misal: 47)
+  lastSyncedAt          DateTime? // Terakhir kali sinkronisasi dilakukan
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   activities      Activity[]
   documents       Document[]
@@ -284,13 +287,13 @@ model DivisionMetric {
 // --- KATEGORI 2: PENGADUAN & LAYANAN PUBLIK ---
 
 model Complaint {
-  id              String          @id @default(cuid())
-  complaintNumber String          @unique // Auto-generated: COMPLAINT-YYYYMMDD-XXX
+  id              String            @id @default(cuid())
+  complaintNumber String            @unique // Auto-generated: COMPLAINT-YYYYMMDD-XXX
   title           String
   description     String
   category        ComplaintCategory
-  status          ComplaintStatus @default(BARU)
-  priority        Priority        @default(SEDANG)
+  status          ComplaintStatus   @default(BARU)
+  priority        Priority          @default(SEDANG)
 
   reporterId    String?
   reporterPhone String?
@@ -320,12 +323,12 @@ model Complaint {
 }
 
 model ComplaintUpdate {
-  id          String          @id @default(cuid())
+  id          String           @id @default(cuid())
   complaintId String
   message     String
   status      ComplaintStatus?
   updatedBy   String
-  createdAt   DateTime        @default(now())
+  createdAt   DateTime         @default(now())
 
   complaint Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
   updater   User      @relation(fields: [updatedBy], references: [id], onDelete: Cascade)
@@ -383,15 +386,15 @@ model InnovationIdea {
 // --- KATEGORI 3: DEMOGRAFI & KEPENDUDUKAN ---
 
 model Resident {
-  id            String         @id @default(cuid())
-  nik           String         @unique
+  id            String          @id @default(cuid())
+  nik           String          @unique
   kk            String
   name          String
   birthDate     DateTime
   birthPlace    String
   gender        Gender
   religion      Religion
-  maritalStatus MaritalStatus  @default(BELUM_KAWIN)
+  maritalStatus MaritalStatus   @default(BELUM_KAWIN)
   education     EducationLevel?
   occupation    String?
 
@@ -423,9 +426,9 @@ model Resident {
 }
 
 model Banjar {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  code        String   @unique
+  id          String  @id @default(cuid())
+  name        String  @unique
+  code        String  @unique
   description String?
 
   totalPopulation Int @default(0)
@@ -444,14 +447,14 @@ model Banjar {
 // --- KATEGORI 4: KEUANGAN & ANGGARAN ---
 
 model Budget {
-  id          String   @id @default(cuid())
-  category    String   // "Belanja", "Pangan", "Pembiayaan", "Pendapatan"
-  amount      Float    @default(0)
-  percentage  Float    @default(0)
-  color       String   @default("#3B82F6")
-  fiscalYear  Int      @default(2025)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  category   String // "Belanja", "Pangan", "Pembiayaan", "Pendapatan"
+  amount     Float    @default(0)
+  percentage Float    @default(0)
+  color      String   @default("#3B82F6")
+  fiscalYear Int      @default(2025)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@unique([category, fiscalYear])
   @@map("budget")
@@ -463,7 +466,7 @@ model SdgsScore {
   id        String   @id @default(cuid())
   title     String   @unique
   score     Float    @default(0)
-  image     String?  // filename in public folder
+  image     String? // filename in public folder
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -489,28 +492,28 @@ model HealthRecord {
   resident   Resident @relation(fields: [residentId], references: [id])
   recordedBy String
   recorder   User     @relation(fields: [recordedBy], references: [id])
-  type       String   // "Pemeriksaan", "Imunisasi", "Ibu Hamil"
+  type       String // "Pemeriksaan", "Imunisasi", "Ibu Hamil"
   notes      String?
   createdAt  DateTime @default(now())
 }
 
 model EmploymentRecord {
-  id           String    @id @default(cuid())
-  residentId   String
-  resident     Resident  @relation(fields: [residentId], references: [id])
-  companyName  String
-  position     String
-  startDate    DateTime
-  endDate      DateTime?
-  isActive     Boolean   @default(true)
-  createdAt    DateTime  @default(now())
+  id          String    @id @default(cuid())
+  residentId  String
+  resident    Resident  @relation(fields: [residentId], references: [id])
+  companyName String
+  position    String
+  startDate   DateTime
+  endDate     DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
 }
 
 model PopulationDynamic {
   id           String   @id @default(cuid())
   documentedBy String
   documentor   User     @relation(fields: [documentedBy], references: [id])
-  type         String   // "KELAHIRAN", "KEMATIAN", "KEDATANGAN", "KEPERGIAN"
+  type         String // "KELAHIRAN", "KEMATIAN", "KEDATANGAN", "KEPERGIAN"
   residentName String
   eventDate    DateTime
   description  String?
@@ -518,22 +521,22 @@ model PopulationDynamic {
 }
 
 model BudgetTransaction {
-  id              String   @id @default(cuid())
-  createdBy       String
-  creator         User     @relation(fields: [createdBy], references: [id])
-  transactionNumber String @unique
-  type            String   // "PENGELUARAN", "PENDAPATAN"
-  category        String
-  amount          Float
-  description     String?
-  date            DateTime
-  createdAt       DateTime @default(now())
+  id                String   @id @default(cuid())
+  createdBy         String
+  creator           User     @relation(fields: [createdBy], references: [id])
+  transactionNumber String   @unique
+  type              String // "PENGELUARAN", "PENDAPATAN"
+  category          String
+  amount            Float
+  description       String?
+  date              DateTime
+  createdAt         DateTime @default(now())
 }
 
 model Umkm {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   banjarId    String?
-  banjar      Banjar? @relation(fields: [banjarId], references: [id])
+  banjar      Banjar?  @relation(fields: [banjarId], references: [id])
   name        String
   owner       String
   productType String?
@@ -549,23 +552,23 @@ model Posyandu {
   name          String
   location      String
   schedule      String
-  type          String   // "Ibu dan Anak", "Lansia", etc.
+  type          String // "Ibu dan Anak", "Lansia", etc.
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
 
 model SecurityReport {
-  id            String   @id @default(cuid())
-  assignedTo    String?
-  assignee      User?    @relation(fields: [assignedTo], references: [id])
-  reportNumber  String   @unique
-  title         String
-  description   String
-  location      String?
-  reportedBy    String
-  status        String   @default("BARU") // BARU, DIPROSES, SELESAI
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String   @id @default(cuid())
+  assignedTo   String?
+  assignee     User?    @relation(fields: [assignedTo], references: [id])
+  reportNumber String   @unique
+  title        String
+  description  String
+  location     String?
+  reportedBy   String
+  status       String   @default("BARU") // BARU, DIPROSES, SELESAI
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 // --- ENUMS ---
@@ -724,15 +727,15 @@ model Verification {
 }
 
 model ApiKey {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String
-  key       String   @unique
+  key       String    @unique
   userId    String
-  isActive  Boolean  @default(true)
+  isActive  Boolean   @default(true)
   expiresAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("api_key")
@@ -755,14 +758,14 @@ model Invitation {
 }
 
 model ActivityLog {
-  id          String   @id @default(cuid())
-  userId      String
-  action      String
-  detail      String?
-  ipAddress   String?
-  userAgent   String?
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  detail    String?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([createdAt])
@@ -818,22 +821,29 @@ model Faq {
 /// Pengaturan global AI Assistant. Singleton (id tetap) — satu baris untuk seluruh instance,
 /// pola sama dengan WallLayout. Semua batas di sini bisa diubah admin tanpa deploy.
 model AssistantSettings {
-  id                       String   @id @default("singleton")
-  enabled                  Boolean  @default(false) // mati sampai admin mengisi kredensial & menyalakan
-  assistantName            String   @default("Jenna")
-  personaNote              String? // instruksi tambahan admin (maks 1000 char), SELALU di bawah guardrail kode
-  dailyMessageLimitPerUser Int      @default(50) // 0 = tanpa batas
-  dailyTokenLimitGlobal    Int      @default(1000000) // total token semua user per hari WITA; 0 = tanpa batas
-  ratePerMinutePerUser     Int      @default(6)
-  maxInputChars            Int      @default(2000)
-  historyWindow            Int      @default(20) // jumlah pesan terakhir yang dikirim ke LLM
-  retentionDays            Int      @default(90) // riwayat lebih tua dari ini dihapus job harian; 0 = simpan selamanya
-  kioskUserId              String? // akun kiosk /wall yang dipakai bersama (dipilih admin)
-  dailyMessageLimitKiosk   Int      @default(100) // kuota harian akun kiosk, menggantikan dailyMessageLimitPerUser; 0 = tanpa batas
-  guideAutoAdvanceSec      Int      @default(8) // detik jeda lanjut otomatis panduan bertahap di /wall (3–60)
-  updatedAt                DateTime @updatedAt
-  updatedBy                String?
-  kioskUser                User?    @relation("AssistantKioskUser", fields: [kioskUserId], references: [id], onDelete: SetNull)
+  id                        String   @id @default("singleton")
+  enabled                   Boolean  @default(false) // mati sampai admin mengisi kredensial & menyalakan
+  assistantName             String   @default("Jenna")
+  personaNote               String? // instruksi tambahan admin (maks 1000 char), SELALU di bawah guardrail kode
+  dailyMessageLimitPerUser  Int      @default(50) // 0 = tanpa batas
+  dailyTokenLimitGlobal     Int      @default(1000000) // total token semua user per hari WITA; 0 = tanpa batas
+  ratePerMinutePerUser      Int      @default(6)
+  maxInputChars             Int      @default(2000)
+  historyWindow             Int      @default(20) // jumlah pesan terakhir yang dikirim ke LLM
+  retentionDays             Int      @default(90) // riwayat lebih tua dari ini dihapus job harian; 0 = simpan selamanya
+  kioskUserId               String? // akun kiosk /wall yang dipakai bersama (dipilih admin)
+  dailyMessageLimitKiosk    Int      @default(100) // kuota harian akun kiosk, menggantikan dailyMessageLimitPerUser; 0 = tanpa batas
+  guideAutoAdvanceSec       Int      @default(8) // detik jeda lanjut otomatis panduan bertahap di /wall (3–60)
+  voiceDailyMinutesUser     Int      @default(60) // menit suara per user per hari WITA; 0 = tanpa batas
+  voiceDailyMinutesKiosk    Int      @default(60) // menit suara akun kiosk per hari WITA; 0 = tanpa batas
+  voiceSessionMaxMinutes    Int      @default(10) // batas satu sesi suara sebelum perlu diperpanjang
+  voiceIdleOffSeconds       Int      @default(120) // hening selama ini → sesi suara mati otomatis
+  voiceLiveModel            String   @default("gpt-live-1")
+  voiceName                 String? // null = suara bawaan model GPT-Live
+  voiceReadExactInstruction String? // null = instruksi "bacakan persis" bawaan kode
+  updatedAt                 DateTime @updatedAt
+  updatedBy                 String?
+  kioskUser                 User?    @relation("AssistantKioskUser", fields: [kioskUserId], references: [id], onDelete: SetNull)
 
   @@map("assistant_settings")
 }
@@ -884,6 +894,7 @@ model AssistantMessage {
   toolsUsed      String[] // mis. ["ringkasan_keuangan"] — untuk label "sumber data" & audit
   pageRoute      String? // halaman saat bertanya
   status         String                @default("ok") // "ok" | "error" | "limited"
+  modality       String                @default("text") // "text" | "voice" — penanda 🎙 di riwayat
   inputTokens    Int?
   outputTokens   Int?
   latencyMs      Int?
@@ -894,4 +905,32 @@ model AssistantMessage {
   @@index([userId, createdAt])
   @@index([createdAt])
   @@map("assistant_message")
+}
+
+/// Satu sesi suara (WebRTC ke GPT-Live). Menit ditagih dari detik nyata yang dihitung server
+/// (start → heartbeat → close). Audio & transkrip TIDAK disimpan di sini.
+model AssistantVoiceSession {
+  id              String    @id @default(cuid())
+  userId          String
+  status          String    @default("starting") // "starting" | "active" | "ended" | "failed"
+  startedAt       DateTime  @default(now())
+  lastHeartbeatAt DateTime  @default(now())
+  endedAt         DateTime?
+  billedSeconds   Int       @default(0)
+  extendedSeconds Int       @default(0) // tambahan dari tombol "perpanjang" di atas batas sesi
+  endReason       String? // "user" | "idle" | "max_duration" | "quota" | "stale" | "start_failed" | ...
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, startedAt])
+  @@index([status])
+  @@map("assistant_voice_session")
+}
+
+/// Persetujuan mikrofon per user (banner sekali tampil).
+model AssistantVoiceConsent {
+  userId     String   @id
+  acceptedAt DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("assistant_voice_consent")
 }

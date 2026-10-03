@@ -29,7 +29,8 @@ import { usePointerRunner } from "./use-pointer-runner";
 
 export const CONVERSATIONS_KEY = ["assistant", "conversations"] as const;
 
-function asFailure(err: unknown): AssistantApiError {
+/** Galat apa pun → AssistantApiError (status null = bukan dari server). */
+export function asFailure(err: unknown): AssistantApiError {
 	return err instanceof AssistantApiError
 		? err
 		: new AssistantApiError(null, `Unexpected error: ${String(err)}`);

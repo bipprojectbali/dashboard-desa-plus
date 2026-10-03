@@ -251,6 +251,8 @@ describe("buildAssistantStatus", () => {
 			assistantName: "Jenna",
 			maxInputChars: 2000,
 			slots: { chat: true, pointer: true, voice: false },
+			voiceAllowed: false,
+			voiceConsented: false,
 		});
 	});
 	it("chat belum lengkap → semua slot false", () => {

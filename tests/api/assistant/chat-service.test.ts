@@ -183,6 +183,7 @@ describe("runChatTurn — alur end-to-end MockProvider", () => {
 				role: "assistant",
 				content: "Total anggaran Rp 1.000.",
 				toolsUsed: ["ringkasan_keuangan"],
+				modality: "text",
 				createdAt: expect.any(String),
 			},
 			actions: [],

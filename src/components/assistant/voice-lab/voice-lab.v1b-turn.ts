@@ -1,4 +1,4 @@
-import type { SendMode } from "./voice-lab.constants";
+import type { SendMode } from "../voice/voice-answer-sender";
 import type { TurnView, VoiceLabSettings } from "./voice-lab.types";
 
 /** Satu giliran V1-B beserta pengukuran waktunya (semua `*Ms` relatif ke akhir ucapan). */

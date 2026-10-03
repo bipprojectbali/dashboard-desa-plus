@@ -1,5 +1,6 @@
-import type { SendMode, VoiceLabPath } from "./voice-lab.constants";
-import type { NumberConversion } from "./voice-lab.spoken-numbers";
+import type { SendMode } from "../voice/voice-answer-sender";
+import type { NumberConversion } from "../voice/voice-spoken-numbers";
+import type { VoiceLabPath } from "./voice-lab.constants";
 import type { VerifyResult } from "./voice-lab.verify";
 
 /** Bentuk respons `GET /api/admin/ai-assistant/voice-lab/config`. */
@@ -14,6 +15,8 @@ export interface VoiceLabConfig {
 		ttsVoice: string;
 		liveModel: string;
 	};
+	/** Persona nama asisten + bacakan-persis bawaan. */
+	liveInstructions: string;
 	suggestions: {
 		transcribeModels: string[];
 		ttsModels: string[];

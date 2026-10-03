@@ -1,23 +1,31 @@
+import { buildLiveSessionInstruction } from "@/config/assistant-identity";
+import {
+	type AssistantSettingsValues,
+	getAssistantSettings,
+} from "../config/settings.repo";
 import {
 	type AccessDenied,
 	type AccessUser,
 	checkAdminUser,
 } from "../http/access";
 import {
-	VOICE_LAB_DEFAULTS,
-	VOICE_LAB_MESSAGES,
-	VOICE_LAB_SUGGESTIONS,
-	VOICE_LAB_TOKEN_TTL_SECONDS,
-	VOICE_LAB_TTS_TIMEOUT_MS,
-	VOICE_LAB_UPSTREAM_TIMEOUT_MS,
-} from "./voice-lab.constants";
+	VOICE_SLOT_MESSAGES,
+	VOICE_UPSTREAM_TIMEOUT_MS,
+} from "../voice/voice.constants";
+import { openLiveSession } from "../voice/voice.live";
 import {
 	hashSafetyIdentifier,
 	resolveVoiceSlot,
 	type VoiceSlotCredentials,
 	type VoiceSlotDeps,
-} from "./voice-lab.slot";
-import { type FetchLike, postToOpenAi } from "./voice-lab.upstream";
+} from "../voice/voice.slot";
+import { type FetchLike, postToOpenAi } from "../voice/voice.upstream";
+import {
+	VOICE_LAB_DEFAULTS,
+	VOICE_LAB_SUGGESTIONS,
+	VOICE_LAB_TOKEN_TTL_SECONDS,
+	VOICE_LAB_TTS_TIMEOUT_MS,
+} from "./voice-lab.constants";
 import {
 	type LiveSessionInput,
 	parseLiveSessionInput,
@@ -40,6 +48,7 @@ export interface VoiceLabDeps extends VoiceSlotDeps {
 		user: AccessUser | null | undefined,
 	) => Promise<AccessDenied | null>;
 	fetchImpl?: FetchLike;
+	loadSettings?: () => Promise<AssistantSettingsValues>;
 }
 
 export interface VoiceLabFailure {
@@ -86,13 +95,15 @@ const invalid = (error: string): VoiceLabFailure => ({
 const badShape = (): VoiceLabFailure => ({
 	ok: false,
 	status: 502,
-	error: VOICE_LAB_MESSAGES.upstreamBadShape,
+	error: VOICE_SLOT_MESSAGES.upstreamBadShape,
 });
 
 export interface VoiceLabConfigDto {
 	slotReady: boolean;
 	slotError: { code: string; error: string } | null;
 	defaults: typeof VOICE_LAB_DEFAULTS;
+	/** Instruksi GPT-Live bawaan = persona nama asisten + bacakan-persis bawaan (sama dengan produksi). */
+	liveInstructions: string;
 	suggestions: typeof VOICE_LAB_SUGGESTIONS;
 }
 
@@ -103,13 +114,20 @@ export async function getVoiceLabConfig(
 ): Promise<VoiceLabResult<VoiceLabConfigDto>> {
 	const denied = await authorize(user, deps);
 	if (denied) return denied;
-	const slot = await resolveVoiceSlot(deps);
+	const [slot, settings] = await Promise.all([
+		resolveVoiceSlot(deps),
+		(deps.loadSettings ?? getAssistantSettings)(),
+	]);
 	return {
 		ok: true,
 		value: {
 			slotReady: slot.ok,
 			slotError: slot.ok ? null : { code: slot.code, error: slot.error },
 			defaults: VOICE_LAB_DEFAULTS,
+			liveInstructions: buildLiveSessionInstruction(
+				settings.assistantName,
+				null,
+			),
 			suggestions: VOICE_LAB_SUGGESTIONS,
 		},
 	};
@@ -153,7 +171,7 @@ export async function createTranscribeToken(
 		slot,
 		safetyId,
 		path: "/realtime/client_secrets",
-		timeoutMs: VOICE_LAB_UPSTREAM_TIMEOUT_MS,
+		timeoutMs: VOICE_UPSTREAM_TIMEOUT_MS,
 		fetchImpl: deps.fetchImpl,
 		body: {
 			expires_after: {
@@ -199,7 +217,7 @@ export async function relayTranscribeCall(
 		slot: prepared.value.slot,
 		safetyId: prepared.value.safetyId,
 		path: "/realtime/calls",
-		timeoutMs: VOICE_LAB_UPSTREAM_TIMEOUT_MS,
+		timeoutMs: VOICE_UPSTREAM_TIMEOUT_MS,
 		fetchImpl: deps.fetchImpl,
 		accept: "application/sdp",
 		form,
@@ -221,29 +239,14 @@ export async function createLiveSession(
 	if (!input.ok) return invalid(input.error);
 	const prepared = await prepare(user, deps);
 	if (!prepared.ok) return prepared;
-	const session: Record<string, unknown> = {
-		model: input.value.model,
-		delegation: { type: "client" },
-	};
-	if (input.value.instructions) session.instructions = input.value.instructions;
-	const upstream = await postToOpenAi({
+	return openLiveSession({
 		slot: prepared.value.slot,
 		safetyId: prepared.value.safetyId,
-		path: "/live/sessions",
-		timeoutMs: VOICE_LAB_UPSTREAM_TIMEOUT_MS,
+		sdp: input.value.sdp,
+		model: input.value.model,
+		instructions: input.value.instructions,
 		fetchImpl: deps.fetchImpl,
-		body: { session, transport: { type: "webrtc", sdp: input.value.sdp } },
 	});
-	if (!upstream.ok) return upstream;
-	const json = (await upstream.response.json().catch(() => null)) as {
-		session?: { id?: unknown };
-		transport?: { sdp?: unknown };
-	} | null;
-	const sessionId = json?.session?.id;
-	const answer = json?.transport?.sdp;
-	if (typeof sessionId !== "string" || typeof answer !== "string")
-		return badShape();
-	return { ok: true, value: { sessionId, sdp: answer } };
 }
 
 /** TTS: badan audio dari OpenAI diteruskan apa adanya (stream) ke browser. */

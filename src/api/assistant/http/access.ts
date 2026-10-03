@@ -15,6 +15,7 @@ export const ACCESS_MESSAGES = {
 	unverified: UNVERIFIED_MESSAGE,
 	noPermission: "Anda tidak punya akses ke asisten AI",
 	adminOnly: "Hanya admin yang boleh mengatur asisten AI",
+	noVoicePermission: "Anda tidak punya izin memakai mode suara.",
 } as const;
 
 export interface AccessUser {
@@ -73,6 +74,24 @@ export async function authorizeAssistantUser(
 	if (!allowedFeatures.includes("use-ai-assistant"))
 		return { denied: { status: 403, error: ACCESS_MESSAGES.noPermission } };
 	return { principal: { user: { id: user.id, role }, allowedFeatures } };
+}
+
+/** Izin mode suara: pemakai asisten yang role-nya juga punya `use-ai-voice` (dari DB). */
+export function hasVoicePermission(principal: AssistantPrincipal): boolean {
+	return principal.allowedFeatures.includes("use-ai-voice");
+}
+
+/** Pemakai mode suara: authorizeAssistantUser + izin `use-ai-voice`. */
+export async function authorizeVoiceUser(
+	user: AccessUser | null | undefined,
+): Promise<{ denied: AccessDenied } | { principal: AssistantPrincipal }> {
+	const result = await authorizeAssistantUser(user);
+	if ("denied" in result) return result;
+	if (!hasVoicePermission(result.principal))
+		return {
+			denied: { status: 403, error: ACCESS_MESSAGES.noVoicePermission },
+		};
+	return result;
 }
 
 /** Versi ringkas authorizeAssistantUser: hanya penolakan (null = boleh). */

@@ -30,6 +30,7 @@ export function toMessageDto(m: MessageRow): AssistantHistoryMessageDto {
 		toolsUsed: m.toolsUsed,
 		pageRoute: m.pageRoute,
 		status: m.status,
+		modality: m.modality === "voice" ? "voice" : "text",
 		createdAt: m.createdAt.toISOString(),
 	};
 }

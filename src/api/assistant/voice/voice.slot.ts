@@ -5,7 +5,7 @@ import {
 	type ProviderConfigRow,
 	type ProviderSlot,
 } from "../config/settings.repo";
-import { VOICE_LAB_MESSAGES } from "./voice-lab.constants";
+import { VOICE_SLOT_MESSAGES } from "./voice.constants";
 
 /** Kredensial slot Suara yang siap dipakai server — tidak pernah dikirim ke browser. */
 export interface VoiceSlotCredentials {
@@ -37,7 +37,7 @@ const fail = (
 /**
  * Ambil kredensial HANYA dari slot `voice` — sengaja tidak memakai `pickSlot`
  * (yang jatuh balik ke slot Chat): kunci Chat bukan kunci OpenAI untuk suara,
- * dan halaman uji tidak boleh diam-diam memakai kunci lain.
+ * dan mode suara/halaman uji tidak boleh diam-diam memakai kunci lain.
  */
 export async function resolveVoiceSlot(
 	deps: VoiceSlotDeps = {},
@@ -45,9 +45,9 @@ export async function resolveVoiceSlot(
 	const configs = await (deps.loadConfigs ?? getProviderConfigs)();
 	const row = configs.voice;
 	if (!row.baseUrl || !row.apiKeyEnc)
-		return fail(409, "voice_slot_empty", VOICE_LAB_MESSAGES.slotEmpty);
+		return fail(409, "voice_slot_empty", VOICE_SLOT_MESSAGES.slotEmpty);
 	if (!row.enabled)
-		return fail(409, "voice_slot_disabled", VOICE_LAB_MESSAGES.slotDisabled);
+		return fail(409, "voice_slot_disabled", VOICE_SLOT_MESSAGES.slotDisabled);
 	try {
 		const apiKey = await (deps.decrypt ?? decryptSecret)(row.apiKeyEnc);
 		return {
@@ -63,8 +63,8 @@ export async function resolveVoiceSlot(
 		}
 		const missing = err.code === "KEY_MISSING" || err.code === "KEY_INVALID";
 		return missing
-			? fail(503, "crypto_unconfigured", VOICE_LAB_MESSAGES.cryptoMissing)
-			: fail(409, "key_unreadable", VOICE_LAB_MESSAGES.needsReentry);
+			? fail(503, "crypto_unconfigured", VOICE_SLOT_MESSAGES.cryptoMissing)
+			: fail(409, "key_unreadable", VOICE_SLOT_MESSAGES.needsReentry);
 	}
 }
 

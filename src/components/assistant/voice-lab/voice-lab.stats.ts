@@ -1,4 +1,5 @@
-import type { SendMode, VoiceLabPath } from "./voice-lab.constants";
+import type { SendMode } from "../voice/voice-answer-sender";
+import type { VoiceLabPath } from "./voice-lab.constants";
 
 /** Pengukuran per giliran bicara; semua `*Ms` = selisih dari akhir ucapan (null bila belum/tak terjadi). */
 export interface TurnMetrics {

@@ -1,4 +1,4 @@
-/** Akses mikrofon, pengukur level, dan cek dukungan browser untuk halaman uji S0. */
+/** Akses mikrofon, pengukur level, dan cek dukungan browser untuk mode suara. */
 
 export interface MicOptions {
 	deviceId: string;
@@ -6,7 +6,7 @@ export interface MicOptions {
 	noiseSuppression: boolean;
 }
 
-/** Chrome/Edge desktop saja yang didukung untuk uji ini. */
+/** Mode suara hanya didukung di Chrome/Edge desktop. */
 export function isSupportedBrowser(): boolean {
 	if (typeof navigator === "undefined") return false;
 	const ua = navigator.userAgent;

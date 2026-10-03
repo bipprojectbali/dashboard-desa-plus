@@ -2,6 +2,7 @@ import { proxy } from "valtio";
 import type {
 	AssistantHistoryMessageDto,
 	AssistantMessageDto,
+	AssistantModality,
 	AssistantPage,
 } from "@/types/ai-assistant-chat";
 
@@ -18,6 +19,8 @@ export interface ChatBubble {
 	toolsUsed: readonly string[];
 	/** Pertanyaan yang gagal dijawab (status "error" di server). */
 	failed?: boolean;
+	/** "voice" = giliran mode suara (penanda 🎙); kosong = teks. */
+	modality?: AssistantModality;
 }
 
 interface AssistantState {
@@ -112,6 +115,7 @@ export function historyToBubbles(
 		content: m.content,
 		toolsUsed: [...m.toolsUsed],
 		failed: m.status === "error" || undefined,
+		modality: m.modality === "voice" ? "voice" : undefined,
 	}));
 }
 
@@ -137,8 +141,18 @@ export function prependOlderMessages(
 	assistantStore.olderCursor = page.nextCursor;
 }
 
-export function addUserBubble(id: string, content: string) {
-	assistantStore.messages.push({ id, role: "user", content, toolsUsed: [] });
+export function addUserBubble(
+	id: string,
+	content: string,
+	modality?: AssistantModality,
+) {
+	assistantStore.messages.push({
+		id,
+		role: "user",
+		content,
+		toolsUsed: [],
+		modality,
+	});
 	assistantStore.pending = true;
 	assistantStore.error = null;
 	assistantStore.retryText = null;
@@ -177,6 +191,7 @@ export function receiveAnswer(
 		role: "assistant",
 		content: message.content,
 		toolsUsed: [...message.toolsUsed],
+		modality: message.modality === "voice" ? "voice" : undefined,
 	});
 	assistantStore.pending = false;
 }

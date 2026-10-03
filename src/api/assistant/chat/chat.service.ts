@@ -1,6 +1,7 @@
 import { isWallRoute } from "@/config/assistant-pointer";
 import type {
 	AssistantChatResponse,
+	AssistantModality,
 	AssistantPageContext,
 } from "@/types/ai-assistant-chat";
 import {
@@ -8,7 +9,11 @@ import {
 	getAssistantSettings,
 } from "../config/settings.repo";
 import * as conversationRepo from "../conversation/conversation.repo";
-import type { AssistantPrincipal } from "../http/access";
+import {
+	ACCESS_MESSAGES,
+	type AssistantPrincipal,
+	hasVoicePermission,
+} from "../http/access";
 import {
 	assistantRateLimiter,
 	checkDailyQuota,
@@ -28,6 +33,8 @@ import {
 	getUnavailableModules,
 } from "../tools/registry";
 import type { ToolContext, ToolDefinition } from "../tools/types";
+import { VOICE_SESSION_MESSAGES } from "../voice/voice.constants";
+import { isVoiceSessionLive } from "../voice/voice.lifecycle";
 import { recordFailedTurn, saveTurn } from "./chat.persist";
 
 /** Satu giliran `POST /api/assistant/chat` (rancangan 04 §3, alur 03 §1). */
@@ -48,6 +55,9 @@ export interface ChatTurnInput {
 	conversationId?: string;
 	message: string;
 	pageContext?: AssistantPageContext;
+	/** "voice" = giliran mode suara: perlu izin `use-ai-voice` + sesi suara aktif milik user. */
+	modality?: AssistantModality;
+	voiceSessionId?: string;
 	/** Klien memutus/membatalkan → giliran dihentikan dan tidak ada yang disimpan. */
 	signal?: AbortSignal;
 	/** Mode stream (`/chat/stream`): status tool & potongan teks. */
@@ -64,7 +74,7 @@ export type ChatTurnOutcome =
 	| { ok: true; value: AssistantChatResponse }
 	| {
 			ok: false;
-			status: 404 | 409 | 422 | 429 | 503 | typeof CLIENT_CLOSED;
+			status: 403 | 404 | 409 | 422 | 429 | 503 | typeof CLIENT_CLOSED;
 			error: string;
 			retryAfterSec?: number;
 			/** Diisi bila pesan gagal tetap tersimpan (503) agar klien melanjutkan percakapan yang sama. */
@@ -91,10 +101,11 @@ export interface ChatServiceDeps {
 	repo?: ChatRepo;
 	now?: () => Date;
 	executeOptions?: Omit<ExecuteOptions, "conversationId">;
+	voiceSessionLive?: (userId: string, sessionId: string) => Promise<boolean>;
 }
 
 function fail(
-	status: 404 | 409 | 422 | 429 | 503 | typeof CLIENT_CLOSED,
+	status: 403 | 404 | 409 | 422 | 429 | 503 | typeof CLIENT_CLOSED,
 	error: string,
 	extra: { retryAfterSec?: number; conversationId?: string } = {},
 ): ChatTurnOutcome {
@@ -112,6 +123,19 @@ export async function runChatTurn(
 
 	const settings = await (deps.loadSettings ?? getAssistantSettings)();
 	if (!settings.enabled) return fail(409, CHAT_MESSAGES.disabled);
+
+	const modality = input.modality ?? "text";
+	if (modality === "voice") {
+		if (!hasVoicePermission(input.principal))
+			return fail(403, ACCESS_MESSAGES.noVoicePermission);
+		const live =
+			input.voiceSessionId !== undefined &&
+			(await (deps.voiceSessionLive ?? isVoiceSessionLive)(
+				user.id,
+				input.voiceSessionId,
+			));
+		if (!live) return fail(409, VOICE_SESSION_MESSAGES.ended);
+	}
 
 	const inputViolation = checkInput(input.message, settings.maxInputChars);
 	if (inputViolation) return fail(422, inputViolation.message);
@@ -174,6 +198,7 @@ export async function runChatTurn(
 				hasDataTools: tools.some((t) => t.requiredFeature.startsWith("view-")),
 				hasPointerTools: hasPointerTools(tools),
 				onWall: isWallRoute(pageRoute),
+				voice: modality === "voice",
 			}),
 		},
 		...history,
@@ -185,6 +210,7 @@ export async function runChatTurn(
 		conversationId,
 		message: input.message,
 		pageRoute,
+		modality,
 	};
 	let turn: Awaited<ReturnType<typeof executeWithTools>>;
 	try {

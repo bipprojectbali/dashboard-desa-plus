@@ -1,5 +1,6 @@
 import type { AssistantChatResponse } from "@/types/ai-assistant-chat";
 import type {
+	MessageModality,
 	NewMessage,
 	SavedMessage,
 } from "../conversation/conversation.repo";
@@ -13,6 +14,7 @@ export interface TurnInput {
 	conversationId?: string;
 	message: string;
 	pageRoute?: string;
+	modality: MessageModality;
 }
 
 /** Tambah ke percakapan lama atau buat baru; null bila percakapan lama sudah bukan milik user. */
@@ -38,12 +40,18 @@ export async function saveTurn(
 	turn: TurnResult,
 ): Promise<Omit<AssistantChatResponse, "actions"> | null> {
 	const saved = await persist(repo, input, [
-		{ role: "user", content: input.message, pageRoute: input.pageRoute },
+		{
+			role: "user",
+			content: input.message,
+			pageRoute: input.pageRoute,
+			modality: input.modality,
+		},
 		{
 			role: "assistant",
 			content: turn.text,
 			toolsUsed: turn.toolsUsed,
 			pageRoute: input.pageRoute,
+			modality: input.modality,
 			inputTokens: turn.usage.inputTokens,
 			outputTokens: turn.usage.outputTokens,
 			latencyMs: turn.latencyMs,
@@ -58,6 +66,7 @@ export async function saveTurn(
 			role: "assistant",
 			content: reply.content,
 			toolsUsed: reply.toolsUsed,
+			modality: reply.modality === "voice" ? "voice" : "text",
 			createdAt: reply.createdAt.toISOString(),
 		},
 	};
@@ -77,6 +86,7 @@ export async function recordFailedTurn(
 			role: "user",
 			content: input.message,
 			pageRoute: input.pageRoute,
+			modality: input.modality,
 			status: "error",
 		},
 	]);

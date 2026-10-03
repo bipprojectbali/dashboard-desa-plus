@@ -19,6 +19,17 @@ describe("resolveAllowedFeatures", () => {
 		expect(DEFAULT_PERMISSIONS.user).toContain("use-ai-assistant");
 	});
 
+	it("use-ai-voice ada di FEATURES, default admin & user, bisa dimatikan per role", () => {
+		expect(ALL).toContain("use-ai-voice");
+		expect(DEFAULT_PERMISSIONS.admin).toContain("use-ai-voice");
+		expect(DEFAULT_PERMISSIONS.user).toContain("use-ai-voice");
+		expect(
+			resolveAllowedFeatures("user", [
+				{ feature: "use-ai-voice", allowed: false },
+			]),
+		).not.toContain("use-ai-voice");
+	});
+
 	it("tanpa baris DB → default role", () => {
 		expect(resolveAllowedFeatures("user", [])).toEqual(
 			ALL.filter((k) => DEFAULT_PERMISSIONS.user.includes(k)),

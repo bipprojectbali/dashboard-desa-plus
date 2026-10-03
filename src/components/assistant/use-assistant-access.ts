@@ -2,6 +2,7 @@ import { useRouterState } from "@tanstack/react-router";
 import { useSnapshot } from "valtio";
 import { useApiQuery } from "@/hooks/useApiQuery";
 import { assistantTexts } from "@/locales/assistant";
+import { assistantVoiceTexts } from "@/locales/assistant-voice";
 import { authStore } from "@/store/auth";
 import { i18nStore } from "@/store/i18n";
 import { permissionStore } from "@/store/permission";
@@ -24,6 +25,12 @@ const PERMISSIONS_STALE_MS = 5 * 60_000;
 export function useAssistantText() {
 	const { lang } = useSnapshot(i18nStore);
 	return assistantTexts[toAssistantLang(lang)];
+}
+
+/** Teks mode suara sesuai bahasa UI. */
+export function useAssistantVoiceText() {
+	const { lang } = useSnapshot(i18nStore);
+	return assistantVoiceTexts[toAssistantLang(lang)];
 }
 
 /**

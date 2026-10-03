@@ -1,3 +1,6 @@
+import { LIVE_INSTRUCTIONS_MAX } from "@/config/assistant-identity";
+import { VOICE_SDP_MAX_CHARS } from "../voice/voice.constants";
+
 /**
  * Konstanta halaman uji suara S0 (sekali pakai). Nama model & suara hanyalah
  * contoh dari docs OpenAI per 2026-10-02 (06-fitur-3-suara §13) — bisa diganti
@@ -37,16 +40,14 @@ export const VOICE_LAB_SUGGESTIONS = {
 /** Masa hidup token sementara — hanya perlu cukup untuk membuka koneksi WebRTC. */
 export const VOICE_LAB_TOKEN_TTL_SECONDS = 120;
 
-/** Batas waktu permintaan ke OpenAI yang bukan streaming audio. */
-export const VOICE_LAB_UPSTREAM_TIMEOUT_MS = 20_000;
 /** Batas waktu penuh satu permintaan TTS (header + badan audio). */
 export const VOICE_LAB_TTS_TIMEOUT_MS = 60_000;
 
 /** Batas input (dokumen OpenAI: `input` TTS maksimum 4096 karakter). */
 export const VOICE_LAB_LIMITS = {
 	ttsTextMax: 4000,
-	instructionsMax: 500,
-	sdpMax: 64 * 1024,
+	instructionsMax: LIVE_INSTRUCTIONS_MAX,
+	sdpMax: VOICE_SDP_MAX_CHARS,
 } as const;
 
 /** Pola nama (allowlist sederhana): bukan daftar tetap supaya model baru bisa dicoba tanpa deploy. */
@@ -55,18 +56,3 @@ export const VOICE_LAB_PATTERNS = {
 	voice: /^[a-z][a-z0-9_-]{1,31}$/,
 	language: /^[a-z]{2,3}$/,
 } as const;
-
-export const VOICE_LAB_MESSAGES = {
-	slotEmpty:
-		"Slot Suara belum diisi — isi Base URL dan API key di /admin/ai-assistant (slot Suara). Halaman uji tidak memakai slot Chat.",
-	slotDisabled: "Slot Suara tidak aktif — aktifkan di /admin/ai-assistant",
-	cryptoMissing: "AI_CREDENTIALS_KEY belum diset di server",
-	needsReentry: "API key slot Suara perlu diisi ulang (tidak bisa didekripsi)",
-	invalidInput: "Input tidak valid",
-	upstreamUnreachable: "Tidak bisa menghubungi OpenAI (jaringan/timeout)",
-	upstreamRejected: "OpenAI menolak permintaan",
-	upstreamBadShape: "Respons OpenAI tidak sesuai bentuk yang diharapkan",
-} as const;
-
-/** Header identitas pengguna untuk moderasi OpenAI (nilai = hash ID user, bukan email). */
-export const SAFETY_IDENTIFIER_HEADER = "OpenAI-Safety-Identifier";

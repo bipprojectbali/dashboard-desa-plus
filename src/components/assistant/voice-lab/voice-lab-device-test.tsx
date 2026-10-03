@@ -8,7 +8,7 @@ import {
 	openMic,
 	stopStream,
 	type WebRtcCheck,
-} from "./voice-lab.devices";
+} from "../voice/voice-devices";
 import { createLevelBus } from "./voice-lab.level-bus";
 import type { VoiceLabSettings } from "./voice-lab.types";
 import { LevelBar } from "./voice-lab-controls";

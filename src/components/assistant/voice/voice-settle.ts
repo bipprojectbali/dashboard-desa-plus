@@ -1,5 +1,5 @@
 /**
- * Kapan giliran V1-B dianggap selesai bicara: setelah jawaban dikirim, tunggu
+ * Kapan giliran GPT-Live dianggap selesai bicara: setelah jawaban dikirim, tunggu
  * minimal `minWaitMs`, lalu tutup begitu audio GPT-Live hening `quietMs`
  * (jawaban panjang tidak terpotong), dengan batas keras `maxWaitMs`.
  */

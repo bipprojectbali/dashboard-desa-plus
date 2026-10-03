@@ -1,25 +1,25 @@
 import { describe, expect, it } from "bun:test";
-import { createAnswerAudioTracker } from "@/components/assistant/voice-lab/voice-lab.answer-audio";
-import { SESSION_LIMITS } from "@/components/assistant/voice-lab/voice-lab.constants";
-import { buildExport } from "@/components/assistant/voice-lab/voice-lab.export";
 import {
 	evaluateSession,
 	remainingMs,
 	startSession,
 	touchSession,
-} from "@/components/assistant/voice-lab/voice-lab.session";
+} from "@/components/assistant/voice/voice-session-clock";
+import {
+	chunkText,
+	stripMarkdown,
+	takeSentences,
+} from "@/components/assistant/voice/voice-text";
+import { createAnswerAudioTracker } from "@/components/assistant/voice-lab/voice-lab.answer-audio";
+import { SESSION_LIMITS } from "@/components/assistant/voice-lab/voice-lab.constants";
+import { buildExport } from "@/components/assistant/voice-lab/voice-lab.export";
+import { wordOverlap } from "@/components/assistant/voice-lab/voice-lab.similarity";
 import {
 	percentile,
 	summarize,
 	summarizeByPath,
 	type TurnMetrics,
 } from "@/components/assistant/voice-lab/voice-lab.stats";
-import {
-	chunkText,
-	stripMarkdown,
-	takeSentences,
-	wordOverlap,
-} from "@/components/assistant/voice-lab/voice-lab.text";
 import {
 	computeRms,
 	createVad,
@@ -184,24 +184,36 @@ describe("batas sesi uji", () => {
 	const T0 = 1_000_000;
 	it("ok sebelum batas; idle setelah 2 menit tanpa aktivitas", () => {
 		const c = startSession(T0);
-		expect(evaluateSession(c, T0 + SESSION_LIMITS.idleMs - 1)).toBe("ok");
-		expect(evaluateSession(c, T0 + SESSION_LIMITS.idleMs)).toBe("idle");
+		expect(
+			evaluateSession(c, T0 + SESSION_LIMITS.idleMs - 1, SESSION_LIMITS),
+		).toBe("ok");
+		expect(evaluateSession(c, T0 + SESSION_LIMITS.idleMs, SESSION_LIMITS)).toBe(
+			"idle",
+		);
 	});
 
 	it("aktivitas menunda idle tetapi tidak melewati batas 10 menit", () => {
 		let c = startSession(T0);
 		c = touchSession(c, T0 + SESSION_LIMITS.idleMs - 1000);
-		expect(evaluateSession(c, T0 + SESSION_LIMITS.idleMs + 1000)).toBe("ok");
+		expect(
+			evaluateSession(c, T0 + SESSION_LIMITS.idleMs + 1000, SESSION_LIMITS),
+		).toBe("ok");
 		c = touchSession(c, T0 + SESSION_LIMITS.maxMs - 1000);
-		expect(evaluateSession(c, T0 + SESSION_LIMITS.maxMs)).toBe("cap");
+		expect(evaluateSession(c, T0 + SESSION_LIMITS.maxMs, SESSION_LIMITS)).toBe(
+			"cap",
+		);
 	});
 
 	it("remainingMs = yang lebih dekat antara idle dan cap, tidak negatif", () => {
 		const c = startSession(T0);
-		expect(remainingMs(c, T0)).toBe(SESSION_LIMITS.idleMs);
+		expect(remainingMs(c, T0, SESSION_LIMITS)).toBe(SESSION_LIMITS.idleMs);
 		const late = touchSession(c, T0 + SESSION_LIMITS.maxMs - 1000);
-		expect(remainingMs(late, T0 + SESSION_LIMITS.maxMs - 500)).toBe(500);
-		expect(remainingMs(c, T0 + SESSION_LIMITS.maxMs * 2)).toBe(0);
+		expect(
+			remainingMs(late, T0 + SESSION_LIMITS.maxMs - 500, SESSION_LIMITS),
+		).toBe(500);
+		expect(remainingMs(c, T0 + SESSION_LIMITS.maxMs * 2, SESSION_LIMITS)).toBe(
+			0,
+		);
 	});
 });
 

@@ -4,13 +4,13 @@ import {
 	parseNumberWords,
 	SCALES,
 	wordRunValue,
-} from "./voice-lab.number-words";
+} from "./voice-number-words";
 
 /**
  * Ekstraksi & normalisasi angka (format id-ID) untuk pencocokan jawaban Claude
  * vs ucapan GPT-Live. Mengenali angka digit ("1.234.567", "2,5", "12%"),
  * pengali skala ("2,5 juta"), campuran digit+skala ("940 juta 248 ribu 688")
- * dan angka yang diucapkan dengan kata (lihat `voice-lab.number-words`).
+ * dan angka yang diucapkan dengan kata (lihat `voice-number-words`).
  * Tanda akhir kalimat (". ", "? ", …) memutus deret angka.
  */
 

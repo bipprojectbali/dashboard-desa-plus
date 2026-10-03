@@ -1,6 +1,5 @@
-import type { SendMode } from "./voice-lab.constants";
-import { createSentenceStream, splitSentences } from "./voice-lab.sentences";
-import { chunkText } from "./voice-lab.text";
+import { createSentenceStream, splitSentences } from "./voice-sentences";
+import { chunkText } from "./voice-text";
 
 /**
  * Pengirim jawaban Claude ke GPT-Live untuk satu delegasi. Mode "whole" mengirim
@@ -8,6 +7,10 @@ import { chunkText } from "./voice-lab.text";
  * selagi Claude masih menulis (urutan = urutan kalimat). Setelah `cancel()` /
  * `isCancelled()` bernilai true, sisa kalimat tidak dikirim.
  */
+
+/** "whole" = jawaban final sekaligus; "sentence" = per kalimat selagi Claude menulis. */
+export const SEND_MODES = ["whole", "sentence"] as const;
+export type SendMode = (typeof SEND_MODES)[number];
 
 /** Batas aman satu `commentary.append` (dokumen: 500 token) dalam karakter. */
 export const COMMENTARY_MAX_CHARS = 1400;

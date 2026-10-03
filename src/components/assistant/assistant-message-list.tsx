@@ -11,7 +11,7 @@ import {
 	Text,
 	Tooltip,
 } from "@mantine/core";
-import { IconCheck, IconCopy } from "@tabler/icons-react";
+import { IconCheck, IconCopy, IconMicrophone } from "@tabler/icons-react";
 import { useEffect, useRef } from "react";
 import { useSnapshot } from "valtio";
 import { useIsDark } from "@/hooks/useIsDark";
@@ -25,7 +25,10 @@ import {
 import { AssistantMarkdown } from "./assistant-markdown";
 import { AssistantSources } from "./assistant-sources";
 import { suggestionsFor } from "./assistant-suggestions";
-import { useAssistantText } from "./use-assistant-access";
+import {
+	useAssistantText,
+	useAssistantVoiceText,
+} from "./use-assistant-access";
 
 interface MessageListProps {
 	name: string;
@@ -52,6 +55,7 @@ function Bubble({
 }) {
 	const dark = useIsDark();
 	const text = useAssistantText();
+	const voiceText = useAssistantVoiceText();
 	const mine = bubble.role === "user";
 	const bg = mine
 		? dark
@@ -87,6 +91,16 @@ function Bubble({
 				)}
 			</Paper>
 			<Group gap={6} mt={2} justify={mine ? "flex-end" : "flex-start"}>
+				{bubble.modality === "voice" ? (
+					<Tooltip label={voiceText.voiceMarker} withArrow>
+						<IconMicrophone
+							size={12}
+							color="gray"
+							aria-label={voiceText.voiceMarker}
+							data-voice-marker
+						/>
+					</Tooltip>
+				) : null}
 				{bubble.failed ? (
 					<Text size="xs" c="red">
 						{text.failedMessage}

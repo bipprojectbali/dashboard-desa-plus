@@ -13,6 +13,7 @@ export const DEFAULT_TITLE = "Percakapan baru";
 
 export type MessageRole = "user" | "assistant";
 export type MessageStatus = "ok" | "error" | "limited";
+export type MessageModality = "text" | "voice";
 
 export interface NewMessage {
 	role: MessageRole;
@@ -20,6 +21,7 @@ export interface NewMessage {
 	toolsUsed?: string[];
 	pageRoute?: string | null;
 	status?: MessageStatus;
+	modality?: MessageModality;
 	inputTokens?: number | null;
 	outputTokens?: number | null;
 	latencyMs?: number | null;
@@ -50,6 +52,7 @@ const messageSelect = {
 	toolsUsed: true,
 	pageRoute: true,
 	status: true,
+	modality: true,
 	createdAt: true,
 } as const;
 
@@ -150,6 +153,7 @@ export interface SavedMessage {
 	role: string;
 	content: string;
 	toolsUsed: string[];
+	modality: string;
 	createdAt: Date;
 }
 
@@ -158,6 +162,7 @@ const savedMessageSelect = {
 	role: true,
 	content: true,
 	toolsUsed: true,
+	modality: true,
 	createdAt: true,
 } as const;
 
@@ -171,6 +176,7 @@ function toRows(userId: string, messages: NewMessage[], base: number) {
 		toolsUsed: m.toolsUsed ?? [],
 		pageRoute: m.pageRoute ?? null,
 		status: m.status ?? "ok",
+		modality: m.modality ?? "text",
 		inputTokens: m.inputTokens ?? null,
 		outputTokens: m.outputTokens ?? null,
 		latencyMs: m.latencyMs ?? null,
