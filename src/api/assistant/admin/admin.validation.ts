@@ -43,6 +43,11 @@ export function normalizeSettings(
 		assistantName: body.assistantName.trim(),
 		personaNote: normalizeOptionalText(body.personaNote),
 		kioskUserId: normalizeOptionalText(body.kioskUserId),
+		voiceLiveModel: body.voiceLiveModel.trim(),
+		voiceName: normalizeOptionalText(body.voiceName),
+		voiceReadExactInstruction: normalizeOptionalText(
+			body.voiceReadExactInstruction,
+		),
 	};
 }
 

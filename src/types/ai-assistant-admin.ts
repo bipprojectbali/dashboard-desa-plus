@@ -21,6 +21,13 @@ export interface AssistantSettingsDto {
 	kioskUserId: string | null;
 	dailyMessageLimitKiosk: number;
 	guideAutoAdvanceSec: number;
+	voiceLiveModel: string;
+	voiceName: string | null;
+	voiceReadExactInstruction: string | null;
+	voiceDailyMinutesUser: number;
+	voiceDailyMinutesKiosk: number;
+	voiceSessionMaxMinutes: number;
+	voiceIdleOffSeconds: number;
 }
 
 /** Status kunci tersimpan: `needs-reentry` = gagal didekripsi (AI_CREDENTIALS_KEY berganti). */

@@ -11,6 +11,11 @@ import {
 	GUIDE_AUTO_ADVANCE_MAX_SEC,
 	GUIDE_AUTO_ADVANCE_MIN_SEC,
 } from "@/types/ai-assistant-pointer";
+import { VOICE_SETTINGS_DEFAULTS } from "@/types/ai-assistant-voice";
+import {
+	type VoiceSettingsKey,
+	validateVoiceSettings,
+} from "./voice-settings.logic";
 
 /** Nilai awal sesuai default kolom Prisma (`AssistantSettings`) — dipakai saat data server belum ada. */
 export const DEFAULT_SETTINGS: AssistantSettingsDto = {
@@ -26,6 +31,7 @@ export const DEFAULT_SETTINGS: AssistantSettingsDto = {
 	kioskUserId: null,
 	dailyMessageLimitKiosk: 100,
 	guideAutoAdvanceSec: GUIDE_AUTO_ADVANCE_DEFAULT_SEC,
+	...VOICE_SETTINGS_DEFAULTS,
 };
 
 export const DEFAULT_TIMEOUT_MS = 60_000;
@@ -40,7 +46,7 @@ export const FEATURE_LABELS: Record<ProviderFeature, string> = {
 
 type LimitKey = Exclude<
 	keyof AssistantSettingsDto,
-	"enabled" | "assistantName" | "personaNote" | "kioskUserId"
+	"enabled" | "assistantName" | "personaNote" | "kioskUserId" | VoiceSettingsKey
 >;
 
 /** Rentang yang diterima untuk tiap batas. `zeroUnlimited` = 0 berarti tanpa batas. */
@@ -155,7 +161,7 @@ export function validateSettings(
 			errors[key] =
 				`Harus bilangan bulat ${min}–${max.toLocaleString("id-ID")}`;
 	}
-	return errors;
+	return { ...errors, ...validateVoiceSettings(s) };
 }
 
 /**
