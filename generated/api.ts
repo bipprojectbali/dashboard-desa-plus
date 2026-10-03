@@ -2115,6 +2115,176 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/ai-assistant/voice-lab/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Voice lab defaults + voice slot status (admin) */
+        get: operations["getApiAdminAi-assistantVoice-labConfig"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/ai-assistant/voice-lab/transcribe-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ephemeral token for a transcription session */
+        post: operations["postApiAdminAi-assistantVoice-labTranscribe-token"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/ai-assistant/voice-lab/transcribe-call": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Relay SDP for a transcription session via server */
+        post: operations["postApiAdminAi-assistantVoice-labTranscribe-call"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/ai-assistant/voice-lab/live-session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a GPT-Live session (client delegation) */
+        post: operations["postApiAdminAi-assistantVoice-labLive-session"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/ai-assistant/voice-lab/tts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Text-to-speech, audio streamed (mp3) */
+        post: operations["postApiAdminAi-assistantVoice-labTts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/assistant/voice/consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Accept the microphone consent */
+        post: operations["postApiAssistantVoiceConsent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/assistant/voice/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start a voice session (SDP relay) */
+        post: operations["postApiAssistantVoiceSessions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/assistant/voice/sessions/{id}/heartbeat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Voice session heartbeat */
+        post: operations["postApiAssistantVoiceSessionsByIdHeartbeat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/assistant/voice/sessions/{id}/extend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Extend the voice session limit */
+        post: operations["postApiAssistantVoiceSessionsByIdExtend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/assistant/voice/sessions/{id}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Close the voice session and bill real minutes */
+        post: operations["postApiAssistantVoiceSessionsByIdClose"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -8361,6 +8531,12 @@ export interface operations {
                          */
                         lang?: "id" | "en";
                     };
+                    /**
+                     * @default text
+                     * @enum {string}
+                     */
+                    modality?: "text" | "voice";
+                    voiceSessionId?: string;
                 };
                 "multipart/form-data": {
                     conversationId?: string;
@@ -8374,6 +8550,12 @@ export interface operations {
                          */
                         lang?: "id" | "en";
                     };
+                    /**
+                     * @default text
+                     * @enum {string}
+                     */
+                    modality?: "text" | "voice";
+                    voiceSessionId?: string;
                 };
                 "text/plain": {
                     conversationId?: string;
@@ -8387,6 +8569,12 @@ export interface operations {
                          */
                         lang?: "id" | "en";
                     };
+                    /**
+                     * @default text
+                     * @enum {string}
+                     */
+                    modality?: "text" | "voice";
+                    voiceSessionId?: string;
                 };
             };
         };
@@ -8420,6 +8608,12 @@ export interface operations {
                          */
                         lang?: "id" | "en";
                     };
+                    /**
+                     * @default text
+                     * @enum {string}
+                     */
+                    modality?: "text" | "voice";
+                    voiceSessionId?: string;
                 };
                 "multipart/form-data": {
                     conversationId?: string;
@@ -8433,6 +8627,12 @@ export interface operations {
                          */
                         lang?: "id" | "en";
                     };
+                    /**
+                     * @default text
+                     * @enum {string}
+                     */
+                    modality?: "text" | "voice";
+                    voiceSessionId?: string;
                 };
                 "text/plain": {
                     conversationId?: string;
@@ -8446,6 +8646,12 @@ export interface operations {
                          */
                         lang?: "id" | "en";
                     };
+                    /**
+                     * @default text
+                     * @enum {string}
+                     */
+                    modality?: "text" | "voice";
+                    voiceSessionId?: string;
                 };
             };
         };
@@ -8588,6 +8794,14 @@ export interface operations {
                     retentionDays: number;
                     kioskUserId: string | null;
                     dailyMessageLimitKiosk: number;
+                    guideAutoAdvanceSec: number;
+                    voiceLiveModel: string;
+                    voiceName: string | null;
+                    voiceReadExactInstruction: string | null;
+                    voiceDailyMinutesUser: number;
+                    voiceDailyMinutesKiosk: number;
+                    voiceSessionMaxMinutes: number;
+                    voiceIdleOffSeconds: number;
                 };
                 "multipart/form-data": {
                     enabled: boolean;
@@ -8601,6 +8815,14 @@ export interface operations {
                     retentionDays: number;
                     kioskUserId: string | null;
                     dailyMessageLimitKiosk: number;
+                    guideAutoAdvanceSec: number;
+                    voiceLiveModel: string;
+                    voiceName: string | null;
+                    voiceReadExactInstruction: string | null;
+                    voiceDailyMinutesUser: number;
+                    voiceDailyMinutesKiosk: number;
+                    voiceSessionMaxMinutes: number;
+                    voiceIdleOffSeconds: number;
                 };
                 "text/plain": {
                     enabled: boolean;
@@ -8614,6 +8836,14 @@ export interface operations {
                     retentionDays: number;
                     kioskUserId: string | null;
                     dailyMessageLimitKiosk: number;
+                    guideAutoAdvanceSec: number;
+                    voiceLiveModel: string;
+                    voiceName: string | null;
+                    voiceReadExactInstruction: string | null;
+                    voiceDailyMinutesUser: number;
+                    voiceDailyMinutesKiosk: number;
+                    voiceSessionMaxMinutes: number;
+                    voiceIdleOffSeconds: number;
                 };
             };
         };
@@ -8688,6 +8918,299 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "getApiAdminAi-assistantVoice-labConfig": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "postApiAdminAi-assistantVoice-labTranscribe-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    model?: string;
+                    language?: string;
+                    delay?: string;
+                };
+                "multipart/form-data": {
+                    model?: string;
+                    language?: string;
+                    delay?: string;
+                };
+                "text/plain": {
+                    model?: string;
+                    language?: string;
+                    delay?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "postApiAdminAi-assistantVoice-labTranscribe-call": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    sdp: string;
+                    model?: string;
+                    language?: string;
+                    delay?: string;
+                };
+                "multipart/form-data": {
+                    sdp: string;
+                    model?: string;
+                    language?: string;
+                    delay?: string;
+                };
+                "text/plain": {
+                    sdp: string;
+                    model?: string;
+                    language?: string;
+                    delay?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "postApiAdminAi-assistantVoice-labLive-session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    sdp: string;
+                    model?: string;
+                    instructions?: string;
+                };
+                "multipart/form-data": {
+                    sdp: string;
+                    model?: string;
+                    instructions?: string;
+                };
+                "text/plain": {
+                    sdp: string;
+                    model?: string;
+                    instructions?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "postApiAdminAi-assistantVoice-labTts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    text: string;
+                    model?: string;
+                    voice?: string;
+                    instructions?: string;
+                };
+                "multipart/form-data": {
+                    text: string;
+                    model?: string;
+                    voice?: string;
+                    instructions?: string;
+                };
+                "text/plain": {
+                    text: string;
+                    model?: string;
+                    voice?: string;
+                    instructions?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    postApiAssistantVoiceConsent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @constant */
+                    accepted: true;
+                };
+                "multipart/form-data": {
+                    /** @constant */
+                    accepted: true;
+                };
+                "text/plain": {
+                    /** @constant */
+                    accepted: true;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    postApiAssistantVoiceSessions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    sdp: string;
+                };
+                "multipart/form-data": {
+                    sdp: string;
+                };
+                "text/plain": {
+                    sdp: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    postApiAssistantVoiceSessionsByIdHeartbeat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    postApiAssistantVoiceSessionsByIdExtend: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    postApiAssistantVoiceSessionsByIdClose: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: "user" | "idle" | "max_duration" | "quota" | "error" | "page_hidden";
+                };
+                "multipart/form-data": {
+                    reason: "user" | "idle" | "max_duration" | "quota" | "error" | "page_hidden";
+                };
+                "text/plain": {
+                    reason: "user" | "idle" | "max_duration" | "quota" | "error" | "page_hidden";
+                };
+            };
+        };
         responses: {
             200: {
                 headers: {

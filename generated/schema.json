@@ -16115,6 +16115,19 @@
                         ]
                       }
                     }
+                  },
+                  "modality": {
+                    "default": "text",
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "voice"
+                    ]
+                  },
+                  "voiceSessionId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
                   }
                 }
               }
@@ -16157,6 +16170,19 @@
                         ]
                       }
                     }
+                  },
+                  "modality": {
+                    "default": "text",
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "voice"
+                    ]
+                  },
+                  "voiceSessionId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
                   }
                 }
               }
@@ -16199,6 +16225,19 @@
                         ]
                       }
                     }
+                  },
+                  "modality": {
+                    "default": "text",
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "voice"
+                    ]
+                  },
+                  "voiceSessionId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
                   }
                 }
               }
@@ -16256,6 +16295,19 @@
                         ]
                       }
                     }
+                  },
+                  "modality": {
+                    "default": "text",
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "voice"
+                    ]
+                  },
+                  "voiceSessionId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
                   }
                 }
               }
@@ -16298,6 +16350,19 @@
                         ]
                       }
                     }
+                  },
+                  "modality": {
+                    "default": "text",
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "voice"
+                    ]
+                  },
+                  "voiceSessionId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
                   }
                 }
               }
@@ -16340,6 +16405,19 @@
                         ]
                       }
                     }
+                  },
+                  "modality": {
+                    "default": "text",
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "voice"
+                    ]
+                  },
+                  "voiceSessionId": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
                   }
                 }
               }
@@ -16557,7 +16635,15 @@
                   "historyWindow",
                   "retentionDays",
                   "kioskUserId",
-                  "dailyMessageLimitKiosk"
+                  "dailyMessageLimitKiosk",
+                  "guideAutoAdvanceSec",
+                  "voiceLiveModel",
+                  "voiceName",
+                  "voiceReadExactInstruction",
+                  "voiceDailyMinutesUser",
+                  "voiceDailyMinutesKiosk",
+                  "voiceSessionMaxMinutes",
+                  "voiceIdleOffSeconds"
                 ],
                 "properties": {
                   "enabled": {
@@ -16605,6 +16691,47 @@
                     ]
                   },
                   "dailyMessageLimitKiosk": {
+                    "type": "number"
+                  },
+                  "guideAutoAdvanceSec": {
+                    "type": "number"
+                  },
+                  "voiceLiveModel": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "voiceName": {
+                    "anyOf": [
+                      {
+                        "maxLength": 32,
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "voiceReadExactInstruction": {
+                    "anyOf": [
+                      {
+                        "maxLength": 1000,
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "voiceDailyMinutesUser": {
+                    "type": "number"
+                  },
+                  "voiceDailyMinutesKiosk": {
+                    "type": "number"
+                  },
+                  "voiceSessionMaxMinutes": {
+                    "type": "number"
+                  },
+                  "voiceIdleOffSeconds": {
                     "type": "number"
                   }
                 }
@@ -16624,7 +16751,15 @@
                   "historyWindow",
                   "retentionDays",
                   "kioskUserId",
-                  "dailyMessageLimitKiosk"
+                  "dailyMessageLimitKiosk",
+                  "guideAutoAdvanceSec",
+                  "voiceLiveModel",
+                  "voiceName",
+                  "voiceReadExactInstruction",
+                  "voiceDailyMinutesUser",
+                  "voiceDailyMinutesKiosk",
+                  "voiceSessionMaxMinutes",
+                  "voiceIdleOffSeconds"
                 ],
                 "properties": {
                   "enabled": {
@@ -16672,6 +16807,47 @@
                     ]
                   },
                   "dailyMessageLimitKiosk": {
+                    "type": "number"
+                  },
+                  "guideAutoAdvanceSec": {
+                    "type": "number"
+                  },
+                  "voiceLiveModel": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "voiceName": {
+                    "anyOf": [
+                      {
+                        "maxLength": 32,
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "voiceReadExactInstruction": {
+                    "anyOf": [
+                      {
+                        "maxLength": 1000,
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "voiceDailyMinutesUser": {
+                    "type": "number"
+                  },
+                  "voiceDailyMinutesKiosk": {
+                    "type": "number"
+                  },
+                  "voiceSessionMaxMinutes": {
+                    "type": "number"
+                  },
+                  "voiceIdleOffSeconds": {
                     "type": "number"
                   }
                 }
@@ -16691,7 +16867,15 @@
                   "historyWindow",
                   "retentionDays",
                   "kioskUserId",
-                  "dailyMessageLimitKiosk"
+                  "dailyMessageLimitKiosk",
+                  "guideAutoAdvanceSec",
+                  "voiceLiveModel",
+                  "voiceName",
+                  "voiceReadExactInstruction",
+                  "voiceDailyMinutesUser",
+                  "voiceDailyMinutesKiosk",
+                  "voiceSessionMaxMinutes",
+                  "voiceIdleOffSeconds"
                 ],
                 "properties": {
                   "enabled": {
@@ -16739,6 +16923,47 @@
                     ]
                   },
                   "dailyMessageLimitKiosk": {
+                    "type": "number"
+                  },
+                  "guideAutoAdvanceSec": {
+                    "type": "number"
+                  },
+                  "voiceLiveModel": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "voiceName": {
+                    "anyOf": [
+                      {
+                        "maxLength": 32,
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "voiceReadExactInstruction": {
+                    "anyOf": [
+                      {
+                        "maxLength": 1000,
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "voiceDailyMinutesUser": {
+                    "type": "number"
+                  },
+                  "voiceDailyMinutesKiosk": {
+                    "type": "number"
+                  },
+                  "voiceSessionMaxMinutes": {
+                    "type": "number"
+                  },
+                  "voiceIdleOffSeconds": {
                     "type": "number"
                   }
                 }
@@ -17026,6 +17251,647 @@
         ],
         "operationId": "postApiAdminAi-assistantProvidersByFeatureTest",
         "summary": "Test the stored credentials of one slot",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/ai-assistant/voice-lab/config": {
+      "get": {
+        "operationId": "getApiAdminAi-assistantVoice-labConfig",
+        "summary": "Voice lab defaults + voice slot status (admin)",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/ai-assistant/voice-lab/transcribe-token": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAdminAi-assistantVoice-labTranscribe-token",
+        "summary": "Ephemeral token for a transcription session",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "language": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "delay": {
+                    "maxLength": 64,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "language": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "delay": {
+                    "maxLength": 64,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "language": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "delay": {
+                    "maxLength": 64,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/ai-assistant/voice-lab/transcribe-call": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAdminAi-assistantVoice-labTranscribe-call",
+        "summary": "Relay SDP for a transcription session via server",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "sdp"
+                ],
+                "properties": {
+                  "sdp": {
+                    "maxLength": 131072,
+                    "type": "string"
+                  },
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "language": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "delay": {
+                    "maxLength": 64,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "sdp"
+                ],
+                "properties": {
+                  "sdp": {
+                    "maxLength": 131072,
+                    "type": "string"
+                  },
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "language": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "delay": {
+                    "maxLength": 64,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "sdp"
+                ],
+                "properties": {
+                  "sdp": {
+                    "maxLength": 131072,
+                    "type": "string"
+                  },
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "language": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "delay": {
+                    "maxLength": 64,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/ai-assistant/voice-lab/live-session": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAdminAi-assistantVoice-labLive-session",
+        "summary": "Create a GPT-Live session (client delegation)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "sdp"
+                ],
+                "properties": {
+                  "sdp": {
+                    "maxLength": 131072,
+                    "type": "string"
+                  },
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "instructions": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "sdp"
+                ],
+                "properties": {
+                  "sdp": {
+                    "maxLength": 131072,
+                    "type": "string"
+                  },
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "instructions": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "sdp"
+                ],
+                "properties": {
+                  "sdp": {
+                    "maxLength": 131072,
+                    "type": "string"
+                  },
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "instructions": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/admin/ai-assistant/voice-lab/tts": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAdminAi-assistantVoice-labTts",
+        "summary": "Text-to-speech, audio streamed (mp3)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": {
+                    "maxLength": 8000,
+                    "type": "string"
+                  },
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "voice": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "instructions": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": {
+                    "maxLength": 8000,
+                    "type": "string"
+                  },
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "voice": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "instructions": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": {
+                    "maxLength": 8000,
+                    "type": "string"
+                  },
+                  "model": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "voice": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "instructions": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/assistant/voice/consent": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAssistantVoiceConsent",
+        "summary": "Accept the microphone consent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "accepted"
+                ],
+                "properties": {
+                  "accepted": {
+                    "const": true,
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "accepted"
+                ],
+                "properties": {
+                  "accepted": {
+                    "const": true,
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "accepted"
+                ],
+                "properties": {
+                  "accepted": {
+                    "const": true,
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/assistant/voice/sessions": {
+      "post": {
+        "parameters": [],
+        "operationId": "postApiAssistantVoiceSessions",
+        "summary": "Start a voice session (SDP relay)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "sdp"
+                ],
+                "properties": {
+                  "sdp": {
+                    "maxLength": 131072,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "sdp"
+                ],
+                "properties": {
+                  "sdp": {
+                    "maxLength": 131072,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "sdp"
+                ],
+                "properties": {
+                  "sdp": {
+                    "maxLength": 131072,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/assistant/voice/sessions/{id}/heartbeat": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "operationId": "postApiAssistantVoiceSessionsByIdHeartbeat",
+        "summary": "Voice session heartbeat",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/assistant/voice/sessions/{id}/extend": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "operationId": "postApiAssistantVoiceSessionsByIdExtend",
+        "summary": "Extend the voice session limit",
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/api/assistant/voice/sessions/{id}/close": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "operationId": "postApiAssistantVoiceSessionsByIdClose",
+        "summary": "Close the voice session and bill real minutes",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "anyOf": [
+                      {
+                        "const": "user",
+                        "type": "string"
+                      },
+                      {
+                        "const": "idle",
+                        "type": "string"
+                      },
+                      {
+                        "const": "max_duration",
+                        "type": "string"
+                      },
+                      {
+                        "const": "quota",
+                        "type": "string"
+                      },
+                      {
+                        "const": "error",
+                        "type": "string"
+                      },
+                      {
+                        "const": "page_hidden",
+                        "type": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "anyOf": [
+                      {
+                        "const": "user",
+                        "type": "string"
+                      },
+                      {
+                        "const": "idle",
+                        "type": "string"
+                      },
+                      {
+                        "const": "max_duration",
+                        "type": "string"
+                      },
+                      {
+                        "const": "quota",
+                        "type": "string"
+                      },
+                      {
+                        "const": "error",
+                        "type": "string"
+                      },
+                      {
+                        "const": "page_hidden",
+                        "type": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "text/plain": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "anyOf": [
+                      {
+                        "const": "user",
+                        "type": "string"
+                      },
+                      {
+                        "const": "idle",
+                        "type": "string"
+                      },
+                      {
+                        "const": "max_duration",
+                        "type": "string"
+                      },
+                      {
+                        "const": "quota",
+                        "type": "string"
+                      },
+                      {
+                        "const": "error",
+                        "type": "string"
+                      },
+                      {
+                        "const": "page_hidden",
+                        "type": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {}
         }
