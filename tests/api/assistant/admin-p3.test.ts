@@ -245,12 +245,12 @@ describe("buildAssistantStatus", () => {
 		pointer: emptyProviderConfig("pointer"),
 		voice: emptyProviderConfig("voice"),
 	});
-	it("slot pointer/voice kosong ikut siap bila chat siap (fallback)", () => {
+	it("slot pointer kosong ikut siap bila chat siap (fallback), voice tidak", () => {
 		expect(buildAssistantStatus(s, all(filled("chat")), true)).toEqual({
 			enabled: true,
 			assistantName: "Jenna",
 			maxInputChars: 2000,
-			slots: { chat: true, pointer: true, voice: true },
+			slots: { chat: true, pointer: true, voice: false },
 		});
 	});
 	it("chat belum lengkap → semua slot false", () => {

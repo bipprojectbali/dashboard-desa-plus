@@ -8,6 +8,7 @@ import {
 	assistantAsideConfig,
 	useAssistantSpace,
 } from "@/components/assistant/use-assistant-space";
+import { GlobalSearch, useGlobalSearch } from "@/components/global-search";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 import { useSidebarFullscreen } from "@/hooks/use-sidebar-fullscreen";
@@ -93,25 +94,19 @@ function PageTransition({
 }
 
 export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
-	const {
-		opened,
-		toggleMobile,
-		sidebarCollapsed,
-		toggleSidebar,
-		handleMainClick,
-	} = useSidebarFullscreen();
 	const dark = useIsDark();
 	const { animasiTransisi } = useSnapshot(i18nStore);
 	const { user } = useSnapshot(authStore);
 	useSystemMonitor();
 	const assistantSpace = useAssistantSpace();
 	const reducedMotion = useReducedMotion();
-	const sidebarLayout = useSidebarLayout(sidebarCollapsed, assistantSpace);
+	const sidebarLayout = useSidebarLayout(assistantSpace);
+	const { opened, toggleMobile, handleMainClick } = useSidebarFullscreen(
+		sidebarLayout.mode === "hidden",
+		sidebarLayout.hide,
+	);
+	const { open: searchOpen, setOpen: setSearchOpen } = useGlobalSearch();
 	const isRail = sidebarLayout.mode === "rail";
-	const handleToggleSidebar = () => {
-		sidebarLayout.reset();
-		toggleSidebar();
-	};
 
 	// Non-admin users inherit display preferences from admin's global settings.
 	// user?.role sengaja dipakai (bukan `user`) — efek hanya perlu re-run saat
@@ -180,6 +175,7 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 			transitionDuration={animasiTransisi && !reducedMotion ? 200 : 0}
 			padding="md"
 		>
+			<GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
 			<AppShell.Header bg={headerBgColor}>
 				<Group h="100%" px="md" wrap="nowrap">
 					<Burger
@@ -188,7 +184,10 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 						hiddenFrom="sm"
 						size="sm"
 					/>
-					<Header onSidebarToggle={handleToggleSidebar} />
+					<Header
+						onSidebarToggle={sidebarLayout.toggle}
+						onSearchOpen={() => setSearchOpen(true)}
+					/>
 				</Group>
 			</AppShell.Header>
 
@@ -198,7 +197,11 @@ export function MainLayout({ children, routeKey = "" }: MainLayoutProps) {
 				style={{ display: "flex", flexDirection: "column" }}
 			>
 				<div style={{ flex: 1, overflowY: "auto" }}>
-					<Sidebar rail={isRail} onWiden={sidebarLayout.widen} />
+					<Sidebar
+						rail={isRail}
+						onWiden={sidebarLayout.widen}
+						onSearch={() => setSearchOpen(true)}
+					/>
 				</div>
 			</AppShell.Navbar>
 

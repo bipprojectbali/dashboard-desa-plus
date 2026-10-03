@@ -23,6 +23,7 @@ export interface AssistantText {
 	pointToSource: string;
 	returnToChat: string;
 	pointerFailed: string;
+	pointerTimeout: string;
 	guideLabel: string;
 	guideStep: string;
 	guideNext: string;
@@ -80,6 +81,8 @@ const id: AssistantText = {
 	pointToSource: "Tunjukkan {modul} di layar",
 	returnToChat: "Kembali ke chat",
 	pointerFailed: "Maaf, saya belum bisa menunjukkan bagian itu di layar.",
+	pointerTimeout:
+		"Halaman tujuan belum selesai dimuat, jadi saya belum bisa menunjukkannya. Coba tanyakan sekali lagi.",
 	guideLabel: "Panduan",
 	guideStep: "Langkah {n} dari {total}",
 	guideNext: "Lanjut",
@@ -148,6 +151,8 @@ const en: AssistantText = {
 	pointToSource: "Show {modul} on screen",
 	returnToChat: "Back to chat",
 	pointerFailed: "Sorry, I could not show that part on screen.",
+	pointerTimeout:
+		"The destination page has not finished loading, so I could not show it. Please ask again.",
 	guideLabel: "Guide",
 	guideStep: "Step {n} of {total}",
 	guideNext: "Next",
