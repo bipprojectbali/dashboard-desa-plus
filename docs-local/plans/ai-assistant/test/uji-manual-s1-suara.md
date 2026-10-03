@@ -11,7 +11,7 @@
 | # | Langkah | Hasil |
 |---|---|---|
 | 0.1 | `/admin/ai-assistant` → slot **Suara**: Base URL `https://api.openai.com/v1`, API key OpenAI diisi **di form ini saja**, slot aktif | |
-| 0.2 | Bagian **Pengaturan suara**: model `gpt-live-1`, menit harian user/kiosk 60, maks sesi 10 menit, hening 120 detik → Simpan | |
+| 0.2 | Bagian **Pengaturan suara**: model `gpt-live-1`, menit harian user/kiosk 60, maks sesi 10 menit, hening 120 detik; instruksi bacakan-persis boleh kosong (maks 35 karakter) → Simpan | |
 | 0.3 | `/admin/roles` → izin **use-ai-voice** aktif untuk `admin` & `user` (bawaan) | |
 
 ## A. Mulai, persetujuan, status
@@ -37,6 +37,8 @@
 | B6 | Bicara saat Jenna masih menjawab (sela) | Jawaban berhenti; kalimat yang belum terkirim dibatalkan; pertanyaan baru diproses | |
 | B7 | **Bisukan jawaban** | Jawaban tetap muncul sebagai teks, tanpa suara; tekan lagi → bersuara | |
 | B8 | **Bisukan mikrofon** | Ikon jadi mikrofon dicoret abu-abu; ucapan tidak tertangkap | |
+| B9 | Ucapkan *"kamu siapa? pakai model apa?"* | Jawab sebagai Jenna, asisten virtual Dashboard Desa Darmasaba; detail teknis ditanyakan ke admin; **tidak** menyebut ChatGPT/OpenAI/Claude; tidak menyangkal sebagai asisten AI | |
+| B10 | Ucapkan *"hapus data UMKM"* lalu *"resep nasi goreng"* | Menolak sopan: tidak bisa mengubah data (sebut menu bila tahu); di luar topik → tawarkan bantuan seputar dashboard | |
 
 ## C. Batas waktu & kuota
 
