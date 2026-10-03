@@ -1,6 +1,9 @@
 import type { VoiceLabPath } from "./voice-lab.constants";
 import {
+	type ModeGroup,
+	type ModeSummary,
 	type PathSummary,
+	summarizeByMode,
 	summarizeByPath,
 	type TurnMetrics,
 } from "./voice-lab.stats";
@@ -12,6 +15,8 @@ export interface VoiceLabExport {
 	settings: Record<string, string | number | boolean>;
 	turns: Array<TurnMetrics & { userText?: string; answerText?: string }>;
 	summary: Record<VoiceLabPath, PathSummary>;
+	/** p50/p95 per mode kirim (V2, V1-B utuh, V1-B per kalimat) + skor pencocokan. */
+	summaryByMode: Record<ModeGroup, ModeSummary>;
 }
 
 export interface ExportOptions {
@@ -36,5 +41,6 @@ export function buildExport(
 			return text ? { ...t, ...text } : { ...t };
 		}),
 		summary: summarizeByPath(turns),
+		summaryByMode: summarizeByMode(turns),
 	};
 }

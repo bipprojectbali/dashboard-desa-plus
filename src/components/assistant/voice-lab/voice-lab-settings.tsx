@@ -1,4 +1,5 @@
 import {
+	Button,
 	Checkbox,
 	Group,
 	NativeSelect,
@@ -13,8 +14,13 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import type { VoiceLabText } from "@/locales/voice-lab";
-import { VAD_LIMITS } from "./voice-lab.constants";
+import {
+	LIVE_INSTRUCTIONS_MAX,
+	READ_EXACT_INSTRUCTION,
+	VAD_LIMITS,
+} from "./voice-lab.constants";
 import { listInputDevices } from "./voice-lab.devices";
+import { validateLiveInstructions } from "./voice-lab.instructions";
 import type { VoiceLabConfig, VoiceLabSettings } from "./voice-lab.types";
 
 interface Props {
@@ -125,15 +131,46 @@ export function VoiceLabSettingsPanel({
 						onChange={(e) => onChange("liveModel", e.currentTarget.value)}
 					/>
 				</Group>
+				<div>
+					<Text size="sm" fw={500} mb={4}>
+						{t.sendMode}
+					</Text>
+					<SegmentedControl
+						size="xs"
+						value={s.sendMode}
+						onChange={(v) =>
+							onChange("sendMode", v as VoiceLabSettings["sendMode"])
+						}
+						data={[
+							{ value: "sentence", label: t.sendSentence },
+							{ value: "whole", label: t.sendWhole },
+						]}
+					/>
+				</div>
 				<Textarea
 					label={t.liveInstructions}
+					description={`${t.instructionsHint} (${s.liveInstructions.trim().length}/${LIVE_INSTRUCTIONS_MAX})`}
+					error={
+						validateLiveInstructions(s.liveInstructions)
+							? t.instructionsTooLong
+							: undefined
+					}
 					value={s.liveInstructions}
 					disabled={disabled}
-					maxLength={500}
 					autosize
-					minRows={2}
+					minRows={3}
 					onChange={(e) => onChange("liveInstructions", e.currentTarget.value)}
 				/>
+				<Group>
+					<Button
+						size="xs"
+						variant="subtle"
+						disabled={disabled || s.liveInstructions === READ_EXACT_INSTRUCTION}
+						onClick={() => onChange("liveInstructions", READ_EXACT_INSTRUCTION)}
+					>
+						{t.instructionsReset}
+					</Button>
+				</Group>
 				<div>
 					<Text size="sm" fw={500} mb={4}>
 						{t.endMethod}

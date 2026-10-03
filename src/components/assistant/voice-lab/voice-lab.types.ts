@@ -1,4 +1,5 @@
-import type { VoiceLabPath } from "./voice-lab.constants";
+import type { SendMode, VoiceLabPath } from "./voice-lab.constants";
+import type { VerifyResult } from "./voice-lab.verify";
 
 /** Bentuk respons `GET /api/admin/ai-assistant/voice-lab/config`. */
 export interface VoiceLabConfig {
@@ -34,6 +35,7 @@ export interface VoiceLabSettings {
 	ttsVoice: string;
 	liveModel: string;
 	liveInstructions: string;
+	sendMode: SendMode;
 	endMethod: EndMethod;
 	threshold: number;
 	silenceMs: number;
@@ -69,6 +71,12 @@ export interface TurnView {
 	spokenText: string;
 	/** V1-B: jumlah karakter awal `spokenText` yang diucapkan sebelum jawaban Claude dikirim (kalimat pengisi). */
 	fillerChars?: number;
+	/** V1-B: cara jawaban Claude dikirim pada giliran ini. */
+	sendMode?: SendMode;
+	/** V1-B: jumlah potongan (kalimat) yang dikirim ke GPT-Live. */
+	sentencesSent?: number;
+	/** V1-B: hasil pencocokan otomatis angka/nama (ada setelah giliran selesai). */
+	verify?: VerifyResult;
 	/** Jumlah aksi penunjuk dari jawaban (hanya ditampilkan sebagai "ada"). */
 	actionCount: number;
 	error?: string;

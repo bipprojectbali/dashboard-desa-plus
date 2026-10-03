@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { fetchVoiceLabConfig } from "./voice-lab.api";
-import { VAD_DEFAULTS } from "./voice-lab.constants";
+import {
+	DEFAULT_SEND_MODE,
+	READ_EXACT_INSTRUCTION,
+	VAD_DEFAULTS,
+} from "./voice-lab.constants";
 import type { VoiceLabConfig, VoiceLabSettings } from "./voice-lab.types";
 
 /** Muat config halaman uji dari server dan simpan pengaturan yang bisa diubah. */
@@ -15,7 +19,8 @@ function initialSettings(config: VoiceLabConfig | null): VoiceLabSettings {
 		ttsModel: d?.ttsModel ?? "",
 		ttsVoice: d?.ttsVoice ?? "",
 		liveModel: d?.liveModel ?? "",
-		liveInstructions: "",
+		liveInstructions: READ_EXACT_INSTRUCTION,
+		sendMode: DEFAULT_SEND_MODE,
 		endMethod: "vad",
 		threshold: VAD_DEFAULTS.threshold,
 		silenceMs: VAD_DEFAULTS.silenceMs,

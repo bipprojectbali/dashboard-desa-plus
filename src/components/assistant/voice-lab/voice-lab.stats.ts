@@ -1,4 +1,4 @@
-import type { VoiceLabPath } from "./voice-lab.constants";
+import type { SendMode, VoiceLabPath } from "./voice-lab.constants";
 
 /** Pengukuran per giliran bicara; semua `*Ms` = selisih dari akhir ucapan (null bila belum/tak terjadi). */
 export interface TurnMetrics {
@@ -9,22 +9,32 @@ export interface TurnMetrics {
 	transcriptMs: number | null;
 	/** Akhir ucapan → token Claude pertama. */
 	firstTokenMs: number | null;
+	/** Hanya V1-B: akhir ucapan → potongan/kalimat pertama jawaban dikirim ke GPT-Live. */
+	firstSentenceSentMs: number | null;
 	/** Akhir ucapan → audio pertama terdengar. */
 	firstAudioMs: number | null;
 	/** Akhir ucapan → awal suara jawaban (setelah kalimat pengisi; V2: sama dengan audio pertama). */
 	answerAudioMs: number | null;
 	/** Hanya V1-B: kemiripan kata teks Claude vs transkrip ucapan GPT-Live (0..1). */
 	overlap: number | null;
+	/** Hanya V1-B: cara jawaban dikirim. */
+	sendMode: SendMode | null;
+	/** Hanya V1-B: skor pencocokan angka (cocok/total, 0..1; null bila jawaban tanpa angka/giliran terputus). */
+	matchScore: number | null;
+	/** Hanya V1-B: ada angka yang hilang/berubah/bertambah. */
+	numbersChanged: boolean | null;
 }
 
 export type MetricKey =
 	| "transcriptMs"
 	| "firstTokenMs"
+	| "firstSentenceSentMs"
 	| "firstAudioMs"
 	| "answerAudioMs";
 export const METRIC_KEYS: readonly MetricKey[] = [
 	"transcriptMs",
 	"firstTokenMs",
+	"firstSentenceSentMs",
 	"firstAudioMs",
 	"answerAudioMs",
 ];
@@ -54,18 +64,45 @@ export function summarize(values: Array<number | null>): Summary {
 
 export type PathSummary = Record<MetricKey, Summary>;
 
+function summarizeTurns(own: TurnMetrics[]): PathSummary {
+	const out = {} as PathSummary;
+	for (const key of METRIC_KEYS) out[key] = summarize(own.map((t) => t[key]));
+	return out;
+}
+
 /** Ringkasan p50/p95 per jalur untuk tiap metrik. */
 export function summarizeByPath(
 	turns: TurnMetrics[],
 ): Record<VoiceLabPath, PathSummary> {
-	const build = (path: VoiceLabPath): PathSummary => {
-		const own = turns.filter((t) => t.path === path);
+	const build = (path: VoiceLabPath) =>
+		summarizeTurns(turns.filter((t) => t.path === path));
+	return { v2: build("v2"), v1b: build("v1b") };
+}
+
+/** Kelompok perbandingan: V2, V1-B utuh, V1-B per kalimat. */
+export const MODE_GROUPS = ["v2", "v1b-whole", "v1b-sentence"] as const;
+export type ModeGroup = (typeof MODE_GROUPS)[number];
+export type ModeSummary = PathSummary & { matchScore: Summary };
+
+export function modeGroupOf(t: TurnMetrics): ModeGroup {
+	if (t.path === "v2") return "v2";
+	return t.sendMode === "sentence" ? "v1b-sentence" : "v1b-whole";
+}
+
+/** Ringkasan p50/p95 per mode kirim (termasuk skor pencocokan). */
+export function summarizeByMode(
+	turns: TurnMetrics[],
+): Record<ModeGroup, ModeSummary> {
+	const build = (group: ModeGroup): ModeSummary => {
+		const own = turns.filter((t) => modeGroupOf(t) === group);
 		return {
-			transcriptMs: summarize(own.map((t) => t.transcriptMs)),
-			firstTokenMs: summarize(own.map((t) => t.firstTokenMs)),
-			firstAudioMs: summarize(own.map((t) => t.firstAudioMs)),
-			answerAudioMs: summarize(own.map((t) => t.answerAudioMs)),
+			...summarizeTurns(own),
+			matchScore: summarize(own.map((t) => t.matchScore)),
 		};
 	};
-	return { v2: build("v2"), v1b: build("v1b") };
+	return {
+		v2: build("v2"),
+		"v1b-whole": build("v1b-whole"),
+		"v1b-sentence": build("v1b-sentence"),
+	};
 }

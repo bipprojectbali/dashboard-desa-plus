@@ -62,9 +62,13 @@ export async function createV2Controller(
 			endMethod: t.endMethod,
 			transcriptMs: t.transcriptMs,
 			firstTokenMs: t.firstTokenMs,
+			firstSentenceSentMs: null,
 			firstAudioMs: t.firstAudioMs,
 			answerAudioMs: t.firstAudioMs,
 			overlap: null,
+			sendMode: null,
+			matchScore: null,
+			numbersChanged: null,
 		});
 	};
 

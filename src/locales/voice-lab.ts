@@ -88,6 +88,28 @@ export interface VoiceLabText {
 	clearMetrics: string;
 	logs: string;
 	unknownEvents: string;
+	sendMode: string;
+	sendWhole: string;
+	sendSentence: string;
+	instructionsReset: string;
+	instructionsTooLong: string;
+	instructionsHint: string;
+	metricFirstSentence: string;
+	metricMatch: string;
+	modeCol: string;
+	numbersChangedCol: string;
+	modeV2: string;
+	modeV1bWhole: string;
+	modeV1bSentence: string;
+	verifyNumbers: string;
+	verifyNoNumbers: string;
+	verifyChanged: string;
+	verifyMissing: string;
+	verifyExtra: string;
+	verifyTerms: string;
+	verifyPending: string;
+	verifySkipped: string;
+	chunksSent: string;
 }
 
 const id: VoiceLabText = {
@@ -131,7 +153,8 @@ const id: VoiceLabText = {
 	ttsModel: "Model suara (TTS)",
 	ttsVoice: "Suara",
 	liveModel: "Model GPT-Live",
-	liveInstructions: "Instruksi GPT-Live (opsional)",
+	liveInstructions:
+		"Instruksi GPT-Live (bacakan persis; kosongkan = tanpa instruksi)",
 	endMethod: "Penanda akhir ucapan",
 	endVad: "Otomatis (deteksi hening)",
 	endManual: "Manual (tombol)",
@@ -184,6 +207,29 @@ const id: VoiceLabText = {
 	clearMetrics: "Hapus pengukuran",
 	logs: "Log tahap (tanpa isi percakapan)",
 	unknownEvents: "Tipe event tak dikenal",
+	sendMode: "Mode kirim jawaban (V1-B)",
+	sendWhole: "Utuh sekaligus",
+	sendSentence: "Per kalimat",
+	instructionsReset: "Pakai instruksi bawaan",
+	instructionsTooLong: "Instruksi melebihi batas karakter",
+	instructionsHint:
+		"Tidak ada mode baca-persis resmi di GPT-Live; instruksi ini upaya terbaik dan hasilnya diperiksa pencocokan otomatis.",
+	metricFirstSentence: "→ potongan pertama dikirim",
+	metricMatch: "Skor angka",
+	modeCol: "Mode",
+	numbersChangedCol: "Angka berubah",
+	modeV2: "V2",
+	modeV1bWhole: "V1-B utuh",
+	modeV1bSentence: "V1-B per kalimat",
+	verifyNumbers: "Angka cocok",
+	verifyNoNumbers: "Jawaban tanpa angka",
+	verifyChanged: "Angka berubah",
+	verifyMissing: "Hilang/berubah",
+	verifyExtra: "Tambahan di ucapan",
+	verifyTerms: "Nama/satuan tidak disebut",
+	verifyPending: "Menunggu GPT-Live selesai bicara…",
+	verifySkipped: "Tidak dinilai (giliran terputus)",
+	chunksSent: "potongan",
 };
 
 const en: VoiceLabText = {
@@ -227,7 +273,7 @@ const en: VoiceLabText = {
 	ttsModel: "Speech model (TTS)",
 	ttsVoice: "Voice",
 	liveModel: "GPT-Live model",
-	liveInstructions: "GPT-Live instructions (optional)",
+	liveInstructions: "GPT-Live instructions (read exactly; empty = none)",
 	endMethod: "End-of-utterance method",
 	endVad: "Automatic (silence detection)",
 	endManual: "Manual (button)",
@@ -280,6 +326,29 @@ const en: VoiceLabText = {
 	clearMetrics: "Clear measurements",
 	logs: "Stage log (no conversation content)",
 	unknownEvents: "Unknown event types",
+	sendMode: "Answer send mode (V1-B)",
+	sendWhole: "Whole at once",
+	sendSentence: "Per sentence",
+	instructionsReset: "Use default instruction",
+	instructionsTooLong: "Instruction exceeds the character limit",
+	instructionsHint:
+		"GPT-Live has no official verbatim mode; this instruction is best-effort and the result is checked automatically.",
+	metricFirstSentence: "→ first chunk sent",
+	metricMatch: "Number score",
+	modeCol: "Mode",
+	numbersChangedCol: "Numbers changed",
+	modeV2: "V2",
+	modeV1bWhole: "V1-B whole",
+	modeV1bSentence: "V1-B per sentence",
+	verifyNumbers: "Numbers matched",
+	verifyNoNumbers: "Answer has no numbers",
+	verifyChanged: "Numbers changed",
+	verifyMissing: "Missing/changed",
+	verifyExtra: "Extra in speech",
+	verifyTerms: "Names/units not spoken",
+	verifyPending: "Waiting for GPT-Live to finish speaking…",
+	verifySkipped: "Not scored (turn interrupted)",
+	chunksSent: "chunks",
 };
 
 export const voiceLabTexts = { id, en } as const;

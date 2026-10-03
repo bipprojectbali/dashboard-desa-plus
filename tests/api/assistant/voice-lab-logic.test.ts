@@ -161,9 +161,13 @@ describe("statistik p50/p95", () => {
 			endMethod: "vad",
 			transcriptMs: 400,
 			firstTokenMs: 900,
+			firstSentenceSentMs: null,
 			firstAudioMs,
 			answerAudioMs: firstAudioMs,
 			overlap: null,
+			sendMode: null,
+			matchScore: null,
+			numbersChanged: null,
 		});
 		const s = summarizeByPath([
 			t(1, "v2", 1000),
@@ -243,9 +247,13 @@ describe("ekspor hasil", () => {
 		endMethod: "manual",
 		transcriptMs: 300,
 		firstTokenMs: 800,
+		firstSentenceSentMs: null,
 		firstAudioMs: 1200,
 		answerAudioMs: 1500,
 		overlap: null,
+		sendMode: null,
+		matchScore: null,
+		numbersChanged: null,
 	};
 	const base = {
 		generatedAt: new Date("2026-10-02T00:00:00Z"),

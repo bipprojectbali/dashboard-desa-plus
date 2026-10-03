@@ -10,6 +10,7 @@ import {
 import { AssistantMarkdown } from "@/components/assistant/assistant-markdown";
 import type { VoiceLabText } from "@/locales/voice-lab";
 import type { TurnState, TurnView } from "./voice-lab.types";
+import { VoiceLabVerify } from "./voice-lab-verify";
 
 function stateLabel(t: VoiceLabText, state: TurnState): string {
 	const map: Record<TurnState, string> = {
@@ -85,6 +86,7 @@ function TurnCard({ t, turn }: { t: VoiceLabText; turn: TurnView }) {
 				) : (
 					<ClaudeText text={turn.answerText} />
 				)}
+				{sideBySide && <VoiceLabVerify t={t} turn={turn} />}
 				{turn.error && (
 					<Text size="xs" c="red">
 						{turn.error}

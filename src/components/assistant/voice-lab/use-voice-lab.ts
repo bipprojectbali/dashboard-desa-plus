@@ -14,6 +14,7 @@ import {
 	touchSession,
 } from "./voice-lab.session";
 import type { TurnMetrics } from "./voice-lab.stats";
+import { fetchVoiceLabTerms, MODULE_TERMS } from "./voice-lab.terms";
 import type {
 	ControllerEvents,
 	TurnView,
@@ -61,6 +62,7 @@ export function useVoiceLab() {
 		startedAt: 0,
 	});
 	const { settingsRef } = cfg;
+	const termsRef = useRef<readonly string[]>(MODULE_TERMS);
 
 	const log = useCallback((line: string) => {
 		const at = ((performance.now() - session.current.startedAt) / 1000).toFixed(
@@ -140,6 +142,7 @@ export function useVoiceLab() {
 				mic,
 				getSettings: () => settingsRef.current,
 				events: makeEvents(),
+				getTerms: () => termsRef.current,
 			});
 			session.current.controller = controller;
 			const vad = createVad(() => ({
@@ -173,6 +176,18 @@ export function useVoiceLab() {
 
 	useEffect(() => () => teardown(), [teardown]);
 
+	useEffect(() => {
+		let active = true;
+		void fetchVoiceLabTerms().then(({ terms, error: termsError }) => {
+			if (!active) return;
+			termsRef.current = terms;
+			if (termsError) log(termsError);
+		});
+		return () => {
+			active = false;
+		};
+	}, [log]);
+
 	const commit = useCallback(() => session.current.controller?.commit(), []);
 
 	const clearMetrics = useCallback(() => {
@@ -201,6 +216,8 @@ export function useVoiceLab() {
 					ttsModel: s.ttsModel,
 					ttsVoice: s.ttsVoice,
 					liveModel: s.liveModel,
+					sendMode: s.sendMode,
+					liveInstructionsChars: s.liveInstructions.trim().length,
 					endMethod: s.endMethod,
 					threshold: s.threshold,
 					silenceMs: s.silenceMs,

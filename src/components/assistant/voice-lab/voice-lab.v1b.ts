@@ -1,32 +1,36 @@
 import { createAnswerAudioTracker } from "./voice-lab.answer-audio";
 import { createLiveSession } from "./voice-lab.api";
-import { askClaude, describeError, isAbort } from "./voice-lab.claude";
+import { LIVE_INSTRUCTIONS_MAX } from "./voice-lab.constants";
 import { createLevelMeter, type LevelMeter } from "./voice-lab.devices";
+import { validateLiveInstructions } from "./voice-lab.instructions";
 import { openPeer, type Peer } from "./voice-lab.peer";
-import { chunkText, wordOverlap } from "./voice-lab.text";
+import { wordOverlap } from "./voice-lab.text";
 import type {
 	ControllerEvents,
 	VoiceController,
 	VoiceLabSettings,
 } from "./voice-lab.types";
+import { type AnswerContext, answerQuestion } from "./voice-lab.v1b-answer";
+import { createSettleWatcher } from "./voice-lab.v1b-settle";
 import { newV1bTurn, type V1bTurn } from "./voice-lab.v1b-turn";
 import type { VadEvent } from "./voice-lab.vad";
+import { verifyAnswer } from "./voice-lab.verify";
 
 /**
  * Jalur V1-B: GPT-Live (WebRTC) berbicara; saat ia mendelegasikan, klien
  * meneruskan ucapan ke Claude lewat chat/stream lalu mengirim hasilnya sebagai
- * `session.commentary.append` dengan `delegation_id` yang sama. Teks asli
- * Claude ditampilkan berdampingan dengan transkrip ucapan GPT-Live.
+ * `session.commentary.append` dengan `delegation_id` yang sama — utuh atau per
+ * kalimat (lihat `voice-lab.v1b-answer.ts`). Teks asli Claude ditampilkan
+ * berdampingan dengan transkrip ucapan GPT-Live + hasil pencocokan angka/nama.
  */
 
 export interface V1bDeps {
 	mic: MediaStream;
 	getSettings(): VoiceLabSettings;
 	events: ControllerEvents;
+	/** Nama (banjar/modul) yang dicocokkan antara teks Claude dan ucapan. */
+	getTerms(): readonly string[];
 }
-
-/** Batas aman satu `commentary.append` (dokumen: 500 token) dalam karakter. */
-const COMMENTARY_MAX_CHARS = 1400;
 /** Tunggu transkrip masuk setelah delegasi dibuat (event delegasi tak memuat ucapan). */
 const TRANSCRIPT_WAIT_MS = 2000;
 const TRANSCRIPT_POLL_MS = 100;
@@ -36,8 +40,6 @@ const REMOTE_AUDIBLE_RMS = 0.01;
 const ANSWER_GAP_MS = 400;
 /** Tunggu `session.started` setelah data channel terbuka sebelum dianggap siap. */
 const STARTED_FALLBACK_MS = 3000;
-/** Setelah jawaban dikirim, tunggu audio pertama maksimal selama ini sebelum pengukuran ditutup. */
-const AUDIO_WAIT_MS = 10_000;
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
@@ -57,24 +59,42 @@ export async function createV1bController(
 		REMOTE_AUDIBLE_RMS,
 		ANSWER_GAP_MS,
 	);
+	const settle = createSettleWatcher();
 
 	const emit = (t: V1bTurn) => events.turn({ ...t.view });
 
 	const record = (t: V1bTurn) => {
 		if (t.recorded || t.transcriptMs === null) return;
 		t.recorded = true;
+		const { answerText, spokenText, fillerChars } = t.view;
+		const verify =
+			t.settled && answerText && fillerChars !== undefined
+				? verifyAnswer(
+						answerText,
+						spokenText.slice(fillerChars),
+						deps.getTerms(),
+					)
+				: undefined;
+		if (verify) {
+			t.view.verify = verify;
+			emit(t);
+		}
 		events.metrics({
 			id: t.view.id,
 			path: "v1b",
 			endMethod: t.endMethod,
 			transcriptMs: t.transcriptMs,
 			firstTokenMs: t.firstTokenMs,
+			firstSentenceSentMs: t.firstSentenceSentMs,
 			firstAudioMs: t.firstAudioMs,
 			answerAudioMs: t.answerAudioMs,
 			overlap:
 				t.view.answerText && t.view.spokenText
 					? wordOverlap(t.view.answerText, t.view.spokenText)
 					: null,
+			sendMode: t.sendMode,
+			matchScore: verify?.score ?? null,
+			numbersChanged: verify ? verify.numbersChanged : null,
 		});
 	};
 
@@ -93,8 +113,12 @@ export async function createV1bController(
 	};
 
 	const beginTurn = (now: number): V1bTurn => {
+		if (current && ["thinking", "answering"].includes(current.view.state)) {
+			current.abort.abort();
+			events.log("barge-in: sisa jawaban dibatalkan");
+		}
 		closeTurn(current);
-		const turn = newV1bTurn(events.nextTurnId(), now);
+		const turn = newV1bTurn(events.nextTurnId(), now, getSettings().sendMode);
 		current = turn;
 		emit(turn);
 		events.status("listening");
@@ -109,14 +133,33 @@ export async function createV1bController(
 		return turn.view.userText.trim();
 	};
 
-	const sendCommentary = (delegationId: string, text: string) => {
-		for (const content of chunkText(text, COMMENTARY_MAX_CHARS))
-			peer?.send({
-				type: "session.commentary.append",
-				event_id: `cmt_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-				delegation_id: delegationId,
-				content,
-			});
+	const commentary = (delegationId: string, content: string) =>
+		peer?.send({
+			type: "session.commentary.append",
+			event_id: `cmt_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+			delegation_id: delegationId,
+			content,
+		});
+
+	const answerCtx: AnswerContext = {
+		events,
+		commentary,
+		emit,
+		getConversationId: () => conversationId,
+		setConversationId: (id) => {
+			conversationId = id;
+		},
+		answerStarted: (now) => answerAudio.sent(now),
+		answerSent: (turn) =>
+			settle.wait(performance.now(), () => {
+				turn.settled = true;
+				closeTurn(turn);
+				if (!closed && current === turn) events.status("ready");
+			}),
+		failed: (turn) => {
+			record(turn);
+			events.status("ready");
+		},
 	};
 
 	const delegate = async (delegationId: string) => {
@@ -129,7 +172,7 @@ export async function createV1bController(
 		turn.transcriptMs = performance.now() - endAt;
 		events.log("delegasi diterima, ucapan siap");
 		if (!question) {
-			sendCommentary(delegationId, "Ucapan tidak terbaca. Mohon ulangi.");
+			commentary(delegationId, "Ucapan tidak terbaca. Mohon ulangi.");
 			turn.view.state = "error";
 			turn.view.error = "Transkrip kosong saat delegasi";
 			emit(turn);
@@ -138,48 +181,7 @@ export async function createV1bController(
 		turn.view.state = "thinking";
 		emit(turn);
 		events.status("answering");
-		try {
-			const res = await askClaude(
-				question,
-				conversationId,
-				{
-					onStatus: () => undefined,
-					onDelta: (text) => {
-						if (turn.firstTokenMs === null) {
-							turn.firstTokenMs = performance.now() - endAt;
-							events.log("token Claude pertama");
-						}
-						turn.view.state = "answering";
-						turn.view.answerText += text;
-						emit(turn);
-						events.activity();
-					},
-				},
-				turn.abort.signal,
-			);
-			conversationId = res.conversationId;
-			turn.view.answerText = res.text;
-			turn.view.actionCount = res.actionCount;
-			emit(turn);
-			turn.view.fillerChars = turn.view.spokenText.length;
-			emit(turn);
-			answerAudio.sent(performance.now());
-			sendCommentary(delegationId, res.text);
-			events.log("jawaban Claude dikirim ke GPT-Live");
-			setTimeout(() => {
-				closeTurn(turn);
-				if (!closed && current === turn) events.status("ready");
-			}, AUDIO_WAIT_MS);
-		} catch (err) {
-			if (isAbort(err) || turn.abort.signal.aborted) return;
-			const message = describeError(err);
-			sendCommentary(delegationId, `Maaf, terjadi kendala: ${message}`);
-			turn.view.state = "error";
-			turn.view.error = message;
-			emit(turn);
-			record(turn);
-			events.status("ready");
-		}
+		await answerQuestion(answerCtx, turn, delegationId, question, endAt);
 	};
 
 	const onEvent = (event: Record<string, unknown>) => {
@@ -221,6 +223,10 @@ export async function createV1bController(
 		mic: deps.mic,
 		exchange: async (offer) => {
 			const s = getSettings();
+			if (validateLiveInstructions(s.liveInstructions))
+				throw new Error(
+					`Instruksi GPT-Live melebihi ${LIVE_INSTRUCTIONS_MAX} karakter`,
+				);
 			const session = await createLiveSession({
 				sdp: offer,
 				model: s.liveModel,
@@ -240,6 +246,7 @@ export async function createV1bController(
 			meter = createLevelMeter(stream, (rms, now) => {
 				const turn = current;
 				const answerAt = answerAudio.sample(rms, now);
+				if (rms > REMOTE_AUDIBLE_RMS) settle.heard(now);
 				if (!turn || turn.endAt === null) return;
 				if (turn.firstAudioMs === null && rms > REMOTE_AUDIBLE_RMS) {
 					turn.firstAudioMs = now - turn.endAt;
@@ -266,6 +273,7 @@ export async function createV1bController(
 		stop() {
 			closed = true;
 			current?.abort.abort();
+			settle.stopAll();
 			closeTurn(current);
 			meter?.stop();
 			remote.srcObject = null;
