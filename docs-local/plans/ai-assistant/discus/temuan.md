@@ -297,7 +297,7 @@ bila ada user `null`, admin memverifikasi mereka dulu di `/admin/users` agar tid
 
 ---
 
-## Temuan 8 — Role (dan izin) user dibaca dari cookie cache sesi, bisa basi hingga 30 hari ⏳ (baru, ditemukan sesi 59 saat P3)
+## Temuan 8 — Role (dan izin) user dibaca dari cookie cache sesi, bisa basi hingga 30 hari ✅ (diperbaiki `fix/role-from-db` `3c50f05`, di-merge ke `join` 2026-10-02)
 
 **Fakta (dicek sesi 59 dengan test, dikonfirmasi sesi induk di kode).**
 - `src/utils/auth.ts:101-104`: Better Auth `cookieCache` aktif dengan `maxAge` **30 hari**.

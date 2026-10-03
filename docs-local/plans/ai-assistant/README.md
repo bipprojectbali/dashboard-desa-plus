@@ -33,6 +33,7 @@
 | `discus/fitur-3-suara.md`                   | Analisa Fitur 3 suara full duplex (OpenAI): alur, opsi a/b/c, fakta kode, rekomendasi, 14 pertanyaan                                     | Dijawab user (2026-10-02); diskusi lanjut **ditunda** sampai uji manual F2 selesai |
 | `discus/fitur-2-page-agent-tinjau-ulang.md` | Tinjau ulang page-agent (permintaan user 2026-10-01): fakta baru v1.12.4, opsi O1–O4                                                     | **Tuntas** — B diperluas (2026-10-02)                                              |
 | `discus/fitur-2-panduan-bertahap.md` | Adaptasi FOREVIA: panduan bertahap, sidebar ringkas, hasil cek pembatalan penunjuk, 6 pertanyaan | **Disetujui** (2026-10-02) — dikerjakan `ai_pointer` |
+| `discus/analisa-izin-api-dan-dependency.md` | Analisa temuan 4 (izin `view-*` di API) & kerentanan dependency (better-auth auto-link OAuth relevan), usulan & 4 pertanyaan | Menunggu jawaban user |
 | `checklist-progress.md`                     | Checklist progres semua tahap                                                                                                            | Aktif                                                                              |
 | `test/`                                     | Semua daftar uji manual (kolom hasil diisi user)                                                                                         | Aktif                                                                              |
 | `test/uji-manual-fitur-2.md`                | Uji manual Fitur 2 (penunjuk) — Keuangan, P3, P6, izin                                                                                   | Siap dipakai                                                                       |
@@ -95,6 +96,8 @@
 | 48 | Fitur 3 — jawaban, penunjuk, izin suara | Jawaban **dibacakan + teks + tombol bisukan** (no. 2); penunjuk ikut **sejak S1** (no. 4); izin baru **`use-ai-voice`** bisa dimatikan per role (no. 7) | `idea/compare-forevia-vs-dashboard-desa.md` |
 | 49 | Fitur 3 — halaman uji S0 & mode NOC | **S0 wajib** sebelum S1, menguji V2 dan V1-B berdampingan (kode menunggu perintah + lokasi). Mode NOC: tombol **On** untuk mulai, **Off** atau auto-off untuk selesai | `discus/fitur-3-suara.md` §9.7 |
 | 50 | Fitur 3 — kuota teks untuk suara & persetujuan 06 | Giliran suara yang dijawab Claude **ikut menghitung** 1 pesan kuota teks (50/100) selain menit suara. `06-fitur-3-suara.md` v2 **disetujui**; S0 dikerjakan di worktree baru | `06-fitur-3-suara.md` |
+| 51 | Fitur 3 — hasil S0: otak suara | **V1-B jadi pilihan utama** (GPT-Live + delegasi ke Claude; user 2026-10-03 setelah uji S0: V1-B mulus, V2 terasa lambat). Menggantikan urutan #46. Uji parafrase masih berjalan; V2 jadi cadangan | `06-fitur-3-suara.md` (perlu diperbarui) |
+| 52 | Fitur 3 — arah implementasi | **MVP dulu** (S1 di laptop/desktop); uji jaringan & perangkat NOC **menyusul**. Halaman uji S0 (`/admin/ai-assistant/voice-lab`) **dipertahankan** sebagai alat diagnosa admin. Angka besar di mode suara diucapkan ringkas (juta/miliar), angka lengkap tetap di teks | `06-fitur-3-suara.md` (diperbarui ke V1-B) |
 
 ## Ringkasan eksekutif
 
