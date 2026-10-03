@@ -76,7 +76,7 @@
 		"@tanstack/react-router": "^1.158.1",
 		"@types/leaflet": "^1.9.21",
 		"bcryptjs": "^3.0.3",
-		"better-auth": "^1.4.18",
+		"better-auth": "^1.7.7",
 		"class-variance-authority": "^0.7.1",
 		"cmdk": "^1.0.1",
 		"dayjs": "^1.11.19",
