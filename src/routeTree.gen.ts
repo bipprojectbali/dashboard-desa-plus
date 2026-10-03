@@ -9,111 +9,46 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WallRouteImport } from './routes/wall'
-import { Route as SosialRouteImport } from './routes/sosial'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as SigninRouteImport } from './routes/signin'
-import { Route as PengaduanLayananPublikRouteImport } from './routes/pengaduan-layanan-publik'
-import { Route as KinerjaDivisiRouteImport } from './routes/kinerja-divisi'
-import { Route as KeuanganAnggaranRouteImport } from './routes/keuangan-anggaran'
-import { Route as KeamananRouteImport } from './routes/keamanan'
-import { Route as JennaAnalyticRouteImport } from './routes/jenna-analytic'
-import { Route as DemografiPekerjaanRouteImport } from './routes/demografi-pekerjaan'
-import { Route as BumdesRouteImport } from './routes/bumdes'
-import { Route as BantuanRouteImport } from './routes/bantuan'
-import { Route as ProfileRouteRouteImport } from './routes/profile/route'
-import { Route as PengaturanRouteRouteImport } from './routes/pengaturan/route'
-import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as UsersIndexRouteImport } from './routes/users/index'
-import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as BantuanRouteImport } from './routes/bantuan'
+import { Route as BumdesRouteImport } from './routes/bumdes'
+import { Route as DemografiPekerjaanRouteImport } from './routes/demografi-pekerjaan'
+import { Route as JennaAnalyticRouteImport } from './routes/jenna-analytic'
+import { Route as KeamananRouteImport } from './routes/keamanan'
+import { Route as KeuanganAnggaranRouteImport } from './routes/keuangan-anggaran'
+import { Route as KinerjaDivisiRouteImport } from './routes/kinerja-divisi'
+import { Route as PengaduanLayananPublikRouteImport } from './routes/pengaduan-layanan-publik'
+import { Route as PengaturanRouteRouteImport } from './routes/pengaturan/route'
+import { Route as ProfileRouteRouteImport } from './routes/profile/route'
+import { Route as SigninRouteImport } from './routes/signin'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SosialRouteImport } from './routes/sosial'
+import { Route as WallRouteImport } from './routes/wall'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as UsersIdRouteImport } from './routes/users/$id'
-import { Route as ProfileEditRouteImport } from './routes/profile/edit'
-import { Route as PengaturanUmumRouteImport } from './routes/pengaturan/umum'
-import { Route as PengaturanSinkronisasiRouteImport } from './routes/pengaturan/sinkronisasi'
-import { Route as PengaturanNotifikasiRouteImport } from './routes/pengaturan/notifikasi'
-import { Route as PengaturanKeamananRouteImport } from './routes/pengaturan/keamanan'
-import { Route as PengaturanAksesDanTimRouteImport } from './routes/pengaturan/akses-dan-tim'
-import { Route as AdminUsersRouteImport } from './routes/admin/users'
-import { Route as AdminSystemHealthRouteImport } from './routes/admin/system-health'
-import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
-import { Route as AdminRolesRouteImport } from './routes/admin/roles'
-import { Route as AdminPreferencesRouteImport } from './routes/admin/preferences'
-import { Route as AdminHelpRouteImport } from './routes/admin/help'
-import { Route as AdminAuditLogRouteImport } from './routes/admin/audit-log'
-import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
 import { Route as AdminAiAssistantRouteImport } from './routes/admin/ai-assistant'
+import { Route as AdminApikeyRouteImport } from './routes/admin/apikey'
+import { Route as AdminAuditLogRouteImport } from './routes/admin/audit-log'
+import { Route as AdminHelpRouteImport } from './routes/admin/help'
+import { Route as AdminPreferencesRouteImport } from './routes/admin/preferences'
+import { Route as AdminRolesRouteImport } from './routes/admin/roles'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminSystemHealthRouteImport } from './routes/admin/system-health'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as PengaturanAksesDanTimRouteImport } from './routes/pengaturan/akses-dan-tim'
+import { Route as PengaturanKeamananRouteImport } from './routes/pengaturan/keamanan'
+import { Route as PengaturanNotifikasiRouteImport } from './routes/pengaturan/notifikasi'
+import { Route as PengaturanSinkronisasiRouteImport } from './routes/pengaturan/sinkronisasi'
+import { Route as PengaturanUmumRouteImport } from './routes/pengaturan/umum'
+import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as ProfileEditRouteImport } from './routes/profile/edit'
+import { Route as UsersIndexRouteImport } from './routes/users/index'
+import { Route as UsersIdRouteImport } from './routes/users/$id'
 import { Route as AdminAiAssistantVoiceLabRouteImport } from './routes/admin/ai-assistant_.voice-lab'
 
-const WallRoute = WallRouteImport.update({
-  id: '/wall',
-  path: '/wall',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SosialRoute = SosialRouteImport.update({
-  id: '/sosial',
-  path: '/sosial',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SigninRoute = SigninRouteImport.update({
-  id: '/signin',
-  path: '/signin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PengaduanLayananPublikRoute = PengaduanLayananPublikRouteImport.update({
-  id: '/pengaduan-layanan-publik',
-  path: '/pengaduan-layanan-publik',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KinerjaDivisiRoute = KinerjaDivisiRouteImport.update({
-  id: '/kinerja-divisi',
-  path: '/kinerja-divisi',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KeuanganAnggaranRoute = KeuanganAnggaranRouteImport.update({
-  id: '/keuangan-anggaran',
-  path: '/keuangan-anggaran',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KeamananRoute = KeamananRouteImport.update({
-  id: '/keamanan',
-  path: '/keamanan',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JennaAnalyticRoute = JennaAnalyticRouteImport.update({
-  id: '/jenna-analytic',
-  path: '/jenna-analytic',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemografiPekerjaanRoute = DemografiPekerjaanRouteImport.update({
-  id: '/demografi-pekerjaan',
-  path: '/demografi-pekerjaan',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BumdesRoute = BumdesRouteImport.update({
-  id: '/bumdes',
-  path: '/bumdes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BantuanRoute = BantuanRouteImport.update({
-  id: '/bantuan',
-  path: '/bantuan',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRouteRoute = ProfileRouteRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PengaturanRouteRoute = PengaturanRouteRouteImport.update({
-  id: '/pengaturan',
-  path: '/pengaturan',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -121,94 +56,84 @@ const AdminRouteRoute = AdminRouteRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const BantuanRoute = BantuanRouteImport.update({
+  id: '/bantuan',
+  path: '/bantuan',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UsersIndexRoute = UsersIndexRouteImport.update({
-  id: '/users/',
-  path: '/users/',
+const BumdesRoute = BumdesRouteImport.update({
+  id: '/bumdes',
+  path: '/bumdes',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfileIndexRoute = ProfileIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ProfileRouteRoute,
+const DemografiPekerjaanRoute = DemografiPekerjaanRouteImport.update({
+  id: '/demografi-pekerjaan',
+  path: '/demografi-pekerjaan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JennaAnalyticRoute = JennaAnalyticRouteImport.update({
+  id: '/jenna-analytic',
+  path: '/jenna-analytic',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KeamananRoute = KeamananRouteImport.update({
+  id: '/keamanan',
+  path: '/keamanan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KeuanganAnggaranRoute = KeuanganAnggaranRouteImport.update({
+  id: '/keuangan-anggaran',
+  path: '/keuangan-anggaran',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KinerjaDivisiRoute = KinerjaDivisiRouteImport.update({
+  id: '/kinerja-divisi',
+  path: '/kinerja-divisi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PengaduanLayananPublikRoute = PengaduanLayananPublikRouteImport.update({
+  id: '/pengaduan-layanan-publik',
+  path: '/pengaduan-layanan-publik',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PengaturanRouteRoute = PengaturanRouteRouteImport.update({
+  id: '/pengaturan',
+  path: '/pengaturan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRouteRoute = ProfileRouteRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SosialRoute = SosialRouteImport.update({
+  id: '/sosial',
+  path: '/sosial',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WallRoute = WallRouteImport.update({
+  id: '/wall',
+  path: '/wall',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const UsersIdRoute = UsersIdRouteImport.update({
-  id: '/users/$id',
-  path: '/users/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileEditRoute = ProfileEditRouteImport.update({
-  id: '/edit',
-  path: '/edit',
-  getParentRoute: () => ProfileRouteRoute,
-} as any)
-const PengaturanUmumRoute = PengaturanUmumRouteImport.update({
-  id: '/umum',
-  path: '/umum',
-  getParentRoute: () => PengaturanRouteRoute,
-} as any)
-const PengaturanSinkronisasiRoute = PengaturanSinkronisasiRouteImport.update({
-  id: '/sinkronisasi',
-  path: '/sinkronisasi',
-  getParentRoute: () => PengaturanRouteRoute,
-} as any)
-const PengaturanNotifikasiRoute = PengaturanNotifikasiRouteImport.update({
-  id: '/notifikasi',
-  path: '/notifikasi',
-  getParentRoute: () => PengaturanRouteRoute,
-} as any)
-const PengaturanKeamananRoute = PengaturanKeamananRouteImport.update({
-  id: '/keamanan',
-  path: '/keamanan',
-  getParentRoute: () => PengaturanRouteRoute,
-} as any)
-const PengaturanAksesDanTimRoute = PengaturanAksesDanTimRouteImport.update({
-  id: '/akses-dan-tim',
-  path: '/akses-dan-tim',
-  getParentRoute: () => PengaturanRouteRoute,
-} as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminSystemHealthRoute = AdminSystemHealthRouteImport.update({
-  id: '/system-health',
-  path: '/system-health',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminRolesRoute = AdminRolesRouteImport.update({
-  id: '/roles',
-  path: '/roles',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminPreferencesRoute = AdminPreferencesRouteImport.update({
-  id: '/preferences',
-  path: '/preferences',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminHelpRoute = AdminHelpRouteImport.update({
-  id: '/help',
-  path: '/help',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminAuditLogRoute = AdminAuditLogRouteImport.update({
-  id: '/audit-log',
-  path: '/audit-log',
+const AdminAiAssistantRoute = AdminAiAssistantRouteImport.update({
+  id: '/ai-assistant',
+  path: '/ai-assistant',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminApikeyRoute = AdminApikeyRouteImport.update({
@@ -216,10 +141,85 @@ const AdminApikeyRoute = AdminApikeyRouteImport.update({
   path: '/apikey',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const AdminAiAssistantRoute = AdminAiAssistantRouteImport.update({
-  id: '/ai-assistant',
-  path: '/ai-assistant',
+const AdminAuditLogRoute = AdminAuditLogRouteImport.update({
+  id: '/audit-log',
+  path: '/audit-log',
   getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminHelpRoute = AdminHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminPreferencesRoute = AdminPreferencesRouteImport.update({
+  id: '/preferences',
+  path: '/preferences',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminRolesRoute = AdminRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSystemHealthRoute = AdminSystemHealthRouteImport.update({
+  id: '/system-health',
+  path: '/system-health',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const PengaturanAksesDanTimRoute = PengaturanAksesDanTimRouteImport.update({
+  id: '/akses-dan-tim',
+  path: '/akses-dan-tim',
+  getParentRoute: () => PengaturanRouteRoute,
+} as any)
+const PengaturanKeamananRoute = PengaturanKeamananRouteImport.update({
+  id: '/keamanan',
+  path: '/keamanan',
+  getParentRoute: () => PengaturanRouteRoute,
+} as any)
+const PengaturanNotifikasiRoute = PengaturanNotifikasiRouteImport.update({
+  id: '/notifikasi',
+  path: '/notifikasi',
+  getParentRoute: () => PengaturanRouteRoute,
+} as any)
+const PengaturanSinkronisasiRoute = PengaturanSinkronisasiRouteImport.update({
+  id: '/sinkronisasi',
+  path: '/sinkronisasi',
+  getParentRoute: () => PengaturanRouteRoute,
+} as any)
+const PengaturanUmumRoute = PengaturanUmumRouteImport.update({
+  id: '/umum',
+  path: '/umum',
+  getParentRoute: () => PengaturanRouteRoute,
+} as any)
+const ProfileIndexRoute = ProfileIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProfileRouteRoute,
+} as any)
+const ProfileEditRoute = ProfileEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => ProfileRouteRoute,
+} as any)
+const UsersIndexRoute = UsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UsersIdRoute = UsersIdRouteImport.update({
+  id: '/users/$id',
+  path: '/users/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminAiAssistantVoiceLabRoute =
   AdminAiAssistantVoiceLabRouteImport.update({
@@ -479,102 +479,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/wall': {
-      id: '/wall'
-      path: '/wall'
-      fullPath: '/wall'
-      preLoaderRoute: typeof WallRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sosial': {
-      id: '/sosial'
-      path: '/sosial'
-      fullPath: '/sosial'
-      preLoaderRoute: typeof SosialRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signin': {
-      id: '/signin'
-      path: '/signin'
-      fullPath: '/signin'
-      preLoaderRoute: typeof SigninRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pengaduan-layanan-publik': {
-      id: '/pengaduan-layanan-publik'
-      path: '/pengaduan-layanan-publik'
-      fullPath: '/pengaduan-layanan-publik'
-      preLoaderRoute: typeof PengaduanLayananPublikRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/kinerja-divisi': {
-      id: '/kinerja-divisi'
-      path: '/kinerja-divisi'
-      fullPath: '/kinerja-divisi'
-      preLoaderRoute: typeof KinerjaDivisiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/keuangan-anggaran': {
-      id: '/keuangan-anggaran'
-      path: '/keuangan-anggaran'
-      fullPath: '/keuangan-anggaran'
-      preLoaderRoute: typeof KeuanganAnggaranRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/keamanan': {
-      id: '/keamanan'
-      path: '/keamanan'
-      fullPath: '/keamanan'
-      preLoaderRoute: typeof KeamananRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/jenna-analytic': {
-      id: '/jenna-analytic'
-      path: '/jenna-analytic'
-      fullPath: '/jenna-analytic'
-      preLoaderRoute: typeof JennaAnalyticRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demografi-pekerjaan': {
-      id: '/demografi-pekerjaan'
-      path: '/demografi-pekerjaan'
-      fullPath: '/demografi-pekerjaan'
-      preLoaderRoute: typeof DemografiPekerjaanRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bumdes': {
-      id: '/bumdes'
-      path: '/bumdes'
-      fullPath: '/bumdes'
-      preLoaderRoute: typeof BumdesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bantuan': {
-      id: '/bantuan'
-      path: '/bantuan'
-      fullPath: '/bantuan'
-      preLoaderRoute: typeof BantuanRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pengaturan': {
-      id: '/pengaturan'
-      path: '/pengaturan'
-      fullPath: '/pengaturan'
-      preLoaderRoute: typeof PengaturanRouteRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -584,26 +493,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/bantuan': {
+      id: '/bantuan'
+      path: '/bantuan'
+      fullPath: '/bantuan'
+      preLoaderRoute: typeof BantuanRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/users/': {
-      id: '/users/'
-      path: '/users'
-      fullPath: '/users/'
-      preLoaderRoute: typeof UsersIndexRouteImport
+    '/bumdes': {
+      id: '/bumdes'
+      path: '/bumdes'
+      fullPath: '/bumdes'
+      preLoaderRoute: typeof BumdesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profile/': {
-      id: '/profile/'
-      path: '/'
-      fullPath: '/profile/'
-      preLoaderRoute: typeof ProfileIndexRouteImport
-      parentRoute: typeof ProfileRouteRoute
+    '/demografi-pekerjaan': {
+      id: '/demografi-pekerjaan'
+      path: '/demografi-pekerjaan'
+      fullPath: '/demografi-pekerjaan'
+      preLoaderRoute: typeof DemografiPekerjaanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jenna-analytic': {
+      id: '/jenna-analytic'
+      path: '/jenna-analytic'
+      fullPath: '/jenna-analytic'
+      preLoaderRoute: typeof JennaAnalyticRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/keamanan': {
+      id: '/keamanan'
+      path: '/keamanan'
+      fullPath: '/keamanan'
+      preLoaderRoute: typeof KeamananRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/keuangan-anggaran': {
+      id: '/keuangan-anggaran'
+      path: '/keuangan-anggaran'
+      fullPath: '/keuangan-anggaran'
+      preLoaderRoute: typeof KeuanganAnggaranRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kinerja-divisi': {
+      id: '/kinerja-divisi'
+      path: '/kinerja-divisi'
+      fullPath: '/kinerja-divisi'
+      preLoaderRoute: typeof KinerjaDivisiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pengaduan-layanan-publik': {
+      id: '/pengaduan-layanan-publik'
+      path: '/pengaduan-layanan-publik'
+      fullPath: '/pengaduan-layanan-publik'
+      preLoaderRoute: typeof PengaduanLayananPublikRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pengaturan': {
+      id: '/pengaturan'
+      path: '/pengaturan'
+      fullPath: '/pengaturan'
+      preLoaderRoute: typeof PengaturanRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sosial': {
+      id: '/sosial'
+      path: '/sosial'
+      fullPath: '/sosial'
+      preLoaderRoute: typeof SosialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wall': {
+      id: '/wall'
+      path: '/wall'
+      fullPath: '/wall'
+      preLoaderRoute: typeof WallRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
@@ -612,102 +598,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/users/$id': {
-      id: '/users/$id'
-      path: '/users/$id'
-      fullPath: '/users/$id'
-      preLoaderRoute: typeof UsersIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile/edit': {
-      id: '/profile/edit'
-      path: '/edit'
-      fullPath: '/profile/edit'
-      preLoaderRoute: typeof ProfileEditRouteImport
-      parentRoute: typeof ProfileRouteRoute
-    }
-    '/pengaturan/umum': {
-      id: '/pengaturan/umum'
-      path: '/umum'
-      fullPath: '/pengaturan/umum'
-      preLoaderRoute: typeof PengaturanUmumRouteImport
-      parentRoute: typeof PengaturanRouteRoute
-    }
-    '/pengaturan/sinkronisasi': {
-      id: '/pengaturan/sinkronisasi'
-      path: '/sinkronisasi'
-      fullPath: '/pengaturan/sinkronisasi'
-      preLoaderRoute: typeof PengaturanSinkronisasiRouteImport
-      parentRoute: typeof PengaturanRouteRoute
-    }
-    '/pengaturan/notifikasi': {
-      id: '/pengaturan/notifikasi'
-      path: '/notifikasi'
-      fullPath: '/pengaturan/notifikasi'
-      preLoaderRoute: typeof PengaturanNotifikasiRouteImport
-      parentRoute: typeof PengaturanRouteRoute
-    }
-    '/pengaturan/keamanan': {
-      id: '/pengaturan/keamanan'
-      path: '/keamanan'
-      fullPath: '/pengaturan/keamanan'
-      preLoaderRoute: typeof PengaturanKeamananRouteImport
-      parentRoute: typeof PengaturanRouteRoute
-    }
-    '/pengaturan/akses-dan-tim': {
-      id: '/pengaturan/akses-dan-tim'
-      path: '/akses-dan-tim'
-      fullPath: '/pengaturan/akses-dan-tim'
-      preLoaderRoute: typeof PengaturanAksesDanTimRouteImport
-      parentRoute: typeof PengaturanRouteRoute
-    }
-    '/admin/users': {
-      id: '/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminUsersRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/system-health': {
-      id: '/admin/system-health'
-      path: '/system-health'
-      fullPath: '/admin/system-health'
-      preLoaderRoute: typeof AdminSystemHealthRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/settings': {
-      id: '/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminSettingsRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/roles': {
-      id: '/admin/roles'
-      path: '/roles'
-      fullPath: '/admin/roles'
-      preLoaderRoute: typeof AdminRolesRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/preferences': {
-      id: '/admin/preferences'
-      path: '/preferences'
-      fullPath: '/admin/preferences'
-      preLoaderRoute: typeof AdminPreferencesRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/help': {
-      id: '/admin/help'
-      path: '/help'
-      fullPath: '/admin/help'
-      preLoaderRoute: typeof AdminHelpRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/audit-log': {
-      id: '/admin/audit-log'
-      path: '/audit-log'
-      fullPath: '/admin/audit-log'
-      preLoaderRoute: typeof AdminAuditLogRouteImport
+    '/admin/ai-assistant': {
+      id: '/admin/ai-assistant'
+      path: '/ai-assistant'
+      fullPath: '/admin/ai-assistant'
+      preLoaderRoute: typeof AdminAiAssistantRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/apikey': {
@@ -717,12 +612,117 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminApikeyRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/admin/ai-assistant': {
-      id: '/admin/ai-assistant'
-      path: '/ai-assistant'
-      fullPath: '/admin/ai-assistant'
-      preLoaderRoute: typeof AdminAiAssistantRouteImport
+    '/admin/audit-log': {
+      id: '/admin/audit-log'
+      path: '/audit-log'
+      fullPath: '/admin/audit-log'
+      preLoaderRoute: typeof AdminAuditLogRouteImport
       parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/help': {
+      id: '/admin/help'
+      path: '/help'
+      fullPath: '/admin/help'
+      preLoaderRoute: typeof AdminHelpRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/preferences': {
+      id: '/admin/preferences'
+      path: '/preferences'
+      fullPath: '/admin/preferences'
+      preLoaderRoute: typeof AdminPreferencesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/roles': {
+      id: '/admin/roles'
+      path: '/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AdminRolesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/system-health': {
+      id: '/admin/system-health'
+      path: '/system-health'
+      fullPath: '/admin/system-health'
+      preLoaderRoute: typeof AdminSystemHealthRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/pengaturan/akses-dan-tim': {
+      id: '/pengaturan/akses-dan-tim'
+      path: '/akses-dan-tim'
+      fullPath: '/pengaturan/akses-dan-tim'
+      preLoaderRoute: typeof PengaturanAksesDanTimRouteImport
+      parentRoute: typeof PengaturanRouteRoute
+    }
+    '/pengaturan/keamanan': {
+      id: '/pengaturan/keamanan'
+      path: '/keamanan'
+      fullPath: '/pengaturan/keamanan'
+      preLoaderRoute: typeof PengaturanKeamananRouteImport
+      parentRoute: typeof PengaturanRouteRoute
+    }
+    '/pengaturan/notifikasi': {
+      id: '/pengaturan/notifikasi'
+      path: '/notifikasi'
+      fullPath: '/pengaturan/notifikasi'
+      preLoaderRoute: typeof PengaturanNotifikasiRouteImport
+      parentRoute: typeof PengaturanRouteRoute
+    }
+    '/pengaturan/sinkronisasi': {
+      id: '/pengaturan/sinkronisasi'
+      path: '/sinkronisasi'
+      fullPath: '/pengaturan/sinkronisasi'
+      preLoaderRoute: typeof PengaturanSinkronisasiRouteImport
+      parentRoute: typeof PengaturanRouteRoute
+    }
+    '/pengaturan/umum': {
+      id: '/pengaturan/umum'
+      path: '/umum'
+      fullPath: '/pengaturan/umum'
+      preLoaderRoute: typeof PengaturanUmumRouteImport
+      parentRoute: typeof PengaturanRouteRoute
+    }
+    '/profile/': {
+      id: '/profile/'
+      path: '/'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof ProfileIndexRouteImport
+      parentRoute: typeof ProfileRouteRoute
+    }
+    '/profile/edit': {
+      id: '/profile/edit'
+      path: '/edit'
+      fullPath: '/profile/edit'
+      preLoaderRoute: typeof ProfileEditRouteImport
+      parentRoute: typeof ProfileRouteRoute
+    }
+    '/users/': {
+      id: '/users/'
+      path: '/users'
+      fullPath: '/users/'
+      preLoaderRoute: typeof UsersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/users/$id': {
+      id: '/users/$id'
+      path: '/users/$id'
+      fullPath: '/users/$id'
+      preLoaderRoute: typeof UsersIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/ai-assistant_/voice-lab': {
       id: '/admin/ai-assistant_/voice-lab'

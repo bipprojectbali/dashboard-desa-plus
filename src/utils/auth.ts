@@ -58,7 +58,10 @@ export const auth = betterAuth({
 							},
 						};
 					}
-					// Non-admin users require admin verification before they can access
+					// Non-admin users require admin verification before they can access.
+					// This flag also blocks OAuth implicit linking into unverified email/password
+					// accounts (GHSA-g38m-r43w-p2q7, Better Auth >=1.6.11 default) — never set
+					// account.accountLinking.requireLocalEmailVerified=false; see tests/db/oauth-account-linking.
 					return { data: { ...user, emailVerified: false } };
 				},
 			},
