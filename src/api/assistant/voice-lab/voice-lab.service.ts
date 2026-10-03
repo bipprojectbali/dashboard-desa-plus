@@ -4,20 +4,23 @@ import {
 	checkAdminUser,
 } from "../http/access";
 import {
-	VOICE_LAB_DEFAULTS,
-	VOICE_LAB_MESSAGES,
-	VOICE_LAB_SUGGESTIONS,
-	VOICE_LAB_TOKEN_TTL_SECONDS,
-	VOICE_LAB_TTS_TIMEOUT_MS,
-	VOICE_LAB_UPSTREAM_TIMEOUT_MS,
-} from "./voice-lab.constants";
+	VOICE_SLOT_MESSAGES,
+	VOICE_UPSTREAM_TIMEOUT_MS,
+} from "../voice/voice.constants";
+import { openLiveSession } from "../voice/voice.live";
 import {
 	hashSafetyIdentifier,
 	resolveVoiceSlot,
 	type VoiceSlotCredentials,
 	type VoiceSlotDeps,
-} from "./voice-lab.slot";
-import { type FetchLike, postToOpenAi } from "./voice-lab.upstream";
+} from "../voice/voice.slot";
+import { type FetchLike, postToOpenAi } from "../voice/voice.upstream";
+import {
+	VOICE_LAB_DEFAULTS,
+	VOICE_LAB_SUGGESTIONS,
+	VOICE_LAB_TOKEN_TTL_SECONDS,
+	VOICE_LAB_TTS_TIMEOUT_MS,
+} from "./voice-lab.constants";
 import {
 	type LiveSessionInput,
 	parseLiveSessionInput,
@@ -86,7 +89,7 @@ const invalid = (error: string): VoiceLabFailure => ({
 const badShape = (): VoiceLabFailure => ({
 	ok: false,
 	status: 502,
-	error: VOICE_LAB_MESSAGES.upstreamBadShape,
+	error: VOICE_SLOT_MESSAGES.upstreamBadShape,
 });
 
 export interface VoiceLabConfigDto {
@@ -153,7 +156,7 @@ export async function createTranscribeToken(
 		slot,
 		safetyId,
 		path: "/realtime/client_secrets",
-		timeoutMs: VOICE_LAB_UPSTREAM_TIMEOUT_MS,
+		timeoutMs: VOICE_UPSTREAM_TIMEOUT_MS,
 		fetchImpl: deps.fetchImpl,
 		body: {
 			expires_after: {
@@ -199,7 +202,7 @@ export async function relayTranscribeCall(
 		slot: prepared.value.slot,
 		safetyId: prepared.value.safetyId,
 		path: "/realtime/calls",
-		timeoutMs: VOICE_LAB_UPSTREAM_TIMEOUT_MS,
+		timeoutMs: VOICE_UPSTREAM_TIMEOUT_MS,
 		fetchImpl: deps.fetchImpl,
 		accept: "application/sdp",
 		form,
@@ -221,29 +224,14 @@ export async function createLiveSession(
 	if (!input.ok) return invalid(input.error);
 	const prepared = await prepare(user, deps);
 	if (!prepared.ok) return prepared;
-	const session: Record<string, unknown> = {
-		model: input.value.model,
-		delegation: { type: "client" },
-	};
-	if (input.value.instructions) session.instructions = input.value.instructions;
-	const upstream = await postToOpenAi({
+	return openLiveSession({
 		slot: prepared.value.slot,
 		safetyId: prepared.value.safetyId,
-		path: "/live/sessions",
-		timeoutMs: VOICE_LAB_UPSTREAM_TIMEOUT_MS,
+		sdp: input.value.sdp,
+		model: input.value.model,
+		instructions: input.value.instructions,
 		fetchImpl: deps.fetchImpl,
-		body: { session, transport: { type: "webrtc", sdp: input.value.sdp } },
 	});
-	if (!upstream.ok) return upstream;
-	const json = (await upstream.response.json().catch(() => null)) as {
-		session?: { id?: unknown };
-		transport?: { sdp?: unknown };
-	} | null;
-	const sessionId = json?.session?.id;
-	const answer = json?.transport?.sdp;
-	if (typeof sessionId !== "string" || typeof answer !== "string")
-		return badShape();
-	return { ok: true, value: { sessionId, sdp: answer } };
 }
 
 /** TTS: badan audio dari OpenAI diteruskan apa adanya (stream) ke browser. */

@@ -1,8 +1,8 @@
 import {
 	SAFETY_IDENTIFIER_HEADER,
-	VOICE_LAB_MESSAGES,
-} from "./voice-lab.constants";
-import type { VoiceSlotCredentials } from "./voice-lab.slot";
+	VOICE_SLOT_MESSAGES,
+} from "./voice.constants";
+import type { VoiceSlotCredentials } from "./voice.slot";
 
 export type FetchLike = (input: string, init: RequestInit) => Promise<Response>;
 
@@ -33,7 +33,7 @@ const MESSAGE_MAX_CHARS = 200;
  * terpotong. Hanya dibaca dari respons error, tidak pernah dicatat ke log.
  */
 async function describeRejection(res: Response): Promise<string> {
-	const base = `${VOICE_LAB_MESSAGES.upstreamRejected} (HTTP ${res.status})`;
+	const base = `${VOICE_SLOT_MESSAGES.upstreamRejected} (HTTP ${res.status})`;
 	try {
 		const json = (await res.json()) as { error?: { message?: unknown } };
 		const message = json.error?.message;
@@ -74,7 +74,7 @@ export async function postToOpenAi(
 		return {
 			ok: false,
 			status: 502,
-			error: `${VOICE_LAB_MESSAGES.upstreamUnreachable} [${reason}]`,
+			error: `${VOICE_SLOT_MESSAGES.upstreamUnreachable} [${reason}]`,
 		};
 	}
 	if (!res.ok)

@@ -1,20 +1,17 @@
 import {
+	invalidField as bad,
+	parseLiveInstructions,
+	parseOfferSdp,
+	type Validated,
+} from "../voice/voice.live";
+import {
 	VOICE_LAB_DEFAULTS,
 	VOICE_LAB_LIMITS,
-	VOICE_LAB_MESSAGES,
 	VOICE_LAB_PATTERNS,
 	VOICE_LAB_SUGGESTIONS,
 } from "./voice-lab.constants";
 
-/** Hasil validasi: nilai bersih atau pesan error untuk respons 422. */
-export type Validated<T> =
-	| { ok: true; value: T }
-	| { ok: false; error: string };
-
-const bad = (field: string): Validated<never> => ({
-	ok: false,
-	error: `${VOICE_LAB_MESSAGES.invalidInput}: ${field}`,
-});
+export type { Validated };
 
 function pick(
 	raw: string | undefined,
@@ -106,24 +103,18 @@ export function parseLiveSessionInput(raw: {
 	model?: string;
 	instructions?: string;
 }): Validated<LiveSessionInput> {
-	const sdp = raw.sdp.trim();
-	if (
-		sdp === "" ||
-		sdp.length > VOICE_LAB_LIMITS.sdpMax ||
-		!sdp.startsWith("v=0")
-	)
-		return bad("sdp");
+	const sdp = parseOfferSdp(raw.sdp);
+	if (!sdp.ok) return sdp;
 	const model = pick(
 		raw.model,
 		VOICE_LAB_DEFAULTS.liveModel,
 		VOICE_LAB_PATTERNS.model,
 	);
 	if (!model) return bad("model");
-	const instructions = (raw.instructions ?? "").trim();
-	if (instructions.length > VOICE_LAB_LIMITS.instructionsMax)
-		return bad("instructions");
+	const instructions = parseLiveInstructions(raw.instructions);
+	if (!instructions.ok) return instructions;
 	return {
 		ok: true,
-		value: { sdp: `${sdp}\r\n`, model, instructions: instructions || null },
+		value: { sdp: sdp.value, model, instructions: instructions.value },
 	};
 }

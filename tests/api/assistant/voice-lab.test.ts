@@ -5,7 +5,8 @@ import {
 	type ProviderConfigRow,
 	type ProviderSlot,
 } from "@/api/assistant/config/settings.repo";
-import { SAFETY_IDENTIFIER_HEADER } from "@/api/assistant/voice-lab/voice-lab.constants";
+import { SAFETY_IDENTIFIER_HEADER } from "@/api/assistant/voice/voice.constants";
+import { hashSafetyIdentifier } from "@/api/assistant/voice/voice.slot";
 import {
 	createLiveSession,
 	createTranscribeToken,
@@ -14,7 +15,6 @@ import {
 	relayTranscribeCall,
 	type VoiceLabDeps,
 } from "@/api/assistant/voice-lab/voice-lab.service";
-import { hashSafetyIdentifier } from "@/api/assistant/voice-lab/voice-lab.slot";
 
 // test-only: kunci & ID palsu
 const FAKE_KEY = "sk-test-voice-slot-key";
