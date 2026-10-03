@@ -1,6 +1,6 @@
 # 06b — Fitur 3 Suara, Tahap S2: kontrol sesi lengkap, diagnostik admin, metrik kepatuhan
 
-> **Status: DRAF — menunggu persetujuan user.** Belum ada kode. Disusun 2026-10-03 (task_85e56600e424).
+> **Status: DISETUJUI user 2026-10-03 (#57)** — semua saran Q1–Q9 diterima; kuota kiosk **tetap 60 menit/hari**. Belum ada kode; S2 dikerjakan setelah S1 di-merge. Disusun 2026-10-03 (task_85e56600e424).
 > Rujukan: `06-fitur-3-suara.md` v3 §5.2 (lingkup S2), keputusan #47 (menit nyata), #53, #54–#56,
 > `discus/metrik-kepatuhan-ai.md` (M1–M4, disetujui #56), handoff FOREVIA §13 (`idea/JENNA_DEVELOPER_HANDOFF_CROSS_PROJECT_2026-10-02.md`),
 > `idea/compare-forevia-vs-dashboard-desa.md`.
