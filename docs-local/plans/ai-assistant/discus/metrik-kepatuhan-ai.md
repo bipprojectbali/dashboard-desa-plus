@@ -1,6 +1,7 @@
 # Analisa — Metrik kepatuhan AI (chat & suara)
 
-> Disusun sesi induk 2026-10-03 atas permintaan user (keputusan #55 poin 4: "hasil diperiksa"). **Untuk didiskusikan; belum ada kode.**
+> Disusun sesi induk 2026-10-03 atas permintaan user (keputusan #55 poin 4: "hasil diperiksa").
+> **DISETUJUI user 2026-10-03 (#56): semua saran §6 diterima** — M1–M4 dulu (M5/M6 menyusul), simpan penanda tanpa teks, retensi 90 hari, admin tidak membuka percakapan user, ambang M1 >5%/50 giliran & M2/M4 tiap kejadian, dikerjakan di S2. Belum ada kode.
 > Rujukan: `06-fitur-3-suara.md` v3 §4 (batas parafrase, ambang 5% dari 50 giliran, pemantauan di S2), S0 voice-lab (pencocok angka sudah ada).
 
 ## 1. Kenapa perlu metrik
