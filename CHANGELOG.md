@@ -20,6 +20,29 @@ All notable changes to this project will be documented in this file.
 - **Widget "Peta CCTV" (menu Keamanan) di NOC Video Wall (`/wall`) peta meluber dan terpotong saat widget dikecilkan.** Kontainer peta Leaflet memakai `minHeight: 300` yang dibawa dari pola halaman `/keamanan` (kontainer tetap 400px, tak pernah di-resize) — di wall, slot widget bisa diperkecil di bawah 300px (mis. geom `h=1` hanya ~170px), sehingga peta tetap dipaksa setinggi 300px dan bagian bawahnya (termasuk marker CCTV) terpotong oleh `overflow: hidden` milik kartu widget. Leaflet juga meng-cache ukuran canvas saat inisialisasi dan tidak otomatis menyesuaikan saat ukuran kontainernya berubah lewat CSS. Sekarang tinggi peta murni mengikuti slot widget (`minHeight` dihapus) dan `ResizeObserver` memanggil `invalidateSize()` Leaflet tiap kali kontainer berubah ukuran, agar peta selalu mengisi & menggambar ulang sesuai ukuran widget saat itu.
 - **Widget "Status Sistem" di NOC Video Wall (`/wall`) tampilan berantakan saat widget dikecilkan.** `OpsBody` merender 3 gauge CPU/MEM/DISK (`RingProgress` 110px tetap) berdampingan dalam `Group` tanpa `wrap="nowrap"` — total lebar ~330px lebih lebar dari 1 kolom bento (300px), sehingga saat widget dipersempit, gauge ketiga (DISK) melipat ke baris baru dan baris itu terpotong tengah oleh `overflow: hidden` milik kartu (pola sama dengan donut chart sebelum diperbaiki). Sekarang gauge menyusut otomatis (110px → 70px) saat widget diperkecil ke lebar 1 kolom atau tinggi 1 baris, barisnya dikunci `wrap="nowrap"` agar selalu satu baris, dan baris "Sync terakhir" (info paling tak kritis) disembunyikan lebih dulu di ukuran paling kecil agar 3 baris status Database/Desa API/NOC API tetap utuh terlihat.
 
+## [0.1.65] - 2026-10-03
+
+### Added
+- **Asisten AI "Jenna" (baca-saja).** Tombol melayang + panel chat di dashboard: menjawab pertanyaan dari data dashboard sesuai izin modul user, jawaban mengalir per kata, riwayat percakapan tersimpan, jawaban berformat (tebal, daftar, tabel). Hanya untuk user terverifikasi dengan izin "AI Assistant"; data pribadi warga disaring sebelum dikirim ke AI. Admin mengatur nama asisten, kuota harian (user & kiosk), dan kredensial AI per fitur (terenkripsi) di `/admin/ai-assistant`.
+- **Penunjuk layar.** Jenna bisa membuka halaman dan menunjuk kartu/grafik yang ditanyakan (kursor + sorotan) di Beranda, Kinerja Divisi, Pengaduan, Demografi, Keuangan, BUMDes, Sosial, Keamanan, Jenna Analytic, dan widget `/wall`; label "Sumber" bisa diklik untuk langsung menunjuk kartu tanpa memanggil AI. Hanya menunjuk/klik elemen tampilan — tidak pernah menekan tombol simpan/hapus.
+- **Panduan bertahap.** "Pandu saya…" menampilkan 1–5 langkah dengan catatan dan tombol Lanjut/Stop; di `/wall` lanjut otomatis (jeda diatur admin, awal 8 detik).
+- **Mode suara (beta).** Tombol suara di panel Jenna (Chrome/Edge desktop): bicara langsung, transkrip tampil, jawaban dibacakan dan tetap tampil sebagai teks, bisa dipotong saat bicara, tombol bisukan; angka besar diucapkan ringkas. Butuh persetujuan mikrofon sekali dan izin baru "AI Voice"; kuota 60 menit/hari (user & kiosk, diatur admin), 10 menit per sesi, mati otomatis setelah 2 menit hening, satu sesi aktif per user. Kunci OpenAI diisi admin di slot **Suara** `/admin/ai-assistant`.
+- **Halaman uji suara** `/admin/ai-assistant/voice-lab` (admin) untuk diagnosa mikrofon, koneksi, dan jeda.
+
+### Changed
+- **Sidebar**: tombol minimize kini mengecilkan sidebar menjadi deretan ikon (tooltip) alih-alih menghilang; saat panel Jenna terbuka di layar < 1600px sidebar otomatis menjadi ikon. Halaman bergeser memberi ruang panel sehingga konten tidak tertutup.
+- **Hak akses**: perubahan role user oleh admin kini langsung berlaku (sebelumnya baru setelah sesi kedaluwarsa); API menolak user yang belum diverifikasi admin.
+- **Keamanan login**: Better Auth diperbarui ke 1.7.7 — akun Google/GitHub tidak lagi bisa tertaut otomatis ke akun email yang belum terverifikasi. TanStack Router, Elysia, dan Vite diperbarui ke versi patch terbaru (advisory keamanan berkurang dari 122 ke 102).
+
+### Fixed
+- Penunjuk gagal pada percobaan pertama saat halaman tujuan masih memuat data (mis. memilih tahun APBDes dari halaman lain, atau saat panel diperbesar).
+- Status slot Suara di admin tidak lagi tampil "siap" hanya karena slot Chat terisi.
+
+### Catatan operator
+- Migrasi database baru (otomatis saat start, aman diulang): `add_ai_assistant`, `add_assistant_kiosk_limit`, `add_assistant_guide_auto_advance`, `add_assistant_voice_s1`.
+- Env wajib baru: `AI_CREDENTIALS_KEY` (64 hex) untuk enkripsi kredensial AI. Kredensial AI (Chat & Suara) diisi lewat `/admin/ai-assistant`, bukan env.
+- Setelah upgrade Better Auth, user mungkin perlu login ulang.
+
 ## [0.1.60] - 2026-08-24
 
 ### Added
