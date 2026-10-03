@@ -88,6 +88,7 @@ export function AssistantFab({
 						allowed={access.allowed}
 						pathname={access.pathname}
 						withHeader={variant !== "wall"}
+						voice={variant !== "wall"}
 						onClose={handleClose}
 					/>
 				</Suspense>
